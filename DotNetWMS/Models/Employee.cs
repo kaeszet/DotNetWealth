@@ -11,6 +11,9 @@ namespace DotNetWMS.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public int Pesel { get; set; }
+        //foreign key
+        public int DepartmentId { get; set; }
+        public Department Department { get; set; }
         public string Street { get; set; }
         public string ZipCode { get; set; }
         public string City { get; set; }

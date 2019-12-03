@@ -6,6 +6,11 @@
 
 
   <ItemGroup>
+    <Folder Include="Views\Account\" />
+    <Folder Include="Views\UserPanel\Employees\" />
+    <Folder Include="Views\UserPanel\Items\" />
+    <Folder Include="Views\UserPanel\Externals\" />
+    <Folder Include="Views\UserPanel\Warehouses\" />
   </ItemGroup>
 
 </Project>
