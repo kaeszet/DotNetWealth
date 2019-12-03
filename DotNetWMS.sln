@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetWMS", "DotNetWMS\DotNetWMS.csproj", "{16F047C3-9229-446A-A655-AE1B08E13CE1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16F047C3-9229-446A-A655-AE1B08E13CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16F047C3-9229-446A-A655-AE1B08E13CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16F047C3-9229-446A-A655-AE1B08E13CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16F047C3-9229-446A-A655-AE1B08E13CE1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3DA73FFB-B90A-469B-A796-1F1BC4FBAD55}
+	EndGlobalSection
+EndGlobal
