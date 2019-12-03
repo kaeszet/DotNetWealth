@@ -7,5 +7,10 @@ namespace DotNetWMS.Models
 {
     public class AssignItemToEmployee
     {
+        public int EmployeeId { get; set; }
+        public Employee Employee { get; set; }
+        public int ItemId { get; set; }
+        public ItemState ItemState { get; set; }
+        public Item Item { get; set; }
     }
 }
