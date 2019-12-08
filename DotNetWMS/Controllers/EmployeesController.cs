@@ -49,7 +49,26 @@ namespace DotNetWMS.Controllers
         public IActionResult Create()
         {
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id");
+            //odczyt po name
+            ViewData["DepartmentName"] = new SelectList(_context.Departments, "Id", "Name");
             return View();
+        }
+        //odczyt po name
+        public List<EmployeeViewModel> GetList()
+        {
+            var employees = _context.Employees.Select(e => new EmployeeViewModel()
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Surname = e.Surname,
+                Pesel = e.Pesel,
+                Department = e.Department,
+                Street = e.Street,
+                ZipCode = e.ZipCode,
+                City = e.City
+
+            });
+            return employees.ToList();
         }
 
         // POST: Employees/Create
@@ -66,6 +85,8 @@ namespace DotNetWMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", employee.DepartmentId);
+            //odczyt po name
+            ViewData["DepartmentName"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             return View(employee);
         }
 

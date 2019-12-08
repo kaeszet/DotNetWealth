@@ -10,63 +10,112 @@
 <div class="container">
     <div class="card-deck mb-3 text-center">
         <div class="card mb-3 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Pracownicy</h4>
+            <div class="card-header text-light bg-primary">
+                <h4 class="my-0 font-weight-normal"><i class="fas fa-user-tie"></i> Pracownicy</h4>
             </div>
-            <div class="card-body">
-                <h1 class="card-title pricing-card-title">$0 <small class="text-muted">/ mo</small></h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li>10 users included</li>
-                    <li>2 GB of storage</li>
-                    <li>Email support</li>
-                    <li>Help center access</li>
-                </ul>
-                <button type="button" class="btn btn-lg btn-block btn-primary">Sign up for free</button>
-            </div>
-        </div>
-        <div class="card mb-3 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Majątek</h4>
-            </div>
-            <div class="card-body">
-                <h1 class="card-title"><i class="fas fa-industry"></i></h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li>20 users included</li>
-                    <li>10 GB of storage</li>
-                    <li>Priority email support</li>
-                    <li>Help center access</li>
-                </ul>
-                <button type="button" class="btn btn-lg btn-block btn-primary">Get started</button>
+            <div class="card-body p-0">
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class=" m-0 font-weight-normal">Przegląd pracowników</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <a asp-controller="Employees" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="far fa-id-card fa-4x"></i></a>
+                    </div>
+                </div>
+                <div class="card mt-2 mb-2">
+                    <div class="card-header m-0">
+                        <h6 class="m-0 font-weight-normal">Przegląd stanowisk</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-briefcase fa-4x"></i></button>
+                    </div>
+                </div>
+
             </div>
         </div>
         <div class="card mb-3 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Magazyny</h4>
+            <div class="card-header text-light bg-primary">
+                <h4 class="my-0 font-weight-normal"><i class="fas fa-people-carry"></i> Majątek</h4>
             </div>
-            <div class="card-body">
-                <h1 class="card-title pricing-card-title">$29 <small class="text-muted">/ mo</small></h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li>30 users included</li>
-                    <li>15 GB of storage</li>
-                    <li>Phone and email support</li>
-                    <li>Help center access</li>
-                </ul>
-                <button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button>
+            <div class="card-body p-0">
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-normal">Przegląd majątku</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-coins fa-4x"></i></button>
+                    </div>
+                </div>
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-normal">Przekaż na stan</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-hand-holding-usd fa-4x"></i></button>
+                    </div>
+                </div>
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-normal">Przekaż do magazynu</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-pallet fa-4x"></i></button>
+                    </div>
+                </div>
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-normal">Przekaż na zewnątrz</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-truck-loading fa-4x"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card mb-3 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Klienci zewnętrzni</h4>
+            <div class="card-header text-light bg-primary">
+                <h4 class="my-0 font-weight-normal"><i class="fas fa-warehouse"></i> Magazyny</h4>
             </div>
-            <div class="card-body">
-                <h1 class="card-title pricing-card-title">$29 <small class="text-muted">/ mo</small></h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                    <li>30 users included</li>
-                    <li>15 GB of storage</li>
-                    <li>Phone and email support</li>
-                    <li>Help center access</li>
-                </ul>
-                <button type="button" class="btn btn-lg btn-block btn-primary">Contact us</button>
+            <div class="card-body p-0">
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-normal">Przegląd magazynów</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-boxes fa-4x"></i></button>
+                    </div>
+                </div>
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-normal">Inwentaryzacja</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-calculator fa-4x"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header text-light bg-primary">
+                <h5 class="my-0 font-weight-normal"><i class="fas fa-external-link-alt"></i> Klienci zewnętrzni</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-normal">Przegląd kl. zewn.</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-glasses fa-4x"></i></button>
+                    </div>
+                </div>
+                <div class="card mt-2 mb-2">
+                    <div class="card-header">
+                        <h6 class="m-0 font-weight-normal">Podgląd stanu</h6>
+                    </div>
+                    <div class="card-body m-0">
+                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-search-dollar fa-4x"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
