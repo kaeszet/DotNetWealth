@@ -1,5 +1,8 @@
 ﻿@model DotNetWMS.Models.Employee
 
+
+
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -28,8 +31,8 @@
                 <span asp-validation-for="Pesel" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DepartmentId" class="control-label"></label>
-                <select asp-for="DepartmentId" class ="form-control" asp-items="ViewBag.DepartmentId"></select>
+                <label asp-for="Department" class="control-label"></label>
+                <select asp-for="Department" class ="form-control" asp-items="@ViewBag.DepartmentName"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Street" class="control-label"></label>
