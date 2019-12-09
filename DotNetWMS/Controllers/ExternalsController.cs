@@ -10,23 +10,22 @@ using DotNetWMS.Models;
 
 namespace DotNetWMS.Controllers
 {
-    public class EmployeesController : Controller
+    public class ExternalsController : Controller
     {
         private readonly DotNetWMSContext _context;
 
-        public EmployeesController(DotNetWMSContext context)
+        public ExternalsController(DotNetWMSContext context)
         {
             _context = context;
         }
 
-        // GET: Employees
+        // GET: Externals
         public async Task<IActionResult> Index()
         {
-            var dotNetWMSContext = _context.Employees.Include(e => e.Department);
-            return View(await dotNetWMSContext.ToListAsync());
+            return View(await _context.Externals.ToListAsync());
         }
 
-        // GET: Employees/Details/5
+        // GET: Externals/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,45 +33,39 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Department)
+            var external = await _context.Externals
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (external == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(external);
         }
 
-        // GET: Employees/Create
+        // GET: Externals/Create
         public IActionResult Create()
         {
-            
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
-            
             return View();
         }
 
-        // POST: Employees/Create
+        // POST: Externals/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,Type,Name,TaxId,Street,ZipCode,City")] External external)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
+                _context.Add(external);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
-            
-            return View(employee);
+            return View(external);
         }
 
-        // GET: Employees/Edit/5
+        // GET: Externals/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,23 +73,22 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var external = await _context.Externals.FindAsync(id);
+            if (external == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", employee.DepartmentId);
-            return View(employee);
+            return View(external);
         }
 
-        // POST: Employees/Edit/5
+        // POST: Externals/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,Name,TaxId,Street,ZipCode,City")] External external)
         {
-            if (id != employee.Id)
+            if (id != external.Id)
             {
                 return NotFound();
             }
@@ -105,12 +97,12 @@ namespace DotNetWMS.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(external);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Id))
+                    if (!ExternalExists(external.Id))
                     {
                         return NotFound();
                     }
@@ -121,11 +113,10 @@ namespace DotNetWMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", employee.DepartmentId);
-            return View(employee);
+            return View(external);
         }
 
-        // GET: Employees/Delete/5
+        // GET: Externals/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,31 +124,30 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Department)
+            var external = await _context.Externals
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (external == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(external);
         }
 
-        // POST: Employees/Delete/5
+        // POST: Externals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            _context.Employees.Remove(employee);
+            var external = await _context.Externals.FindAsync(id);
+            _context.Externals.Remove(external);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeeExists(int id)
+        private bool ExternalExists(int id)
         {
-            return _context.Employees.Any(e => e.Id == id);
+            return _context.Externals.Any(e => e.Id == id);
         }
     }
 }

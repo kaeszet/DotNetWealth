@@ -10,23 +10,22 @@ using DotNetWMS.Models;
 
 namespace DotNetWMS.Controllers
 {
-    public class EmployeesController : Controller
+    public class WarehousesController : Controller
     {
         private readonly DotNetWMSContext _context;
 
-        public EmployeesController(DotNetWMSContext context)
+        public WarehousesController(DotNetWMSContext context)
         {
             _context = context;
         }
 
-        // GET: Employees
+        // GET: Warehouses
         public async Task<IActionResult> Index()
         {
-            var dotNetWMSContext = _context.Employees.Include(e => e.Department);
-            return View(await dotNetWMSContext.ToListAsync());
+            return View(await _context.Warehouses.ToListAsync());
         }
 
-        // GET: Employees/Details/5
+        // GET: Warehouses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,45 +33,39 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Department)
+            var warehouse = await _context.Warehouses
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (warehouse == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(warehouse);
         }
 
-        // GET: Employees/Create
+        // GET: Warehouses/Create
         public IActionResult Create()
         {
-            
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
-            
             return View();
         }
 
-        // POST: Employees/Create
+        // POST: Warehouses/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,Street,ZipCode,City")] Warehouse warehouse)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
+                _context.Add(warehouse);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
-            
-            return View(employee);
+            return View(warehouse);
         }
 
-        // GET: Employees/Edit/5
+        // GET: Warehouses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,23 +73,22 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var warehouse = await _context.Warehouses.FindAsync(id);
+            if (warehouse == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", employee.DepartmentId);
-            return View(employee);
+            return View(warehouse);
         }
 
-        // POST: Employees/Edit/5
+        // POST: Warehouses/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Street,ZipCode,City")] Warehouse warehouse)
         {
-            if (id != employee.Id)
+            if (id != warehouse.Id)
             {
                 return NotFound();
             }
@@ -105,12 +97,12 @@ namespace DotNetWMS.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(warehouse);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Id))
+                    if (!WarehouseExists(warehouse.Id))
                     {
                         return NotFound();
                     }
@@ -121,11 +113,10 @@ namespace DotNetWMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", employee.DepartmentId);
-            return View(employee);
+            return View(warehouse);
         }
 
-        // GET: Employees/Delete/5
+        // GET: Warehouses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,31 +124,30 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Department)
+            var warehouse = await _context.Warehouses
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (warehouse == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(warehouse);
         }
 
-        // POST: Employees/Delete/5
+        // POST: Warehouses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            _context.Employees.Remove(employee);
+            var warehouse = await _context.Warehouses.FindAsync(id);
+            _context.Warehouses.Remove(warehouse);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeeExists(int id)
+        private bool WarehouseExists(int id)
         {
-            return _context.Employees.Any(e => e.Id == id);
+            return _context.Warehouses.Any(e => e.Id == id);
         }
     }
 }
