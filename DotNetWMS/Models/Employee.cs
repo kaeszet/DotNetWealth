@@ -18,5 +18,8 @@ namespace DotNetWMS.Models
         public string ZipCode { get; set; }
         public string City { get; set; }
         public IList<Item> Items { get; set; }
+        public string FullName => $"{Surname}, {Name}";
+
+        
     }
 }
