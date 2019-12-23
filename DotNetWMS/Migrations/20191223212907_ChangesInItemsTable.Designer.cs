@@ -4,14 +4,16 @@ using DotNetWMS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DotNetWMS.Migrations
 {
     [DbContext(typeof(DotNetWMSContext))]
-    partial class DotNetWMSContextModelSnapshot : ModelSnapshot
+    [Migration("20191223212907_ChangesInItemsTable")]
+    partial class ChangesInItemsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -62,7 +62,7 @@ namespace DotNetWMS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Type,Producer,Model,ItemCode,Quantity,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
         {
             if (ModelState.IsValid)
             {
@@ -100,7 +100,7 @@ namespace DotNetWMS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,Producer,Model,ItemCode,Quantity,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
         {
             if (id != item.Id)
             {
