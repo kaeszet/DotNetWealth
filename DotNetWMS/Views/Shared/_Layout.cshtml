@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DotNetWMS</title>
+    <title>@ViewData["Title"] - DotNetFortune</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <environment include="Development">
@@ -17,12 +17,12 @@
 <body>
     <header>
         <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-            <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
+            <h5 class="my-0 mr-md-auto font-weight-normal">.NetFortune</h5>
             <nav class="my-2 my-md-0 mr-md-3">
-                <a class="p-2 text-dark" href="#">Features</a>
-                <a class="p-2 text-dark" href="#">Enterprise</a>
-                <a class="p-2 text-dark" href="#">Support</a>
-                <a class="p-2 text-dark" href="#">Pricing</a>
+                <a asp-controller="Employees" asp-action="Index" class="p-2 text-dark">Pracownicy</a>
+                <a asp-controller="Items" asp-action="Index" class="p-2 text-dark">Majątek</a>
+                <a asp-controller="Warehouses" asp-action="Index" class="p-2 text-dark">Magazyny</a>
+                <a asp-controller="Externals" asp-action="Index" class="p-2 text-dark">Kl. zewnętrzni</a>
             </nav>
             <a class="btn btn-outline-primary" href="#">Sign up</a>
         </div>
@@ -35,7 +35,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2019 - DotNetWMS - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2019 - DotNetFortune - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
