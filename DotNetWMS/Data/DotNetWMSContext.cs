@@ -1,4 +1,5 @@
 ﻿using DotNetWMS.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Data
 {
-    public class DotNetWMSContext : DbContext
+    public class DotNetWMSContext : IdentityDbContext<WMSIdentityUser>
     {
         public DotNetWMSContext(DbContextOptions<DotNetWMSContext> options) : base(options)
         {
