@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject SignInManager<WMSIdentityUser> signInManager;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,6 +10,9 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
@@ -17,17 +22,30 @@
 <body>
     <header>
         <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-            <h5 class="my-0 mr-md-auto font-weight-normal"><a style="text-decoration: none;" asp-controller="Home" asp-action="Index">.NetFortune</a></h5>
+            <h3 class="my-0 mr-md-auto font-weight-normal"><a style="text-decoration: none;" asp-controller="Home" asp-action="Index">.NetFortune</a></h3>
             <nav class="my-2 my-md-0 mr-md-3">
                 <a asp-controller="Employees" asp-action="Index" class="p-2 text-dark">Pracownicy</a>
                 <a asp-controller="Items" asp-action="Index" class="p-2 text-dark">Majątek</a>
                 <a asp-controller="Warehouses" asp-action="Index" class="p-2 text-dark">Magazyny</a>
                 <a asp-controller="Externals" asp-action="Index" class="p-2 text-dark">Kl. zewnętrzni</a>
             </nav>
-            <nav>
-                <a class="btn btn-outline-success" href="#">Zaloguj się</a>
-                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary">Zarejestruj się</a>
-            </nav>
+            @if (signInManager.IsSignedIn(User))
+            {
+
+                <nav>
+                    <form method="post" asp-controller="Account" asp-action="Logout">
+                        <button type="submit" style="width:auto" class="nav-link btn btn-link py-0">Logout @User.Identity.Name</button>
+                    </form>
+                </nav>
+            }
+            else
+            {
+                <nav>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success">Zaloguj się</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary">Zarejestruj się</a>
+                </nav>
+            }
+
         </div>
     </header>
     <div class="container">
