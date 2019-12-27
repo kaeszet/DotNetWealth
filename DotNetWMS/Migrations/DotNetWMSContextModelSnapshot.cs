@@ -55,8 +55,8 @@ namespace DotNetWMS.Migrations
 
                     b.Property<string>("Pesel")
                         .IsRequired()
-                        .HasColumnType("nvarchar(9)")
-                        .HasMaxLength(9);
+                        .HasColumnType("nvarchar(11)")
+                        .HasMaxLength(11);
 
                     b.Property<string>("Street")
                         .IsRequired()
@@ -90,19 +90,26 @@ namespace DotNetWMS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TaxId")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("ZipCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(6)")
+                        .HasMaxLength(6);
 
                     b.HasKey("Id");
 
@@ -254,13 +261,21 @@ namespace DotNetWMS.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<string>("ZipCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(6)")
+                        .HasMaxLength(6);
 
                     b.HasKey("Id");
 

@@ -89,9 +89,9 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", item.EmployeeId);
-            ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Id", item.ExternalId);
-            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Id", item.WarehouseId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
         }
 
@@ -127,9 +127,9 @@ namespace DotNetWMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", item.EmployeeId);
-            ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Id", item.ExternalId);
-            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Id", item.WarehouseId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
         }
 

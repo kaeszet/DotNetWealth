@@ -16,8 +16,8 @@ namespace DotNetWMS.Models
         [Display(Name = "Nazwisko")]
         public string Surname { get; set; }
         [Required]
-        [StringLength(9)]
-        [RegularExpression(@"[0-9]{9}", ErrorMessage = "Nieprawidłowy format numeru PESEL - 9 cyfr")]
+        [StringLength(11)]
+        [RegularExpression(@"[0-9]{11}", ErrorMessage = "Nieprawidłowy format numeru PESEL - 11 cyfr")]
         public string Pesel { get; set; }
         [Display(Name = "Stanowisko")]
         public int? DepartmentId { get; set; }
