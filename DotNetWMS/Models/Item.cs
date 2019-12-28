@@ -48,6 +48,7 @@ namespace DotNetWMS.Models
         public int? ExternalId { get; set; }
         [Display(Name = "Kl. zewn.")]
         public External External { get; set; }
+        public string Assign => $"{ItemCode} {Name} {Producer} {Model}";
 
     }
 }

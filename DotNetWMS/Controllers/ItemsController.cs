@@ -14,10 +14,72 @@ namespace DotNetWMS.Controllers
     {
         private readonly DotNetWMSContext _context;
 
+
         public ItemsController(DotNetWMSContext context)
         {
             _context = context;
         }
+
+        public async Task<IActionResult> Assign_test()
+        {
+            var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+            return View(await dotNetWMSContext.ToListAsync());
+        }
+        [HttpGet]
+        public async Task<IActionResult> Assign_save(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            
+            var item = await _context.Items.FindAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
+            return View(item);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Assign_save(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        {
+            
+            if (id != item.Id)
+            {
+                return NotFound();
+            }
+            
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(item);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ItemExists(item.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Assign_test");
+            }
+            ViewData["ItemAssign"] = new SelectList(_context.Items, "Id", "Assign");
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            return View(item);
+        }
+
 
         // GET: Items
         public async Task<IActionResult> Index()
