@@ -20,10 +20,7 @@ namespace DotNetWMS.Controllers
         }
 
         // GET: Departments
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Departments.ToListAsync());
-        }
+        public async Task<IActionResult> Index() => View(await _context.Departments.ToListAsync());
 
         // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
