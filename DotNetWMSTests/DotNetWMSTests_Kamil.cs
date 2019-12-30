@@ -93,6 +93,7 @@ namespace DotNetWMSTests
 
 
         }
+        
         [Test]
         public void Create_CheckIsModelValidIfSendValidInstance_ReturnTrue()
         {
@@ -121,6 +122,107 @@ namespace DotNetWMSTests
 
 
         }
+        [Test]
+        public async Task Details_1()
+        {
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Details(1) as ViewResult;
+            Assert.IsNotNull(result);
+
+
+        }
+        [Test]
+        public async Task Details_2()
+        {
+            
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Details(99) as ViewResult;
+            Assert.IsNull(result);
+
+
+        }
+        [Test]
+        public async Task Details_3()
+        {
+
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Details(null);
+            Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
+
+
+        }
+        [Test]
+        public async Task Details_4()
+        {
+
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Details(99);
+            Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
+
+
+        }
+        [Test]
+        public async Task Details_5()
+        {
+            var dept = new Department() { Id = 1, Name = "Sprzedawca" };
+            var controller = new DepartmentsController(_context);
+            var vr = await controller.Details(1) as ViewResult;
+            var result = vr.ViewData.Model as Department;
+            Assert.IsTrue(result.Id == dept.Id && result.Name == dept.Name);
+            
+
+
+        }
+        [Test]
+        public async Task Edit_1()
+        {
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Edit(1) as ViewResult;
+            Assert.IsNotNull(result);
+
+
+        }
+        [Test]
+        public async Task Edit_2()
+        {
+
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Edit(99) as ViewResult;
+            Assert.IsNull(result);
+
+
+        }
+        [Test]
+        public async Task Edit_3()
+        {
+
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Edit(null);
+            Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
+
+
+        }
+        [Test]
+        public async Task Edit_4()
+        {
+
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Edit(99);
+            Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
+
+
+        }
+        [Test]
+        public async Task Edit_5()
+        {
+            var dept = _context.Departments.Find(1);
+            var controller = new DepartmentsController(_context);
+            var result = await controller.Edit(1, dept) as RedirectToActionResult;
+            Assert.IsTrue(result.ActionName == nameof(controller.Index));
+
+
+        }
+
 
 
 
