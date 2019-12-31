@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DotNetWMSTests
 {
-    public class DotNetWMSTests_Kamil : DotNetWMSTests_Base
+    public class DotNetWMSTests_Kamil_Departments : DotNetWMSTests_Base
     {
         [SetUp]
         public void Setup()
@@ -28,6 +28,20 @@ namespace DotNetWMSTests
 
             var isModelStateValid = Validator.TryValidateObject(dept, context, results, true);
             Assert.IsFalse(isModelStateValid);
+
+
+
+        }
+        [Test]
+        public void Model_CheckIsModelValidIfSendValidInstance_ReturnTrue()
+        {
+            var dept = new Department() { Id = 6, Name = "Przedstawiciel" };
+            var context = new ValidationContext(dept, null, null);
+            var results = new List<ValidationResult>();
+            TypeDescriptor.AddProviderTransparent(new AssociatedMetadataTypeTypeDescriptionProvider(typeof(Department), typeof(Department)), typeof(Department));
+
+            var isModelStateValid = Validator.TryValidateObject(dept, context, results, true);
+            Assert.IsTrue(isModelStateValid);
 
 
 
@@ -102,25 +116,9 @@ namespace DotNetWMSTests
             var dept = new Department() { Id = 1, Name = "Kierowca" };
             var controller = new DepartmentsController(_context);
             Assert.That(async () => await controller.Create(dept), Throws.InvalidOperationException);
-            
-
 
         }
         
-        [Test]
-        public void Create_CheckIsModelValidIfSendValidInstance_ReturnTrue()
-        {
-            var dept = new Department() { Id = 6, Name = "Przedstawiciel"};
-            var context = new ValidationContext(dept, null, null);
-            var results = new List<ValidationResult>();
-            TypeDescriptor.AddProviderTransparent(new AssociatedMetadataTypeTypeDescriptionProvider(typeof(Department), typeof(Department)), typeof(Department));
-
-            var isModelStateValid = Validator.TryValidateObject(dept, context, results, true);
-            Assert.IsTrue(isModelStateValid);
-
-
-
-        }
         [Test]
         public async Task Details_CheckRecordWithExistingKey_ReturnViewResult()
         {
@@ -214,9 +212,18 @@ namespace DotNetWMSTests
         [Test]
         public async Task EditPost_RedirectToIndexIfCorrectData_ReturnTrue()
         {
-            var dept = _context.Departments.Find(1);
+            
+            var _options = new DbContextOptionsBuilder<DotNetWMSContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            DotNetWMSContext _context = new DotNetWMSContext(_options);
+            _context.Database.EnsureCreated();
+            Initialize(_context);
+
+            var dept = _context.Departments.Find(3);
             var controller = new DepartmentsController(_context);
-            var result = await controller.Edit(1, dept) as RedirectToActionResult;
+            var result = await controller.Edit(3, dept) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));
 
 
@@ -289,11 +296,20 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeletPost_RedirectToIndexIfCorrectData_ReturnTrue()
+        public async Task DeletePost_RedirectToIndexIfCorrectData_ReturnTrue()
         {
-            //var dept = _context.Departments.Find(1);
+            var _options = new DbContextOptionsBuilder<DotNetWMSContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            DotNetWMSContext _context = new DotNetWMSContext(_options);
+            _context.Database.EnsureCreated();
+            Initialize(_context);
+
+            var dept = new Department() { Id = 5, Name = "Przestawiciel" };
             var controller = new DepartmentsController(_context);
-            var result = await controller.DeleteConfirmed(4) as RedirectToActionResult;
+            await controller.Create(dept);
+            var result = await controller.DeleteConfirmed(5) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));
 
 
