@@ -16,7 +16,46 @@ namespace DotNetWMSTests
     {
         [SetUp]
         public void Setup()
-        {                  
+        {  
+            
+        }
+        public bool TryValidate(object model, out ICollection<ValidationResult> results)
+        {
+            var context = new ValidationContext(model, serviceProvider: null, items: null);
+            results = new List<ValidationResult>();
+            return Validator.TryValidateObject(
+                model, context, results, validateAllProperties: true
+            );
+        }
+       
+        [Test]
+        public void Model_CheckIsModelValidIfRequiredFieldAreNotFilled_ReturnFalse()
+        {
+            var emp = new Department();
+            var isModelValid = TryValidate(emp, out _);
+            Assert.IsFalse(isModelValid);
+
+        }
+        [Test]
+        public void Model_CheckIsModelValidIfRequiredFieldAreFilled_ReturnTrue()
+        {
+            var emp = new Department() { Id = 6, Name = "Przedstawiciel" };
+            var isModelValid = TryValidate(emp, out _);
+            Assert.IsTrue(isModelValid);
+
+
+
+        }
+        [Test]
+        public async Task Model_CheckIsCorrectModelAssignedtoViewData_ReturnTrue()
+        {
+            var controller = new DepartmentsController(_context);
+            await controller.Index();
+            var deptCollection = (ICollection<Department>)controller.ViewData.Model;
+            Assert.That(deptCollection, Is.InstanceOf(typeof(ICollection<Department>)));
+
+
+
         }
         [Test]
         public void Model_CheckIsModelValidIfSendNull_ReturnFalse()

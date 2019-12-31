@@ -28,39 +28,50 @@ namespace DotNetWMSTests
             );
         }
         [Test]
-        public void Create_invmodelstate()
+        public void Model_CheckIsModelValidIfFilledWithLenghtException_ReturnFalse()
         {
-            
-            var emp = new Employee() { Name = null};
-            var actual = TryValidate(emp, out _);
-            
 
-            Assert.IsFalse(actual);
+            var emp = new Employee() { Id = 4, Name = "Jessica", Surname = "Testowa", City = "Kraków", DepartmentId = 2, Pesel = "123456789041111111111", Street = "św. Filipa 17", ZipCode = "30-000" };
+            var isModelValid = TryValidate(emp, out _);
+            Assert.IsFalse(isModelValid);
 
 
         }
         [Test]
-        public void Model_CheckIsModelValidIfSendNull_ReturnFalse()
+        public void Model_CheckIsModelValidIfFilledWithRegexException_ReturnFalse()
+        {
+
+            var emp = new Employee() { Id = 4, Name = "Jessica", Surname = "Testowa", City = "Kraków", DepartmentId = 2, Pesel = "12345678904", Street = "św. Filipa 17", ZipCode = "30000" };
+            var isModelValid = TryValidate(emp, out _);
+            Assert.IsFalse(isModelValid);
+
+
+        }
+        [Test]
+        public void Model_CheckIsModelValidIfRequiredFieldAreNotFilled_ReturnFalse()
         {
             var emp = new Employee();
-            var context = new ValidationContext(emp, null, null);
-            var results = new List<ValidationResult>();
-            TypeDescriptor.AddProviderTransparent(new AssociatedMetadataTypeTypeDescriptionProvider(typeof(Employee), typeof(Employee)), typeof(Employee));
-
-            var isModelStateValid = Validator.TryValidateObject(emp, context, results, true);
-            Assert.IsFalse(isModelStateValid);
+            var isModelValid = TryValidate(emp, out _);
+            Assert.IsFalse(isModelValid);
 
         }
         [Test]
-        public void Model_CheckIsModelValidIfSendValidInstance_ReturnTrue()
+        public void Model_CheckIsModelValidIfRequiredFieldAreFilled_ReturnTrue()
         {
             var emp = new Employee() { Id = 4, Name = "Jessica", Surname = "Testowa", City = "Kraków", DepartmentId = 2, Pesel = "12345678904", Street = "św. Filipa 17", ZipCode = "30-000" };
-            var context = new ValidationContext(emp, null, null);
-            var results = new List<ValidationResult>();
-            TypeDescriptor.AddProviderTransparent(new AssociatedMetadataTypeTypeDescriptionProvider(typeof(Employee), typeof(Employee)), typeof(Employee));
+            var isModelValid = TryValidate(emp, out _);
+            Assert.IsTrue(isModelValid);
 
-            var isModelStateValid = Validator.TryValidateObject(emp, context, results, true);
-            Assert.IsTrue(isModelStateValid);
+
+
+        }
+        [Test]
+        public async Task Model_CheckIsCorrectModelAssignedtoViewData_ReturnTrue()
+        {
+            var controller = new EmployeesController(_context);
+            await controller.Index();
+            var empCollection = (ICollection<Employee>)controller.ViewData.Model;
+            Assert.That(empCollection, Is.InstanceOf(typeof(ICollection<Employee>)));
 
 
 
