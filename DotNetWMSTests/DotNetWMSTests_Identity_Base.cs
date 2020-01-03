@@ -1,5 +1,7 @@
 ﻿using DotNetWMS.Data;
 using DotNetWMS.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,25 +11,29 @@ using System.Text;
 
 namespace DotNetWMSTests
 {
-    public class DotNetWMSTests_Base : IDisposable
+    public class DotNetWMSTests_Identity_Base : IDisposable
     {
+        protected readonly UserManager<WMSIdentityUser> userManager;
+        protected readonly SignInManager<WMSIdentityUser> signInManager;
+        protected readonly UserStore<WMSIdentityUser> _store;
         protected readonly DotNetWMSContext _context;
 
-        public DotNetWMSTests_Base()
+        public DotNetWMSTests_Identity_Base()
         {
             var _options = new DbContextOptionsBuilder<DotNetWMSContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
             _context = new DotNetWMSContext(_options);
+            _store = new UserStore<WMSIdentityUser>(_context);
             _context.Database.EnsureCreated();
-            Initialize(_context);
+            //Initialize(_context);
 
 
         }
         public static void Initialize(DotNetWMSContext context)
         {
-            if (context.Departments.Any() || context.Employees.Any())
+            if (context.Users.Any())
             {
                 return;
             }
@@ -37,23 +43,14 @@ namespace DotNetWMSTests
 
         private static void Seed(DotNetWMSContext context)
         {
-            var departments = new[]
+            var users = new[]
             {
-                new Department { Id = 1, Name = "Sprzedawca"},
-                new Department { Id = 2, Name = "Kierownik"},
-                new Department { Id = 3, Name = "Magazynier"},
-                new Department { Id = 4, Name = "Księgowy"}
+                new WMSIdentityUser { Name = "Janusz", Surname = "Testowy", EmployeeNumber = "123456789012", City="Kraków", Email="a@a.pl"}
 
             };
-            var employees = new[]
-            {
-                new Employee { Id = 1, Name = "Janusz", Surname = "Testowy", City = "Kraków", DepartmentId = 1, Pesel = "12345678901", Street = "św. Filipa 17", ZipCode = "30-000"},
-                new Employee { Id = 2, Name = "Grażyna", Surname = "Testowa", City = "Kraków", DepartmentId = 4, Pesel = "12345678902", Street = "św. Filipa 17", ZipCode = "30-000"},
-                new Employee { Id = 3, Name = "Brajan", Surname = "Testowy", City = "Kraków", DepartmentId = 3, Pesel = "12345678903", Street = "św. Filipa 17", ZipCode = "30-000"}
-            };
 
-            context.Departments.AddRange(departments);
-            context.Employees.AddRange(employees);
+
+            context.Users.AddRange(users);
             context.SaveChanges();
         }
         public bool TryValidate(object model, out ICollection<ValidationResult> results)
@@ -66,7 +63,8 @@ namespace DotNetWMSTests
         {
             _context.Database.EnsureDeleted();
             _context.Dispose();
-            
+
         }
     }
 }
+

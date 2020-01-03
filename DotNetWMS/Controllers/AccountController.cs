@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetWMS.Controllers
@@ -13,12 +14,19 @@ namespace DotNetWMS.Controllers
     {
         private readonly UserManager<WMSIdentityUser> userManager;
         private readonly SignInManager<WMSIdentityUser> signInManager;
+        //test property
+        private readonly UserStore<WMSIdentityUser> _store;
 
         public AccountController(UserManager<WMSIdentityUser> userManager,
             SignInManager<WMSIdentityUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+        }
+        //test ctor
+        public AccountController(UserStore<WMSIdentityUser> store)
+        {
+            this._store = store;
         }
 
         [HttpGet]
