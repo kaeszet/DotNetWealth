@@ -19,14 +19,7 @@ namespace DotNetWMSTests
         {
 
         }
-        public bool TryValidate(object model, out ICollection<ValidationResult> results)
-        {
-            var context = new ValidationContext(model, serviceProvider: null, items: null);
-            results = new List<ValidationResult>();
-            return Validator.TryValidateObject(
-                model, context, results, validateAllProperties: true
-            );
-        }
+        
         [Test]
         public void Model_CheckIsModelValidIfFilledWithLenghtException_ReturnFalse()
         {
@@ -42,8 +35,12 @@ namespace DotNetWMSTests
         {
 
             var emp = new Employee() { Id = 4, Name = "Jessica", Surname = "Testowa", City = "Kraków", DepartmentId = 2, Pesel = "12345678904", Street = "św. Filipa 17", ZipCode = "30000" };
-            var isModelValid = TryValidate(emp, out _);
-            Assert.IsFalse(isModelValid);
+            ICollection<ValidationResult> results;
+            var isModelValid = TryValidate(emp, out results);
+            ValidationResult[] arr = new ValidationResult[5];
+            results.CopyTo(arr, 0);
+            Assert.AreEqual(arr[0].ErrorMessage, "Nieprawidłowy format kodu pocztowego xx-xxx");
+            Assert.IsFalse(isModelValid, arr[0].ErrorMessage);
 
 
         }

@@ -19,14 +19,7 @@ namespace DotNetWMSTests
         {  
             
         }
-        public bool TryValidate(object model, out ICollection<ValidationResult> results)
-        {
-            var context = new ValidationContext(model, serviceProvider: null, items: null);
-            results = new List<ValidationResult>();
-            return Validator.TryValidateObject(
-                model, context, results, validateAllProperties: true
-            );
-        }
+        
        
         [Test]
         public void Model_CheckIsModelValidIfRequiredFieldAreNotFilled_ReturnFalse()
@@ -53,34 +46,6 @@ namespace DotNetWMSTests
             await controller.Index();
             var deptCollection = (ICollection<Department>)controller.ViewData.Model;
             Assert.That(deptCollection, Is.InstanceOf(typeof(ICollection<Department>)));
-
-
-
-        }
-        [Test]
-        public void Model_CheckIsModelValidIfSendNull_ReturnFalse()
-        {
-            var dept = new Department();
-            var context = new ValidationContext(dept, null, null);
-            var results = new List<ValidationResult>();
-            TypeDescriptor.AddProviderTransparent(new AssociatedMetadataTypeTypeDescriptionProvider(typeof(Department), typeof(Department)), typeof(Department));
-
-            var isModelStateValid = Validator.TryValidateObject(dept, context, results, true);
-            Assert.IsFalse(isModelStateValid);
-
-
-
-        }
-        [Test]
-        public void Model_CheckIsModelValidIfSendValidInstance_ReturnTrue()
-        {
-            var dept = new Department() { Id = 6, Name = "Przedstawiciel" };
-            var context = new ValidationContext(dept, null, null);
-            var results = new List<ValidationResult>();
-            TypeDescriptor.AddProviderTransparent(new AssociatedMetadataTypeTypeDescriptionProvider(typeof(Department), typeof(Department)), typeof(Department));
-
-            var isModelStateValid = Validator.TryValidateObject(dept, context, results, true);
-            Assert.IsTrue(isModelStateValid);
 
 
 
