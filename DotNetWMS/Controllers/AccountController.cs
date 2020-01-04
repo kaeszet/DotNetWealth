@@ -14,8 +14,6 @@ namespace DotNetWMS.Controllers
     {
         private readonly UserManager<WMSIdentityUser> userManager;
         private readonly SignInManager<WMSIdentityUser> signInManager;
-        //test property
-        private readonly UserStore<WMSIdentityUser> _store;
 
         public AccountController(UserManager<WMSIdentityUser> userManager,
             SignInManager<WMSIdentityUser> signInManager)
@@ -23,12 +21,7 @@ namespace DotNetWMS.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
-        //test ctor
-        public AccountController(UserStore<WMSIdentityUser> store)
-        {
-            this._store = store;
-        }
-
+        
         [HttpGet]
         public IActionResult Register()
         {

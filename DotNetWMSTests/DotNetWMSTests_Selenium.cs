@@ -47,8 +47,10 @@ namespace DotNetWMSTests
         [Test]
         public void Employee_LoginAddEditRemoveObject_PathWithCorrectData()
         {
-            Registration();
-            Login();
+            //TODO tryfind login
+            //Registration();
+            driver.Navigate().GoToUrl(URI);
+            //Login();
             driver.FindElement(By.XPath("//a/i")).Click();            
             driver.FindElement(By.LinkText("Dodaj użytkownika")).Click();
             driver.FindElement(By.Id("Name")).Click();
@@ -69,7 +71,8 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("City")).Clear();
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
             driver.FindElement(By.XPath("//input[@value='Create']")).Click();
-            driver.FindElement(By.XPath("(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[3]/following::a[1]")).Click();
+            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
+            driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[1]")).Click();
             driver.FindElement(By.Id("Pesel")).Click();
             driver.FindElement(By.Id("Pesel")).Clear();
             driver.FindElement(By.Id("Pesel")).SendKeys("12345678902");
@@ -77,9 +80,9 @@ namespace DotNetWMSTests
             new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Sprzedawca");
             driver.FindElement(By.Id("DepartmentId")).Click();
             driver.FindElement(By.XPath("//input[@value='Save']")).Click();
-            driver.FindElement(By.XPath("//tr[3]/td[8]/a[2]/i")).Click();
+            driver.FindElement(By.XPath($"//tr[{count}]/td[8]/a[2]/i")).Click();
             driver.FindElement(By.LinkText("Back to List")).Click();
-            driver.FindElement(By.XPath("(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[3]/following::a[3]")).Click();
+            driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[3]")).Click();
             driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
 
         }
@@ -169,7 +172,7 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("City")).Clear();
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
             driver.FindElement(By.XPath("//input[@value='Save']")).Click();
-            driver.FindElement(By.XPath("//tr[3]/td[8]/a[2]/i")).Click();
+            driver.FindElement(By.XPath($"//tr[{count}]/td[8]/a[2]/i")).Click();
             driver.FindElement(By.LinkText("Edit")).Click();
             driver.FindElement(By.LinkText("Back to List")).Click();
             driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[3]")).Click();
