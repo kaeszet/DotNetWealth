@@ -117,25 +117,6 @@ namespace DotNetWMSTests
 
 
         }
-        //[Test]
-        //public async Task RegisterPost_AddNewRecordToDb_RecordAdded()
-        //{
-        //    //var _options = new DbContextOptionsBuilder<DotNetWMSContext>()
-        //    //   .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-        //    //   .Options;
-
-        //    //DotNetWMSContext _context = new DotNetWMSContext(_options);
-        //    //_context.Database.EnsureCreated();
-        //    //Initialize(_context);
-
-        //    var user = new RegisterViewModel() { Name = "Janusz", Surname = "Testowy", EmployeeNumber = "123456789012", City = "Kraków", Email = "a@a.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
-        //    //var controller = new AccountController(_store);
-        //    var controllerRedirect = new EmployeesController(_context);
-        //    var result = await controller.Register(user) as RedirectToActionResult;
-        //    Assert.IsTrue(result.ActionName == nameof(controllerRedirect.Index));
-
-
-        //}
         [Test]
         public async Task RegisterPost_x()
         {
@@ -158,8 +139,36 @@ namespace DotNetWMSTests
                 fakeSignInManager.Object);
 
             controller.Url = mockUrlHelper.Object;
+            RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
+            var result = await controller.Register(rvm);
+            Assert.That(result, Is.InstanceOf(typeof(RedirectResult)));
+
+
+        }
+        [Test]
+        public async Task LoginPost_CheckCorrectTypeIsReturned_ReturnRedirectResult()
+        {
+            var fakeUserManager = new FakeUserManagerBuilder().Build();
+            var fakeSignInManager = new FakeSignInManagerBuilder()
+                .With(x => x.Setup(sm => sm.PasswordSignInAsync(It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<bool>(),
+                        It.IsAny<bool>()))
+                .ReturnsAsync(SignInResult.Success))
+                .Build();
+
+            var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
+            mockUrlHelper
+                .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
+                .Returns(true)
+                .Verifiable();
+            var controller = new AccountController(
+                fakeUserManager.Object,
+                fakeSignInManager.Object);
+
+            controller.Url = mockUrlHelper.Object;
             var result = await controller.Login(new LoginViewModel(), "testPath");
-            //Assert.IsType<RedirectResult>(result);
+            Assert.That(result, Is.InstanceOf(typeof(RedirectResult)));
 
 
         }
