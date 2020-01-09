@@ -104,7 +104,7 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("Pesel")).Clear();
             driver.FindElement(By.Id("Name")).SendKeys("Grażyna");
             driver.FindElement(By.Id("Pesel")).SendKeys("123456700");
-            new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Księgowy/a")
+            new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Księgowy/a");
             driver.FindElement(By.Id("ZipCode")).Clear();
             driver.FindElement(By.Id("ZipCode")).SendKeys("aa000");
             driver.FindElement(By.XPath("//input[@value='Save']")).Click();
@@ -151,7 +151,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void AccountLogin_UseValidLoginAndPassword_ReturnSuccess()
+        public void AccountLogin_UseValidLoginAndPassword_ReturnLoginSuccessButton()
         {
             LoginPage loginPage = new LoginPage(driver);
             loginPage.GoToPage();
@@ -171,7 +171,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void AccountRegistration_()
+        public void AccountRegistration_UseInvalidEmployeeId_ShowException()
         {
             RegisterPage registerPage = new RegisterPage(driver);
             registerPage.GoToPage();
