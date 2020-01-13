@@ -13,6 +13,7 @@ namespace DotNetWMS.Controllers
     public class ItemsController : Controller
     {
         private readonly DotNetWMSContext _context;
+        private static string ItemCode;
 
 
         public ItemsController(DotNetWMSContext context)
@@ -126,16 +127,39 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
         {
+            bool isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode);
             if (ModelState.IsValid)
             {
-                _context.Add(item);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (!isItemExists)
+                {
+                    _context.Add(item);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, $"Przedmiot o numerze seryjnym {item.ItemCode} został już wprowadzony do systemu!");
+                }
+                
             }
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
+        }
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsItemExists(string itemCode)
+        {
+            bool isItemExists = _context.Items.Any(i => i.ItemCode == itemCode);
+
+            if (!isItemExists)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"Przedmiot o kodzie ({itemCode}) został już wprowadzony!");
+            }
         }
 
         // GET: Items/Edit/5
@@ -147,6 +171,7 @@ namespace DotNetWMS.Controllers
             }
 
             var item = await _context.Items.FindAsync(id);
+            ItemCode = item.ItemCode;
             if (item == null)
             {
                 return NotFound();
@@ -168,26 +193,35 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
-
+            bool isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode && i.ItemCode != ItemCode);
             if (ModelState.IsValid)
             {
-                try
+                if (!isItemExists)
                 {
-                    _context.Update(item);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(item);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ItemExists(item.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ItemExists(item.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, $"Przedmiot o numerze seryjnym {item.ItemCode} został już wprowadzony do systemu!");
                 }
-                return RedirectToAction(nameof(Index));
+                
+                
             }
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);

@@ -53,6 +53,7 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Department department)
         {
+
             if (ModelState.IsValid)
             {
                 _context.Add(department);
@@ -60,6 +61,20 @@ namespace DotNetWMS.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(department);
+        }
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsDepartmentExists(string name)
+        {
+            bool isDeptExists = _context.Departments.Any(d => d.Name == name);
+
+            if (!isDeptExists)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"Podane stanowisko ({name}) już istnieje!");
+            }
         }
 
         // GET: Departments/Edit/5
