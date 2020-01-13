@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,7 +23,9 @@ namespace DotNetWMS.Models
         public string Producer { get; set; }
         [StringLength(50)]
         public string Model { get; set; }
+        [Required]
         [Display(Name = "Kod przedmiotu")]
+        //[Remote(action: "IsItemExists", controller: "Items")]
         public string ItemCode { get; set; }
         [Required]
         [Display(Name = "Ilość")]

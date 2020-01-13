@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace DotNetWMS.Models
         public int Id { get; set; }
         [Required]
         [Display(Name = "Nazwa")]
+        [Remote(action: "IsDepartmentExists", controller: "Departments")]
         public string Name { get; set; }
     }
 }

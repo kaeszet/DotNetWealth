@@ -11,6 +11,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using DotNetWMSTests.Selenium_test;
+using System.Threading;
 
 namespace DotNetWMSTests
 {
@@ -42,7 +43,43 @@ namespace DotNetWMSTests
                 // Ignore errors if unable to close the browser
             }
         }
+        [Test]
+        public void Department_CreateNewDeptWithNotExistingData_ReturnDeptMainPage()
+        {
+            DateTime dateTime = DateTime.Now;
+            DepartmentPage deptPage = new DepartmentPage(driver);
+            deptPage.GoToPage();
+            deptPage.CreateNewLinkText.Click();
+            deptPage.DepartmentName.SendKeys($"TestDept + {dateTime.ToLongTimeString()}");
+            deptPage.CreateButton.Click();
+            Thread.Sleep(200);
+            Assert.IsTrue(deptPage.CreateNewLinkText.Displayed);
 
+        }
+        [Test]
+        public void Department_CreateNewDeptWithExistingData_ReturnErrorSpan()
+        {
+            bool isCreateFailInfoDisplayed;
+            DepartmentPage deptPage = new DepartmentPage(driver);
+            deptPage.GoToPage();
+            deptPage.CreateNewLinkText.Click();
+            deptPage.DepartmentName.SendKeys("ExistedDept");
+            deptPage.CreateButton.Click();
+            Thread.Sleep(200);
+            try
+            {
+                isCreateFailInfoDisplayed = deptPage.CreateFailInfo.Displayed;
+            }
+            catch (NoSuchElementException)
+            {
+                deptPage.CreateNewLinkText.Click();
+                deptPage.DepartmentName.SendKeys("ExistedDept");
+                deptPage.CreateButton.Click();
+            }
+           
+            Assert.IsTrue(deptPage.CreateFailInfo.Displayed);
+
+        }
         [Test]
         public void Employee_LoginAddEditRemoveObject_PathWithCorrectData()
         {
@@ -62,9 +99,7 @@ namespace DotNetWMSTests
             count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
             driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[1]")).Click();
             driver.FindElement(By.Id("Pesel")).SendKeys("12345678902");
-            //driver.FindElement(By.Id("DepartmentId")).Click();
             new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Sprzedawca");
-            //driver.FindElement(By.Id("DepartmentId")).Click();
             driver.FindElement(By.XPath("//input[@value='Save']")).Click();
             driver.FindElement(By.XPath($"//tr[{count}]/td[8]/a[2]/i")).Click();
             driver.FindElement(By.LinkText("Back to List")).Click();
