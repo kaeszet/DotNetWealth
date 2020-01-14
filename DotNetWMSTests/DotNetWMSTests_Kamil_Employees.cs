@@ -235,7 +235,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditGet_IfIdDoesntExist_ReturnNotFoudResult()
+        public async Task EditGet_IfIdDoesntExist_ReturnNotFoundResult()
         {
 
             var controller = new EmployeesController(_context);
@@ -245,7 +245,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditPost_RedirectToIndexIfCorrectData_ReturnTrue()
+        public async Task EditAPost_RedirectToIndexIfCorrectData_ReturnTrue()
         {
 
             var _options = new DbContextOptionsBuilder<DotNetWMSContext>()

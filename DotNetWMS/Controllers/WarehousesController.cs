@@ -13,6 +13,7 @@ namespace DotNetWMS.Controllers
     public class WarehousesController : Controller
     {
         private readonly DotNetWMSContext _context;
+        private static string Name;
 
         public WarehousesController(DotNetWMSContext context)
         {
@@ -56,11 +57,20 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Street,ZipCode,City")] Warehouse warehouse)
         {
+            bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name);
             if (ModelState.IsValid)
             {
-                _context.Add(warehouse);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (!isWarehouseExists)
+                {
+                    _context.Add(warehouse);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, $"Magazyn {warehouse.Name} został już wprowadzony do systemu! Wybierz inną nazwę.");
+                }
+                
             }
             return View(warehouse);
         }
@@ -74,6 +84,8 @@ namespace DotNetWMS.Controllers
             }
 
             var warehouse = await _context.Warehouses.FindAsync(id);
+            Name = warehouse.Name;
+
             if (warehouse == null)
             {
                 return NotFound();
@@ -92,26 +104,34 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
-
+            bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name && w.Name != Name);
             if (ModelState.IsValid)
             {
-                try
+                if (!isWarehouseExists)
                 {
-                    _context.Update(warehouse);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(warehouse);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!WarehouseExists(warehouse.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!WarehouseExists(warehouse.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, $"Magazyn \"{warehouse.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
                 }
-                return RedirectToAction(nameof(Index));
+                
             }
             return View(warehouse);
         }

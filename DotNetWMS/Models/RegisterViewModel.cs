@@ -11,9 +11,11 @@ namespace DotNetWMS.Models
     public class RegisterViewModel
     {
         [Required]
+        [StringLength(30)]
         [Display(Name = "Imię")]
         public string Name { get; set; }
         [Required]
+        [StringLength(40)]
         [Display(Name = "Nazwisko")]
         public string Surname { get; set; }
         [Required]
@@ -23,6 +25,7 @@ namespace DotNetWMS.Models
         public string EmployeeNumber { get; set; }
         [Required]
         [Display(Name = "Oddział")]
+        [StringLength(30)]
         public string City { get; set; }
         [Required]
         [EmailAddress]
@@ -30,10 +33,12 @@ namespace DotNetWMS.Models
         public string Email { get; set; }
         [Required]
         [Display(Name = "Hasło")]
+        [StringLength(30)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
         [Display(Name = "Potwierdź hasło")]
         [DataType(DataType.Password)]
+        [StringLength(30)]
         [Compare("Password", ErrorMessage = "Hasła nie pasują do siebie")]
         public string ConfirmPassword { get; set; }
         

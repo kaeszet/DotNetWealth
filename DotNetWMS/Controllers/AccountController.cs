@@ -30,13 +30,44 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            WMSIdentityUser user;
+
             if (ModelState.IsValid)
             {
-                var user = new WMSIdentityUser
+                if (model.Surname.Length < 5 && model.Name.Length < 3)
                 {
-                    UserName = $"{model.Surname.Substring(0,5)}{model.Name.Substring(0,3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - 4)}",
-                    Email = model.Email
-                };
+                    user = new WMSIdentityUser
+                    {
+                        UserName = $"{model.Surname}{model.Name}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (5 - model.Surname.Length) - (3 - model.Name.Length) - 4)}",
+                        Email = model.Email
+                    };
+                }
+                else if (model.Surname.Length < 5)
+                {
+                    user = new WMSIdentityUser
+                    {
+                        UserName = $"{model.Surname}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (5 - model.Surname.Length) - 4)}",
+                        Email = model.Email
+                    };
+                }
+                else if (model.Name.Length < 3)
+                {
+                    user = new WMSIdentityUser
+                    {
+                        UserName = $"{model.Surname.Substring(0, 5)}{model.Name}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (3 - model.Name.Length) - 4)}",
+                        Email = model.Email
+                    };
+                }
+                else
+                {
+                    user = new WMSIdentityUser
+                    {
+                        UserName = $"{model.Surname.Substring(0, 5)}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - 4)}",
+                        Email = model.Email
+                    };
+                }
+                
+                
 
                 var result = await userManager.CreateAsync(user, model.Password);
 

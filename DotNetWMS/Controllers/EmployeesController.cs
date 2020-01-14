@@ -14,6 +14,7 @@ namespace DotNetWMS.Controllers
     public class EmployeesController : Controller
     {
         private readonly DotNetWMSContext _context;
+        private static string Pesel;
 
         public EmployeesController(DotNetWMSContext context)
         {
@@ -63,11 +64,20 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
         {
+            bool isEmployeeExists = _context.Employees.Any(i => i.Pesel == employee.Pesel);
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (!isEmployeeExists)
+                {
+                    _context.Add(employee);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, $"Pracownik {employee.FullName} został już wprowadzony do systemu!");
+                }
+               
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             
@@ -81,12 +91,14 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
-
+            
             var employee = await _context.Employees.FindAsync(id);
+            
             if (employee == null)
             {
                 return NotFound();
             }
+            Pesel = employee.Pesel;
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             return View(employee);
         }
@@ -98,30 +110,38 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
         {
-            if (id != employee.Id)
+            if (id != employee.Id || !EmployeeExists(employee.Id))
             {
                 return NotFound();
             }
 
+            bool isEmployeeExists = _context.Employees.Any(e => e.Pesel == employee.Pesel && e.Pesel != Pesel && !string.IsNullOrEmpty(Pesel));
             if (ModelState.IsValid)
             {
-                try
+                if (!isEmployeeExists)
                 {
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        _context.Update(employee);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!EmployeeExists(employee.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!EmployeeExists(employee.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, $"Pracownik {employee.FullName} został już wprowadzony do systemu!");
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             return View(employee);
