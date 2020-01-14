@@ -11,21 +11,21 @@ namespace DotNetWMS.Models
     {
         public int Id { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(30)]
         [Display(Name = "Rodzaj")]
         public string Type { get; set; }
         [Required]
-        [StringLength(50)]
+        [StringLength(30)]
         [Display(Name = "Nazwa")]
         public string Name { get; set; }
-        [StringLength(50)]
+        [StringLength(30)]
         [Display(Name = "Producent")]
         public string Producer { get; set; }
-        [StringLength(50)]
+        [StringLength(30)]
         public string Model { get; set; }
         [Required]
         [Display(Name = "Kod przedmiotu")]
-        //[Remote(action: "IsItemExists", controller: "Items")]
+        [StringLength(30)]
         public string ItemCode { get; set; }
         [Required]
         [Display(Name = "Ilość")]

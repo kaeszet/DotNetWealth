@@ -12,6 +12,7 @@ namespace DotNetWMS.Models
         public int Id { get; set; }
         [Required]
         [Display(Name = "Nazwa")]
+        [StringLength(40)]
         [Remote(action: "IsDepartmentExists", controller: "Departments")]
         public string Name { get; set; }
     }
