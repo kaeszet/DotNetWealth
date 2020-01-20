@@ -24,6 +24,7 @@ namespace DotNetWMS.Models
         [Display(Name = "Miasto")]
         public string City { get; set; }
         public IList<Item> Items { get; set; }
+        public string AssignFullName => $"{Name}, {Street}";
 
     }
 }

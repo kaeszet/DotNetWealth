@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<DotNetWMS.Models.Item>
 
 @{
-    ViewData["Title"] = "Assign_test";
+    ViewData["Title"] = "Assign_to_warehouse";
 
 }
 
@@ -32,9 +32,9 @@
                 @Html.DisplayNameFor(model => model.Units)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employee)
+                @Html.DisplayNameFor(model => model.Warehouse)
             </th>
-            
+
             <th></th>
         </tr>
     </thead>
@@ -64,10 +64,10 @@
                     @Html.DisplayFor(modelItem => item.Units)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Employee.FullName)
+                    @Html.DisplayFor(modelItem => item.Warehouse.AssignFullName)
                 </td>
                 <td>
-                    <a asp-action="Assign_save" asp-route-id="@item.Id">Assign</a>
+                    <a asp-action="Assign_to_warehouse_confirm" asp-route-id="@item.Id">Assign</a>
                 </td>
             </tr>
         }
