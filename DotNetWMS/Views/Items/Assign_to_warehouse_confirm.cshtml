@@ -1,7 +1,7 @@
 ﻿@model DotNetWMS.Models.Item
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Assign_to_warehouse_confirm";
 }
 
 <h1>Edit</h1>
@@ -10,32 +10,32 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Assign_to_warehouse_confirm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                <input asp-for="Type" class="form-control" />
+                <input asp-for="Type" class="form-control" readonly />
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" readonly />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Producer" class="control-label"></label>
-                <input asp-for="Producer" class="form-control" />
+                <input asp-for="Producer" class="form-control" readonly />
                 <span asp-validation-for="Producer" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Model" class="control-label"></label>
-                <input asp-for="Model" class="form-control" />
+                <input asp-for="Model" class="form-control" readonly />
                 <span asp-validation-for="Model" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ItemCode" class="control-label"></label>
-                <input asp-for="ItemCode" class="form-control" />
+                <input asp-for="ItemCode" class="form-control" readonly />
                 <span asp-validation-for="ItemCode" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -45,34 +45,18 @@
             </div>
             <div class="form-group">
                 <label asp-for="Units" class="control-label"></label>
-                <select asp-for="Units" class="form-control" asp-items="Html.GetEnumSelectList<ItemUnits>()"></select>
+                <select asp-for="Units" class="form-control" asp-items="Html.GetEnumSelectList<ItemUnits>()" disabled></select>
                 <span asp-validation-for="Units" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="WarrantyDate" class="control-label"></label>
-                <input asp-for="WarrantyDate" class="form-control" />
-                <span asp-validation-for="WarrantyDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="State" class="control-label"></label>
-                <select asp-for="State" class="form-control" asp-items="Html.GetEnumSelectList<ItemState>()"></select>
-                <span asp-validation-for="State" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EmployeeId" class="control-label"></label>
-                <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId"><option value="" selected>Brak</option></select>
-                <span asp-validation-for="EmployeeId" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="WarrantyDate" />
+            <input type="hidden" asp-for="State" />
             <div class="form-group">
                 <label asp-for="WarehouseId" class="control-label"></label>
                 <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.WarehouseId"><option value="" selected>Brak</option></select>
                 <span asp-validation-for="WarehouseId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ExternalId" class="control-label"></label>
-                <select asp-for="ExternalId" class="form-control" asp-items="ViewBag.ExternalId"><option value="" selected>Brak</option></select>
-                <span asp-validation-for="ExternalId" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="EmployeeId" />
+            <input type="hidden" asp-for="ExternalId" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -81,7 +65,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Assign_to_warehouse">Back to List</a>
 </div>
 
 @section Scripts {

@@ -16,6 +16,8 @@ namespace DotNetWMS.Controllers
         private static string ItemCode;
         private static decimal ItemQuantity;
         private static int? ItemEmployeeId;
+        private static int? ItemWarehouseId;
+        private static int? ItemExternalId;
 
 
         public ItemsController(DotNetWMSContext context)
@@ -23,13 +25,23 @@ namespace DotNetWMS.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Assign_test()
+        public async Task<IActionResult> Assign_to_employee()
+        {
+            var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+            return View(await dotNetWMSContext.ToListAsync());
+        }
+        public async Task<IActionResult> Assign_to_warehouse()
+        {
+            var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+            return View(await dotNetWMSContext.ToListAsync());
+        }
+        public async Task<IActionResult> Assign_to_external()
         {
             var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
             return View(await dotNetWMSContext.ToListAsync());
         }
         [HttpGet]
-        public async Task<IActionResult> Assign_save(int? id)
+        public async Task<IActionResult> Assign_to_employee_confirm(int? id)
         {
             if (id == null)
             {
@@ -49,10 +61,51 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
         }
+        [HttpGet]
+        public async Task<IActionResult> Assign_to_warehouse_confirm(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var item = await _context.Items.FindAsync(id);
+            ItemQuantity = item.Quantity;
+            ItemWarehouseId = item.WarehouseId;
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
+            return View(item);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Assign_to_external_confirm(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var item = await _context.Items.FindAsync(id);
+            ItemQuantity = item.Quantity;
+            ItemExternalId = item.ExternalId;
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
+            return View(item);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Assign_save(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
         {
             
             if (id != item.Id)
@@ -89,9 +142,9 @@ namespace DotNetWMS.Controllers
 
                         _context.Add(newItem);
                         _context.Update(item);
-                        MergeSameItems(item);
+                        MergeSameItems(item, typeof(Employee));
                         await _context.SaveChangesAsync();
-                        return RedirectToAction("Assign_test");
+                        return RedirectToAction("Assign_to_employee");
                     }
                     else
                     {
@@ -110,7 +163,7 @@ namespace DotNetWMS.Controllers
                         if (ItemEmployeeId != item.EmployeeId)
                         {
                             _context.Update(item);
-                            MergeSameItems(item);
+                            MergeSameItems(item, typeof(Employee));
                             await _context.SaveChangesAsync();
                         }
                         
@@ -126,16 +179,188 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
-                    return RedirectToAction("Assign_test");
+                    return RedirectToAction("Assign_to_employee");
                 }
 
                
             }
-            ViewData["ItemAssign"] = new SelectList(_context.Items, "Id", "Assign");
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            //ViewData["ItemAssign"] = new SelectList(_context.Items, "Id", "Assign");
+            //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             return View(item);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Assign_to_warehouse_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        {
 
+            if (id != item.Id)
+            {
+                return NotFound();
+            }
+
+
+            if (ModelState.IsValid)
+            {
+                if (item.Quantity <= 0)
+                {
+                    ModelState.AddModelError(string.Empty, $"Nie można przekazać {item.Quantity} sztuk");
+                }
+                else if (item.Quantity < ItemQuantity && item.Quantity > 0)
+                {
+                    if (ItemWarehouseId != item.WarehouseId)
+                    {
+                        Item newItem = new Item()
+                        {
+                            Type = item.Type,
+                            Name = item.Name,
+                            Producer = item.Producer,
+                            Model = item.Model,
+                            ItemCode = item.ItemCode,
+                            Quantity = ItemQuantity - item.Quantity,
+                            Units = item.Units,
+                            WarrantyDate = item.WarrantyDate,
+                            State = item.State,
+                            EmployeeId = item.EmployeeId,
+                            WarehouseId = ItemWarehouseId,
+                            ExternalId = item.ExternalId
+                        };
+
+                        _context.Add(newItem);
+                        _context.Update(item);
+                        MergeSameItems(item, typeof(Warehouse));
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("Assign_to_warehouse");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, $"Nie można przekazać przedmiotu do tego samego magazynu!");
+                    }
+
+                }
+                else if (item.Quantity > ItemQuantity)
+                {
+                    ModelState.AddModelError(string.Empty, $"Ilość przekazanego przedmiotu nie może być wyższa, niż stan w magazynie");
+                }
+                else
+                {
+                    try
+                    {
+                        if (ItemWarehouseId != item.WarehouseId)
+                        {
+                            _context.Update(item);
+                            MergeSameItems(item, typeof(Warehouse));
+                            await _context.SaveChangesAsync();
+                        }
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ItemExists(item.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction("Assign_to_warehouse");
+                }
+
+
+            }
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
+            //ViewData["ItemAssign"] = new SelectList(_context.Items, "Id", "Assign");
+            //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            return View(item);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Assign_to_external_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        {
+
+            if (id != item.Id)
+            {
+                return NotFound();
+            }
+
+
+            if (ModelState.IsValid)
+            {
+                if (item.Quantity <= 0)
+                {
+                    ModelState.AddModelError(string.Empty, $"Nie można przekazać {item.Quantity} sztuk");
+                }
+                else if (item.Quantity < ItemQuantity && item.Quantity > 0)
+                {
+                    if (ItemExternalId != item.ExternalId)
+                    {
+                        Item newItem = new Item()
+                        {
+                            Type = item.Type,
+                            Name = item.Name,
+                            Producer = item.Producer,
+                            Model = item.Model,
+                            ItemCode = item.ItemCode,
+                            Quantity = ItemQuantity - item.Quantity,
+                            Units = item.Units,
+                            WarrantyDate = item.WarrantyDate,
+                            State = item.State,
+                            EmployeeId = item.EmployeeId,
+                            WarehouseId = item.WarehouseId,
+                            ExternalId = ItemExternalId
+                        };
+
+                        _context.Add(newItem);
+                        _context.Update(item);
+                        MergeSameItems(item, typeof(External));
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("Assign_to_external");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, $"Nie można ponownie przekazać przedmiotu temu samemu podmiotowi!");
+                    }
+
+                }
+                else if (item.Quantity > ItemQuantity)
+                {
+                    ModelState.AddModelError(string.Empty, $"Ilość przekazanego przedmiotu nie może być wyższa, niż stan w magazynie");
+                }
+                else
+                {
+                    try
+                    {
+                        if (ItemExternalId != item.ExternalId)
+                        {
+                            _context.Update(item);
+                            MergeSameItems(item, typeof(External));
+                            await _context.SaveChangesAsync();
+                        }
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ItemExists(item.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction("Assign_to_external");
+                }
+
+
+            }
+            ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
+            //ViewData["ItemAssign"] = new SelectList(_context.Items, "Id", "Assign");
+            //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            return View(item);
+        }
 
         // GET: Items
         public async Task<IActionResult> Index()
@@ -320,9 +545,23 @@ namespace DotNetWMS.Controllers
         {
             return _context.Items.Any(e => e.Id == id);
         }
-        private void MergeSameItems(Item item)
+        private void MergeSameItems(Item item, Type obj)
         {
-            var sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.EmployeeId == item.EmployeeId);
+            Item sameItem = null;
+            switch (obj.Name)
+            {
+                case "Employee":
+                    sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.EmployeeId == item.EmployeeId);
+                    break;
+                case "Warehouse":
+                    sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.WarehouseId == item.WarehouseId);
+                    break;
+                case "External":
+                    sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.ExternalId == item.ExternalId);
+                    break;
+
+            }
+            
             
             if (sameItem != null && sameItem.Id != item.Id)
             {
