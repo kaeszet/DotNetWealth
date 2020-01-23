@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DotNetWMS.Resources;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ namespace DotNetWMS.Models
     public class Department
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Nazwa")]
         [StringLength(40)]
         [Remote(action: "IsDepartmentExists", controller: "Departments")]

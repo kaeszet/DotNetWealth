@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotNetWMS.Resources;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,10 +9,10 @@ namespace DotNetWMS.Models
 {
     public class LoginViewModel
     {
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         public string Login { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Hasło")]
         [DataType(DataType.Password)]
         public string Password { get; set; }

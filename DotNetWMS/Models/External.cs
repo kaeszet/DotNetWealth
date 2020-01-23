@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetWMS.Resources;
 
 namespace DotNetWMS.Models
 {
     public class External
     {
+        
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(30)]
         [Display(Name = "Rodzaj")]
         public string Type { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(50)]
         [Display(Name = "Nazwa")]
         public string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(10)]
         [Display(Name = "NIP")]
         [RegularExpression(@"[0-9]{10}", ErrorMessage = "Nieprawidłowy format numeru NIP - 10 cyfr")]

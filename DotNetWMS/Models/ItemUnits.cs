@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,6 +8,15 @@ namespace DotNetWMS.Models
 {
     public enum ItemUnits
     {
-        szt, kg, m, pal
+        [Display(Name = "szt.")]
+        szt,
+        [Display(Name = "kg")]
+        kg,
+        [Display(Name = "m.")]
+        m,
+        [Display(Name = "pal.")]
+        pal,
+        [Display(Name = "kpl.")]
+        kpl
     }
 }
