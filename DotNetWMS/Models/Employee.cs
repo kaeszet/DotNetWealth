@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotNetWMS.Resources;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,15 +10,17 @@ namespace DotNetWMS.Models
     public class Employee
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Imię")]
         [StringLength(30)]
+        [RegularExpression(@"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-\.\'\s]*", ErrorMessage = "{0} nie może zawierać cyfr")]
         public string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Nazwisko")]
         [StringLength(40)]
+        [RegularExpression(@"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-\.\'\s]*", ErrorMessage = "{0} nie może zawierać cyfr")]
         public string Surname { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(11)]
         [RegularExpression(@"[0-9]{11}", ErrorMessage = "Nieprawidłowy format numeru PESEL - 11 cyfr")]
         public string Pesel { get; set; }
@@ -25,16 +28,16 @@ namespace DotNetWMS.Models
         public int? DepartmentId { get; set; }
         [Display(Name = "Stanowisko")]
         public Department Department { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(40)]
         [Display(Name = "Adres")]
         public string Street { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(6)]
         [Display(Name = "Kod pocztowy")]
         [RegularExpression(@"[0-9]{2}-[0-9]{3}", ErrorMessage = "Nieprawidłowy format kodu pocztowego xx-xxx")]
         public string ZipCode { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(30)]
         [Display(Name = "Miasto")]
         public string City { get; set; }

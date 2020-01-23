@@ -52,6 +52,12 @@ namespace DotNetWMS.Controllers
             ItemQuantity = item.Quantity;
             ItemEmployeeId = item.EmployeeId;
 
+            if (item.ExternalId != null)
+            {
+                var ext = await _context.Externals.FindAsync(item.ExternalId);
+                ModelState.AddModelError(string.Empty, $"Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
+            }
+
             if (item == null)
             {
                 return NotFound();
@@ -108,17 +114,23 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
         {
             
+
             if (id != item.Id)
             {
                 return NotFound();
             }
-            
-
+           
             if (ModelState.IsValid)
             {
+               
                 if (item.Quantity <= 0)
                 {
                     ModelState.AddModelError(string.Empty, $"Nie można przekazać {item.Quantity} sztuk");
+                }
+                else if (item.ExternalId != null)
+                {
+                    var ext = await _context.Externals.FindAsync(item.ExternalId);
+                    ModelState.AddModelError(string.Empty, $"Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
                 }
                 else if (item.Quantity < ItemQuantity && item.Quantity > 0)
                 {

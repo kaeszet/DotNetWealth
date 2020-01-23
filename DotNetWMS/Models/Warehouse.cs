@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotNetWMS.Resources;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace DotNetWMS.Models
     public class Warehouse
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(40)]
         [Display(Name = "Nazwa")]
         public string Name { get; set; }

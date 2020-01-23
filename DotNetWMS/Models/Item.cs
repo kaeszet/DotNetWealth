@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DotNetWMS.Resources;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,11 +11,11 @@ namespace DotNetWMS.Models
     public class Item
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(30)]
         [Display(Name = "Rodzaj")]
         public string Type { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(30)]
         [Display(Name = "Nazwa")]
         public string Name { get; set; }
@@ -23,20 +24,20 @@ namespace DotNetWMS.Models
         public string Producer { get; set; }
         [StringLength(30)]
         public string Model { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Kod przedmiotu")]
         [StringLength(30)]
         public string ItemCode { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Ilość")]
         public decimal Quantity { get; set; }
-        [Required]
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Jedn.")]
         public ItemUnits Units { get; set; }
         [Display(Name = "Data gwarancji")]
         [DataType(DataType.Date)]
-        public DateTime WarrantyDate { get; set; }
-        [Required]
+        public DateTime? WarrantyDate { get; set; }
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Stan")]
         public ItemState State { get; set; }
         [Display(Name = "Przypisz do pracownika:")]

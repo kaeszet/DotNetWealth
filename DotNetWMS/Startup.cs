@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Localization;
 
 namespace DotNetWMS
 {
@@ -33,6 +34,31 @@ namespace DotNetWMS
             services.AddDbContext<DotNetWMSContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DotNetWMSContext")));
             services.AddIdentity<WMSIdentityUser, IdentityRole>()
                     .AddEntityFrameworkStores<DotNetWMSContext>();
+            services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
+            services.AddMvc(options =>
+            {
+                //TODO: spolszczyæ pola, po poprawieniu lokalizacji zmieniæ na angielskie
+                var F = services.BuildServiceProvider().GetService<IStringLocalizerFactory>();
+                var L = F.Create("ModelBindingMessages", "DotNetWMS");
+                options.ModelBindingMessageProvider.SetValueIsInvalidAccessor((x) => L["Wprowadzona wartoœæ '{0}' jest nieprawid³owa!", x]);
+                options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor((x) => L["W polu '{0}' musi znajdowaæ siê liczba!", x]);
+                options.ModelBindingMessageProvider.SetMissingBindRequiredValueAccessor((x) => L["Wartoœæ dla w³aœciwoœci '{0}' nie zosta³a przekazana.", x]);
+                options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor((x, y) => L["Wartoœæ '{0}' nie jest prawid³owa dla {1}.", x, y]);
+                options.ModelBindingMessageProvider.SetMissingKeyOrValueAccessor(() => L["Wartoœæ jest wymagana."]);
+                options.ModelBindingMessageProvider.SetUnknownValueIsInvalidAccessor((x) => L["Podana wartoœæ jest nieprawid³owa dla {0}.", x]);
+                options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((x) => L["Wartoœæ 'null' jest nieprawid³owa dla tego formularza!", x]);
+                    
+            })
+            .AddDataAnnotationsLocalization()
+            .AddViewLocalization();
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("pl") };
+                options.DefaultRequestCulture = new RequestCulture("en", "en");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
