@@ -9,6 +9,15 @@
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fas fa-user-plus"></i> Dodaj użytkownika</a>
 </p>
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <p>
+            Wyszukaj: <input type="text" name="search" value="@ViewData["Search"]" />
+            <button type="submit" class="btn btn-primary"><i class="fab fa-sistrix"></i></button> |
+            <a asp-action="Index" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
+        </p>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -16,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Surname)
+                <a asp-action="Index" asp-route-order="@ViewData["SortByName"]">@Html.DisplayNameFor(model => model.Surname)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Pesel)
@@ -37,35 +46,36 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Surname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pesel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Street)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ZipCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fas fa-user-edit"></i></a> |
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-dark"><i class="fas fa-user-tag"></i></a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger text-dark"><i class="fas fa-user-minus"></i></a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pesel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Department.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Street)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ZipCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fas fa-user-edit"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-dark"><i class="fas fa-user-tag"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger text-dark"><i class="fas fa-user-minus"></i></a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

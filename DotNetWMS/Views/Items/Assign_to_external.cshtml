@@ -6,7 +6,15 @@
 }
 
 <h1>Assign</h1>
-
+<form asp-action="Assign_to_external" method="get">
+    <div class="form-group">
+        <p>
+            Wyszukaj: <input type="text" name="search" value="@ViewData["Search"]" />
+            <button type="submit" class="btn btn-primary"><i class="fab fa-sistrix"></i></button> |
+            <a asp-action="Assign_to_external" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
+        </p>
+    </div>
+</form>
 <table class="table table-hover">
     <thead>
         <tr>
@@ -14,7 +22,7 @@
                 @Html.DisplayNameFor(model => model.Type)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Assign_to_external" asp-route-order="@ViewData["SortByName"]">@Html.DisplayNameFor(model => model.Name)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Producer)

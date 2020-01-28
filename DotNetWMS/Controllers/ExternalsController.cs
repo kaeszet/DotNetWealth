@@ -18,12 +18,41 @@ namespace DotNetWMS.Controllers
         {
             _context = context;
         }
-
-        // GET: Externals
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string order, string search)
         {
-            return View(await _context.Externals.ToListAsync());
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["SortByType"] = order == "Type" ? "type_desc" : "Type";
+            ViewData["Search"] = search;
+
+            var externals = _context.Externals.Select(e => e);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                externals = externals.Where(e => e.Name.Contains(search) || e.TaxId.Contains(search));
+            }
+
+            switch (order)
+            {
+                case "name_desc":
+                    externals = externals.OrderByDescending(w => w.Name);
+                    break;
+                case "type_desc":
+                    externals = externals.OrderByDescending(e => e.Type);
+                    break;
+                case "Type":
+                    externals = externals.OrderBy(e => e.Type);
+                    break;
+                default:
+                    externals = externals.OrderBy(e => e.Name);
+                    break;
+            }
+            return View(await externals.AsNoTracking().ToListAsync());
         }
+        // GET: Externals
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Externals.ToListAsync());
+        //}
 
         // GET: Externals/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -25,20 +25,98 @@ namespace DotNetWMS.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Assign_to_employee()
+        public async Task<IActionResult> Assign_to_employee(string search, string order)
         {
-            var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
-            return View(await dotNetWMSContext.ToListAsync());
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["SortByWarrantyDate"] = order == "WarrantyDate" ? "date_desc" : "WarrantyDate";
+            ViewData["Search"] = search;
+
+            var items = _context.Items.Select(e => e);
+
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                items = items.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search));
+            }
+
+            switch (order)
+            {
+                case "name_desc":
+                    items = items.OrderByDescending(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                case "date_desc":
+                    items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                case "WarrantyDate":
+                    items = items.OrderBy(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                default:
+                    items = items.OrderBy(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+            }
+            return View(await items.AsNoTracking().ToListAsync());
         }
-        public async Task<IActionResult> Assign_to_warehouse()
+        public async Task<IActionResult> Assign_to_warehouse(string search, string order)
         {
-            var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
-            return View(await dotNetWMSContext.ToListAsync());
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["SortByWarrantyDate"] = order == "WarrantyDate" ? "date_desc" : "WarrantyDate";
+            ViewData["Search"] = search;
+
+            var items = _context.Items.Select(e => e);
+
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                items = items.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search));
+            }
+
+            switch (order)
+            {
+                case "name_desc":
+                    items = items.OrderByDescending(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                case "date_desc":
+                    items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                case "WarrantyDate":
+                    items = items.OrderBy(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                default:
+                    items = items.OrderBy(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+            }
+            return View(await items.AsNoTracking().ToListAsync());
         }
-        public async Task<IActionResult> Assign_to_external()
+        public async Task<IActionResult> Assign_to_external(string search, string order)
         {
-            var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
-            return View(await dotNetWMSContext.ToListAsync());
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["SortByWarrantyDate"] = order == "WarrantyDate" ? "date_desc" : "WarrantyDate";
+            ViewData["Search"] = search;
+
+            var items = _context.Items.Select(e => e);
+
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                items = items.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search));
+            }
+
+            switch (order)
+            {
+                case "name_desc":
+                    items = items.OrderByDescending(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                case "date_desc":
+                    items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                case "WarrantyDate":
+                    items = items.OrderBy(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                default:
+                    items = items.OrderBy(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+            }
+            return View(await items.AsNoTracking().ToListAsync());
         }
         [HttpGet]
         public async Task<IActionResult> Assign_to_employee_confirm(int? id)
@@ -155,6 +233,7 @@ namespace DotNetWMS.Controllers
                         _context.Add(newItem);
                         _context.Update(item);
                         MergeSameItems(item, typeof(Employee));
+                        ItemStatusCheck(item, ItemExternalId);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("Assign_to_employee");
                     }
@@ -176,6 +255,7 @@ namespace DotNetWMS.Controllers
                         {
                             _context.Update(item);
                             MergeSameItems(item, typeof(Employee));
+                            ItemStatusCheck(item, ItemExternalId);
                             await _context.SaveChangesAsync();
                         }
                         
@@ -241,6 +321,7 @@ namespace DotNetWMS.Controllers
                         _context.Add(newItem);
                         _context.Update(item);
                         MergeSameItems(item, typeof(Warehouse));
+                        ItemStatusCheck(item, ItemExternalId);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("Assign_to_warehouse");
                     }
@@ -262,6 +343,7 @@ namespace DotNetWMS.Controllers
                         {
                             _context.Update(item);
                             MergeSameItems(item, typeof(Warehouse));
+                            ItemStatusCheck(item, ItemExternalId);
                             await _context.SaveChangesAsync();
                         }
 
@@ -327,6 +409,7 @@ namespace DotNetWMS.Controllers
                         _context.Add(newItem);
                         _context.Update(item);
                         MergeSameItems(item, typeof(External));
+                        ItemStatusCheck(item, ItemExternalId);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("Assign_to_external");
                     }
@@ -348,6 +431,7 @@ namespace DotNetWMS.Controllers
                         {
                             _context.Update(item);
                             MergeSameItems(item, typeof(External));
+                            ItemStatusCheck(item, ItemExternalId);
                             await _context.SaveChangesAsync();
                         }
 
@@ -373,13 +457,51 @@ namespace DotNetWMS.Controllers
             //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             return View(item);
         }
-
-        // GET: Items
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string order, string search)
         {
-            var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
-            return View(await dotNetWMSContext.ToListAsync());
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["SortByWarrantyDate"] = order == "WarrantyDate" ? "date_desc" : "WarrantyDate";
+            ViewData["Search"] = search;
+
+            var items = _context.Items.Select(e => e);
+            
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                //CheckEnum(search);
+                items = items.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search));
+            }
+
+            switch (order)
+            {
+                case "name_desc": items = items.OrderByDescending(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                case "date_desc": items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                case "WarrantyDate": items = items.OrderBy(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+                default: items = items.OrderBy(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    break;
+            }
+            return View(await items.AsNoTracking().ToListAsync());
         }
+        //private bool CheckEnum(string s)
+        //{
+        //    foreach (string name in Enum.GetNames(typeof(ItemState)))
+        //    {
+        //        if (name.Contains(s))
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
+        // GET: Items
+        //public async Task<IActionResult> Index()
+        //{
+        //    var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+        //    return View(await dotNetWMSContext.ToListAsync());
+        //}
 
         // GET: Items/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -425,6 +547,7 @@ namespace DotNetWMS.Controllers
                 if (!isItemExists)
                 {
                     _context.Add(item);
+                    ItemStatusCheck(item, ItemExternalId);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -493,6 +616,7 @@ namespace DotNetWMS.Controllers
                     try
                     {
                         _context.Update(item);
+                        ItemStatusCheck(item, ItemExternalId);
                         await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException)
@@ -582,6 +706,70 @@ namespace DotNetWMS.Controllers
                 item.Quantity += ItemQuantity;
                 _context.Update(item);
             }
+        }
+        private void ItemStatusCheck(Item item, int? extId)
+        {
+
+            if (item.ExternalId != null)
+            {
+                var ext = _context.Externals.Find(item.ExternalId);
+
+                switch (ext.Type)
+                {
+                    case ContractorType.Sklep: item.State = ItemState.Ordered;
+                        break;
+                    case ContractorType.Serwis: item.State = ItemState.InRepair;
+                        break;
+                    case ContractorType.Wypożyczający: item.State = ItemState.InLoan;
+                        break;
+                    case ContractorType.Podwykonawca: item.State = ItemState.InLoan;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else if (item.ExternalId == null && extId != null)
+            {
+                var ext = _context.Externals.Find(extId);
+
+                switch (ext.Type)
+                {
+                    case ContractorType.Sklep: item.State = ItemState.New;
+                        break;
+                    case ContractorType.Serwis: item.State = ItemState.Repaired;
+                        break;
+                    case ContractorType.Wypożyczający: item.State = ItemState.Returned;
+                        break;
+                    case ContractorType.Podwykonawca: item.State = ItemState.Returned;
+                        break;
+                    default:
+                        break;
+                }
+                if (item.WarehouseId != null)
+                {
+                    item.State = ItemState.InWarehouse;
+                }
+                if (item.WarehouseId == null && item.EmployeeId != null)
+                {
+                    item.State = ItemState.InEmployee;
+                }
+            }
+            else if (item.ExternalId == null && extId == null)
+            {
+                if (item.WarehouseId != null)
+                {
+                    item.State = ItemState.InWarehouse;
+                }
+                else if (item.WarehouseId == null && item.EmployeeId != null)
+                {
+                    item.State = ItemState.InEmployee;
+                }
+                else
+                {
+                    item.State = ItemState.Unknown;
+                }
+            }
+            
         }
     }
 }
