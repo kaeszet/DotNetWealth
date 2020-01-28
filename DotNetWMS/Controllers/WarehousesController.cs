@@ -19,12 +19,59 @@ namespace DotNetWMS.Controllers
         {
             _context = context;
         }
-
-        // GET: Warehouses
-        public async Task<IActionResult> Index()
+        public IActionResult StocktakingIndex()
         {
-            return View(await _context.Warehouses.ToListAsync());
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName");
+            return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> Stocktaking(string filter)
+        {
+            ViewData["Filter"] = filter;
+
+            //var items = from i in _context.Items select i;
+            var items = _context.Items.Select(i => i);
+            var wrh = _context.Warehouses.FirstOrDefaultAsync(w => w.AssignFullName == filter);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                items = items.Where(i => i.WarehouseId == wrh.Id);
+            }
+            return PartialView("Stocktaking_warehouse_list", await items.AsNoTracking().ToListAsync());
+            //var wrh = _context.Warehouses.FirstOrDefaultAsync(w => w.AssignFullName == filter);
+            //if (wrh != null)
+            //{
+            //    return PartialView();
+            //};
+        }
+        public async Task<IActionResult> Index(string order, string search)
+        {
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["Search"] = search;
+
+            var warehouses = _context.Warehouses.Select(w => w);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                warehouses = warehouses.Where(w => w.Name.Contains(search) || w.Street.Contains(search));
+            }
+
+            switch (order)
+            {
+                case "name_desc":
+                    warehouses = warehouses.OrderByDescending(w => w.Name);
+                    break;
+                default:
+                    warehouses = warehouses.OrderBy(w => w.Name);
+                    break;
+            }
+            return View(await warehouses.AsNoTracking().ToListAsync());
+        }
+        // GET: Warehouses
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Warehouses.ToListAsync());
+        //}
 
         // GET: Warehouses/Details/5
         public async Task<IActionResult> Details(int? id)

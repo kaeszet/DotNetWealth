@@ -12,9 +12,8 @@ namespace DotNetWMS.Models
         
         public int Id { get; set; }
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
-        [StringLength(30)]
         [Display(Name = "Rodzaj")]
-        public string Type { get; set; }
+        public ContractorType Type { get; set; }
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(50)]
         [Display(Name = "Nazwa")]

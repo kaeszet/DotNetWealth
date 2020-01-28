@@ -26,6 +26,8 @@ namespace DotNetWMS.Models
         InRepair,
         [Display(Name = "Wypożyczony")]
         InLoan,
+        [Display(Name = "Po gwarancji")]
+        OutOfWarranty,
         [Display(Name = "Inny")]
         Other,
         [Display(Name = "Nieznany")]

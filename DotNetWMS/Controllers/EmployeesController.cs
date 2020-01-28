@@ -21,12 +21,35 @@ namespace DotNetWMS.Controllers
             _context = context;
         }
 
-        // GET: Employees
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string order, string search)
         {
-            var dotNetWMSContext = _context.Employees.Include(e => e.Department);
-            return View(await dotNetWMSContext.ToListAsync());
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["Search"] = search;
+            
+            var employees = _context.Employees.Select(e => e);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                employees = employees.Where(e => e.Surname.Contains(search) || e.Name.Contains(search) || e.Pesel.Contains(search));
+            }
+
+            switch (order)
+            {
+                case "name_desc":
+                    employees = employees.OrderByDescending(e => e.Surname).Include(e => e.Department);
+                    break;
+                default:
+                    employees = employees.OrderBy(e => e.Surname).Include(e => e.Department);
+                    break;
+            }
+            return View(await employees.AsNoTracking().ToListAsync());
         }
+        // GET: Employees
+        //public async Task<IActionResult> Index()
+        //{
+        //    var dotNetWMSContext = _context.Employees.Include(e => e.Department);
+        //    return View(await dotNetWMSContext.ToListAsync());
+        //}
 
         // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)

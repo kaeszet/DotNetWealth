@@ -9,14 +9,23 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <p>
+            Wyszukaj: <input type="text" name="search" value="@ViewData["Search"]" />
+            <button type="submit" class="btn btn-primary"><i class="fab fa-sistrix"></i></button> |
+            <a asp-action="Index" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
+        </p>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                <a asp-action="Index" asp-route-order="@ViewData["SortByType"]">@Html.DisplayNameFor(model => model.Type)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" asp-route-order="@ViewData["SortByName"]">@Html.DisplayNameFor(model => model.Name)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.TaxId)
