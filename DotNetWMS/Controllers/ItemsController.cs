@@ -127,6 +127,12 @@ namespace DotNetWMS.Controllers
             }
             
             var item = await _context.Items.FindAsync(id);
+            //
+            if (item == null)
+            {
+                return NotFound();
+            }
+            //
             ItemQuantity = item.Quantity;
             ItemEmployeeId = item.EmployeeId;
 
@@ -192,7 +198,6 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
         {
             
-
             if (id != item.Id)
             {
                 return NotFound();
