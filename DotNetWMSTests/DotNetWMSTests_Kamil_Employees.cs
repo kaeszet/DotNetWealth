@@ -66,7 +66,7 @@ namespace DotNetWMSTests
         public async Task Model_CheckIsCorrectModelAssignedtoViewData_ReturnTrue()
         {
             var controller = new EmployeesController(_context);
-            await controller.Index();
+            await controller.Index(string.Empty, string.Empty);
             var empCollection = (ICollection<Employee>)controller.ViewData.Model;
             Assert.That(empCollection, Is.InstanceOf(typeof(ICollection<Employee>)));
 
@@ -77,7 +77,7 @@ namespace DotNetWMSTests
         public async Task Index_GetListOfEmployees_ReturnCorrectType()
         {
             var controller = new EmployeesController(_context);
-            var result = await controller.Index() as ViewResult;
+            var result = await controller.Index(string.Empty, string.Empty) as ViewResult;
             Assert.IsAssignableFrom<List<Employee>>(result.Model);
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
 
@@ -104,19 +104,9 @@ namespace DotNetWMSTests
         {
 
             var controller = new EmployeesController(_context);
-            var result = await controller.Index() as ViewResult;
+            var result = await controller.Index(string.Empty, string.Empty) as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Model);
-
-        }
-        [Test]
-        public async Task Index_IsViewNameReturnEmptyString_ReturnTrue()
-        {
-
-            var controller = new EmployeesController(_context);
-            var result = await controller.Index() as ViewResult;
-            Assert.IsTrue(string.IsNullOrEmpty(result.ViewName));
-
 
         }
         [Test]

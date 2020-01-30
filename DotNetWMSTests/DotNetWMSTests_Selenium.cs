@@ -21,6 +21,7 @@ namespace DotNetWMSTests
 
         private IWebDriver driver;
         private const string URI = "https://localhost:44387/";
+        private string UniquePesel;
         private string invalidCredentials = "(.//*[normalize-space(text()) and normalize-space(.)='Zarejestruj się'])[1]/following::li[1]";
         private int count;
 
@@ -90,7 +91,8 @@ namespace DotNetWMSTests
             driver.FindElement(By.LinkText("Dodaj użytkownika")).Click();
             driver.FindElement(By.Id("Name")).SendKeys("Jessica");
             driver.FindElement(By.Id("Surname")).SendKeys("Testowa");
-            driver.FindElement(By.Id("Pesel")).SendKeys("12345678901");
+            UniquePesel = DateTime.Now.ToString("yMMddHHmmss");
+            driver.FindElement(By.Id("Pesel")).SendKeys(UniquePesel);
             new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Księgowy/a");
             driver.FindElement(By.Id("Street")).SendKeys("św. Filipa");
             driver.FindElement(By.Id("ZipCode")).SendKeys("30-000");
@@ -98,7 +100,8 @@ namespace DotNetWMSTests
             driver.FindElement(By.XPath("//input[@value='Create']")).Click();
             count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
             driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[1]")).Click();
-            driver.FindElement(By.Id("Pesel")).SendKeys("12345678902");
+            UniquePesel = DateTime.Now.ToString("yyMMddHHmms");
+            driver.FindElement(By.Id("Pesel")).SendKeys(UniquePesel);
             new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Sprzedawca");
             driver.FindElement(By.XPath("//input[@value='Save']")).Click();
             driver.FindElement(By.XPath($"//tr[{count}]/td[8]/a[2]/i")).Click();
@@ -130,7 +133,8 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("ZipCode")).Clear();
             driver.FindElement(By.Id("Pesel")).Clear();
             driver.FindElement(By.Id("ZipCode")).SendKeys("30-000");
-            driver.FindElement(By.Id("Pesel")).SendKeys("12345670000");
+            UniquePesel = DateTime.Now.ToString("yMMddHHmmss");
+            driver.FindElement(By.Id("Pesel")).SendKeys(UniquePesel);
             driver.FindElement(By.XPath("//input[@value='Create']")).Click();
             count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
             driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[1]")).Click();
@@ -148,7 +152,8 @@ namespace DotNetWMSTests
             Assert.IsTrue(IsElementPresent(By.Id("ZipCode-error")));
 
             driver.FindElement(By.Id("Pesel")).Clear();
-            driver.FindElement(By.Id("Pesel")).SendKeys("12345670011");
+            UniquePesel = DateTime.Now.ToString("yyyMMddHHmm");
+            driver.FindElement(By.Id("Pesel")).SendKeys(UniquePesel);
             driver.FindElement(By.Id("Surname")).Clear();
             driver.FindElement(By.Id("Street")).Clear();
             driver.FindElement(By.Id("ZipCode")).Clear();
