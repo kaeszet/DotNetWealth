@@ -27,7 +27,7 @@ namespace DotNetWMSTests
         }
         public static void Initialize(DotNetWMSContext context)
         {
-            if (context.Departments.Any() || context.Employees.Any() || context.Items.Any())
+            if (context.Departments.Any() || context.Employees.Any() || context.Items.Any() || context.Externals.Any())
             {
                 return;
             }
@@ -57,9 +57,18 @@ namespace DotNetWMSTests
                 new Item { Id = 2, Type = "Elektronika", Name = "Laptop", Producer = "Hykker", Model = "Hello", ItemCode="H-H", Quantity = 10.0M, Units = ItemUnits.szt, State = ItemState.InEmployee, EmployeeId = 2 }
             };
 
+            var externals = new[]
+            {
+                new External { Id = 1, Type = "test1", Name = "Adam", TaxId = "1112223344",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"},
+                new External { Id = 2, Type = "test2", Name = "Krzysztof", TaxId = "2223334455",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"},
+                new External { Id = 3, Type = "test3", Name = "Kamil", TaxId = "3334445566",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"}
+
+            };
+
             context.Departments.AddRange(departments);
             context.Employees.AddRange(employees);
             context.Items.AddRange(items);
+            context.Externals.AddRange(externals);
             context.SaveChanges();
         }
         public bool TryValidate(object model, out ICollection<ValidationResult> results)
