@@ -23,7 +23,7 @@ namespace DotNetWMSTests
 		public void Model_External_CheckCharacterLengthCompatibility_ReturnFalse()
 		{
 
-			var emp = new External() { Id = 4, Type = "test4", Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30000", City = "Kraków" };
+			var emp = new External() { Id = 4, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30000", City = "Kraków" };
 			var isModelValid = TryValidate(emp, out _);
 			Assert.IsFalse(isModelValid);
 
@@ -34,7 +34,7 @@ namespace DotNetWMSTests
 		public void Model_External_CheckValidOfFilledWithRegexException_ReturnFalse()
 		{
 
-			var ext = new External() { Id = 4, Type = "test4", Name = "Janusz", TaxId = "444-555-66-77", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var ext = new External() { Id = 4, Name = "Janusz", TaxId = "444-555-66-77", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			ICollection<ValidationResult> results;
 			var isModelValid = TryValidate(ext, out results);
 			ValidationResult[] arr = new ValidationResult[5];
@@ -56,7 +56,7 @@ namespace DotNetWMSTests
 		[Test]
 		public void Model_External_CheckValidRequiredFieldAreFilled_ReturnTrue()
 		{
-			var ext = new External() { Id = 4, Type = "test4", Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var ext = new External() { Id = 4, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			var isModelValid = TryValidate(ext, out _);
 			Assert.IsTrue(isModelValid);
 		}
@@ -65,7 +65,7 @@ namespace DotNetWMSTests
 		public async Task Model_External_CheckIsModelAssignedtoViewData_ReturnTrue()
 		{
 			var controller = new ExternalsController(_context);
-			await controller.Index();
+			await controller.Index(string.Empty, string.Empty);
 			var extCollection = (ICollection<External>)controller.ViewData.Model;
 			Assert.That(extCollection, Is.InstanceOf(typeof(ICollection<External>)));
 		}
@@ -77,7 +77,7 @@ namespace DotNetWMSTests
 		public async Task Index_Externals_ListOfExternals_ReturnCorrectType()
 		{
 			var controller = new ExternalsController(_context);
-			var result = await controller.Index() as ViewResult;
+			var result = await controller.Index(string.Empty, string.Empty) as ViewResult;
 
 			Assert.IsAssignableFrom<List<External>>(result.Model);
 			Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -106,7 +106,7 @@ namespace DotNetWMSTests
 		{
 
 			var controller = new ExternalsController(_context);
-			var result = await controller.Index() as ViewResult;
+			var result = await controller.Index(string.Empty, string.Empty) as ViewResult;
 			Assert.IsNotNull(result);
 			Assert.IsNotNull(result.Model);
 		}
@@ -116,7 +116,7 @@ namespace DotNetWMSTests
 		{
 
 			var controller = new ExternalsController(_context);
-			var result = await controller.Index() as ViewResult;
+			var result = await controller.Index(string.Empty, string.Empty) as ViewResult;
 			Assert.IsTrue(string.IsNullOrEmpty(result.ViewName));
 
 
@@ -143,7 +143,7 @@ namespace DotNetWMSTests
 			_context.Database.EnsureCreated();
 			Initialize(_context);
 
-			var emp = new External() { Id = 4, Type = "test4", Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var emp = new External() { Id = 4, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			var controller = new ExternalsController(_context);
 			var result = await controller.Create(emp) as RedirectToActionResult;
 			Assert.IsTrue(result.ActionName == nameof(controller.Index));
@@ -152,7 +152,7 @@ namespace DotNetWMSTests
 		[Test]
 		public void Create_Externals_AddRecordWithTheSameId_ThrowsException()
 		{
-			var ext = new External() { Id = 2, Type = "test4", Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var ext = new External() { Id = 2, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			var controller = new ExternalsController(_context);
 			Assert.That(async () => await controller.Create(ext), Throws.InvalidOperationException);
 
@@ -337,7 +337,7 @@ namespace DotNetWMSTests
 			_context.Database.EnsureCreated();
 			Initialize(_context);
 
-			var ext = new External() { Id = 4, Type = "test4", Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var ext = new External() { Id = 4, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			var controller = new ExternalsController(_context);
 			await controller.Create(ext);
 			var result = await controller.DeleteConfirmed(4) as RedirectToActionResult;
