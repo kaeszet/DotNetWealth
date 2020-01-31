@@ -16,7 +16,7 @@ namespace DotNetWMSTests
 		[SetUp]
 		public void Setup()
 		{
-	
+		
 		}
 
 		[Test]
@@ -275,21 +275,13 @@ namespace DotNetWMSTests
 
 		[Test]
 		public async Task EditPost_Externals_RecordWithDifferentId_ReturnNotFound()
-		{
+		{	
 			var ext = _context.Externals.Find(2);
 			var controller = new ExternalsController(_context);
 			var result = await controller.Edit(1, ext);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
 
-		[Test]
-		public void EditPost_Externals_DbUpdate_ThrowsException()
-		{
-
-			//TODO: DbUpdateConcurrencyException test
-
-
-		}
 
 		[Test]
 		public async Task DeleteGet_Externals_RecordWithTheSameKey_ReturnView()
