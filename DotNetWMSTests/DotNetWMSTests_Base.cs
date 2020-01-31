@@ -59,9 +59,9 @@ namespace DotNetWMSTests
 
             var externals = new[]
             {
-                new External { Id = 1, Name = "Adam", TaxId = "1112223344",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"},
-                new External { Id = 2, Name = "Krzysztof", TaxId = "2223334455",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"},
-                new External { Id = 3, Name = "Kamil", TaxId = "3334445566",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"}
+                new External { Id = 1, Type = ContractorType.Wypożyczający, Name = "Adam", TaxId = "1112223344",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"},
+                new External { Id = 2, Type = ContractorType.Serwis,Name = "Krzysztof", TaxId = "2223334455",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"},
+                new External { Id = 3, Type = ContractorType.Sklep, Name = "Kamil", TaxId = "3334445566",Street="św. Filipa 17", ZipCode="30-000", City = "Kraków"}
 
             };
 
