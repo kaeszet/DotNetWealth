@@ -162,7 +162,7 @@ namespace DotNetWMSTests
 		public async Task Details_Externals_RecordWithTheSameKey_ReturnViewResult()
 		{
 			var controller = new ExternalsController(_context);
-			var result = await controller.Details(4) as ViewResult;
+			var result = await controller.Details(1) as ViewResult;
 			Assert.IsNotNull(result);
 		}
 
