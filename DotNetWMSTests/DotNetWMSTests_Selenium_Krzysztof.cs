@@ -114,6 +114,15 @@ namespace DotNetWMSTests
 
         }
 
+        [Test]
+        public void Error_OpenGlobalError_ReturnErrorView()
+        {
+            driver.Navigate().GoToUrl("https://localhost:44387/");
+            driver.Navigate().GoToUrl("https://localhost:44387/Error");
+
+
+        }
+
         private bool IsElementPresent(By by)
         {
             try
