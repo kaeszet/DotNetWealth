@@ -7,7 +7,6 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using DotNetWMSTests.Selenium_test;
-using System.Threading;
 
 namespace DotNetWMSTests
 {
@@ -59,17 +58,35 @@ namespace DotNetWMSTests
             driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
         }
 
-        private bool IsElementPresent(By by)
+
+        [Test]
+        public void Externals_CreateNewClientWithValidation_ReturnViewTest()
         {
-            try
-            {
-                driver.FindElement(by);
-                return true;
-            }
-            catch (NoSuchElementException)
-            {
-                return false;
-            }
+            driver.Navigate().GoToUrl("https://localhost:44387/Externals");
+            driver.FindElement(By.LinkText("Create New")).Click();           
+            driver.FindElement(By.Id("Name")).SendKeys("Janek"); 
+            driver.FindElement(By.Id("TaxId")).SendKeys("1122332");       
+            driver.FindElement(By.Id("Street")).SendKeys("Twoja 11");
+            driver.FindElement(By.Id("ZipCode")).SendKeys("11223");
+            driver.FindElement(By.XPath("//main/div")).Click();
+            driver.FindElement(By.Id("City")).SendKeys("Rzeszów");
+            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
+            driver.FindElement(By.Id("TaxId")).SendKeys("112233211");
+            driver.FindElement(By.Id("TaxId")).SendKeys("1122332111");
+            driver.FindElement(By.Id("ZipCode")).SendKeys("11-223");
+            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
+        }
+
+        [Test]
+        public void Externals_SearchClientWithNipNumberAndEdit_ReturnViewTest()
+        {
+            driver.Navigate().GoToUrl("https://localhost:44387/Externals?search=");
+            driver.FindElement(By.Name("search")).SendKeys("1122332111");
+            driver.FindElement(By.XPath("//button/i")).Click();
+            driver.FindElement(By.LinkText("Edit")).Click();
+            driver.FindElement(By.Id("Name")).Clear();
+            driver.FindElement(By.Id("Name")).SendKeys("JanekEdit");
+            driver.FindElement(By.XPath("//input[@value='Save']")).Click();
         }
 
         private bool IsElementPresent(By by)
@@ -84,6 +101,7 @@ namespace DotNetWMSTests
                 return false;
             }
         }
+
 
         private bool IsAlertPresent()
         {
