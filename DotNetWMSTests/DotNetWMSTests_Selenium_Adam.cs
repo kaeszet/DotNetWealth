@@ -21,6 +21,7 @@ namespace DotNetWMSTests
         private IWebDriver driver;
         private StringBuilder verificationErrors;
         private string baseURL;
+        private int count;
         private bool acceptNextAlert = true;
 
         [SetUp]
@@ -64,22 +65,6 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("ItemCode")).SendKeys("1");
             driver.FindElement(By.Id("Quantity")).Clear();
             driver.FindElement(By.Id("Quantity")).SendKeys("1");
-            driver.FindElement(By.Id("WarrantyDate")).Click();
-            driver.FindElement(By.Id("WarrantyDate")).Click();
-            driver.FindElement(By.Id("WarrantyDate")).Click();
-            driver.FindElement(By.Id("WarrantyDate")).Click();
-            driver.FindElement(By.Id("WarrantyDate")).Click();
-            // ERROR: Caught exception [ERROR: Unsupported command [doubleClick | id=WarrantyDate | ]]
-            driver.FindElement(By.Id("WarrantyDate")).Clear();
-            driver.FindElement(By.Id("WarrantyDate")).SendKeys("0002-01-01");
-            driver.FindElement(By.Id("WarrantyDate")).Clear();
-            driver.FindElement(By.Id("WarrantyDate")).SendKeys("0020-01-01");
-            driver.FindElement(By.Id("WarrantyDate")).Clear();
-            driver.FindElement(By.Id("WarrantyDate")).SendKeys("0202-01-01");
-            driver.FindElement(By.Id("WarrantyDate")).Clear();
-            driver.FindElement(By.Id("WarrantyDate")).SendKeys("2022-01-01");
-            driver.FindElement(By.Id("WarrantyDate")).Clear();
-            driver.FindElement(By.Id("WarrantyDate")).SendKeys("20222-01-01");
             driver.FindElement(By.Id("State")).Click();
             new SelectElement(driver.FindElement(By.Id("State"))).SelectByText("Nowy");
             driver.FindElement(By.Id("State")).Click();
@@ -94,29 +79,28 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("ExternalId")).Click();
             driver.FindElement(By.Id("WarrantyDate")).Click();
             driver.FindElement(By.Id("WarrantyDate")).Clear();
-            driver.FindElement(By.Id("WarrantyDate")).SendKeys("2022-01-01");
+            driver.FindElement(By.Id("WarrantyDate")).SendKeys("01-01-2022");
             driver.FindElement(By.XPath("//input[@value='Create']")).Click();
-            driver.FindElement(By.Id("ItemCode")).Click();
-            driver.FindElement(By.Id("ItemCode")).Clear();
-            driver.FindElement(By.Id("ItemCode")).SendKeys("5");
-            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
+            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
+            Assert.IsTrue(IsElementPresent(By.XPath($"//tr[{count}]/td[4]")));
+            // ERROR: Caught exception [unknown command []]
+            // ERROR: Caught exception [unknown command []]
+            driver.Navigate().GoToUrl("https://localhost:44387/Items");
+            driver.FindElement(By.XPath("(//a[contains(text(),'Edit')])[2]")).Click();
+            driver.FindElement(By.Id("Model")).Click();
+            driver.FindElement(By.Id("Model")).Clear();
+            driver.FindElement(By.Id("Model")).SendKeys("Iphone 11 pro");
+            driver.FindElement(By.XPath("//input[@value='Save']")).Click();
+            Thread.Sleep(200);
             Assert.IsTrue(IsElementPresent(By.XPath("//tr[2]/td[4]")));
             // ERROR: Caught exception [unknown command []]
-            // ERROR: Caught exception [unknown command []]
-        driver.Navigate().GoToUrl("https://localhost:44387/Items");
-        driver.FindElement(By.XPath("(//a[contains(text(),'Edit')])[2]")).Click();
-        driver.FindElement(By.Id("Model")).Click();
-        driver.FindElement(By.Id("Model")).Clear();
-        driver.FindElement(By.Id("Model")).SendKeys("Iphone 11 pro");
-        driver.FindElement(By.XPath("//input[@value='Save']")).Click();
-        Assert.IsTrue(IsElementPresent(By.XPath("//tr[2]/td[4]")));
-        // ERROR: Caught exception [unknown command []]
-    }
+        }
         [Test]
         public void DetailItem()
         {
             driver.Navigate().GoToUrl("https://localhost:44387/Items");
-            driver.FindElement(By.XPath("(//a[contains(text(),'Details')])[2]")).Click();
+            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
+            driver.FindElement(By.XPath($"(//a[contains(text(),'Details')])[{count}]")).Click();
             Assert.IsTrue(IsElementPresent(By.XPath("//main/div")));
         }
 
@@ -130,7 +114,6 @@ namespace DotNetWMSTests
             new SelectElement(driver.FindElement(By.Id("EmployeeId"))).SelectByText("Testowa Janusz");
             driver.FindElement(By.Id("EmployeeId")).Click();
             driver.FindElement(By.XPath("//input[@value='Save']")).Click();
-            driver.FindElement(By.LinkText("Back to List")).Click();
             // ERROR: Caught exception [unknown command []]
         }
 
@@ -141,7 +124,7 @@ namespace DotNetWMSTests
             driver.FindElement(By.XPath("//div[3]/div[2]/a/i")).Click();
             driver.FindElement(By.XPath("(//a[contains(text(),'Assign')])[2]")).Click();
             driver.FindElement(By.Id("WarehouseId")).Click();
-            new SelectElement(driver.FindElement(By.Id("WarehouseId"))).SelectByText("Główny, Borsucza");
+            new SelectElement(driver.FindElement(By.Id("WarehouseId"))).SelectByText("Hala, Myśliwska");
             driver.FindElement(By.Id("WarehouseId")).Click();
             driver.FindElement(By.XPath("//input[@value='Save']")).Click();
             // ERROR: Caught exception [unknown command []]
@@ -171,8 +154,7 @@ namespace DotNetWMSTests
         [Test]
         public void NewWarehouse()
         {
-            driver.Navigate().GoToUrl("https://localhost:44387/");
-            driver.FindElement(By.XPath("(//a[@type='button'])[7]")).Click();
+            driver.Navigate().GoToUrl("https://localhost:44387/Warehouses");
             driver.FindElement(By.LinkText("Create New")).Click();
             driver.FindElement(By.Id("Name")).Click();
             driver.FindElement(By.Id("Name")).Clear();
@@ -184,27 +166,30 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("City")).Clear();
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
             driver.FindElement(By.XPath("//input[@value='Create']")).Click();
-            Assert.IsTrue(IsElementPresent(By.XPath("//tr[5]/td")));
+            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
+            Assert.IsTrue(IsElementPresent(By.XPath($"//tr[{count}]/td")));
             // ERROR: Caught exception [unknown command []]
         }
         [Test]
         public void EditWarehouse()
         {
             driver.Navigate().GoToUrl("https://localhost:44387/Warehouses");
-            driver.FindElement(By.XPath("(//a[contains(text(),'Edit')])[5]")).Click();
+            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
+            driver.FindElement(By.XPath($"(//a[contains(text(),'Edit')])[{count}]")).Click();
             driver.FindElement(By.Id("Street")).Click();
             driver.FindElement(By.Id("Street")).Click();
             // ERROR: Caught exception [ERROR: Unsupported command [doubleClick | id=Street | ]]
             driver.FindElement(By.Id("Street")).Clear();
             driver.FindElement(By.Id("Street")).SendKeys("Rozrywki");
             driver.FindElement(By.XPath("//input[@value='Save']")).Click();
-            Assert.IsTrue(IsElementPresent(By.XPath("//tr[5]/td[2]")));
+            Assert.IsTrue(IsElementPresent(By.XPath($"//tr[{count}]/td[2]")));
         }
         [Test]
         public void DetailWarehouse()
         {
             driver.Navigate().GoToUrl("https://localhost:44387/Warehouses");
-            driver.FindElement(By.XPath("(//a[contains(text(),'Details')])[5]")).Click();
+            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
+            driver.FindElement(By.XPath($"(//a[contains(text(),'Details')])[{count}]")).Click();
             Assert.IsTrue(IsElementPresent(By.XPath("//dd")));
 
         }
@@ -212,10 +197,11 @@ namespace DotNetWMSTests
         public void DeleteWarehouse()
         {
             driver.Navigate().GoToUrl("https://localhost:44387/Warehouses");
-            driver.FindElement(By.XPath("(//a[contains(text(),'Delete')])[5]")).Click();
+            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
+            driver.FindElement(By.XPath($"(//a[contains(text(),'Delete')])[{count}]")).Click();
             driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
-            Assert.IsFalse(IsElementPresent(By.XPath("//tr[5]/td")));
-            
+            Assert.IsFalse(IsElementPresent(By.XPath($"//tr[{count}]/td")));
+
         }
         [Test]
         public void Stocktaking()

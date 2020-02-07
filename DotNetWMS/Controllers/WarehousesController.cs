@@ -207,9 +207,21 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var warehouse = await _context.Warehouses.FindAsync(id);
-            _context.Warehouses.Remove(warehouse);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.Warehouses.Remove(warehouse);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException)
+            {
+                ViewBag.ErrorTitle = "Podczas usuwania magazynu wystąpił błąd!";
+                ViewBag.ErrorMessage = $"Istnieje przedmiot przypisany do tego magazynu.<br>" +
+                    $"Przed usunięciem magazynu upewnij się, że wszystkie przedmioty zostały usunięte.<br>" +
+                    $"Odznacz je w dziale \"Majątek\" i ponów próbę.";
+                return View("DbExceptionHandler");
+            }
+            
         }
 
         private bool WarehouseExists(int id)

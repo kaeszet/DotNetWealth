@@ -5,11 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,9 +40,9 @@ namespace DotNetWMS
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
             services.AddMvc(options =>
             {
-                //TODO: spolszczyæ pola, po poprawieniu lokalizacji zmieniæ na angielskie
                 var F = services.BuildServiceProvider().GetService<IStringLocalizerFactory>();
                 var L = F.Create("ModelBindingMessages", "DotNetWMS");
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 options.ModelBindingMessageProvider.SetValueIsInvalidAccessor((x) => L["Wprowadzona wartoœæ '{0}' jest nieprawid³owa!", x]);
                 options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor((x) => L["W polu '{0}' musi znajdowaæ siê liczba!", x]);
                 options.ModelBindingMessageProvider.SetMissingBindRequiredValueAccessor((x) => L["Wartoœæ dla w³aœciwoœci '{0}' nie zosta³a przekazana.", x]);
@@ -47,7 +50,7 @@ namespace DotNetWMS
                 options.ModelBindingMessageProvider.SetMissingKeyOrValueAccessor(() => L["Wartoœæ jest wymagana."]);
                 options.ModelBindingMessageProvider.SetUnknownValueIsInvalidAccessor((x) => L["Podana wartoœæ jest nieprawid³owa dla {0}.", x]);
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor((x) => L["Wartoœæ 'null' jest nieprawid³owa dla tego formularza!", x]);
-                    
+                options.Filters.Add(new AuthorizeFilter(policy));
             })
             .AddDataAnnotationsLocalization()
             .AddViewLocalization();
@@ -57,6 +60,10 @@ namespace DotNetWMS
                 options.DefaultRequestCulture = new RequestCulture("en", "en");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
+            });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
             });
 
         }
