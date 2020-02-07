@@ -169,9 +169,21 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var external = await _context.Externals.FindAsync(id);
-            _context.Externals.Remove(external);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.Externals.Remove(external);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException)
+            {
+                ViewBag.ErrorTitle = "Podczas usuwania klienta wystąpił błąd!";
+                ViewBag.ErrorMessage = $"Istnieje przedmiot przypisany do tego klienta.<br>" +
+                    $"Przed usunięciem klienta upewnij się, że wszystkie przedmioty zostały zwrócone.<br>" +
+                    $"Odznacz je w dziale \"Majątek\" i ponów próbę.";
+                return View("DbExceptionHandler");
+            }
+            
         }
 
         private bool ExternalExists(int id)

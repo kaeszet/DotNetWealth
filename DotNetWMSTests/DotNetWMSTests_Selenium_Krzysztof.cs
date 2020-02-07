@@ -94,7 +94,7 @@ namespace DotNetWMSTests
         public void Externals_SearchClientWithNipNumberAndEdit_ReturnViewTest()
         {
             driver.Navigate().GoToUrl("https://localhost:44387/Externals?search=");
-            driver.FindElement(By.Name("search")).SendKeys("1122332111");
+            driver.FindElement(By.Name("search")).SendKeys("6792480093");
             driver.FindElement(By.XPath("//button/i")).Click();
             driver.FindElement(By.LinkText("Edit")).Click();
             driver.FindElement(By.Id("Name")).Clear();

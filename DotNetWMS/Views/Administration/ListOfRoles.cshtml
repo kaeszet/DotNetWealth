@@ -1,0 +1,53 @@
+﻿@model IEnumerable<IdentityRole>
+
+@{
+    ViewBag.Title = "All Roles";
+}
+
+<h1>Lista ról</h1>
+
+@if (Model.Any())
+{
+    <a asp-action="CreateRole" asp-controller="administration" class="btn btn-primary mb-3">Stwórz rolę</a>
+
+    foreach (var role in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                ID roli : @role.Id
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@role.Name</h5>
+            </div>
+            <div class="card-footer">
+                <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Edytuj</a>
+                    <span id="confirmDeleteSpan_@role.Id" style="display:none">
+                        <span>Jesteś pewien?</span>
+                        <button type="submit" class="btn btn-danger">Potwierdź</button>
+                        <a href="#" class="btn btn-primary" onclick="confirmDelete('@role.Id', false)">Anuluj</a>
+                    </span>
+
+                    <span id="deleteSpan_@role.Id">
+                        <a href="#" class="btn btn-danger" onclick="confirmDelete('@role.Id', true)">Usuń</a>
+                    </span>
+                </form>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            Brak ról
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Aby stworzyć rolę, kliknij poniżej:</h5>
+            <a asp-controller="Administration" asp-action="CreateRole" class="btn btn-primary">Stwórz rolę</a>
+        </div>
+    </div>
+}
+@section Scripts {
+    <script src="~/js/DeleteConfirmation.js"></script>
+}

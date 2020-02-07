@@ -195,9 +195,21 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var employee = await _context.Employees.FindAsync(id);
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.Employees.Remove(employee);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException)
+            {
+                ViewBag.ErrorTitle = "Podczas usuwania pracownika wystąpił błąd!";
+                ViewBag.ErrorMessage = $"Istnieje przedmiot przypisany do tego pracownika.<br>" +
+                    $"Przed usunięciem pracownika upewnij się, że zdał wszystkie przedmioty.<br>" +
+                    $"Odznacz je w dziale \"Majątek\" i ponów próbę.";
+                return View("DbExceptionHandler");
+            }
+            
         }
 
         private bool EmployeeExists(int id)

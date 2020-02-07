@@ -1,4 +1,4 @@
-﻿
+﻿@inject SignInManager<WMSIdentityUser> signInManager;
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -6,115 +6,129 @@
 
 
 <div class="container">
-    <div class="card-deck mb-3 text-center">
-        <div class="card mb-3 shadow-sm">
-            <div class="card-header text-light bg-primary">
-                <h4 class="my-0 font-weight-normal"><i class="fas fa-user-tie"></i> Pracownicy</h4>
-            </div>
-            <div class="card-body p-0">
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class=" m-0 font-weight-normal">Przegląd pracowników</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Employees" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="far fa-id-card fa-4x"></i></a>
-                    </div>
+    @if (signInManager.IsSignedIn(User))
+    {
+        <div class="card-deck mb-3 text-center">
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header text-light bg-primary">
+                    <h4 class="my-0 font-weight-normal"><i class="fas fa-user-tie"></i> Pracownicy</h4>
                 </div>
-                <div class="card mt-2 mb-2">
-                    <div class="card-header m-0">
-                        <h6 class="m-0 font-weight-normal">Przegląd stanowisk</h6>
+                <div class="card-body p-0">
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class=" m-0 font-weight-normal">Przegląd pracowników</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Employees" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="far fa-id-card fa-4x"></i></a>
+                        </div>
                     </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Departments" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-briefcase fa-4x"></i></a>
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header m-0">
+                            <h6 class="m-0 font-weight-normal">Przegląd stanowisk</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Departments" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-briefcase fa-4x"></i></a>
+                        </div>
                     </div>
-                </div>
 
+                </div>
+            </div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header text-light bg-primary">
+                    <h4 class="my-0 font-weight-normal"><i class="fas fa-people-carry"></i> Majątek</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-normal">Przegląd majątku</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Items" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-coins fa-4x"></i></a>
+                        </div>
+                    </div>
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-normal">Przekaż na stan</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Items" asp-action="Assign_to_employee" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-hand-holding-usd fa-4x"></i></a>
+                        </div>
+                    </div>
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-normal">Przekaż do magazynu</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Items" asp-action="Assign_to_warehouse" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-pallet fa-4x"></i></a>
+                        </div>
+                    </div>
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-normal">Przekaż na zewnątrz</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Items" asp-action="Assign_to_external" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-truck-loading fa-4x"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header text-light bg-primary">
+                    <h4 class="my-0 font-weight-normal"><i class="fas fa-warehouse"></i> Magazyny</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-normal">Przegląd magazynów</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Warehouses" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-boxes fa-4x"></i></a>
+                        </div>
+                    </div>
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-normal">Inwentaryzacja</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Warehouses" asp-action="StocktakingIndex" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-calculator fa-4x"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header text-light bg-primary">
+                    <h5 class="my-0 font-weight-normal"><i class="fas fa-external-link-alt"></i> Klienci zewnętrzni</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-normal">Przegląd kl. zewn.</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <a asp-controller="Externals" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-glasses fa-4x"></i></a>
+                        </div>
+                    </div>
+                    <div class="card mt-2 mb-2">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-normal">Podgląd stanu</h6>
+                        </div>
+                        <div class="card-body m-0">
+                            <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-search-dollar fa-4x"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card mb-3 shadow-sm">
-            <div class="card-header text-light bg-primary">
-                <h4 class="my-0 font-weight-normal"><i class="fas fa-people-carry"></i> Majątek</h4>
-            </div>
-            <div class="card-body p-0">
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Przegląd majątku</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Items" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-coins fa-4x"></i></a>
-                    </div>
-                </div>
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Przekaż na stan</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Items" asp-action="Assign_to_employee" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-hand-holding-usd fa-4x"></i></a>
-                    </div>
-                </div>
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Przekaż do magazynu</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Items" asp-action="Assign_to_warehouse" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-pallet fa-4x"></i></a>
-                    </div>
-                </div>
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Przekaż na zewnątrz</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Items" asp-action="Assign_to_external" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-truck-loading fa-4x"></i></a>
-                    </div>
-                </div>
-            </div>
+    }
+    else
+    {
+        <div class="jumbotron">
+            <h1 class="display-4">Witaj w .NetFortune!</h1>
+            <p class="lead">Zaloguj się lub zarejestruj, aby korzystać z aplikacji</p>
+            <hr class="my-4">
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success btn-lg" role="button">Logowanie</a>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary btn-lg" role="button">Zarejestruj się</a>
         </div>
-        <div class="card mb-3 shadow-sm">
-            <div class="card-header text-light bg-primary">
-                <h4 class="my-0 font-weight-normal"><i class="fas fa-warehouse"></i> Magazyny</h4>
-            </div>
-            <div class="card-body p-0">
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Przegląd magazynów</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Warehouses" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-boxes fa-4x"></i></a>
-                    </div>
-                </div>
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Inwentaryzacja</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Warehouses" asp-action="StocktakingIndex" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-calculator fa-4x"></i></a>
-</div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-3 shadow-sm">
-            <div class="card-header text-light bg-primary">
-                <h5 class="my-0 font-weight-normal"><i class="fas fa-external-link-alt"></i> Klienci zewnętrzni</h5>
-            </div>
-            <div class="card-body p-0">
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Przegląd kl. zewn.</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Externals" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-glasses fa-4x"></i></a>
-                    </div>
-                </div>
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Podgląd stanu</h6>
-                    </div>
-                    <div class="card-body m-0">
-                        <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-search-dollar fa-4x"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    }
+
 </div>

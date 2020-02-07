@@ -1,0 +1,9 @@
+﻿@{
+    ViewData["Title"] = "DbExceptionHandler";
+
+}
+
+    <div class="alert alert-info m-5">
+        <h4 class="alert-heading">@ViewBag.ErrorTitle</h4>
+        <p>@Html.Raw(@ViewBag.ErrorMessage)</p>
+    </div>

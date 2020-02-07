@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetWMS.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly UserManager<WMSIdentityUser> userManager;
@@ -34,45 +35,40 @@ namespace DotNetWMS.Controllers
 
             if (ModelState.IsValid)
             {
+                user = new WMSIdentityUser
+                {
+                    Name = model.Name,
+                    Surname = model.Surname,
+                    EmployeeNumber = model.EmployeeNumber,
+                    City = model.City,
+                    Email = model.Email
+                };
                 if (model.Surname.Length < 5 && model.Name.Length < 3)
                 {
-                    user = new WMSIdentityUser
-                    {
-                        UserName = $"{model.Surname}{model.Name}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (5 - model.Surname.Length) - (3 - model.Name.Length) - 4)}",
-                        Email = model.Email
-                    };
+                    user.UserName = $"{model.Surname}{model.Name}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (5 - model.Surname.Length) - (3 - model.Name.Length) - 4)}";
                 }
                 else if (model.Surname.Length < 5)
                 {
-                    user = new WMSIdentityUser
-                    {
-                        UserName = $"{model.Surname}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (5 - model.Surname.Length) - 4)}",
-                        Email = model.Email
-                    };
+                    user.UserName = $"{model.Surname}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (5 - model.Surname.Length) - 4)}";
                 }
                 else if (model.Name.Length < 3)
                 {
-                    user = new WMSIdentityUser
-                    {
-                        UserName = $"{model.Surname.Substring(0, 5)}{model.Name}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (3 - model.Name.Length) - 4)}",
-                        Email = model.Email
-                    };
+                    user.UserName = $"{model.Surname.Substring(0, 5)}{model.Name}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (3 - model.Name.Length) - 4)}";
                 }
                 else
                 {
-                    user = new WMSIdentityUser
-                    {
-                        UserName = $"{model.Surname.Substring(0, 5)}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - 4)}",
-                        Email = model.Email
-                    };
+                    user.UserName = $"{model.Surname.Substring(0, 5)}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - 4)}";   
                 }
                 
-                
-
                 var result = await userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
+                    if (userManager.Users.Count() == 1)
+                    {
+                        IdentityRole identityRole = new IdentityRole { Name = "Admin" };
+                        await userManager.AddToRoleAsync(user, identityRole.Name);
+                    }
                     await signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
@@ -132,6 +128,7 @@ namespace DotNetWMS.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
