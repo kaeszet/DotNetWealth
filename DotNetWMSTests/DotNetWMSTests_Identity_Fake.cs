@@ -41,6 +41,21 @@ namespace DotNetWMSTests
         
         }
     }
+    public class FakeRoleManager : RoleManager<IdentityRole>
+    {
+        public FakeRoleManager() :
+            base(
+            new Mock<IRoleStore<IdentityRole>>().Object,
+            new Mock<IEnumerable<IRoleValidator<IdentityRole>>>().Object,
+            new Mock<ILookupNormalizer>().Object,
+            new IdentityErrorDescriber(),
+            new Mock<ILogger<RoleManager<IdentityRole>>>().Object
+            
+            )
+        { 
+
+        }
+    }
     public class FakeUserManagerBuilder
     {
         private Mock<FakeUserManager> _mock = new Mock<FakeUserManager>();
@@ -65,6 +80,20 @@ namespace DotNetWMSTests
             return this;
         }
         public Mock<FakeSignInManager> Build()
+        {
+            return _mock;
+        }
+    }
+    public class FakeRoleManagerBuilder
+    {
+        private Mock<FakeRoleManager> _mock = new Mock<FakeRoleManager>();
+
+        public FakeRoleManagerBuilder With(Action<Mock<FakeRoleManager>> mock)
+        {
+            mock(_mock);
+            return this;
+        }
+        public Mock<FakeRoleManager> Build()
         {
             return _mock;
         }

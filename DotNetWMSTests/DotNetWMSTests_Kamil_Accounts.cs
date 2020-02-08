@@ -111,8 +111,9 @@ namespace DotNetWMSTests
         {
             var fakeUserManager = new FakeUserManagerBuilder().Build();
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
+            var fakeRoleManager = new FakeRoleManagerBuilder().Build();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object);
             var result = controller.Register() as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNull(result.Model);
@@ -126,10 +127,9 @@ namespace DotNetWMSTests
                 .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success)).Build();
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
+            var fakeRoleManager = new FakeRoleManagerBuilder().Build();
 
-            var controller = new AccountController(
-                fakeUserManager.Object,
-                fakeSignInManager.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object);
 
             RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
             var result = await controller.Register(rvm);
@@ -142,10 +142,12 @@ namespace DotNetWMSTests
         {
             var fakeUserManager = new FakeUserManagerBuilder().Build();
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
+            var fakeRoleManager = new FakeRoleManagerBuilder().Build();
 
             var controller = new AccountController(
                 fakeUserManager.Object,
-                fakeSignInManager.Object);
+                fakeSignInManager.Object,
+                fakeRoleManager.Object);
 
             RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
             var result = controller.Login();
@@ -165,6 +167,7 @@ namespace DotNetWMSTests
                         It.IsAny<bool>()))
                 .ReturnsAsync(SignInResult.Success))
                 .Build();
+            var fakeRoleManager = new FakeRoleManagerBuilder().Build();
 
             var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
             mockUrlHelper
@@ -173,7 +176,8 @@ namespace DotNetWMSTests
                 .Verifiable();
             var controller = new AccountController(
                 fakeUserManager.Object,
-                fakeSignInManager.Object);
+                fakeSignInManager.Object,
+                fakeRoleManager.Object);
 
             controller.Url = mockUrlHelper.Object;
             var result = await controller.Login(new LoginViewModel(), "testPath");
@@ -192,7 +196,7 @@ namespace DotNetWMSTests
                         It.IsAny<bool>()))
                 .ReturnsAsync(SignInResult.Success))
                 .Build();
-
+            var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
             mockUrlHelper
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
@@ -200,7 +204,8 @@ namespace DotNetWMSTests
                 .Verifiable();
             var controller = new AccountController(
                 fakeUserManager.Object,
-                fakeSignInManager.Object);
+                fakeSignInManager.Object,
+                fakeRoleManager.Object);
 
             controller.Url = mockUrlHelper.Object;
             var result = await controller.Login(new LoginViewModel(), "");
@@ -219,6 +224,7 @@ namespace DotNetWMSTests
                         It.IsAny<bool>()))
                 .ReturnsAsync(SignInResult.Success))
                 .Build();
+            var fakeRoleManager = new FakeRoleManagerBuilder().Build();
 
             var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
             mockUrlHelper
@@ -227,7 +233,8 @@ namespace DotNetWMSTests
                 .Verifiable();
             var controller = new AccountController(
                 fakeUserManager.Object,
-                fakeSignInManager.Object);
+                fakeSignInManager.Object,
+                fakeRoleManager.Object);
 
             controller.Url = mockUrlHelper.Object;
             controller.ModelState.AddModelError("", "Nieprawidłowy login lub hasło");
@@ -241,10 +248,12 @@ namespace DotNetWMSTests
         {
             var fakeUserManager = new FakeUserManagerBuilder().With(x => x.Setup(um => um.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new WMSIdentityUser())).Build();
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
+            var fakeRoleManager = new FakeRoleManagerBuilder().Build();
 
             var controller = new AccountController(
                 fakeUserManager.Object,
-                fakeSignInManager.Object);
+                fakeSignInManager.Object,
+                fakeRoleManager.Object);
 
             var result = await controller.IsEmailInUse("a@a.pl");
             Assert.That(result, Is.InstanceOf(typeof(IActionResult)));
@@ -256,10 +265,12 @@ namespace DotNetWMSTests
         {
             var fakeUserManager = new FakeUserManagerBuilder().Build();
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
+            var fakeRoleManager = new FakeRoleManagerBuilder().Build();
 
             var controller = new AccountController(
                 fakeUserManager.Object,
-                fakeSignInManager.Object);
+                fakeSignInManager.Object,
+                fakeRoleManager.Object);
 
             var result = await controller.Logout();
             Assert.That(result, Is.InstanceOf(typeof(RedirectToActionResult)));

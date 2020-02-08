@@ -29,7 +29,7 @@ namespace DotNetWMSTests
 		public void ShowPrivacyViews()
 		{
 			var privacy = new HomeController(_logger);
-			var resultPrivacy = privacy.Privacy();
+			var resultPrivacy = privacy.AboutUs();
 
 			Assert.IsInstanceOf(typeof(ViewResult), resultPrivacy);
 		}

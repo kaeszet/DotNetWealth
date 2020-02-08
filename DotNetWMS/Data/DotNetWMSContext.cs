@@ -1,4 +1,5 @@
 ﻿using DotNetWMS.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,5 +20,17 @@ namespace DotNetWMS.Data
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<External> Externals { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+        }
+
     }
+
 }
