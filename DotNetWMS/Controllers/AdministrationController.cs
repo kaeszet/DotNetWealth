@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,7 +116,7 @@ namespace DotNetWMS.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("ListRoles");
+                    return RedirectToAction("ListOfRoles");
                 }
 
                 foreach (var error in result.Errors)
@@ -138,19 +139,31 @@ namespace DotNetWMS.Controllers
             }
             else
             {
-                var result = await roleManager.DeleteAsync(role);
-
-                if (result.Succeeded)
+                try
                 {
-                    return RedirectToAction("ListOfRoles");
-                }
+                    var result = await roleManager.DeleteAsync(role);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("ListOfRoles");
+                    }
 
-                foreach (var error in result.Errors)
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+
+                    return View("ListOfRoles");
+                }
+                catch (DbUpdateException)
                 {
-                    ModelState.AddModelError("", error.Description);
-                }
 
-                return View("ListOfRoles");
+                    ViewBag.ErrorTitle = "Podczas usuwania roli wystąpił błąd!";
+                    ViewBag.ErrorMessage = $"Istnieje użytkownik przypisany do tej roli.<br>" +
+                        $"Przed usunięciem roli usuń wszystkich pracowników przypisanych do roli.<br>" +
+                        $"Po wykonaniu tych czynności ponów próbę.";
+                    return View("DbExceptionHandler");
+                }
+                
             }
         }
         [HttpGet]
@@ -303,19 +316,31 @@ namespace DotNetWMS.Controllers
             }
             else
             {
-                var result = await userManager.DeleteAsync(user);
-
-                if (result.Succeeded)
+                try
                 {
-                    return RedirectToAction("ListOfUsers");
-                }
+                    var result = await userManager.DeleteAsync(user);
 
-                foreach (var error in result.Errors)
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("ListOfUsers");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+
+                    return View("ListOfUsers");
+                }
+                catch (DbUpdateException)
                 {
-                    ModelState.AddModelError("", error.Description);
+                    ViewBag.ErrorTitle = "Podczas usuwania użytkownika wystąpił błąd!";
+                    ViewBag.ErrorMessage = $"Istnieje rola przypisana do tego użytkownika.<br>" +
+                        $"Przed usunięciem użytkownika usuń wszystkie role, które zostały mu przypisane.<br>" +
+                        $"Po wykonaniu tych czynności ponów próbę.";
+                    return View("DbExceptionHandler");
                 }
-
-                return View("ListOfUsers");
+                
             }
         }
 

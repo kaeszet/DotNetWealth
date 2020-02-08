@@ -15,12 +15,15 @@ namespace DotNetWMS.Controllers
     {
         private readonly UserManager<WMSIdentityUser> userManager;
         private readonly SignInManager<WMSIdentityUser> signInManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
         public AccountController(UserManager<WMSIdentityUser> userManager,
-            SignInManager<WMSIdentityUser> signInManager)
+            SignInManager<WMSIdentityUser> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
         
         [HttpGet]
@@ -66,9 +69,15 @@ namespace DotNetWMS.Controllers
                 {
                     if (userManager.Users.Count() == 1)
                     {
-                        IdentityRole identityRole = new IdentityRole { Name = "Admin" };
-                        await userManager.AddToRoleAsync(user, identityRole.Name);
+                        if (!roleManager.Roles.Any(r => r.Name == "Admin"))
+                        {
+                            IdentityRole identityRole = new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
+                            await roleManager.CreateAsync(identityRole);
+                            await userManager.AddToRoleAsync(user, identityRole.Name);
+                        }
+                        
                     }
+                    await IsDefaultRolesExists();
                     await signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
@@ -81,6 +90,9 @@ namespace DotNetWMS.Controllers
 
             return View(model);
         }
+
+        
+
         [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> IsEmailInUse(string email)
         {
@@ -133,6 +145,29 @@ namespace DotNetWMS.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("index", "home");
+        }
+        private async Task IsDefaultRolesExists()
+        {
+            if (!roleManager.Roles.Any(r => r.Name == "Admin"))
+            {
+                await roleManager.CreateAsync(new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" });
+            }
+            if (!roleManager.Roles.Any(r => r.Name == "Moderator"))
+            {
+                await roleManager.CreateAsync(new IdentityRole { Name = "Moderator", NormalizedName = "MODERATOR" });
+            }
+            if (!roleManager.Roles.Any(r => r.Name == "StandardPlus"))
+            {
+                await roleManager.CreateAsync(new IdentityRole { Name = "StandardPlus", NormalizedName = "STANDARDPLUS" });
+            }
+            if (!roleManager.Roles.Any(r => r.Name == "Standard"))
+            {
+                await roleManager.CreateAsync(new IdentityRole { Name = "Standard", NormalizedName = "STANDARD" });
+            }
+            if (!roleManager.Roles.Any(r => r.Name == "Kadry"))
+            {
+                await roleManager.CreateAsync(new IdentityRole { Name = "Kadry", NormalizedName = "KADRY" });
+            }
         }
     }
 }
