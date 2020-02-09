@@ -1,14 +1,18 @@
-﻿@model IEnumerable<DotNetWMS.Models.Item>
+﻿@using DotNetWMS.Resources
+@model IEnumerable<DotNetWMS.Models.Item>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Index</h1>
+@if (User.IsInAnyRoles("StandardPlus,Moderator"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <form asp-action="Index" method="get">
     <div class="form-group">
         <p>
@@ -61,50 +65,54 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Producer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ItemCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Units)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WarrantyDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.State)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Warehouse.Street)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.External.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Producer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Units)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WarrantyDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Warehouse.Street)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.External.Name)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

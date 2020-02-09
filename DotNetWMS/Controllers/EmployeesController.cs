@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
+    [Authorize(Roles = "Kadry,Moderator")]
     public class EmployeesController : Controller
     {
         private readonly DotNetWMSContext _context;
@@ -44,14 +45,7 @@ namespace DotNetWMS.Controllers
             }
             return View(await employees.AsNoTracking().ToListAsync());
         }
-        // GET: Employees
-        //public async Task<IActionResult> Index()
-        //{
-        //    var dotNetWMSContext = _context.Employees.Include(e => e.Department);
-        //    return View(await dotNetWMSContext.ToListAsync());
-        //}
-
-        // GET: Employees/Details/5
+        
         public async Task<IActionResult> Details(int? id)
         {
 
@@ -71,7 +65,6 @@ namespace DotNetWMS.Controllers
             return View(employee);
         }
 
-        // GET: Employees/Create
         public IActionResult Create()
         {
             
@@ -80,9 +73,6 @@ namespace DotNetWMS.Controllers
             return View();
         }
 
-        // POST: Employees/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
@@ -107,7 +97,6 @@ namespace DotNetWMS.Controllers
             return View(employee);
         }
 
-        // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -126,9 +115,6 @@ namespace DotNetWMS.Controllers
             return View(employee);
         }
 
-        // POST: Employees/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
@@ -170,7 +156,6 @@ namespace DotNetWMS.Controllers
             return View(employee);
         }
 
-        // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -189,7 +174,6 @@ namespace DotNetWMS.Controllers
             return View(employee);
         }
 
-        // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

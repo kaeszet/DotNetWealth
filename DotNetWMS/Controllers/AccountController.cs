@@ -78,8 +78,17 @@ namespace DotNetWMS.Controllers
                         
                     }
                     await IsDefaultRolesExists();
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("index", "home");
+                    
+                    if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("ListOfUsers", "Administration");
+                    }
+                    else
+                    {
+                        await signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("index", "home");
+                    }
+                    
                 }
 
                 foreach (var error in result.Errors)

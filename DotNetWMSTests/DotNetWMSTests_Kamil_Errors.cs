@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -19,6 +20,7 @@ namespace DotNetWMSTests
     class DotNetWMSTests_Kamil_Errors : DotNetWMSTests_Base
     {
         private Mock<IStatusCodeReExecuteFeature> _status;
+        private Mock<ILogger> _logger;
 
         [SetUp]
         public void Setup()
@@ -26,13 +28,14 @@ namespace DotNetWMSTests
             _status = new Mock<IStatusCodeReExecuteFeature>();
             _status.SetupGet(s => s.OriginalPath).Returns("invalid");
             _status.SetupGet(s => s.OriginalPathBase).Returns("");
+            _logger = new Mock<ILogger>();
 
         }
         [Test]
         public void E_test_1()
         {
 
-            var controller = new ErrorController();
+            var controller = new ErrorController(_logger.Object);
             controller.ControllerContext = new ControllerContext();
             FeatureCollection featureCollection = new FeatureCollection();
             featureCollection.Set(_status.Object);

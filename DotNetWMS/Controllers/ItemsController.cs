@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
+    [Authorize]
     public class ItemsController : Controller
     {
         private readonly DotNetWMSContext _context;
@@ -24,7 +26,7 @@ namespace DotNetWMS.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         public async Task<IActionResult> Assign_to_employee(string search, string order)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
@@ -56,6 +58,7 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
+        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         public async Task<IActionResult> Assign_to_warehouse(string search, string order)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
@@ -87,6 +90,7 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
+        [Authorize(Roles = "StandardPlus,Moderator")]
         public async Task<IActionResult> Assign_to_external(string search, string order)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
@@ -118,6 +122,7 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
+        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_employee_confirm(int? id)
         {
@@ -151,6 +156,7 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
         }
+        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_warehouse_confirm(int? id)
         {
@@ -172,6 +178,7 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
             return View(item);
         }
+        [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_external_confirm(int? id)
         {
@@ -193,6 +200,7 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
             return View(item);
         }
+        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
@@ -286,6 +294,7 @@ namespace DotNetWMS.Controllers
             //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             return View(item);
         }
+        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_warehouse_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
@@ -374,6 +383,7 @@ namespace DotNetWMS.Controllers
             //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             return View(item);
         }
+        [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_external_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
@@ -508,7 +518,6 @@ namespace DotNetWMS.Controllers
         //    return View(await dotNetWMSContext.ToListAsync());
         //}
 
-        // GET: Items/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -529,7 +538,7 @@ namespace DotNetWMS.Controllers
             return View(item);
         }
 
-        // GET: Items/Create
+        [Authorize(Roles = "StandardPlus,Moderator")]
         public IActionResult Create()
         {
             
@@ -539,9 +548,7 @@ namespace DotNetWMS.Controllers
             return View();
         }
 
-        // POST: Items/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
@@ -582,7 +589,7 @@ namespace DotNetWMS.Controllers
             }
         }
 
-        // GET: Items/Edit/5
+        [Authorize(Roles = "StandardPlus,Moderator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -602,9 +609,7 @@ namespace DotNetWMS.Controllers
             return View(item);
         }
 
-        // POST: Items/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
@@ -650,7 +655,7 @@ namespace DotNetWMS.Controllers
             return View(item);
         }
 
-        // GET: Items/Delete/5
+        [Authorize(Roles = "StandardPlus,Moderator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -671,7 +676,7 @@ namespace DotNetWMS.Controllers
             return View(item);
         }
 
-        // POST: Items/Delete/5
+        [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

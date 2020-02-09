@@ -4,11 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
     public class ErrorController : Controller
     {
+        private readonly ILogger logger;
+
+        public ErrorController(ILogger logger)
+        {
+            this.logger = logger;
+        }
         [Route("Error/{statusCode}")]
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
@@ -20,6 +27,7 @@ namespace DotNetWMS.Controllers
                     ViewBag.ErrorMessage = "Strona pod podanym adresem nie istnieje!";
                     ViewBag.Path = statusCodeResult.OriginalPath;
                     ViewBag.QS = statusCodeResult.OriginalQueryString;
+                    logger.LogWarning($"404 error occured. Path = {statusCodeResult.OriginalPath} and QueryString = {statusCodeResult.OriginalQueryString}");
                     break;
             }
 
@@ -29,6 +37,7 @@ namespace DotNetWMS.Controllers
         public IActionResult GlobalExceptionHandler()
         {
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            logger.LogError($"The path {exceptionHandlerPathFeature.Path} threw an exception {exceptionHandlerPathFeature.Error}");
 
             ViewBag.ExceptionPath = exceptionHandlerPathFeature.Path;
             ViewBag.ExceptionMessage = exceptionHandlerPathFeature.Error.Message;

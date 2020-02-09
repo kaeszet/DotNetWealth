@@ -1,4 +1,5 @@
-﻿@inject SignInManager<WMSIdentityUser> signInManager;
+﻿@using DotNetWMS.Resources
+@inject SignInManager<WMSIdentityUser> signInManager;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +23,7 @@
 <body>
     <header>
         <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-            <h3 class="my-0 mr-md-auto font-weight-normal"><a style="text-decoration: none;" asp-controller="Home" asp-action="Index">.NetFortune</a></h3>
+            <h3 class="my-0 mr-md-auto font-weight-normal"><a style="text-decoration: none;" asp-controller="Home" asp-action="Index"><img src="~/images/PepeLogo.png" style="height: 54px; width: 160px" alt=""></a></h3>
             <!--admin-->
             @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
             {
@@ -33,24 +34,27 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
                         <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
                     </div>
                 </div>
             }
-            <nav class="my-2 my-md-0 mr-md-3">
-                <!--kadry-->
-                @if (signInManager.IsSignedIn(User))
-                {
-                    <a asp-controller="Employees" asp-action="Index" class="p-2 text-dark">Pracownicy</a>
-                }
-                <!--standard-->
-                @if (signInManager.IsSignedIn(User))
-                {
-                    <a asp-controller="Items" asp-action="Index" class="p-2 text-dark">Majątek</a>
-                    <a asp-controller="Warehouses" asp-action="Index" class="p-2 text-dark">Magazyny</a>
-                    <a asp-controller="Externals" asp-action="Index" class="p-2 text-dark">Kl. zewnętrzni</a>
-                }
-            </nav>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <!--kadry-->
+            @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
+            {
+                <a asp-controller="Employees" asp-action="Index" class="p-2 text-dark">Pracownicy</a>
+            }
+            <!--standard-->
+            @if (signInManager.IsSignedIn(User))
+            {
+                <a asp-controller="Items" asp-action="Index" class="p-2 text-dark">Majątek</a>
+                <a asp-controller="Warehouses" asp-action="Index" class="p-2 text-dark">Magazyny</a>
+
+            }
+            @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+            {
+                <a asp-controller="Externals" asp-action="Index" class="p-2 text-dark">Kl. zewnętrzni</a>
+            }
+        </nav>
             @if (signInManager.IsSignedIn(User))
             {
 
