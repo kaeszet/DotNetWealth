@@ -20,7 +20,6 @@ namespace DotNetWMSTests
     {
         private IWebDriver driver;
         private StringBuilder verificationErrors;
-        private string baseURL;
         private int count;
         private bool acceptNextAlert = true;
 
@@ -28,7 +27,6 @@ namespace DotNetWMSTests
         public void SetupTest()
         {
             driver = new ChromeDriver();
-            baseURL = "https://www.google.com/";
             verificationErrors = new StringBuilder();
         }
 

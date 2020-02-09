@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
+    [Authorize(Roles = "Kadry,Moderator")]
     public class DepartmentsController : Controller
     {
         private readonly DotNetWMSContext _context;

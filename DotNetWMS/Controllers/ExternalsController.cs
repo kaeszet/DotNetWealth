@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
+    [Authorize(Roles = "Standard,StandardPlus,Moderator")]
     public class ExternalsController : Controller
     {
         private readonly DotNetWMSContext _context;
@@ -48,13 +50,7 @@ namespace DotNetWMS.Controllers
             }
             return View(await externals.AsNoTracking().ToListAsync());
         }
-        // GET: Externals
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _context.Externals.ToListAsync());
-        //}
-
-        // GET: Externals/Details/5
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -72,15 +68,13 @@ namespace DotNetWMS.Controllers
             return View(external);
         }
 
-        // GET: Externals/Create
+        [Authorize(Roles = "StandardPlus,Moderator")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Externals/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Type,Name,TaxId,Street,ZipCode,City")] External external)
@@ -94,7 +88,7 @@ namespace DotNetWMS.Controllers
             return View(external);
         }
 
-        // GET: Externals/Edit/5
+        [Authorize(Roles = "StandardPlus,Moderator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -110,9 +104,7 @@ namespace DotNetWMS.Controllers
             return View(external);
         }
 
-        // POST: Externals/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Type,Name,TaxId,Street,ZipCode,City")] External external)
@@ -145,7 +137,7 @@ namespace DotNetWMS.Controllers
             return View(external);
         }
 
-        // GET: Externals/Delete/5
+        [Authorize(Roles = "StandardPlus,Moderator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -163,7 +155,7 @@ namespace DotNetWMS.Controllers
             return View(external);
         }
 
-        // POST: Externals/Delete/5
+        [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

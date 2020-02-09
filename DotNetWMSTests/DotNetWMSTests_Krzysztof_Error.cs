@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http;
-
-
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMSTests
 {
@@ -14,6 +13,7 @@ namespace DotNetWMSTests
 	{
 		private Mock<IStatusCodeReExecuteFeature> _status;
 		private Mock<IExceptionHandlerPathFeature> _statusGlobal;
+		private Mock<ILogger> _logger;
 
 
 		[SetUp]
@@ -26,12 +26,14 @@ namespace DotNetWMSTests
 			_statusGlobal = new Mock<IExceptionHandlerPathFeature>();
 			_statusGlobal.SetupGet(a => a.Path).Returns("GlobalError");
 			_statusGlobal.SetupGet(a => a.Error.Message).Returns("Test błędu globalnego");
+
+			_logger = new Mock<ILogger>();
 		}
 		[Test]
 		public void HttpStatusCodeHandler_CheckIfGetNotFoundViews_ReturnTrue()
 		{
 
-			var controller = new ErrorController();
+			var controller = new ErrorController(_logger.Object);
 
 			FeatureCollection featureCollection = new FeatureCollection();
 			featureCollection.Set(_status.Object);
@@ -46,7 +48,7 @@ namespace DotNetWMSTests
 		public void HttpStatusCodeHandler_CheckIfOrginalPathIsTheSame_ReturnInvalid()
 		{
 
-			var controller = new ErrorController();
+			var controller = new ErrorController(_logger.Object);
 
 			FeatureCollection featureCollection = new FeatureCollection();
 			featureCollection.Set(_status.Object);
@@ -61,7 +63,7 @@ namespace DotNetWMSTests
 		[Test]
 		public void GlobalExceptionHandler_CheckIfPathNameIsTheSame_ReturnGlobalError()
 		{
-			var controller2 = new ErrorController();
+			var controller2 = new ErrorController(_logger.Object);
 
 			FeatureCollection featureCollection2 = new FeatureCollection();
 			featureCollection2.Set(_statusGlobal.Object);
@@ -75,7 +77,7 @@ namespace DotNetWMSTests
 		[Test]
 		public void GlobalExceptionHandler_CheckIfErrorMessageNameIsTheSame_ReturnTrue()
 		{
-			var controller2 = new ErrorController();
+			var controller2 = new ErrorController(_logger.Object);
 
 			FeatureCollection featureCollection2 = new FeatureCollection();
 			featureCollection2.Set(_statusGlobal.Object);
