@@ -68,6 +68,7 @@ body {
   width: 100%;
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
+  text-align: center;
 }
 
 /*----------------------*/
@@ -75,3 +76,77 @@ body {
     min-width: 220px;
 }
 
+
+
+/* Navbar */
+
+.navbar {
+    box-shadow: 0px 0px 5px 0px #adb5bd;
+}
+
+.navbar-nav .nav-item:hover {
+    background-color: #e9ecef;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.footer {
+    box-shadow: 0 0 5px #adb5bd;
+}
+
+
+.col-category{
+    display: flex;
+}
+
+.col-category .card{
+    width: 100%;
+}
+
+.category-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.category-body a {
+    width: 40%;
+    border-radius: 20px;
+    margin: 5%;
+    color: #000;
+    background-color: #fff;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,.9);
+    transition: all .3s ease-in-out;
+}
+.category-body .card-body{
+    text-align: center;
+}
+
+.category-body a:hover {
+    transform: scale(1.1);
+    text-decoration: none;
+    background-color: #343a40;
+    color: white;
+}
+
+.logout-form {
+    position: absolute;
+    right: 1%;
+    height: 80%;
+    box-shadow: 0 0 5px 0px #adb5bd;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 20px;
+    transition: all .3s ease-in-out;
+}
+
+.logout-form:hover{
+    transform: scale(1.1);
+    background-color: #adb5bd;
+}
+.logout-form:hover > button {
+    color: #fff;
+}
+
+.logout-form button{
+    color: #000;
+    height: 100%;
+}
