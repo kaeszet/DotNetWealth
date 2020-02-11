@@ -28,6 +28,20 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav mr-auto">
+
+                    <!--admin-->
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Panel Administracyjny
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
+                                <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
+                            </div>
+                        </li>
+                    }
                     <!--kadry-->
                     @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
                     {
@@ -54,21 +68,8 @@
                         </li>
                     }
 
-                    <!--admin-->
-                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Panel Administracyjny 
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
-                                <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
-                            </div>
-                        </li>
-                    }
                 </ul>
-                </div>
+                
                 @if (signInManager.IsSignedIn(User))
                 {
 
@@ -84,6 +85,7 @@
                         <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary">Zarejestruj się</a>
                     </div>
                 }
+                </div>
 
             
     </header>
