@@ -21,66 +21,82 @@
 
 </head>
 <body>
-    <header>
-        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-            <h3 class="my-0 mr-md-auto font-weight-normal"><a style="text-decoration: none;" asp-controller="Home" asp-action="Index"><img src="~/images/PepeLogo.png" style="height: 54px; width: 160px" alt=""></a></h3>
-            <!--admin-->
-            @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-            {
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Panel administracyjny
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
-                        <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
-                    </div>
+        <header class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="~/images/PepeLogo.png" style="height: 54px; width: 160px" alt=""></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <!--kadry-->
+                    @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Employees" asp-action="Index">Pracownicy</a>
+                        </li>
+                    }
+
+                    <!--standard-->
+                    @if (signInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Items" asp-action="Index">Majątek</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Warehouses" asp-action="Index">Magazyny</a>
+                        </li>
+                    }
+
+                    @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Externals" asp-action="Index">Kl. zewnętrzni</a>
+                        </li>
+                    }
+
+                    <!--admin-->
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Panel Administracyjny 
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
+                                <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
+                            </div>
+                        </li>
+                    }
+                </ul>
                 </div>
-            }
-        <nav class="my-2 my-md-0 mr-md-3">
-            <!--kadry-->
-            @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
-            {
-                <a asp-controller="Employees" asp-action="Index" class="p-2 text-dark">Pracownicy</a>
-            }
-            <!--standard-->
-            @if (signInManager.IsSignedIn(User))
-            {
-                <a asp-controller="Items" asp-action="Index" class="p-2 text-dark">Majątek</a>
-                <a asp-controller="Warehouses" asp-action="Index" class="p-2 text-dark">Magazyny</a>
+                @if (signInManager.IsSignedIn(User))
+                {
 
-            }
-            @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
-            {
-                <a asp-controller="Externals" asp-action="Index" class="p-2 text-dark">Kl. zewnętrzni</a>
-            }
-        </nav>
-            @if (signInManager.IsSignedIn(User))
-            {
 
-                <nav>
-                    <form method="post" asp-controller="Account" asp-action="Logout">
-                        <button type="submit" style="width:auto" class="nav-link btn btn-link py-0">Logout @User.Identity.Name</button>
-                    </form>
-                </nav>
-            }
-            else
-            {
-                <nav>
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success">Zaloguj się</a>
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary">Zarejestruj się</a>
-                </nav>
-            }
+                        <form class="logout-form" method="post" asp-controller="Account" asp-action="Logout">
+                            <button type="submit" style="width:auto" class="nav-link btn btn-link py-0">Wyloguj się<br/> <b>@User.Identity.Name</b></button>
+                        </form>
+                }
+                else
+                {
+                    <div>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success">Zaloguj się</a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary">Zarejestruj się</a>
+                    </div>
+                }
 
-        </div>
+            
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+
+    <div class="container-fluid">
+        <div class="container py-3">
             @RenderBody()
-        </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
+
+    <footer class="footer bg-light">
         <div class="container">
             &copy; 2019 - DotNetFortune - <a asp-area="" asp-controller="Home" asp-action="AboutUs">O nas</a>
         </div>

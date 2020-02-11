@@ -4,138 +4,125 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container">
     @if (signInManager.IsSignedIn(User))
     {
-    <div class="card-deck mb-3 text-center">
+
+    <div class="row">
         @if (User.IsInAnyRoles("Kadry,Moderator"))
         {
-            <div class="card mb-3 shadow-sm">
-                <div class="card-header text-light bg-primary">
-                    <h4 class="my-0 font-weight-normal"><i class="fas fa-user-tie"></i> Pracownicy</h4>
-                </div>
-                <div class="card-body p-0">
+        <div class="col-md-6 col-category">
 
-                    <div class="card mt-2 mb-2">
-                        <div class="card-header">
-                            <h6 class=" m-0 font-weight-normal">Przegląd pracowników</h6>
-                        </div>
-                        <div class="card-body m-0">
-                            <a asp-controller="Employees" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="far fa-id-card fa-4x"></i></a>
-                        </div>
+            <div class="card bg-light mb-3">
+                <div class="card-header text-center"><h2>Pracownicy</h2></div>
+                <div class="category-body">
+                    <a asp-controller="Employees" asp-action="Index" type="button">
+                    <div class="card-body">
+                        <h6 class="card-title">Przegląd pracowników</h6>
+                         <i class="far fa-id-card fa-4x"></i>
                     </div>
-                    <div class="card mt-2 mb-2">
-                        <div class="card-header m-0">
-                            <h6 class="m-0 font-weight-normal">Przegląd stanowisk</h6>
-                        </div>
-                        <div class="card-body m-0">
-                            <a asp-controller="Departments" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-briefcase fa-4x"></i></a>
-                        </div>
+                    </a>
+                    <a asp-controller="Departments" asp-action="Index" type="button"><div class="card-body">
+                        <h6 class="card-title">Przegląd stanowisk</h6>
+                        <i class="fas fa-briefcase fa-4x"></i>
+                    </div></a>
                     </div>
-
                 </div>
+
             </div>
         }
 
-        <div class="card mb-3 shadow-sm">
-            <div class="card-header text-light bg-primary">
-                <h4 class="my-0 font-weight-normal"><i class="fas fa-people-carry"></i> Majątek</h4>
-            </div>
-            <div class="card-body p-0">
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Przegląd majątku</h6>
+    <div class="col-md-6 col-category">
+
+        <div class="card bg-light mb-3">
+            <div class="card-header text-center"><h2>Majątek</h2></div>
+            <div class="category-body">
+                <a asp-controller="Items" asp-action="Index" type="button">
+                    <div class="card-body">
+                        <h6 class="card-title">Przegląd majątku</h6>
+
+                        <i class="fas fa-coins fa-4x"></i>
                     </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Items" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-coins fa-4x"></i></a>
-                    </div>
-                </div>
+                </a>
                 @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                 {
-                    <div class="card mt-2 mb-2">
-                        <div class="card-header">
-                            <h6 class="m-0 font-weight-normal">Przekaż na stan</h6>
+                    <a asp-controller="Items" asp-action="Assign_to_employee" type="button">
+                        <div class="card-body">
+                            <h6 class="card-title">Przekaż na stan</h6>
+                            <i class="fas fa-hand-holding-usd fa-4x"></i>
                         </div>
-                        <div class="card-body m-0">
-                            <a asp-controller="Items" asp-action="Assign_to_employee" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-hand-holding-usd fa-4x"></i></a>
+                    </a>
+                    <a asp-controller="Items" asp-action="Assign_to_warehouse" type="button">
+                        <div class="card-body">
+                            <h6 class="card-title">Przekaż do magazynu</h6>
+                            <i class="fas fa-pallet fa-4x"></i>
                         </div>
-                    </div>
-                    <div class="card mt-2 mb-2">
-                        <div class="card-header">
-                            <h6 class="m-0 font-weight-normal">Przekaż do magazynu</h6>
-                        </div>
-                        <div class="card-body m-0">
-                            <a asp-controller="Items" asp-action="Assign_to_warehouse" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-pallet fa-4x"></i></a>
-                        </div>
-                    </div>
-
+                    </a>
                 }
                 @if (User.IsInAnyRoles("StandardPlus,Moderator"))
                 {
-                    <div class="card mt-2 mb-2">
-                        <div class="card-header">
-                            <h6 class="m-0 font-weight-normal">Przekaż na zewnątrz</h6>
+                    <a asp-controller="Items" asp-action="Assign_to_external" type="button">
+                        <div class="card-body">
+                            <h6 class="card-title">Przekaż na zewnątrz</h6>
+                            <i class="fas fa-truck-loading fa-4x"></i>
                         </div>
-                        <div class="card-body m-0">
-                            <a asp-controller="Items" asp-action="Assign_to_external" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-truck-loading fa-4x"></i></a>
-                        </div>
-                    </div>
+                    </a>
                 }
             </div>
         </div>
-        <div class="card mb-3 shadow-sm">
-            <div class="card-header text-light bg-primary">
-                <h4 class="my-0 font-weight-normal"><i class="fas fa-warehouse"></i> Magazyny</h4>
-            </div>
-            <div class="card-body p-0">
-                <div class="card mt-2 mb-2">
-                    <div class="card-header">
-                        <h6 class="m-0 font-weight-normal">Przegląd magazynów</h6>
+
+    </div>
+
+    <div class="col-md-6 col-category">
+
+        <div class="card bg-light mb-3">
+            <div class="card-header text-center"><h2>Magazyny</h2></div>
+            <div class="category-body">
+                <a asp-controller="Warehouses" asp-action="Index" type="button">
+                    <div class="card-body">
+                        <h6 class="card-title">Przegląd magazynów</h6>
+                        <i class="fas fa-boxes fa-4x"></i>
                     </div>
-                    <div class="card-body m-0">
-                        <a asp-controller="Warehouses" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-boxes fa-4x"></i></a>
-                    </div>
-                </div>
+                </a>
                 @if (User.IsInAnyRoles("StandardPlus,Moderator"))
                 {
-                    <div class="card mt-2 mb-2">
-                        <div class="card-header">
-                            <h6 class="m-0 font-weight-normal">Inwentaryzacja</h6>
+                    <a asp-controller="Warehouses" asp-action="StocktakingIndex" type="button">
+                        <div class="card-body">
+                            <h6 class="card-title">Inwentaryzacja</h6>
+                            <i class="fas fa-calculator fa-4x"></i>
                         </div>
-                        <div class="card-body m-0">
-                            <a asp-controller="Warehouses" asp-action="StocktakingIndex" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-calculator fa-4x"></i></a>
-                        </div>
-                    </div>
+                    </a>
                 }
             </div>
+            </div>
+
+
         </div>
         @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
         {
-            <div class="card mb-3 shadow-sm">
-                <div class="card-header text-light bg-primary">
-                    <h5 class="my-0 font-weight-normal"><i class="fas fa-external-link-alt"></i> Klienci zewnętrzni</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="card mt-2 mb-2">
-                        <div class="card-header">
-                            <h6 class="m-0 font-weight-normal">Przegląd kl. zewn.</h6>
-                        </div>
-                        <div class="card-body m-0">
-                            <a asp-controller="Externals" asp-action="Index" type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-glasses fa-4x"></i></a>
-                        </div>
-                    </div>
-                    <div class="card mt-2 mb-2">
-                        <div class="card-header">
-                            <h6 class="m-0 font-weight-normal">Podgląd stanu</h6>
-                        </div>
-                        <div class="card-body m-0">
-                            <button type="button" class="btn btn-outline-dark btn-block"><i class="fas fa-search-dollar fa-4x"></i></button>
-                        </div>
+            <div class="col-md-6 col-category">
+
+                <div class="card bg-light mb-3">
+                    <div class="card-header text-center"><h2>Klienci zewnętrzni</h2></div>
+                    <div class="category-body">
+                        <a asp-controller="Externals" asp-action="Index" type="button">
+                            <div class="card-body">
+                                <h6 class="card-title">Przegląd kl. zewn.</h6>
+                                <i class="fas fa-glasses fa-4x"></i>
+                            </div>
+                        </a>
+                        <a href="#" type="button">
+                            <div class="card-body">
+                                <h6 class="card-title">Podgląd stanu</h6>
+                                <i class="fas fa-search-dollar fa-4x"></i>
+                            </div>
+                        </a>
                     </div>
                 </div>
+
             </div>
-        }
-    </div>
+		}
+        </div>
+        
     }
     else
     {
@@ -148,4 +135,3 @@
         </div>
     }
 
-</div>
