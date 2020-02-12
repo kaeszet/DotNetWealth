@@ -4,22 +4,35 @@
     ViewData["Title"] = "Index";
 }
 
-<h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Index</h1>
+<script>
+    $("body").on("click", ".modal-create", function () {
+        $.ajax({
+            url: '/Employees/Create',
+            data: { id: 1 }
+        }).done(function (msg) {
+            $("#showModal").html(msg);
+            $("#myModal").modal();
+        })
+    })
+</script>
+
+<h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Podgląd pracowników</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success"><i class="fas fa-user-plus"></i> Dodaj pracownika</a>
+    <a asp-action="Create" class="modal-create btn btn-success"><i class="fas fa-user-plus"></i> Dodaj pracownika</a>
 </p>
 <form asp-action="Index" method="get">
     <div class="form-group">
         <p>
             Wyszukaj: <input type="text" name="search" value="@ViewData["Search"]" />
             <button type="submit" class="btn btn-primary"><i class="fab fa-sistrix"></i></button> |
-            <a asp-action="Index" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
+            <a asp-action="Index" class="btn btn-danger"><i class="fas fa-eraser"></i></a>
         </p>
     </div>
 </form>
-<table class="table">
-    <thead>
+
+<table class="table table-hover">
+    <thead class="thead-light">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -70,12 +83,13 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.City)
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fas fa-user-edit"></i></a> |
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-dark"><i class="fas fa-user-tag"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger text-dark"><i class="fas fa-user-minus"></i></a>
+                <td class="button-col">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-dark"><i class="fas fa-info-circle"></i></a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger text-dark"><i class="fas fa-trash-alt"></i></a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
