@@ -6,4 +6,5 @@
     <div class="alert alert-info m-5">
         <h4 class="alert-heading">@ViewBag.ErrorTitle</h4>
         <p>@Html.Raw(@ViewBag.ErrorMessage)</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Wróć do strony głównej</a>
     </div>
