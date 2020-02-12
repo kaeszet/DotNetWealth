@@ -5,13 +5,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Index</h1>
+<h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Klienci zewnętrzni</h1>
 
 @if (User.IsInAnyRoles("StandardPlus,Moderator"))
 {
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+<p>
+    <a asp-action="Create" class="modal-create btn btn-success"><i class="fas fa-user-plus"></i> Dodaj nowego klienta</a>
+</p>
 }
 <form asp-action="Index" method="get">
     <div class="form-group">
@@ -68,12 +68,12 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.City)
                 </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                <td class="button-col">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-dark"><i class="fas fa-info-circle"></i></a>
                     @if (User.IsInAnyRoles("StandardPlus, Moderator"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger text-dark"><i class="fas fa-trash-alt"></i></a>
                     }
                 </td>
             </tr>

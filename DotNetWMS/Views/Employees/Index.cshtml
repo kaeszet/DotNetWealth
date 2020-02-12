@@ -4,17 +4,6 @@
     ViewData["Title"] = "Index";
 }
 
-<script>
-    $("body").on("click", ".modal-create", function () {
-        $.ajax({
-            url: '/Employees/Create',
-            data: { id: 1 }
-        }).done(function (msg) {
-            $("#showModal").html(msg);
-            $("#myModal").modal();
-        })
-    })
-</script>
 
 <h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Podgląd pracowników</h1>
 
