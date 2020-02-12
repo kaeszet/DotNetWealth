@@ -69,15 +69,18 @@ namespace DotNetWMS.Controllers
                 {
                     if (userManager.Users.Count() == 1)
                     {
-                        if (!roleManager.Roles.Any(r => r.Name == "Admin"))
-                        {
-                            IdentityRole identityRole = new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
-                            await roleManager.CreateAsync(identityRole);
-                            await userManager.AddToRoleAsync(user, identityRole.Name);
-                        }
-                        
+                        await IsDefaultRolesExists();
+                        await userManager.AddToRoleAsync(user, "Admin");
+
+                        //if (!roleManager.Roles.Any(r => r.Name == "Admin"))
+                        //{
+                        //    IdentityRole identityRole = new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
+                        //    await roleManager.CreateAsync(identityRole);
+                        //    await userManager.AddToRoleAsync(user, identityRole.Name);
+                        //}
+
                     }
-                    await IsDefaultRolesExists();
+                    
                     
                     if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
@@ -130,8 +133,19 @@ namespace DotNetWMS.Controllers
                 var result = await signInManager.PasswordSignInAsync(
                     model.Login, model.Password, model.RememberMe, false);
 
+                var user = await userManager.FindByNameAsync(model.Login);
+
                 if (result.Succeeded)
                 {
+                    if (userManager.Users.Count() == 1)
+                    {
+                        await IsDefaultRolesExists();
+                        if (await userManager.IsInRoleAsync(user, "Admin") == false)
+                        {
+                            await userManager.AddToRoleAsync(user, "Admin");
+                        }
+                        
+                    }
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);

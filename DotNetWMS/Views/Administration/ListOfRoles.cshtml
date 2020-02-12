@@ -1,7 +1,9 @@
-﻿@model IEnumerable<IdentityRole>
+﻿@using DotNetWMS.Resources;
+@model IEnumerable<IdentityRole>
 
 @{
     ViewBag.Title = "All Roles";
+    Model.OrderBy(m => m.Name);
 }
 
 <h1>Lista ról</h1>
@@ -9,8 +11,8 @@
 @if (Model.Any())
 {
     <a asp-action="CreateRole" asp-controller="administration" class="btn btn-primary mb-3">Stwórz rolę</a>
-
-    foreach (var role in Model)
+    var sortedModel = Model.OrderBy(m => m.Name);
+    foreach (var role in sortedModel)
     {
         <div class="card mb-3">
             <div class="card-header">
@@ -20,18 +22,27 @@
                 <h5 class="card-title">@role.Name</h5>
             </div>
             <div class="card-footer">
-                <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
-                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Edytuj</a>
-                    <span id="confirmDeleteSpan_@role.Id" style="display:none">
-                        <span>Jesteś pewien?</span>
-                        <button type="submit" class="btn btn-danger">Potwierdź</button>
-                        <a href="#" class="btn btn-primary" onclick="confirmDelete('@role.Id', false)">Anuluj</a>
-                    </span>
+                @if (Admin_DefaultRoles.IsDefaultRole(role.Name))
+                {
+                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Szczegóły</a>
+                    <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="btn btn-primary">Przypisz użytkownika</a>
+                }
+                else
+                {
+                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                        <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Edytuj</a>
+                        <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-id="@role.Id" class="btn btn-primary">Przypisz uzytkownika</a>
+                        <span id="confirmDeleteSpan_@role.Id" style="display:none">
+                            <span>Jesteś pewien?</span>
+                            <button type="submit" class="btn btn-danger">Potwierdź</button>
+                            <a href="#" class="btn btn-primary" onclick="confirmDelete('@role.Id', false)">Anuluj</a>
+                        </span>
 
-                    <span id="deleteSpan_@role.Id">
-                        <a href="#" class="btn btn-danger" onclick="confirmDelete('@role.Id', true)">Usuń</a>
-                    </span>
-                </form>
+                        <span id="deleteSpan_@role.Id">
+                            <a href="#" class="btn btn-danger" onclick="confirmDelete('@role.Id', true)">Usuń</a>
+                        </span>
+                    </form>
+                }
             </div>
         </div>
     }

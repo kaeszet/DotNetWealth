@@ -108,6 +108,12 @@ namespace DotNetWMS.Controllers
                 ViewBag.ErrorMessage = $"Rola o numerze ID: {model.Id} nie została odnaleziona!";
                 return View("NotFound");
             }
+            if (Admin_DefaultRoles.IsDefaultRole(model.RoleName))
+            {
+                ViewBag.ErrorTitle = "Podczas edycji roli wystąpił błąd!";
+                ViewBag.ErrorMessage = "Nie można edytować domyślnej roli.";
+                return View("DbExceptionHandler");
+            }
             else
             {
                 role.Name = model.RoleName;
@@ -136,6 +142,12 @@ namespace DotNetWMS.Controllers
             {
                 ViewBag.ErrorMessage = $"Rola o numerze ID: {id} nie została odnaleziona!";
                 return View("NotFound");
+            }
+            else if (Admin_DefaultRoles.IsDefaultRole(role.Name))
+            {
+                ViewBag.ErrorTitle = "Podczas usuwania roli wystąpił błąd!";
+                ViewBag.ErrorMessage = "Nie można usunąć domyślnej roli.";
+                return View("DbExceptionHandler");
             }
             else
             {
@@ -219,13 +231,24 @@ namespace DotNetWMS.Controllers
                 var user = await userManager.FindByIdAsync(model[i].UserId);
 
                 IdentityResult result;
-
+                
                 if (model[i].IsSelected && !(await userManager.IsInRoleAsync(user, role.Name)))
                 {
                     result = await userManager.AddToRoleAsync(user, role.Name);
                 }
                 else if (!model[i].IsSelected && await userManager.IsInRoleAsync(user, role.Name))
                 {
+                    if (role.Name == "Admin")
+                    {
+                        var findUser = model.FirstOrDefault(m => m.IsSelected == true);
+                        if (findUser == null)
+                        {
+                            ViewBag.ErrorTitle = "Podczas usuwania użytkownika z roli wystąpił błąd!";
+                            ViewBag.ErrorMessage = "Co najmniej jeden użytkownik musi mieć uprawnienia administratora.";
+                            return View("DbExceptionHandler");
+                        }
+                        
+                    }
                     result = await userManager.RemoveFromRoleAsync(user, role.Name);
                 }
                 else
@@ -343,6 +366,7 @@ namespace DotNetWMS.Controllers
                 
             }
         }
+        
 
     }
 }
