@@ -1,5 +1,9 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
+﻿table {
+    border-collapse: collapse;
+    border-radius: 1em;
+    overflow: hidden;
+    box-shadow: 2px 2px 5px 0px #adb5bd;
+}
 
 a.navbar-brand {
   white-space: normal;
@@ -7,7 +11,7 @@ a.navbar-brand {
   word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
+
 a {
   color: #0366d6;
 }
@@ -153,6 +157,7 @@ body {
 .logout-form button{
     color: #000;
     height: 100%;
+    width: 100%;
 }
 
 
@@ -167,8 +172,30 @@ body {
 
     .logout-form {
         position: relative;
-        width: 14%;
+        width: 200px;
         margin: 30px 0 0 auto;
         right: 0;
     }
+}
+
+
+.button-col{
+    display: flex;
+}
+
+.button-col .btn{
+    margin: 2px;
+}
+
+.table .thead-light a {
+    color: #495057;
+}
+
+
+
+/* FORM */
+
+.form-control:focus {
+    border-color: #adb5bd;
+    box-shadow: 0 0 0 0.2rem #dee2e6;
 }
