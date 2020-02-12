@@ -4,55 +4,64 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="card border-dark mb-3">
+    <div class="card-header"><h4>Edycja klienta</h4></div>
+    <div class="card-body text-dark">
 
-<h4>External</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<ContractorType>()"></select>
-                <span asp-validation-for="Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Type" class="control-label"></label>
+                    <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<ContractorType>()"></select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="TaxId" class="control-label"></label>
                 <input asp-for="TaxId" class="form-control" />
                 <span asp-validation-for="TaxId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Street" class="control-label"></label>
-                <input asp-for="Street" class="form-control" />
-                <span asp-validation-for="Street" class="text-danger"></span>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Street" class="control-label"></label>
+                    <input asp-for="Street" class="form-control" />
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="City" class="control-label"></label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-2">
+                    <label asp-for="ZipCode" class="control-label"></label>
+                    <input asp-for="ZipCode" class="form-control" placeholder="Kod Pocztowy" />
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                </div>
             </div>
+
+
             <div class="form-group">
-                <label asp-for="ZipCode" class="control-label"></label>
-                <input asp-for="ZipCode" class="form-control" />
-                <span asp-validation-for="ZipCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" class="btn btn-success">Zapisz <i class="fas fa-plus"></i></button>
             </div>
         </form>
+
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
+
+<a asp-action="Index" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
