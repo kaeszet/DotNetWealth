@@ -5,61 +5,70 @@
     ViewBag.Title = "Edit Role";
 }
 
-<h1>Edytuj rolę</h1>
+<div class="card border-dark mb-3">
+    <div class="card-header"><h4>Szczegóły</h4></div>
+    <div class="card-body text-dark">
 
-<form method="post" class="mt-3">
-    <div class="form-group row">
-        <label asp-for="Id" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
-            <input asp-for="Id" disabled class="form-control">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="RoleName" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
-            @if (Admin_DefaultRoles.IsDefaultRole(Model.RoleName))
-            {
-                <input asp-for="RoleName" disabled class="form-control">
-            }
-            else
-            {
-                <input asp-for="RoleName" class="form-control">
-            }
-            <span asp-validation-for="RoleName" class="text-danger"></span>
-        </div>
+
+        <form method="post" class="mt-3">
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group row">
+                <label asp-for="Id" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <input asp-for="Id" disabled class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label asp-for="RoleName" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    @if (Admin_DefaultRoles.IsDefaultRole(Model.RoleName))
+                    {
+                        <input asp-for="RoleName" disabled class="form-control">
+                    }
+                    else
+                    {
+                        <input asp-for="RoleName" class="form-control">
+                    }
+                    <span asp-validation-for="RoleName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    @if (!(Admin_DefaultRoles.IsDefaultRole(Model.RoleName)))
+                    {
+                        <button type="submit" class="btn btn-success">Uaktualnij</button>
+                    }
+                    <a asp-action="ListOfRoles" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i> Wróć do listy ról</a>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <div asp-validation-summary="All" class="text-danger"></div>
+<div class="card mt-0 mb-5 mx-5">
+    <div class="card-body">
 
-    <div class="form-group row">
-        <div class="col-sm-10">
-            @if (!(Admin_DefaultRoles.IsDefaultRole(Model.RoleName)))
-            {
-                <button type="submit" class="btn btn-primary">Uaktualnij</button>
-            }
-            <a asp-action="ListOfRoles" class="btn btn-primary">Powrót</a>
-        </div>
-    </div>
+        <h3 class="card-title">Użytkownicy roli @Model.RoleName</h3>
+        <hr />
 
-    <div class="card">
-        <div class="card-header">
-            <h3>Użytkownicy</h3>
-        </div>
-        <div class="card-body">
-            @if (Model.Users.Any())
+        @if (Model.Users.Any())
+        {
+            foreach (var user in Model.Users)
             {
-                foreach (var user in Model.Users)
-                {
-                    <h5 class="card-title">@user</h5>
-                }
+                <h5 class="card-title">@user</h5>
             }
-            else
-            {
-                <h5 class="card-title">Brak użytkowników posiadających tą rolę</h5>
-            }
-        </div>
-        <div class="card-footer">
-            <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleId="@Model.Id" class="btn btn-primary">Zarządzaj użytkownikami</a>
-        </div>
+        }
+        else
+        {
+            <h5 class="card-title">Brak użytkowników posiadających tą rolę</h5>
+        }
+        <hr />
+        <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleId="@Model.Id" class="btn btn-success"><i class="fas fa-user-plus"></i> Zarządzaj użytkownikami</a>
+
     </div>
-</form>
+</div>
+</div>
