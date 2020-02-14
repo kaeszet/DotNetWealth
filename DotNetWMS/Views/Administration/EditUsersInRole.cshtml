@@ -4,26 +4,31 @@
     var roleId = ViewBag.roleId;
 }
 
-<form method="post">
-    <div class="card">
-        <div class="card-header">
-            <h2>Przypisz użytkowników do ról</h2>
-        </div>
-        <div class="card-body">
+<div class="card border-dark mb-3">
+    <div class="card-header"><h4>Przypisz użytkowników do ról</h4></div>
+    <div class="card-body text-dark">
+
+
+        <form method="post" class="form-edit-role">
+
             @for (int i = 0; i < Model.Count; i++)
             {
-            <div class="form-check m-1">
-                <input type="hidden" asp-for="@Model[i].UserId" />
-                <input type="hidden" asp-for="@Model[i].UserName" />
-                <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-                <label class="form-check-label" asp-for="@Model[i].IsSelected">@Model[i].UserName</label>
-                <span asp-validation-for="@Model[i].IsSelected" class="text-danger"></span>
-            </div>
+                <div class="form-check mb-3">
+                    <input type="hidden" asp-for="@Model[i].UserId" />
+                    <input type="hidden" asp-for="@Model[i].UserName" />
+                    <input asp-for="@Model[i].IsSelected" class="form-check-input" />
+                    <label class="form-check-label" asp-for="@Model[i].IsSelected">@Model[i].UserName</label>
+                    <span asp-validation-for="@Model[i].IsSelected" class="text-danger"></span>
+                    <hr />
+                </div>
             }
-        </div>
-        <div class="card-footer">
-            <input type="submit" value="Zaktualizuj" class="btn btn-primary"/>
+
+        <div class="form-group button-admin-users">
+            <button type="submit" class="btn btn-success">Zaktualizuj <i class="fas fa-plus"></i></button>
             <a asp-action="EditRole" asp-route-id="@roleId" class="btn btn-primary">Wstecz</a>
         </div>
+        </form>
+
     </div>
-</form>
+</div>
+
