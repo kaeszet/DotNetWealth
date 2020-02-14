@@ -264,7 +264,7 @@ body {
     margin: 1%;
 }
 
-.button-admin {
+.button-admin, .button-admin-users {
     display: flex;
     flex-direction: column;
     align-items: baseline;
@@ -280,4 +280,9 @@ body {
     border-color: #adb5bd;
     transform: scale(1.1);
 }
+.button-admin-users .btn{
+    margin-bottom:1%;
+    margin-top: 1%;
+}
+
 
