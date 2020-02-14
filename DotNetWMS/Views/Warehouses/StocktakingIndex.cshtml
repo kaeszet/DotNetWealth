@@ -4,21 +4,28 @@
     ViewData["Title"] = "Stocktaking";
 }
 
-<h1>Inwentaryzacja</h1>
+<div class="card border-dark mb-3">
+    <div class="card-header"><h4>Inwentaryzacja magazynu</h4></div>
+    <div class="card-body text-dark">
 
-<h4>Warehouse</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+
         <form asp-action="Stocktaking" method="get">
-            <div class="form-group">
-                <label class="control-label"></label>
-                <select class="form-control" name="filter" asp-items="ViewBag.WarehouseId"></select>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label class="control-label"></label>
+                    <select class="form-control" name="filter" asp-items="ViewBag.WarehouseId"></select>
+                </div>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Inwentaryzuj" class="btn btn-primary" />
+                <button type="submit" class="btn btn-success">Inwentaryzuj <i class="fas fa-sticky-note"></i></button>
             </div>
         </form>
-    </div>
 
+    </div>
 </div>
+
+
+<a asp-action="Index" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
+
+
