@@ -285,4 +285,12 @@ body {
     margin-top: 1%;
 }
 
+input[type=checkbox]{
+    width: 20px;
+    height: 20px;
+}
+.form-edit-role label{
+    margin-left:10px;
+}
+
 
