@@ -5,7 +5,7 @@
 
 }
 
-<h1>Assign</h1>
+    <h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Przekaż do magazynu</h1>
 <form asp-action="Assign_to_warehouse" method="get">
     <div class="form-group">
         <p>
@@ -75,7 +75,8 @@
                     @Html.DisplayFor(modelItem => item.Warehouse.AssignFullName)
                 </td>
                 <td>
-                    <a asp-action="Assign_to_warehouse_confirm" asp-route-id="@item.Id">Assign</a>
+                    <a asp-action="Assign_to_warehouse_confirm" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fas fa-file-signature"></i> Przypisz</a>
+
                 </td>
             </tr>
         }

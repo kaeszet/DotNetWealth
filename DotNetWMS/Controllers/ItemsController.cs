@@ -144,7 +144,7 @@ namespace DotNetWMS.Controllers
             if (item.ExternalId != null)
             {
                 var ext = await _context.Externals.FindAsync(item.ExternalId);
-                ModelState.AddModelError(string.Empty, $"Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
+                ModelState.AddModelError(string.Empty, $"Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\".<br> Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
             }
 
             if (item == null)
