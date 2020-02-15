@@ -1,10 +1,27 @@
 ﻿@{
     ViewData["Title"] = "O nas";
 }
-<h1 class="mt-4 mb-4">@ViewData["Title"]</h1>
 
-<div>
-    <p class="m-0">Niniejsza aplikacja została wykonana przez studentów Wyższej Szkoły Ekonomii i Informatyki w Krakowie - </p>
-    <p class="m-0">Kamila Szydłowskiego, Krzysztofa Wcisło i Adama Żura. </p>
-    <p class="m-0">Publikowanie, kopiowanie, prezentowanie aplikacji i wykorzystywanie jej kodu źródłowego jest zabronione bez zgody autorów.</p>
+<div class="about">
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1 class="mt-4 mb-4">@ViewData["Title"]</h1>
+
+    </div>
+</div>
+
+<div class="row h-75">
+    <div class="col-md-6 d-flex">
+        <img src="~/images/wsei-logosvg.svg" width="100%"/>
+    </div>
+    <div class="col-md-6 d-flex flex-wrap align-items-center">
+        <p class="m-0">Niniejsza aplikacja została wykonana przez studentów Wyższej Szkoły Ekonomii i Informatyki w Krakowie:</p>
+        <ul>
+            <li>Kamila Szydłowskiego,</li>
+            <li>Krzysztofa Wcisło,</li>
+            <li>Adama Żura.</li>
+        </ul>
+        <p class="m-0"><u>Publikowanie, kopiowanie, prezentowanie aplikacji i wykorzystywanie jej kodu źródłowego jest zabronione bez zgody autorów.</u></p>
+    </div>
+</div>
 </div>
