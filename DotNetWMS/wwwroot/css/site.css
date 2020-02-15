@@ -338,3 +338,13 @@ a.aboutUs {
 .about{
     height: 500px;
 }
+
+.card-login, .card-register {
+    background-color: #f8f9fa;
+}
+
+@media (min-width: 1200px){
+    .container-main {
+        max-width: 1240px;
+    }
+}
