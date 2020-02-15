@@ -1,12 +1,9 @@
 ﻿@model IEnumerable<DotNetWMS.Models.Item>
-
 @{
     ViewData["Title"] = "Stocktaking";
 }
 
-<h1>Inwentaryzacja</h1>
-
-<div class="card-header"><h4>Inwentaryzacja magazynu</h4></div>
+<h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Inwentaryzacja magazynu</h1>
 
 <html>
 <head>
@@ -15,16 +12,31 @@
 
 </head>
 <body>
-    <div class="form-group">
-        <label class="control-label"></label>
-        <select class="form-control" name="filter" asp-items="ViewBag.WarehouseId"></select>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Inwentaryzuj" class="btn btn-primary" />
-    </div>
-    <table class="table">
-        <thead>
+    <form asp-action="Stocktaking" method="get">
+        <div class="form-group">
+            <label class="control-label"></label>
+            <select class="form-control" name="filter" asp-items="ViewBag.WarehouseId"></select>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Inwentaryzuj" class="btn btn-primary" />
+        </div>
+        <br>
+    </form>
+    <form asp-action="Index" method="get">
+        <div class="form-group">
+            <p>
+                Wyszukaj: <input type="text" name="search" value="@ViewData["Search"]" />
+                <button type="submit" class="btn btn-primary"><i class="fab fa-sistrix"></i></button> |
+                <a asp-action="Index" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
+            </p>
+        </div>
+    </form>
+    <table class="table table-hover">
+        <thead class="thead-light">
             <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Type)
                 </th>
@@ -58,9 +70,8 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Warehouse)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.External)
-                </th>
+
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -68,6 +79,9 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Type)
                     </td>
@@ -96,28 +110,35 @@
                         @Html.DisplayFor(modelItem => item.State)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Employee.City)
+                        @Html.DisplayFor(modelItem => item.Employee.Name)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Warehouse.Name)
                     </td>
+
                     <td>
-                        @Html.DisplayFor(modelItem => item.External.Name)
+                        <input type="checkbox" id="ok">
+                        <label for="ok"> O.K</label><br>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="notok">
+                        <label for="notok"> Do poprawy</label><br>
                     </td>
 
                 </tr>
             }
         </tbody>
     </table>
-    <div class="card-header">
+    <div class="thead-dark">
         <p>Kliknij tutaj aby wydrukować stronę</p>
 
-        <button onclick="myFunction()">Drukuj to</button>
+        <button class="btn btn-primary" onclick="myFunction()">Drukuj to</button>
 
         <script>
             function myFunction() {
                 window.print();
             }
-        </script></div>
+        </script>
+    </div>
 </body>
 </html>

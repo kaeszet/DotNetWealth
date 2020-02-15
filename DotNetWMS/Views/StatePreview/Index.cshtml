@@ -4,9 +4,7 @@
     ViewData["Title"] = "StatePreview";
 }
 
-<h1>State Preview</h1>
-
-<div class="card-header"><h4>Podgląd stanu</h4></div>
+<h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Podgląd stanu</h1>
 
 <html>
 <head>
@@ -22,8 +20,18 @@
     <div class="form-group">
         <input type="submit" value="Podgląd" class="btn btn-primary" />
     </div>
-    <table class="table">
-        <thead>
+    <br>
+    <form asp-action="Index" method="get">
+        <div class="form-group">
+            <p>
+                Wyszukaj: <input type="text" name="search" value="@ViewData["Search"]" />
+                <button type="submit" class="btn btn-primary"><i class="fab fa-sistrix"></i></button> |
+                <a asp-action="Index" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
+            </p>
+        </div>
+    </form>
+    <table class="table table-hover">
+        <thead class="thead-light">
             <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.Type)
@@ -62,7 +70,7 @@
                     @Html.DisplayNameFor(model => model.External)
                 </th>
                 <th>
-                    
+
                 </th>
             </tr>
         </thead>
