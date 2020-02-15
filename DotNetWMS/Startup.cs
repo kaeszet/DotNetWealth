@@ -36,8 +36,12 @@ namespace DotNetWMS
         {
             services.AddControllersWithViews();
             services.AddDbContext<DotNetWMSContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DotNetWMSContext")));
-            services.AddIdentity<WMSIdentityUser, IdentityRole>()
+            services.AddIdentity<WMSIdentityUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+            })
                     .AddEntityFrameworkStores<DotNetWMSContext>()
+                    .AddDefaultTokenProviders()
                     .AddErrorDescriber<CustomIdentityErrorDescriber>();
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
             services.AddMvc(options =>

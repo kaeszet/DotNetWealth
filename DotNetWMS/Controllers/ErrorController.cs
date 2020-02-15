@@ -12,7 +12,7 @@ namespace DotNetWMS.Controllers
     {
         private readonly ILogger logger;
 
-        public ErrorController(ILogger logger)
+        public ErrorController(ILogger<ErrorController> logger)
         {
             this.logger = logger;
         }
