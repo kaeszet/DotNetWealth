@@ -33,19 +33,22 @@
                     }
                     else
                     {
-                        <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
-                            <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-primary">Edytuj</a>
-                            <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-id="@role.Id" class="btn btn-primary">Przypisz uzytkownika</a>
-                            <span id="confirmDeleteSpan_@role.Id" style="display:none">
-                                <span>Jesteś pewien?</span>
-                                <button type="submit" class="btn btn-danger">Potwierdź</button>
-                                <a href="#" class="btn btn-primary" onclick="confirmDelete('@role.Id', false)">Anuluj</a>
-                            </span>
+                <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                    <div class="button-admin">
+                        <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edytuj</a>
 
-                            <span id="deleteSpan_@role.Id">
-                                <a href="#" class="btn btn-danger" onclick="confirmDelete('@role.Id', true)">Usuń</a>
-                            </span>
-                        </form>
+                        <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-id="@role.Id" class="btn btn-sm btn-light"><i class="fas fa-edit"></i>    Przypisz uzytkownika</a>
+
+                        <span id="confirmDeleteSpan_@role.Id" style="display:none">
+                            <span><b>Jesteś pewien?</b></span>
+                            <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i></button>
+                            <a href="#" class="btn btn-danger" onclick="confirmDelete('@role.Id', false)"><i class="fas fa-window-close"></i></a>
+                        </span>
+                        <span id="deleteSpan_@role.Id">
+                            <a href="#" class="btn btn-sm btn-danger" onclick="confirmDelete('@role.Id', true)"><i class="fas fa-trash-alt"></i> Usuń</a>
+                        </span>
+                    </div>
+                </form>
                     }
                 </div>
             </div>
