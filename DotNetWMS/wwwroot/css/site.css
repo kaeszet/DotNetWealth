@@ -270,15 +270,19 @@ body {
     align-items: baseline;
 }
 
-.button-admin .btn{
-    margin: 1%;
+.button-admin .btn-light{
+    margin-top: 1%;
+    margin-bottom: 1%;
     background-color: #dee2e6;
     border-color: #dee2e6;
 }
-.button-admin .btn:hover{
+.button-admin .btn-warning,.button-admin .btn-danger{
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+.button-admin .btn-light:hover{
     background-color: #adb5bd;
     border-color: #adb5bd;
-    transform: scale(1.1);
 }
 .button-admin-users .btn{
     margin-bottom:1%;
