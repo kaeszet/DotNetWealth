@@ -85,7 +85,7 @@
                 </a>
                 @if (User.IsInAnyRoles("StandardPlus,Moderator"))
                 {
-                    <a asp-controller="Warehouses" asp-action="StocktakingIndex" type="button">
+                    <a asp-controller="Stocktaking" asp-action="Index" type="button">
                         <div class="card-body">
                             <h6 class="card-title">Inwentaryzacja</h6>
                             <i class="fas fa-calculator fa-4x"></i>
@@ -110,7 +110,7 @@
                                 <i class="fas fa-glasses fa-4x"></i>
                             </div>
                         </a>
-                        <a href="#" type="button">
+                        <a asp-controller="StatePreview" asp-action="Index" type="button">
                             <div class="card-body">
                                 <h6 class="card-title">Podgląd stanu</h6>
                                 <i class="fas fa-search-dollar fa-4x"></i>
