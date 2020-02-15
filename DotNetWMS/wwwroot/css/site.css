@@ -328,3 +328,13 @@ input[type=checkbox]{
     display: flex;
     align-items: center;
 }
+
+
+
+a.aboutUs {
+    color: #495057;
+}
+
+.about{
+    height: 500px;
+}
