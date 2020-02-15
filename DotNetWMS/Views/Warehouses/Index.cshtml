@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Przegląd magazynów</h1>
+<h1 class="index-title"><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Przegląd magazynów</h1>
 
 @if (User.IsInAnyRoles("StandardPlus,Moderator"))
 {
