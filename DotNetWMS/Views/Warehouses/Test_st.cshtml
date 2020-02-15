@@ -1,0 +1,62 @@
+﻿@model DotNetWMS.Models.StocktakingViewModel
+
+@{
+    ViewData["Title"] = "Test_st";
+}
+
+<h1>Index</h1>
+
+
+<form asp-action="Test_st" method="get">
+    <p>
+
+        <select asp-for="Warehouse" asp-items="Model.Warehouses">
+            <option value="">Wszystkie</option>
+        </select>
+
+        Title: <input type="text" asp-for="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Items[0].Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items[0].ItemCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items[0].Quantity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

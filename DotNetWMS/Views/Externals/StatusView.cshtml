@@ -1,0 +1,38 @@
+﻿@using DotNetWMS.Resources
+@model DotNetWMS.Models.StatusViewViewModel;
+
+@{
+    ViewData["Title"] = "StatusView";
+}
+
+<h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a>Podgląd stanu</h1>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form id="form" asp-action="StatusView2" method="post">
+            <div class="form-group">
+                <label asp-for="State" class="control-label"></label>
+                <select asp-for="State" id="selectList" class="form-control" asp-items="Html.GetEnumSelectList<ItemState>()"></select>
+                <span asp-validation-for="State" class="text-danger"></span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<button id="choose" class="btn btn-success">Wybierz</button>
+
+
+<div id="divPartial" class="mt-3">
+   
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var url = '@Url.Action("StatusView", "Externals")';
+            $('#choose').click(function() {
+            var keyWord = $('#selectList').val();
+            $('#divPartial').load(url, { state: keyWord });
+            })
+    </script>
+}

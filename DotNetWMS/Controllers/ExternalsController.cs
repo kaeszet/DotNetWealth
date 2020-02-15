@@ -50,7 +50,20 @@ namespace DotNetWMS.Controllers
             }
             return View(await externals.AsNoTracking().ToListAsync());
         }
-        
+        public IActionResult StatusView(StatusViewViewModel model)
+        {
+            model.Items = _context.Items.Select(i => i).Where(i => i.State == model.State).ToList();
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult StatusView(ItemState state)
+        {
+
+            var items = _context.Items.Select(i => i).Where(i => i.State == state).ToList();
+            ViewData["ItemList"] = items;
+
+            return PartialView("_StatusViewTable", items);
+        }
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
