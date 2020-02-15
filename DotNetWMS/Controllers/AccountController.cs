@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
@@ -16,14 +17,17 @@ namespace DotNetWMS.Controllers
         private readonly UserManager<WMSIdentityUser> userManager;
         private readonly SignInManager<WMSIdentityUser> signInManager;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly ILogger<AccountController> logger;
 
         public AccountController(UserManager<WMSIdentityUser> userManager,
             SignInManager<WMSIdentityUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            ILogger<AccountController> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.roleManager = roleManager;
+            this.logger = logger;
         }
         
         [HttpGet]
@@ -68,18 +72,17 @@ namespace DotNetWMS.Controllers
 
                 if (result.Succeeded)
                 {
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account",
+                        new { userId = user.Id, token = token }, Request.Scheme);
+
+                    logger.Log(LogLevel.Warning, confirmationLink);
+
                     if (userManager.Users.Count() == 1)
                     {
                         await IsDefaultRolesExists();
                         await userManager.AddToRoleAsync(user, "Admin");
-
-                        //if (!roleManager.Roles.Any(r => r.Name == "Admin"))
-                        //{
-                        //    IdentityRole identityRole = new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" };
-                        //    await roleManager.CreateAsync(identityRole);
-                        //    await userManager.AddToRoleAsync(user, identityRole.Name);
-                        //}
-
                     }
                     
                     
@@ -87,12 +90,17 @@ namespace DotNetWMS.Controllers
                     {
                         return RedirectToAction("ListOfUsers", "Administration");
                     }
-                    else
-                    {
-                        await signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("index", "home");
-                    }
-                    
+
+                    ViewBag.ExceptionTitle = "Rejestracja udana!";
+                    ViewBag.ExceptionMessage = "Przed zalogowaniem musisz aktywować konto klikając na link wysłany mailem";
+                    return View("GlobalExceptionHandler");
+
+                    //else
+                    //{
+                    //    await signInManager.SignInAsync(user, isPersistent: false);
+                    //    return RedirectToAction("index", "home");
+                    //}
+
                 }
 
                 foreach (var error in result.Errors)
@@ -103,8 +111,6 @@ namespace DotNetWMS.Controllers
 
             return View(model);
         }
-
-        
 
         [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> IsEmailInUse(string email)
@@ -120,6 +126,30 @@ namespace DotNetWMS.Controllers
                 return Json($"Konto z powyższym adresem ({email}) już istnieje!");
             }
         }
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("index", "home");
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"Identyfikator użytkownika {userId} jest nieprawidłowy";
+                return View("NotFound");
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return View();
+            }
+
+            ViewBag.ExceptionTitle = "Nie można potwierdzić adresu email!";
+            return View("GlobalExceptionHandler");
+        }
         [HttpGet]
         public IActionResult Login()
         {
@@ -132,10 +162,18 @@ namespace DotNetWMS.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await userManager.FindByNameAsync(model.Login);
+
+                if (user != null && !user.EmailConfirmed &&
+                    (await userManager.CheckPasswordAsync(user, model.Password)))
+                {
+                    ModelState.AddModelError(string.Empty, "Konto nie zostało jeszcze aktywowane!");
+                    return View(model);
+                }
+
                 var result = await signInManager.PasswordSignInAsync(
                     model.Login, model.Password, model.RememberMe, false);
 
-                var user = await userManager.FindByNameAsync(model.Login);
 
                 if (result.Succeeded)
                 {
@@ -171,6 +209,76 @@ namespace DotNetWMS.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("index", "home");
         }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                
+                if (user != null && await userManager.IsEmailConfirmedAsync(user))
+                {
+                   
+                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    var passwordResetLink = Url.Action("ResetPassword", "Account",
+                            new { email = model.Email, token }, Request.Scheme);
+
+                    logger.Log(LogLevel.Warning, passwordResetLink);
+
+                    return View("ForgotPasswordConfirmation");
+                }
+
+                //drugi return ma zabezp. przed bruteforcem
+                return View("ForgotPasswordConfirmation");
+            }
+
+            return View(model);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            
+            if (token == null || email == null)
+            {
+                ModelState.AddModelError(string.Empty, "Nieprawidłowy token!");
+            }
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user != null)
+                {
+                    var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return View("ResetPasswordConfirmation");
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(model);
+                }
+
+                return View("ResetPasswordConfirmation");
+            }
+            return View(model);
+        }
+
         private async Task IsDefaultRolesExists()
         {
             if (!roleManager.Roles.Any(r => r.Name == "Admin"))

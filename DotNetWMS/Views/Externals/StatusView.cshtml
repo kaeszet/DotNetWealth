@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form id="form" asp-action="StatusView2" method="post">
+        <form id="form" method="post">
             <div class="form-group">
                 <label asp-for="State" class="control-label"></label>
                 <select asp-for="State" id="selectList" class="form-control" asp-items="Html.GetEnumSelectList<ItemState>()"></select>

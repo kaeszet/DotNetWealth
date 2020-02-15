@@ -23,71 +23,28 @@ namespace DotNetWMS.Controllers
             _context = context;
         }
         [Authorize(Roles = "StandardPlus,Moderator")]
-        public async Task<IActionResult> StocktakingIndex(string search)
+        public IActionResult Stocktaking(StocktakingViewModel model)
         {
-            wrhId = Convert.ToInt32(search);
-            ViewData["Hide"] = wrhId == 0 ? "d-none" : "";
-            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", wrhId);
-            ViewData["Search"] = search;
-
-            var items = _context.Items.Select(e => e).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
-
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                
-                items = items.Where(i => i.WarehouseId.ToString().Contains(search)).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
-            }
-
-            return View(await items.AsNoTracking().ToListAsync());
+            model.Items = _context.Items.Select(i => i).ToList();
+            ViewData["WarehouseList"] = new SelectList(_context.Warehouses, "Id", "AssignFullName");
+            return View(model);
         }
-        public async Task<IActionResult> Test_st(string warehouseId, string searchString)
+        [HttpPost]
+        [Authorize(Roles = "StandardPlus,Moderator")]
+        public IActionResult Stocktaking(string warehouseFullName)
         {
-            // Use LINQ to get list of genres.
-            IQueryable<int?> ItemQuery = from i in _context.Items
-                                            orderby i.WarehouseId
-                                            select i.WarehouseId;
-
-            //IQueryable<string> WarehouseQuery = _context.Warehouses.Where(w => w.Id == ItemQuery).Select(w => w.AssignFullName);
-
-
-
-            var items = _context.Items.Select(i => i);
-
-            if (!string.IsNullOrEmpty(searchString))
+            //var warehouse = _context.Warehouses.FirstOrDefault(w => w.AssignFullName == warehouseFullName);
+            if (string.IsNullOrEmpty(warehouseFullName))
             {
-                items = items.Where(i => i.ItemCode.Contains(searchString));
+                return NotFound();
             }
+            int warehouseId = Convert.ToInt32(warehouseFullName);
+            var items = _context.Items.Select(i => i).Where(i => i.WarehouseId == warehouseId).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+            ViewData["ItemList"] = items;
 
-            if (!string.IsNullOrEmpty(warehouseId))
-            {
-                items = items.Where(i => i.WarehouseId == Convert.ToInt32(warehouseId));
-            }
-
-            var stocktakingVM = new StocktakingViewModel
-            {
-                Warehouses = new SelectList(await ItemQuery.Distinct().ToListAsync()),
-                Items = await items.ToListAsync()
-            };
-
-            return View(stocktakingVM);
+            return PartialView("_StocktakingTable", items);
         }
-        //[Authorize(Roles = "StandardPlus,Moderator")]
-        //[HttpGet]
-        //public IActionResult Stocktaking(string filter)
-        //{
-        //    ViewData["Filter"] = filter;
 
-        //    var items = from i in _context.Items select i;
-        //    //var items = _context.Items.Select(i => i);
-        //    var wrh = _context.Warehouses.FirstOrDefault(w => w.Id == Convert.ToInt32(filter));
-
-        //    if (!string.IsNullOrEmpty(filter))
-        //    {
-        //        items = items.Where(i => i.WarehouseId == wrh.Id && i.ExternalId == null);
-        //    }
-        //    return View(items.AsNoTracking().ToList());
-        //}
         public async Task<IActionResult> Index(string order, string search)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
