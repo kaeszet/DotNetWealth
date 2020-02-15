@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "_StatusViewTable";
+}
+
+@if (ViewBag.ItemList != null)
+{
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>
+                    Typ
+                </th>
+                <th>
+                    Nazwa
+                </th>
+                <th>
+                    Producent
+                </th>
+                <th>
+                    Model
+                </th>
+                <th>
+                    Kod
+                </th>
+                <th>
+                    Ilość
+                </th>
+                <th>
+                    Jedn.
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ViewBag.ItemList)
+            {
+            <tr>
+                <td>
+                    @item.Type
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Producer
+                </td>
+                <td>
+                    @item.Model
+                </td>
+                <td>
+                    @item.ItemCode
+                </td>
+                <td>
+                    @item.Quantity
+                </td>
+                <td>
+                    @item.Units
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
