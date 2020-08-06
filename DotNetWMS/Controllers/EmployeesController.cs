@@ -21,7 +21,12 @@ namespace DotNetWMS.Controllers
         {
             _context = context;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Index(string order, string search)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";

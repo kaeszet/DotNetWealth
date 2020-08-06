@@ -6,10 +6,19 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// Viewmodel to handle the view with the item status report
+    /// </summary>
     public class StatusViewViewModel
     {
+        /// <summary>
+        /// A field to capture state of an item
+        /// </summary>
         [Display(Name = "Status")]
         public ItemState State { get; set; }
+        /// <summary>
+        /// A field to capture list of items
+        /// </summary>
         public List<Item> Items { get; set; }
     }
 }

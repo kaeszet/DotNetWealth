@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// Enum that stores item units
+    /// </summary>
     public enum ItemUnits
     {
         [Display(Name = "szt.")]

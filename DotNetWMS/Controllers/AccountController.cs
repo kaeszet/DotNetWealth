@@ -11,12 +11,27 @@ using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
+    /// <summary>
+    /// Controller class for handling the account creation process and logging into the application. This class includes all the procedures necessary for the correct verification of data entered by the user.
+    /// </summary>
     [AllowAnonymous]
     public class AccountController : Controller
     {
+        /// <summary>
+        /// Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
+        /// </summary>
         private readonly UserManager<WMSIdentityUser> userManager;
+        /// <summary>
+        /// Implementation of the WMSIdentityUser class in the SignInManager class to handle the user's login to the application (also external)
+        /// </summary>
         private readonly SignInManager<WMSIdentityUser> signInManager;
+        /// <summary>
+        /// Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
+        /// </summary>
         private readonly RoleManager<IdentityRole> roleManager;
+        /// <summary>
+        /// AccountController's logger implementation
+        /// </summary>
         private readonly ILogger<AccountController> logger;
 
         public AccountController(UserManager<WMSIdentityUser> userManager,
@@ -29,12 +44,20 @@ namespace DotNetWMS.Controllers
             this.roleManager = roleManager;
             this.logger = logger;
         }
-        
+        /// <summary>
+        /// GET method to handle the registration view
+        /// </summary>
+        /// <returns>Returns the registration form view</returns>
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
+        /// <summary>
+        /// POST method to handle the completed registration form
+        /// </summary>
+        /// <param name="model">RegisterViewModel class object whose data will be processed by the Identity Framework</param>
+        /// <returns>Returns the view resulting from the processing of user-entered data</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -111,7 +134,11 @@ namespace DotNetWMS.Controllers
 
             return View(model);
         }
-
+        /// <summary>
+        /// GET/POST method to check if the provided e-mail address was previously used for registration
+        /// </summary>
+        /// <param name="email">E-mail address to check if it was used during successful registration</param>
+        /// <returns>Returns true if e-mail adress does not exists, otherwise - false. Response is serialized to JSON format.</returns>
         [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> IsEmailInUse(string email)
         {
@@ -126,6 +153,12 @@ namespace DotNetWMS.Controllers
                 return Json($"Konto z powyższym adresem ({email}) już istnieje!");
             }
         }
+        /// <summary>
+        /// A method that supports the email address confirmation process
+        /// </summary>
+        /// <param name="userId">User ID provided for confirmation</param>
+        /// <param name="token">Security token assigned to the email confirmation command</param>
+        /// <returns>Returns a view depending on whether the provided data is valid or not</returns>
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
@@ -150,12 +183,21 @@ namespace DotNetWMS.Controllers
             ViewBag.ExceptionTitle = "Nie można potwierdzić adresu email!";
             return View("GlobalExceptionHandler");
         }
+        /// <summary>
+        /// GET method to handle the login view
+        /// </summary>
+        /// <returns>Returns login page view</returns>
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-
+        /// <summary>
+        /// POST method to handle and proceeding the completed login form
+        /// </summary>
+        /// <param name="model">LoginViewModel class object whose data will be processed by the Identity Framework</param>
+        /// <param name="returnUrl">Captured url to redirect the user to the previous page after successful login</param>
+        /// <returns>Returns a view depending on whether the provided data is valid or not</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)

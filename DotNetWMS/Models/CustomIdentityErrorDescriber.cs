@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// The class used to translate the error description into Polish inherits from the IdentityErrorDescriber class. Contains the overridden IdentityError classes for each error type.
+    /// </summary>
     public class CustomIdentityErrorDescriber : IdentityErrorDescriber
     {
         public override IdentityError DefaultError() { return new IdentityError { Code = nameof(DefaultError), Description = $"Wystąpił nieznany błąd" }; }
