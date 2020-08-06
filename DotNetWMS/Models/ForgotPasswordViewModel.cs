@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// Viewmodel to handle the view with the application password recovery form
+    /// </summary>
     public class ForgotPasswordViewModel
     {
         [Required]

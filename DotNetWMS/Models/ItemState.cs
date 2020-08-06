@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// Enum that stores item statuses
+    /// </summary>
     public enum ItemState
     {
         [Display(Name = "Zamówiony")]

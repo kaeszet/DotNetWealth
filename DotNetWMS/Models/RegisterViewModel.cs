@@ -9,34 +9,58 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// Viewmodel to handle the view with the new user register form
+    /// </summary>
     public class RegisterViewModel
     {
+        /// <summary>
+        /// A field to capture new user's name
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(30)]
         [Display(Name = "Imię")]
         public string Name { get; set; }
+        /// <summary>
+        /// A field to capture new user's surname
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(40)]
         [Display(Name = "Nazwisko")]
         public string Surname { get; set; }
+        /// <summary>
+        /// A field to capture new user's employee number
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Identyfikator")]
         [StringLength(12)]
         [RegularExpression(@"[0-9]{12}", ErrorMessage = "Nieprawidłowy identyfikator!")]
         public string EmployeeNumber { get; set; }
+        /// <summary>
+        /// A field to capture new user's headquarters city
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Oddział")]
         [StringLength(30)]
         public string City { get; set; }
+        /// <summary>
+        /// A field to capture new user's email adress
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [EmailAddress]
         [Remote(action: "IsEmailInUse", controller: "Account")]
         public string Email { get; set; }
+        /// <summary>
+        /// A field to capture new user's password
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Hasło")]
         [StringLength(30)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        /// <summary>
+        /// A field to capture password confirmation
+        /// </summary>
         [Display(Name = "Potwierdź hasło")]
         [DataType(DataType.Password)]
         [StringLength(30)]
