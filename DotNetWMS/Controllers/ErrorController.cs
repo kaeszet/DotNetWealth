@@ -10,12 +10,20 @@ namespace DotNetWMS.Controllers
 {
     public class ErrorController : Controller
     {
+        /// <summary>
+        /// Controller class to support displaying error messages
+        /// </summary>
         private readonly ILogger logger;
 
         public ErrorController(ILogger<ErrorController> logger)
         {
             this.logger = logger;
         }
+        /// <summary>
+        /// The method responsible for displaying the error message depending on the error number
+        /// </summary>
+        /// <param name="statusCode">Error code</param>
+        /// <returns>Returns an error code dependent view</returns>
         [Route("Error/{statusCode}")]
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
@@ -33,6 +41,10 @@ namespace DotNetWMS.Controllers
 
             return View("NotFound");
         }
+        /// <summary>
+        /// The method responsible for displaying the error message if the error is of a global type
+        /// </summary>
+        /// <returns>Returns a view with an error message containing the data captured in the method</returns>
         [Route("Error")]
         public IActionResult GlobalExceptionHandler()
         {

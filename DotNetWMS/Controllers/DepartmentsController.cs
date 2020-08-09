@@ -11,18 +11,31 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
+    /// <summary>
+    /// Controller class to support the CRUD process for the Department model
+    /// </summary>
     [Authorize(Roles = "Kadry,Moderator")]
     public class DepartmentsController : Controller
     {
+        /// <summary>
+        /// A field for handling the delivery of information to the DB associated with the Entity Core framework
+        /// </summary>
         private readonly DotNetWMSContext _context;
 
         public DepartmentsController(DotNetWMSContext context)
         {
             _context = context;
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Department's Index view
+        /// </summary>
+        /// <returns>Returns Department's Index view</returns>
         public async Task<IActionResult> Index() => View(await _context.Departments.ToListAsync());
-
+        /// <summary>
+        /// GET method responsible for returning an Department's Details view
+        /// </summary>
+        /// <param name="id">Department ID which should be returned</param>
+        /// <returns>Department's Details view</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,12 +52,19 @@ namespace DotNetWMS.Controllers
 
             return View(department);
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Department's Create view
+        /// </summary>
+        /// <returns>Returns Department's Create view</returns>
         public IActionResult Create()
         {
             return View();
         }
-
+        /// <summary>
+        /// POST method responsible for checking and transferring information from the form to DB
+        /// </summary>
+        /// <param name="department">Department model class with binding DB attributes</param>
+        /// <returns>Returns Department's Create view, data validation on the model side</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Department department)
@@ -58,6 +78,11 @@ namespace DotNetWMS.Controllers
             }
             return View(department);
         }
+        /// <summary>
+        /// GET/POST method responsible for checking whether the department with the given name exists in the DB
+        /// </summary>
+        /// <param name="name">Department name to be checked</param>
+        /// <returns>Returns true in JSON format if the department does not exist. Otherwise - a message with an error</returns>
         [AcceptVerbs("Get", "Post")]
         public IActionResult IsDepartmentExists(string name)
         {
@@ -72,7 +97,11 @@ namespace DotNetWMS.Controllers
                 return Json($"Podane stanowisko ({name}) już istnieje!");
             }
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Department's Edit view
+        /// </summary>
+        /// <param name="id">Department ID which should be returned</param>
+        /// <returns>Returns Department's Edit view</returns>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,7 +116,12 @@ namespace DotNetWMS.Controllers
             }
             return View(department);
         }
-
+        /// <summary>
+        /// POST method responsible for checking and transferring information from the form to DB
+        /// </summary>
+        /// <param name="id">Department ID to edit</param>
+        /// <param name="department">Department model class with binding DB attributes</param>
+        /// <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Department department)
@@ -119,7 +153,11 @@ namespace DotNetWMS.Controllers
             }
             return View(department);
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Department's Delete view
+        /// </summary>
+        /// <param name="id">Department ID to delete</param>
+        /// <returns>Returns Department's Delete view if exists</returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,7 +174,11 @@ namespace DotNetWMS.Controllers
 
             return View(department);
         }
-
+        /// <summary>
+        /// POST method responsible for removing the department from DB if the user confirms this action
+        /// </summary>
+        /// <param name="id">Department ID to delete</param>
+        /// <returns>Returns Department's Index view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -146,7 +188,11 @@ namespace DotNetWMS.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        /// <summary>
+        /// Private method responsible for checking if there is a department with the given id
+        /// </summary>
+        /// <param name="id">Department ID to check</param>
+        /// <returns>Returns true if the department exists. Otherwise - false.</returns>
         private bool DepartmentExists(int id)
         {
             return _context.Departments.Any(e => e.Id == id);

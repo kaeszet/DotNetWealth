@@ -11,10 +11,19 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
+    /// <summary>
+    /// Controller class to support the CRUD process for the Employee model
+    /// </summary>
     [Authorize(Roles = "Kadry,Moderator")]
     public class EmployeesController : Controller
     {
+        /// <summary>
+        /// A field for handling the delivery of information to the DB associated with the Entity Core framework
+        /// </summary>
         private readonly DotNetWMSContext _context;
+        /// <summary>
+        /// Universal Electronic System for Registration of the Population number
+        /// </summary>
         private static string Pesel;
 
         public EmployeesController(DotNetWMSContext context)
@@ -22,11 +31,11 @@ namespace DotNetWMS.Controllers
             _context = context;
         }
         /// <summary>
-        /// 
+        /// GET method responsible for returning an Employee's Index view and supports a search engine
         /// </summary>
-        /// <param name="order"></param>
-        /// <param name="search"></param>
-        /// <returns></returns>
+        /// <param name="order">Sort surnames in ascending or descending order</param>
+        /// <param name="search">Search phrase in the search field</param>
+        /// <returns>Returns Employee's Index view with list of employees in the order set by the user</returns>
         public async Task<IActionResult> Index(string order, string search)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
@@ -50,7 +59,11 @@ namespace DotNetWMS.Controllers
             }
             return View(await employees.AsNoTracking().ToListAsync());
         }
-        
+        /// <summary>
+        /// GET method responsible for returning an Employee's Details view
+        /// </summary>
+        /// <param name="id">Employee ID which should be returned</param>
+        /// <returns>Employee's Details view</returns>
         public async Task<IActionResult> Details(int? id)
         {
 
@@ -69,7 +82,10 @@ namespace DotNetWMS.Controllers
 
             return View(employee);
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Employee's Create view
+        /// </summary>
+        /// <returns>Returns Employee's Create view</returns>
         public IActionResult Create()
         {
             
@@ -77,7 +93,11 @@ namespace DotNetWMS.Controllers
             
             return View();
         }
-
+        /// <summary>
+        /// POST method responsible for checking and transferring information from the form to DB
+        /// </summary>
+        /// <param name="employee">Employee model class with binding DB attributes</param>
+        /// <returns>If succeed, returns Employee's Index view. Otherwise - show error message</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
@@ -101,7 +121,11 @@ namespace DotNetWMS.Controllers
             
             return View(employee);
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Employee's Edit view
+        /// </summary>
+        /// <param name="id">Employee ID which should be returned</param>
+        /// <returns>Returns Employee's Edit view</returns>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -119,7 +143,12 @@ namespace DotNetWMS.Controllers
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             return View(employee);
         }
-
+        /// <summary>
+        /// POST method responsible for checking and transferring information from the form to DB
+        /// </summary>
+        /// <param name="id">Employee ID to edit</param>
+        /// <param name="employee">Employee model class with binding DB attributes</param>
+        /// <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
@@ -160,7 +189,11 @@ namespace DotNetWMS.Controllers
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             return View(employee);
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Employee's Delete view
+        /// </summary>
+        /// <param name="id">Employee ID to delete</param>
+        /// <returns>Returns Employee's Delete view if exists</returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -178,7 +211,11 @@ namespace DotNetWMS.Controllers
 
             return View(employee);
         }
-
+        /// <summary>
+        /// POST method responsible for removing employee from DB if the user confirms this action
+        /// </summary>
+        /// <param name="id">Employee ID to delete</param>
+        /// <returns>Returns Employee's Index view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -200,7 +237,11 @@ namespace DotNetWMS.Controllers
             }
             
         }
-
+        /// <summary>
+        /// A private method responsible for checking if there is a employee with the given id
+        /// </summary>
+        /// <param name="id">Employee ID to check</param>
+        /// <returns>Returns true if the employee exists. Otherwise - false.</returns>
         private bool EmployeeExists(int id)
         {
             return _context.Employees.Any(e => e.Id == id);
