@@ -10,13 +10,20 @@ using NLog.Extensions.Logging;
 
 namespace DotNetWMS
 {
+    /// <summary>
+    /// Main class responsible for starting the application
+    /// </summary>
     public class Program
     {
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
         }
-
+        /// <summary>
+        /// Static method responsible for the host start configuration
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns>Returns the configured object of the Host class</returns>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                  .ConfigureLogging((hostingContext, logging) =>
