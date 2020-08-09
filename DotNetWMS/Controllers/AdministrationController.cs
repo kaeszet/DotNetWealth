@@ -10,10 +10,19 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Controllers
 {
+    /// <summary>
+    /// Controller class to operate the administration panel
+    /// </summary>
     [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
+        /// <summary>
+        /// Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
+        /// </summary>
         private readonly RoleManager<IdentityRole> roleManager;
+        /// <summary>
+        /// Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
+        /// </summary>
         private readonly UserManager<WMSIdentityUser> userManager;
 
         public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<WMSIdentityUser> userManager)
@@ -21,30 +30,50 @@ namespace DotNetWMS.Controllers
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
+        /// <summary>
+        /// GET method returning a view with access denied information
+        /// </summary>
+        /// <returns>Returns the view with access denied information</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult AccessDenied()
         {
             return View();
         }
+        /// <summary>
+        /// GET method returning a view with list of roles
+        /// </summary>
+        /// <returns>Returns the view with list of created roles</returns>
         [HttpGet]
         public IActionResult ListOfRoles()
         {
             var roles = roleManager.Roles;
             return View(roles);
         }
+        /// <summary>
+        /// GET method returning a view with list of users
+        /// </summary>
+        /// <returns>Returns the view with list of registered users</returns>
         [HttpGet]
         public IActionResult ListOfUsers()
         {
             var users = userManager.Users;
             return View(users);
         }
+        /// <summary>
+        /// GET method to handle the role creation view
+        /// </summary>
+        /// <returns>Returns the role creation form view</returns>
         [HttpGet]
         public IActionResult CreateRole()
         {
             return View();
         }
-
+        /// <summary>
+        /// POST method to handle the completed role creation form
+        /// </summary>
+        /// <param name="model">Admin_CreateRoleViewModel class object which will be processed by an instance of the Identity framework classes</param>
+        /// <returns>Returns the view resulting from the processing of user-entered data</returns>
         [HttpPost]
         public async Task<IActionResult> CreateRole(Admin_CreateRoleViewModel model)
         {
@@ -70,6 +99,11 @@ namespace DotNetWMS.Controllers
 
             return View(model);
         }
+        /// <summary>
+        /// GET method to handle the role edition view
+        /// </summary>
+        /// <param name="id">Role ID which will be edited</param>
+        /// <returns>Returns the view with details of the role with the entered ID or an error if the role was not found</returns>
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
         {
@@ -97,7 +131,11 @@ namespace DotNetWMS.Controllers
 
             return View(model);
         }
-
+        /// <summary>
+        /// POST method to handle the completed role edition form
+        /// </summary>
+        /// <param name="model">Admin_EditRoleViewModel class object which will be processed by an instance of RoleManager class</param>
+        /// <returns>Returns the view resulting from the processing of user-entered data</returns>
         [HttpPost]
         public async Task<IActionResult> EditRole(Admin_EditRoleViewModel model)
         {
@@ -133,6 +171,11 @@ namespace DotNetWMS.Controllers
                 return View(model);
             }
         }
+        /// <summary>
+        /// POST method to handle the role removal process 
+        /// </summary>
+        /// <param name="id">Role ID to remove</param>
+        /// <returns>If succeed, returns an updated role list. Otherwise - the page with the error message</returns>
         [HttpPost]
         public async Task<IActionResult> DeleteRole(string id)
         {
@@ -178,6 +221,11 @@ namespace DotNetWMS.Controllers
                 
             }
         }
+        /// <summary>
+        /// GET method to handle the view with list of users connected with the role
+        /// </summary>
+        /// <param name="roleId">The ID of the role whose user list should be displayed</param>
+        /// <returns>Returns the view with the list of users assigned to the role</returns>
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
@@ -215,6 +263,12 @@ namespace DotNetWMS.Controllers
 
             return View(model);
         }
+        /// <summary>
+        /// POST method to process changes on the list of users assigned to a given role
+        /// </summary>
+        /// <param name="model">List of users assigned to the role</param>
+        /// <param name="roleId">The ID of the role whose user list will be processed</param>
+        /// <returns>Updates input about users in role in DB</returns>
         [HttpPost]
         public async Task<IActionResult> EditUsersInRole(List<Admin_UsersInRoleViewModel> model, string roleId)
         {
@@ -267,6 +321,11 @@ namespace DotNetWMS.Controllers
 
             return RedirectToAction("EditRole", new { Id = roleId });
         }
+        /// <summary>
+        /// GET method to handle the view with form with editable user's data
+        /// </summary>
+        /// <param name="id">ID of the edited user</param>
+        /// <returns>Returns the view with editable user's data</returns>
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
@@ -293,6 +352,11 @@ namespace DotNetWMS.Controllers
 
             return View(model);
         }
+        /// <summary>
+        /// POST method to handle the completed user edition form
+        /// </summary>
+        /// <param name="model">Admin_EditUserViewModel class object which will be processed by an instance of UserManager class</param>
+        /// <returns>If succeed, returns a list of users with the current data. Otherwise - the page with the error message.</returns>
         [HttpPost]
         public async Task<IActionResult> EditUser(Admin_EditUserViewModel model)
         {
@@ -327,6 +391,11 @@ namespace DotNetWMS.Controllers
                 return View(model);
             }
         }
+        /// <summary>
+        /// POST method to handle the user removal process 
+        /// </summary>
+        /// <param name="id">User ID to remove</param>
+        /// <returns>If succeed, returns an updated users list. Otherwise - the page with the error message</returns>
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {

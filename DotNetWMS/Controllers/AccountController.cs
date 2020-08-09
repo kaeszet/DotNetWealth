@@ -206,6 +206,7 @@ namespace DotNetWMS.Controllers
             {
                 var user = await userManager.FindByNameAsync(model.Login);
 
+                //If the user exists, but the account has not been activated - return an error. Otherwise, try to log in.
                 if (user != null && !user.EmailConfirmed &&
                     (await userManager.CheckPasswordAsync(user, model.Password)))
                 {
@@ -216,7 +217,7 @@ namespace DotNetWMS.Controllers
                 var result = await signInManager.PasswordSignInAsync(
                     model.Login, model.Password, model.RememberMe, false);
 
-
+                //If there are no other accounts in the DB, the user is assigned the administrator role
                 if (result.Succeeded)
                 {
                     if (userManager.Users.Count() == 1)
@@ -244,6 +245,10 @@ namespace DotNetWMS.Controllers
 
             return View(model);
         }
+        /// <summary>
+        /// POST method to handle and proceeding logout procedure
+        /// </summary>
+        /// <returns>After a successful logout, the user is redirected to the home page</returns>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Logout()
@@ -251,12 +256,21 @@ namespace DotNetWMS.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("index", "home");
         }
+        /// <summary>
+        /// GET method to handle the forgot password view
+        /// </summary>
+        /// <returns>Returns forgot password view</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
             return View();
         }
+        /// <summary>
+        /// POST method to handle data entered in the link to reset the password
+        /// </summary>
+        /// <param name="model">ForgotPasswordViewModel class object which will be handled by UserManager instance</param>
+        /// <returns>Returns confirmation of password reset regardless of success (protection against bruteforce attack)</returns>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -277,12 +291,18 @@ namespace DotNetWMS.Controllers
                     return View("ForgotPasswordConfirmation");
                 }
 
-                //drugi return ma zabezp. przed bruteforcem
+                //protection against bruteforce
                 return View("ForgotPasswordConfirmation");
             }
 
             return View(model);
         }
+        /// <summary>
+        /// GET method to support password reset. This method should be activated after the user clicks the link to set a new password.
+        /// </summary>
+        /// <param name="token">An application-generated security token</param>
+        /// <param name="email">E-mail address in the database</param>
+        /// <returns>if succeed, returns the form to establish a new password. Otherwise, it returns the view with the error message.</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPassword(string token, string email)
@@ -294,6 +314,11 @@ namespace DotNetWMS.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// POST method to handle complete form with new password
+        /// </summary>
+        /// <param name="model">ResetPasswordViewModel class object which will be handled by UserManager instance</param>
+        /// <returns>Returns confirmation of password changing regardless of success (protection against bruteforce attack)</returns>
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -315,12 +340,15 @@ namespace DotNetWMS.Controllers
                     }
                     return View(model);
                 }
-
+                //protection against bruteforce
                 return View("ResetPasswordConfirmation");
             }
             return View(model);
         }
-
+        /// <summary>
+        /// A private method that checks whether the default roles have been deleted from the system. If so, it creates them.
+        /// </summary>
+        /// <returns>Returns a new IdentityRole instance if it did not exist before</returns>
         private async Task IsDefaultRolesExists()
         {
             if (!roleManager.Roles.Any(r => r.Name == "Admin"))

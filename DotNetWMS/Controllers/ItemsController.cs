@@ -11,14 +11,35 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
+    /// <summary>
+    /// Controller class to support the CRUD process for the Item model
+    /// </summary>
     [Authorize]
     public class ItemsController : Controller
     {
+        /// <summary>
+        /// A field for handling the delivery of information to the DB associated with the Entity Core framework
+        /// </summary>
         private readonly DotNetWMSContext _context;
+        /// <summary>
+        /// A static field for handling Item's ItemCode for properly creation of Assign-type views
+        /// </summary>
         private static string ItemCode;
+        /// <summary>
+        /// A static field for handling Item's ItemQuantity for properly creation of Assign-type views
+        /// </summary>
         private static decimal ItemQuantity;
+        /// <summary>
+        /// A static field for handling EmployeeId for properly creation of Assign_to_employee view
+        /// </summary>
         private static int? ItemEmployeeId;
+        /// <summary>
+        /// A static field for handling WarehouseId for properly creation of Assign_to_warehouse view
+        /// </summary>
         private static int? ItemWarehouseId;
+        /// <summary>
+        /// A static field for handling ExternalId for properly creation of Assign_to_external view
+        /// </summary>
         private static int? ItemExternalId;
 
 
@@ -26,6 +47,12 @@ namespace DotNetWMS.Controllers
         {
             _context = context;
         }
+        /// <summary>
+        /// GET method responsible for returning an Item's Assign_to_employee view and supports a search engine
+        /// </summary>
+        /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
+        /// <param name="search">Search phrase in the search field</param>
+        /// <returns>Returns Item's Assign_to_employee view with list of items in the order set by the user</returns>
         [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         public async Task<IActionResult> Assign_to_employee(string search, string order)
         {
@@ -58,6 +85,12 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
+        /// <summary>
+        /// GET method responsible for returning an Item's Assign_to_warehouse view and supports a search engine
+        /// </summary>
+        /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
+        /// <param name="search">Search phrase in the search field</param>
+        /// <returns>Returns Item's Assign_to_warehouse view with list of items in the order set by the user</returns>
         [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         public async Task<IActionResult> Assign_to_warehouse(string search, string order)
         {
@@ -90,6 +123,12 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
+        /// <summary>
+        /// GET method responsible for returning an Item's Assign_to_external view and supports a search engine
+        /// </summary>
+        /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
+        /// <param name="search">Search phrase in the search field</param>
+        /// <returns>Returns Item's Assign_to_external view with list of items in the order set by the user</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         public async Task<IActionResult> Assign_to_external(string search, string order)
         {
@@ -122,6 +161,11 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
+        /// <summary>
+        /// GET method responsible for returning an Item's Assign_to_employee_confirm view for the selected id
+        /// </summary>
+        /// <param name="id">Item ID which should be returned</param>
+        /// <returns>Returns Item's Assign_to_employee_confirm view</returns>
         [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_employee_confirm(int? id)
@@ -156,6 +200,11 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
         }
+        /// <summary>
+        /// GET method responsible for returning an Item's Assign_to_warehouse_confirm view for the selected id
+        /// </summary>
+        /// <param name="id">Item ID which should be returned</param>
+        /// <returns>Returns Item's Assign_to_warehouse_confirm view</returns>
         [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_warehouse_confirm(int? id)
@@ -178,6 +227,11 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
             return View(item);
         }
+        /// <summary>
+        /// GET method responsible for returning an Item's Assign_to_external_confirm view for the selected id
+        /// </summary>
+        /// <param name="id">Item ID which should be returned</param>
+        /// <returns>Returns Item's Assign_to_external_confirm view</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_external_confirm(int? id)
@@ -200,6 +254,12 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
             return View(item);
         }
+        /// <summary>
+        /// POST method responsible for processing the completed form on Assign_to_employee_confirm view
+        /// </summary>
+        /// <param name="id">Item ID which assignment was edited</param>
+        /// <param name="item">Item model class with binding DB attributes</param>
+        /// <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
         [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -294,6 +354,12 @@ namespace DotNetWMS.Controllers
             //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             return View(item);
         }
+        /// <summary>
+        /// POST method responsible for processing the completed form on Assign_to_warehouse_confirm view
+        /// </summary>
+        /// <param name="id">Item ID which assignment was edited</param>
+        /// <param name="item">Item model class with binding DB attributes</param>
+        /// <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
         [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -383,6 +449,12 @@ namespace DotNetWMS.Controllers
             //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             return View(item);
         }
+        /// <summary>
+        /// POST method responsible for processing the completed form on Assign_to_external_confirm view
+        /// </summary>
+        /// <param name="id">Item ID which assignment was edited</param>
+        /// <param name="item">Item model class with binding DB attributes</param>
+        /// <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -472,6 +544,12 @@ namespace DotNetWMS.Controllers
             //ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             return View(item);
         }
+        /// <summary>
+        /// GET method responsible for returning an Item's Index view and supports a search engine
+        /// </summary>
+        /// <param name="order">Sort names or warranty date in ascending or descending order</param>
+        /// <param name="search">Search phrase in the search field</param>
+        /// <returns>Returns Item's Index view with list of items in the order set by the user</returns>
         public async Task<IActionResult> Index(string order, string search)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
@@ -483,7 +561,6 @@ namespace DotNetWMS.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                //CheckEnum(search);
                 items = items.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search));
             }
 
@@ -500,24 +577,11 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
-        //private bool CheckEnum(string s)
-        //{
-        //    foreach (string name in Enum.GetNames(typeof(ItemState)))
-        //    {
-        //        if (name.Contains(s))
-        //        {
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
-        // GET: Items
-        //public async Task<IActionResult> Index()
-        //{
-        //    var dotNetWMSContext = _context.Items.Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
-        //    return View(await dotNetWMSContext.ToListAsync());
-        //}
-
+        /// <summary>
+        /// GET method responsible for returning an Item's Details view
+        /// </summary>
+        /// <param name="id">Item ID which should be returned</param>
+        /// <returns>Item's Details view</returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -537,7 +601,10 @@ namespace DotNetWMS.Controllers
 
             return View(item);
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Item's Create view
+        /// </summary>
+        /// <returns>Returns Item's Create view</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         public IActionResult Create()
         {
@@ -547,7 +614,11 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street");
             return View();
         }
-
+        /// <summary>
+        /// POST method responsible for checking and transferring information from the form to DB
+        /// </summary>
+        /// <param name="item">Item model class with binding DB attributes</param>
+        /// <returns>If succeed, returns Item's Index view. Otherwise - show error message</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -574,6 +645,11 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
         }
+        /// <summary>
+        /// GET/POST method to responsible for checking whether the item has already been entered into the database 
+        /// </summary>
+        /// <param name="itemCode">Item code to be checked</param>
+        /// <returns>If the item does not exist, it returns true (in JSON format). Otherwise - returns an error message</returns>
         [AcceptVerbs("Get", "Post")]
         public IActionResult IsItemExists(string itemCode)
         {
@@ -588,7 +664,11 @@ namespace DotNetWMS.Controllers
                 return Json($"Przedmiot o kodzie ({itemCode}) został już wprowadzony!");
             }
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Item's Edit view
+        /// </summary>
+        /// <param name="id">Item ID which should be returned</param>
+        /// <returns>Returns Item's Edit view</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -608,7 +688,12 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
         }
-
+        /// <summary>
+        /// POST method responsible for checking and transferring information from the form to DB
+        /// </summary>
+        /// <param name="id">Item ID to edit</param>
+        /// <param name="item">Item model class with binding DB attributes</param>
+        /// <returns>If succeed, returns Item's Index view, data validation on the model side</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -654,7 +739,11 @@ namespace DotNetWMS.Controllers
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Item's Delete view
+        /// </summary>
+        /// <param name="id">Item ID to delete</param>
+        /// <returns>Returns Item's Delete view if exists</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -668,6 +757,7 @@ namespace DotNetWMS.Controllers
                 .Include(i => i.External)
                 .Include(i => i.Warehouse)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (item == null)
             {
                 return NotFound();
@@ -675,7 +765,11 @@ namespace DotNetWMS.Controllers
 
             return View(item);
         }
-
+        /// <summary>
+        /// POST method responsible for removing employee from DB if the user confirms this action
+        /// </summary>
+        /// <param name="id">Item ID to delete</param>
+        /// <returns>Returns Item's Index view</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -686,11 +780,20 @@ namespace DotNetWMS.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        /// <summary>
+        /// A private method responsible for checking if there is a item with the given id
+        /// </summary>
+        /// <param name="id">Item ID to check</param>
+        /// <returns>Returns true if the item exists. Otherwise - false.</returns>
         private bool ItemExists(int id)
         {
             return _context.Items.Any(e => e.Id == id);
         }
+        /// <summary>
+        /// Private method responsible for correctly combining the quantity of two identical items entered by the user
+        /// </summary>
+        /// <param name="item">The Item class object to be checked by the method</param>
+        /// <param name="obj">Argument to check the class name of the object being passed</param>
         private void MergeSameItems(Item item, Type obj)
         {
             Item sameItem = null;
@@ -717,6 +820,11 @@ namespace DotNetWMS.Controllers
                 _context.Update(item);
             }
         }
+        /// <summary>
+        /// A private method to check who has been assigned the item specified in the argument of the function. Depending on who it currently belongs to, the condition of the item will be different.
+        /// </summary>
+        /// <param name="item">The Item class object to be checked by the method</param>
+        /// <param name="extId">External ID to check</param>
         private void ItemStatusCheck(Item item, int? extId)
         {
 
