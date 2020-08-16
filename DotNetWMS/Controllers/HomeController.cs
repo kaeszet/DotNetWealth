@@ -41,7 +41,7 @@ namespace DotNetWMS.Controllers
         {
             return View();
         }
-        // <summary>
+        /// <summary>
         /// GET method responsible for returning an Error view
         /// </summary>
         /// <returns>Returns a Error view</returns>

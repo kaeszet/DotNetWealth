@@ -13,7 +13,7 @@ namespace DotNetWMSTests
 	{
 		private Mock<IStatusCodeReExecuteFeature> _status;
 		private Mock<IExceptionHandlerPathFeature> _statusGlobal;
-		private Mock<ILogger> _logger;
+		private Mock<ILogger<ErrorController>> _logger;
 
 
 		[SetUp]
@@ -27,7 +27,7 @@ namespace DotNetWMSTests
 			_statusGlobal.SetupGet(a => a.Path).Returns("GlobalError");
 			_statusGlobal.SetupGet(a => a.Error.Message).Returns("Test błędu globalnego");
 
-			_logger = new Mock<ILogger>();
+			_logger = new Mock<ILogger<ErrorController>>();
 		}
 		[Test]
 		public void HttpStatusCodeHandler_CheckIfGetNotFoundViews_ReturnTrue()

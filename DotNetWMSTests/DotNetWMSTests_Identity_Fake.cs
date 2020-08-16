@@ -56,6 +56,17 @@ namespace DotNetWMSTests
 
         }
     }
+    public class FakeLogger
+    {
+        public FakeLogger()
+        {
+            new Mock<ILogger<UserManager<WMSIdentityUser>>>();
+            new Mock<ILogger<SignInManager<WMSIdentityUser>>>();
+            new Mock<ILogger<RoleManager<WMSIdentityUser>>>();
+            
+        }
+    }
+
     public class FakeUserManagerBuilder
     {
         private Mock<FakeUserManager> _mock = new Mock<FakeUserManager>();
@@ -98,5 +109,17 @@ namespace DotNetWMSTests
             return _mock;
         }
     }
+    public class FakeLoggerBuilder
+    {
+        private Mock<FakeLogger> _mock = new Mock<FakeLogger>();
+
+        public FakeLoggerBuilder With(Action<Mock<FakeLogger>> mock)
+        {
+            mock(_mock);
+            return this;
+        }
+        public Mock<FakeLogger> Build() => _mock;
+    }
+    
 
 }
