@@ -128,7 +128,7 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
         /// </summary>
-        /// <param name="employee">Warehouse model class with binding DB attributes</param>
+        /// <param name="warehouse">Warehouse model class with binding DB attributes</param>
         /// <returns>If succeed, returns Warehouse's Index view. Otherwise - show error message</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]

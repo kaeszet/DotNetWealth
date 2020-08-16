@@ -1,0 +1,1497 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetWMS</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetWMS.Controllers.AccountController">
+            <summary>
+            Controller class for handling the account creation process and logging into the application. This class includes all the procedures necessary for the correct verification of data entered by the user.
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.AccountController.userManager">
+            <summary>
+            Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.AccountController.signInManager">
+            <summary>
+            Implementation of the WMSIdentityUser class in the SignInManager class to handle the user's login to the application (also external)
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.AccountController.roleManager">
+            <summary>
+            Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.AccountController.logger">
+            <summary>
+            AccountController's logger implementation
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.Register">
+            <summary>
+            GET method to handle the registration view
+            </summary>
+            <returns>Returns the registration form view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.Register(DotNetWMS.Models.RegisterViewModel)">
+            <summary>
+            POST method to handle the completed registration form
+            </summary>
+            <param name="model">RegisterViewModel class object whose data will be processed by the Identity Framework</param>
+            <returns>Returns the view resulting from the processing of user-entered data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.IsEmailInUse(System.String)">
+            <summary>
+            GET/POST method to check if the provided e-mail address was previously used for registration
+            </summary>
+            <param name="email">E-mail address to check if it was used during successful registration</param>
+            <returns>Returns true if e-mail adress does not exists, otherwise - false. Response is serialized to JSON format.</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.ConfirmEmail(System.String,System.String)">
+            <summary>
+            A method that supports the email address confirmation process
+            </summary>
+            <param name="userId">User ID provided for confirmation</param>
+            <param name="token">Security token assigned to the email confirmation command</param>
+            <returns>Returns a view depending on whether the provided data is valid or not</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.Login">
+            <summary>
+            GET method to handle the login view
+            </summary>
+            <returns>Returns login page view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.Login(DotNetWMS.Models.LoginViewModel,System.String)">
+            <summary>
+            POST method to handle and proceeding the completed login form
+            </summary>
+            <param name="model">LoginViewModel class object whose data will be processed by the Identity Framework</param>
+            <param name="returnUrl">Captured url to redirect the user to the previous page after successful login</param>
+            <returns>Returns a view depending on whether the provided data is valid or not</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.Logout">
+            <summary>
+            POST method to handle and proceeding logout procedure
+            </summary>
+            <returns>After a successful logout, the user is redirected to the home page</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.ForgotPassword">
+            <summary>
+            GET method to handle the forgot password view
+            </summary>
+            <returns>Returns forgot password view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.ForgotPassword(DotNetWMS.Models.ForgotPasswordViewModel)">
+            <summary>
+            POST method to handle data entered in the link to reset the password
+            </summary>
+            <param name="model">ForgotPasswordViewModel class object which will be handled by UserManager instance</param>
+            <returns>Returns confirmation of password reset regardless of success (protection against bruteforce attack)</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.ResetPassword(System.String,System.String)">
+            <summary>
+            GET method to support password reset. This method should be activated after the user clicks the link to set a new password.
+            </summary>
+            <param name="token">An application-generated security token</param>
+            <param name="email">E-mail address in the database</param>
+            <returns>if succeed, returns the form to establish a new password. Otherwise, it returns the view with the error message.</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.ResetPassword(DotNetWMS.Models.ResetPasswordViewModel)">
+            <summary>
+            POST method to handle complete form with new password
+            </summary>
+            <param name="model">ResetPasswordViewModel class object which will be handled by UserManager instance</param>
+            <returns>Returns confirmation of password changing regardless of success (protection against bruteforce attack)</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AccountController.IsDefaultRolesExists">
+            <summary>
+            A private method that checks whether the default roles have been deleted from the system. If so, it creates them.
+            </summary>
+            <returns>Returns a new IdentityRole instance if it did not exist before</returns>
+        </member>
+        <member name="T:DotNetWMS.Controllers.AdministrationController">
+            <summary>
+            Controller class to operate the administration panel
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.AdministrationController.roleManager">
+            <summary>
+            Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.AdministrationController.userManager">
+            <summary>
+            Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.AccessDenied">
+            <summary>
+            GET method returning a view with access denied information
+            </summary>
+            <returns>Returns the view with access denied information</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.ListOfRoles">
+            <summary>
+            GET method returning a view with list of roles
+            </summary>
+            <returns>Returns the view with list of created roles</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.ListOfUsers">
+            <summary>
+            GET method returning a view with list of users
+            </summary>
+            <returns>Returns the view with list of registered users</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.CreateRole">
+            <summary>
+            GET method to handle the role creation view
+            </summary>
+            <returns>Returns the role creation form view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.CreateRole(DotNetWMS.Models.Admin_CreateRoleViewModel)">
+            <summary>
+            POST method to handle the completed role creation form
+            </summary>
+            <param name="model">Admin_CreateRoleViewModel class object which will be processed by an instance of the Identity framework classes</param>
+            <returns>Returns the view resulting from the processing of user-entered data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.EditRole(System.String)">
+            <summary>
+            GET method to handle the role edition view
+            </summary>
+            <param name="id">Role ID which will be edited</param>
+            <returns>Returns the view with details of the role with the entered ID or an error if the role was not found</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.EditRole(DotNetWMS.Models.Admin_EditRoleViewModel)">
+            <summary>
+            POST method to handle the completed role edition form
+            </summary>
+            <param name="model">Admin_EditRoleViewModel class object which will be processed by an instance of RoleManager class</param>
+            <returns>Returns the view resulting from the processing of user-entered data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.DeleteRole(System.String)">
+            <summary>
+            POST method to handle the role removal process 
+            </summary>
+            <param name="id">Role ID to remove</param>
+            <returns>If succeed, returns an updated role list. Otherwise - the page with the error message</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.EditUsersInRole(System.String)">
+            <summary>
+            GET method to handle the view with list of users connected with the role
+            </summary>
+            <param name="roleId">The ID of the role whose user list should be displayed</param>
+            <returns>Returns the view with the list of users assigned to the role</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.EditUsersInRole(System.Collections.Generic.List{DotNetWMS.Models.Admin_UsersInRoleViewModel},System.String)">
+            <summary>
+            POST method to process changes on the list of users assigned to a given role
+            </summary>
+            <param name="model">List of users assigned to the role</param>
+            <param name="roleId">The ID of the role whose user list will be processed</param>
+            <returns>Updates input about users in role in DB</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.EditUser(System.String)">
+            <summary>
+            GET method to handle the view with form with editable user's data
+            </summary>
+            <param name="id">ID of the edited user</param>
+            <returns>Returns the view with editable user's data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.EditUser(DotNetWMS.Models.Admin_EditUserViewModel)">
+            <summary>
+            POST method to handle the completed user edition form
+            </summary>
+            <param name="model">Admin_EditUserViewModel class object which will be processed by an instance of UserManager class</param>
+            <returns>If succeed, returns a list of users with the current data. Otherwise - the page with the error message.</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.AdministrationController.DeleteUser(System.String)">
+            <summary>
+            POST method to handle the user removal process 
+            </summary>
+            <param name="id">User ID to remove</param>
+            <returns>If succeed, returns an updated users list. Otherwise - the page with the error message</returns>
+        </member>
+        <member name="T:DotNetWMS.Controllers.DepartmentsController">
+            <summary>
+            Controller class to support the CRUD process for the Department model
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.DepartmentsController._context">
+            <summary>
+            A field for handling the delivery of information to the DB associated with the Entity Core framework
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.Index">
+            <summary>
+            GET method responsible for returning an Department's Index view
+            </summary>
+            <returns>Returns Department's Index view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.Details(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Department's Details view
+            </summary>
+            <param name="id">Department ID which should be returned</param>
+            <returns>Department's Details view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.Create">
+            <summary>
+            GET method responsible for returning an Department's Create view
+            </summary>
+            <returns>Returns Department's Create view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.Create(DotNetWMS.Models.Department)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="department">Department model class with binding DB attributes</param>
+            <returns>Returns Department's Create view, data validation on the model side</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.IsDepartmentExists(System.String)">
+            <summary>
+            GET/POST method responsible for checking whether the department with the given name exists in the DB
+            </summary>
+            <param name="name">Department name to be checked</param>
+            <returns>Returns true in JSON format if the department does not exist. Otherwise - a message with an error</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.Edit(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Department's Edit view
+            </summary>
+            <param name="id">Department ID which should be returned</param>
+            <returns>Returns Department's Edit view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.Edit(System.Int32,DotNetWMS.Models.Department)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="id">Department ID to edit</param>
+            <param name="department">Department model class with binding DB attributes</param>
+            <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.Delete(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Department's Delete view
+            </summary>
+            <param name="id">Department ID to delete</param>
+            <returns>Returns Department's Delete view if exists</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.DeleteConfirmed(System.Int32)">
+            <summary>
+            POST method responsible for removing the department from DB if the user confirms this action
+            </summary>
+            <param name="id">Department ID to delete</param>
+            <returns>Returns Department's Index view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.DepartmentsController.DepartmentExists(System.Int32)">
+            <summary>
+            Private method responsible for checking if there is a department with the given id
+            </summary>
+            <param name="id">Department ID to check</param>
+            <returns>Returns true if the department exists. Otherwise - false.</returns>
+        </member>
+        <member name="T:DotNetWMS.Controllers.EmployeesController">
+            <summary>
+            Controller class to support the CRUD process for the Employee model
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.EmployeesController._context">
+            <summary>
+            A field for handling the delivery of information to the DB associated with the Entity Core framework
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.EmployeesController.Pesel">
+            <summary>
+            Universal Electronic System for Registration of the Population number
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Index(System.String,System.String)">
+            <summary>
+            GET method responsible for returning an Employee's Index view and supports a search engine
+            </summary>
+            <param name="order">Sort surnames in ascending or descending order</param>
+            <param name="search">Search phrase in the search field</param>
+            <returns>Returns Employee's Index view with list of employees in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Details(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Employee's Details view
+            </summary>
+            <param name="id">Employee ID which should be returned</param>
+            <returns>Employee's Details view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Create">
+            <summary>
+            GET method responsible for returning an Employee's Create view
+            </summary>
+            <returns>Returns Employee's Create view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Create(DotNetWMS.Models.Employee)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="employee">Employee model class with binding DB attributes</param>
+            <returns>If succeed, returns Employee's Index view. Otherwise - show error message</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Edit(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Employee's Edit view
+            </summary>
+            <param name="id">Employee ID which should be returned</param>
+            <returns>Returns Employee's Edit view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Edit(System.Int32,DotNetWMS.Models.Employee)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="id">Employee ID to edit</param>
+            <param name="employee">Employee model class with binding DB attributes</param>
+            <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Delete(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Employee's Delete view
+            </summary>
+            <param name="id">Employee ID to delete</param>
+            <returns>Returns Employee's Delete view if exists</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.DeleteConfirmed(System.Int32)">
+            <summary>
+            POST method responsible for removing employee from DB if the user confirms this action
+            </summary>
+            <param name="id">Employee ID to delete</param>
+            <returns>Returns Employee's Index view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.EmployeeExists(System.Int32)">
+            <summary>
+            A private method responsible for checking if there is a employee with the given id
+            </summary>
+            <param name="id">Employee ID to check</param>
+            <returns>Returns true if the employee exists. Otherwise - false.</returns>
+        </member>
+        <member name="F:DotNetWMS.Controllers.ErrorController.logger">
+            <summary>
+            Controller class to support displaying error messages
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ErrorController.HttpStatusCodeHandler(System.Int32)">
+            <summary>
+            The method responsible for displaying the error message depending on the error number
+            </summary>
+            <param name="statusCode">Error code</param>
+            <returns>Returns an error code dependent view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ErrorController.GlobalExceptionHandler">
+            <summary>
+            The method responsible for displaying the error message if the error is of a global type
+            </summary>
+            <returns>Returns a view with an error message containing the data captured in the method</returns>
+        </member>
+        <member name="T:DotNetWMS.Controllers.ExternalsController">
+            <summary>
+            Controller class to support the CRUD process for the External model
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.ExternalsController._context">
+            <summary>
+            A field for handling the delivery of information to the DB associated with the Entity Core framework
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Index(System.String,System.String)">
+            <summary>
+            GET method responsible for returning an External's Index view and supports a search engine
+            </summary>
+            <param name="order">Sort names or types in ascending or descending order</param>
+            <param name="search">Search phrase in the search field</param>
+            <returns>Returns External's Index view with list of externals in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.StatusView(DotNetWMS.Models.StatusViewViewModel)">
+            <summary>
+            GET method responsible for returning an External's StatusView
+            </summary>
+            <param name="model">StatusViewViewModel class object used to check all items with the selected status</param>
+            <returns>Returns External's StatusView</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.StatusView(DotNetWMS.Models.ItemState)">
+            <summary>
+            POST method to display the list of items with the previously selected status
+            </summary>
+            <param name="state">Parameter to pass the selection from the dropdown list</param>
+            <returns>Returns External's StatusView and items with the selected status</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Details(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an External's Details view
+            </summary>
+            <param name="id">External ID which should be returned</param>
+            <returns>External's Details view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Create">
+            <summary>
+            GET method responsible for returning an External's Create view
+            </summary>
+            <returns>Returns External's Create view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Create(DotNetWMS.Models.External)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="external">External model class with binding DB attributes</param>
+            <returns>If succeed, returns External's Index view. Otherwise - show error message</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Edit(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an External's Edit view
+            </summary>
+            <param name="id">External ID which should be returned</param>
+            <returns>Returns External's Edit view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Edit(System.Int32,DotNetWMS.Models.External)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="id">External ID to edit</param>
+            <param name="external">External model class with binding DB attributes</param>
+            <returns>If succeed, returns External's Index view, data validation on the model side</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Delete(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an External's Delete view
+            </summary>
+            <param name="id">External ID to delete</param>
+            <returns>Returns External's Delete view if exists</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.DeleteConfirmed(System.Int32)">
+            <summary>
+            POST method responsible for removing external from DB if the user confirms this action
+            </summary>
+            <param name="id">External ID to delete</param>
+            <returns>Returns External's Index view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ExternalsController.ExternalExists(System.Int32)">
+            <summary>
+            Private method responsible for checking if there is a external with the given id
+            </summary>
+            <param name="id">External ID to check</param>
+            <returns>Returns true if the external exists. Otherwise - false.</returns>
+        </member>
+        <member name="T:DotNetWMS.Controllers.HomeController">
+            <summary>
+            Controller class to support displaying the home page
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.HomeController._logger">
+            <summary>
+            The field responsible for communication with Nlog
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.HomeController.Index">
+            <summary>
+            GET method responsible for returning a Home's Index view
+            </summary>
+            <returns>Returns an Home's Index view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.HomeController.AboutUs">
+            <summary>
+            GET method responsible for returning a Home's AboutUs view
+            </summary>
+            <returns>Returns an Home's AboutUs view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.HomeController.Error">
+            <summary>
+            GET method responsible for returning an Error view
+            </summary>
+            <returns>Returns a Error view</returns>
+        </member>
+        <member name="T:DotNetWMS.Controllers.ItemsController">
+            <summary>
+            Controller class to support the CRUD process for the Item model
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.ItemsController._context">
+            <summary>
+            A field for handling the delivery of information to the DB associated with the Entity Core framework
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.ItemsController.ItemCode">
+            <summary>
+            A static field for handling Item's ItemCode for properly creation of Assign-type views
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.ItemsController.ItemQuantity">
+            <summary>
+            A static field for handling Item's ItemQuantity for properly creation of Assign-type views
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.ItemsController.ItemEmployeeId">
+            <summary>
+            A static field for handling EmployeeId for properly creation of Assign_to_employee view
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.ItemsController.ItemWarehouseId">
+            <summary>
+            A static field for handling WarehouseId for properly creation of Assign_to_warehouse view
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.ItemsController.ItemExternalId">
+            <summary>
+            A static field for handling ExternalId for properly creation of Assign_to_external view
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_employee(System.String,System.String)">
+            <summary>
+            GET method responsible for returning an Item's Assign_to_employee view and supports a search engine
+            </summary>
+            <param name="order">Sort by name or warranty date in ascending or descending order</param>
+            <param name="search">Search phrase in the search field</param>
+            <returns>Returns Item's Assign_to_employee view with list of items in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_warehouse(System.String,System.String)">
+            <summary>
+            GET method responsible for returning an Item's Assign_to_warehouse view and supports a search engine
+            </summary>
+            <param name="order">Sort by name or warranty date in ascending or descending order</param>
+            <param name="search">Search phrase in the search field</param>
+            <returns>Returns Item's Assign_to_warehouse view with list of items in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_external(System.String,System.String)">
+            <summary>
+            GET method responsible for returning an Item's Assign_to_external view and supports a search engine
+            </summary>
+            <param name="order">Sort by name or warranty date in ascending or descending order</param>
+            <param name="search">Search phrase in the search field</param>
+            <returns>Returns Item's Assign_to_external view with list of items in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_employee_confirm(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Item's Assign_to_employee_confirm view for the selected id
+            </summary>
+            <param name="id">Item ID which should be returned</param>
+            <returns>Returns Item's Assign_to_employee_confirm view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_warehouse_confirm(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Item's Assign_to_warehouse_confirm view for the selected id
+            </summary>
+            <param name="id">Item ID which should be returned</param>
+            <returns>Returns Item's Assign_to_warehouse_confirm view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_external_confirm(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Item's Assign_to_external_confirm view for the selected id
+            </summary>
+            <param name="id">Item ID which should be returned</param>
+            <returns>Returns Item's Assign_to_external_confirm view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_employee_confirm(System.Int32,DotNetWMS.Models.Item)">
+            <summary>
+            POST method responsible for processing the completed form on Assign_to_employee_confirm view
+            </summary>
+            <param name="id">Item ID which assignment was edited</param>
+            <param name="item">Item model class with binding DB attributes</param>
+            <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_warehouse_confirm(System.Int32,DotNetWMS.Models.Item)">
+            <summary>
+            POST method responsible for processing the completed form on Assign_to_warehouse_confirm view
+            </summary>
+            <param name="id">Item ID which assignment was edited</param>
+            <param name="item">Item model class with binding DB attributes</param>
+            <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_external_confirm(System.Int32,DotNetWMS.Models.Item)">
+            <summary>
+            POST method responsible for processing the completed form on Assign_to_external_confirm view
+            </summary>
+            <param name="id">Item ID which assignment was edited</param>
+            <param name="item">Item model class with binding DB attributes</param>
+            <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Index(System.String,System.String)">
+            <summary>
+            GET method responsible for returning an Item's Index view and supports a search engine
+            </summary>
+            <param name="order">Sort names or warranty date in ascending or descending order</param>
+            <param name="search">Search phrase in the search field</param>
+            <returns>Returns Item's Index view with list of items in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Details(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Item's Details view
+            </summary>
+            <param name="id">Item ID which should be returned</param>
+            <returns>Item's Details view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Create">
+            <summary>
+            GET method responsible for returning an Item's Create view
+            </summary>
+            <returns>Returns Item's Create view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Create(DotNetWMS.Models.Item)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="item">Item model class with binding DB attributes</param>
+            <returns>If succeed, returns Item's Index view. Otherwise - show error message</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.IsItemExists(System.String)">
+            <summary>
+            GET/POST method to responsible for checking whether the item has already been entered into the database 
+            </summary>
+            <param name="itemCode">Item code to be checked</param>
+            <returns>If the item does not exist, it returns true (in JSON format). Otherwise - returns an error message</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Edit(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Item's Edit view
+            </summary>
+            <param name="id">Item ID which should be returned</param>
+            <returns>Returns Item's Edit view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Edit(System.Int32,DotNetWMS.Models.Item)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="id">Item ID to edit</param>
+            <param name="item">Item model class with binding DB attributes</param>
+            <returns>If succeed, returns Item's Index view, data validation on the model side</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.Delete(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Item's Delete view
+            </summary>
+            <param name="id">Item ID to delete</param>
+            <returns>Returns Item's Delete view if exists</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.DeleteConfirmed(System.Int32)">
+            <summary>
+            POST method responsible for removing employee from DB if the user confirms this action
+            </summary>
+            <param name="id">Item ID to delete</param>
+            <returns>Returns Item's Index view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.ItemExists(System.Int32)">
+            <summary>
+            A private method responsible for checking if there is a item with the given id
+            </summary>
+            <param name="id">Item ID to check</param>
+            <returns>Returns true if the item exists. Otherwise - false.</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.MergeSameItems(DotNetWMS.Models.Item,System.Type)">
+            <summary>
+            Private method responsible for correctly combining the quantity of two identical items entered by the user
+            </summary>
+            <param name="item">The Item class object to be checked by the method</param>
+            <param name="obj">Argument to check the class name of the object being passed</param>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.ItemStatusCheck(DotNetWMS.Models.Item,System.Nullable{System.Int32})">
+            <summary>
+            A private method to check who has been assigned the item specified in the argument of the function. Depending on who it currently belongs to, the condition of the item will be different.
+            </summary>
+            <param name="item">The Item class object to be checked by the method</param>
+            <param name="extId">External ID to check</param>
+        </member>
+        <member name="T:DotNetWMS.Controllers.WarehousesController">
+            <summary>
+            Controller class to support the CRUD process for the Warehouse model
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.WarehousesController._context">
+            <summary>
+            A field for handling the delivery of information to the DB associated with the Entity Core framework
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.WarehousesController.Name">
+            <summary>
+            A static field for handling Warehouse's name for properly creation of Stocktaking view
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.WarehousesController.wrhId">
+            <summary>
+            A static field for handling Warehouse's ID for properly creation of Stocktaking view
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Stocktaking(DotNetWMS.Models.StocktakingViewModel)">
+            <summary>
+            GET method responsible for returning an Warehouse's Stocktaking view
+            </summary>
+            <param name="model">StocktakingViewModel class object to start the inventory procedure</param>
+            <returns>Returns Warehouse's Stocktaking view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Stocktaking(System.String)">
+            <summary>
+            POST method to display the list of items existing in the previously selected warehouse
+            </summary>
+            <param name="warehouseFullName">Defined the full name of the warehouse</param>
+            <returns>Returns Warehouse's Stocktaking view and items existing in the previously selected warehouse</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Index(System.String,System.String)">
+            <summary>
+            GET method responsible for returning an Warehouse's Index view and supports a search engine
+            </summary>
+            <param name="order">Sort names in ascending or descending order</param>
+            <param name="search">Search phrase in the search field</param>
+            <returns>Returns Warehouse's Index view with list of warehouses in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Details(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Warehouse's Details view
+            </summary>
+            <param name="id">Warehouse ID which should be returned</param>
+            <returns>Warehouse's Details view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Create">
+            <summary>
+            GET method responsible for returning an Warehouse's Create view
+            </summary>
+            <returns>Returns Warehouse's Create view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Create(DotNetWMS.Models.Warehouse)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="warehouse">Warehouse model class with binding DB attributes</param>
+            <returns>If succeed, returns Warehouse's Index view. Otherwise - show error message</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Edit(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Warehouse's Edit view
+            </summary>
+            <param name="id">Warehouse ID which should be returned</param>
+            <returns>Returns Warehouse's Edit view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Edit(System.Int32,DotNetWMS.Models.Warehouse)">
+            <summary>
+            POST method responsible for checking and transferring information from the form to DB
+            </summary>
+            <param name="id">Warehouse ID to edit</param>
+            <param name="warehouse">Warehouse model class with binding DB attributes</param>
+            <returns>If succeed, returns Warehouse's Index view, data validation on the model side</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Delete(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Warehouse's Delete view
+            </summary>
+            <param name="id">Warehouse ID to delete</param>
+            <returns>Returns Warehouse's Delete view if exists</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.DeleteConfirmed(System.Int32)">
+            <summary>
+            POST method responsible for removing employee from DB if the user confirms this action
+            </summary>
+            <param name="id">Warehouse ID to delete</param>
+            <returns>Returns Warehouse's Index view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.WarehousesController.WarehouseExists(System.Int32)">
+            <summary>
+            A private method responsible for checking if there is a warehouse with the given id
+            </summary>
+            <param name="id">Warehouse ID to check</param>
+            <returns>Returns true if the warehouse exists. Otherwise - false.</returns>
+        </member>
+        <member name="T:DotNetWMS.Data.DotNetWMSContext">
+            <summary>
+            <para>Class associated with the Entity Core framework, responsible for creating databases related to the appropriate classes in the Models directory.</para> 
+            <para>The Data Annotattions method was used to pass the field requirements.</para>
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Data.DotNetWMSContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            The method is used to store the database creation settings
+            </summary>
+            <param name="modelBuilder">ModelBuilder class object</param>
+        </member>
+        <member name="T:DotNetWMS.Models.Admin_CreateRoleViewModel">
+            <summary>
+            Viewmodel class for creating a role by a administrator privileges user
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_CreateRoleViewModel.RoleName">
+            <summary>
+            The role's name for an application user
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Admin_DefaultRoles">
+            <summary>
+            Class to handle the default roles in the application
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Models.Admin_DefaultRoles.#ctor">
+            <summary>
+            Class constructor with a list of default roles. Enables you to edit them by changing the "Roles" list
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_DefaultRoles.Roles">
+            <summary>
+            List of roles stored as 'string' values
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Models.Admin_DefaultRoles.IsDefaultRole(System.String)">
+            <summary>
+            A method that checks if the selected role is the default one
+            </summary>
+            <param name="roleName">A name of the role taken from the user in the text field of the application</param>
+            <returns>If the role is on the default role list, returns true. Otherwise - false.</returns>
+        </member>
+        <member name="T:DotNetWMS.Models.Admin_EditRoleViewModel">
+            <summary>
+            Viewmodel to handle the list of users assigned to a given role, and for editing name of the role in corresponding view
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Models.Admin_EditRoleViewModel.#ctor">
+            <summary>
+            Constructor for creating a new users list
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditRoleViewModel.Id">
+            <summary>
+            Stores the role ID in IFC database
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditRoleViewModel.RoleName">
+            <summary>
+            A field to capture the role name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditRoleViewModel.Users">
+            <summary>
+            List of users stored as 'string' values
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Admin_EditUserViewModel">
+            <summary>
+            Viewmodel to handle the list of roles assigned to a given user, and for editing user's data in corresponding view
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Models.Admin_EditUserViewModel.#ctor">
+            <summary>
+            Constructor for creating a new roles list
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditUserViewModel.Id">
+            <summary>
+            Stores the user ID in IFC database
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditUserViewModel.Name">
+            <summary>
+            A field to capture the user's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditUserViewModel.Surname">
+            <summary>
+            A field to capture the user's surname
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditUserViewModel.EmployeeNumber">
+            <summary>
+            A field to capture the user's employee number. 12 digits from 0 to 9 are required.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditUserViewModel.City">
+            <summary>
+            A field to capture the user's home city
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditUserViewModel.Email">
+            <summary>
+            A field to capture the user's email
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_EditUserViewModel.Roles">
+            <summary>
+            List of roles stored as 'string' values
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Admin_UsersInRoleViewModel">
+            <summary>
+            Viewmodel that supports the view to check if the checkbox has been checked by the user
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_UsersInRoleViewModel.UserId">
+            <summary>
+            Stores the user ID in DB
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_UsersInRoleViewModel.UserName">
+            <summary>
+            A field to capture the user's login
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Admin_UsersInRoleViewModel.IsSelected">
+            <summary>
+            True, if a checkbox was selected, otherwise - false
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.AssignItemToEmployee">
+            <summary>
+            Viewmodel to handle a view where an user assigns items to an employee
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToEmployee.EmployeeId">
+            <summary>
+            Stores the employee ID in DB
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToEmployee.Employee">
+            <summary>
+            Employee DB data
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToEmployee.ItemId">
+            <summary>
+            Stores the item ID in DB
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToEmployee.ItemQuantity">
+            <summary>
+            Number of items
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToEmployee.ItemState">
+            <summary>
+            Enum to choose the condition of the item. Correlated with the foreign keys of the Employee, Warehouse and External classes for reporting purposes
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToEmployee.Item">
+            <summary>
+            Item DB data
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.AssignItemToWarehouse">
+            <summary>
+            Viewmodel to handle a view where an user assigns items to an warehouse
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.WarehouseId">
+            <summary>
+            Stores the warehouse ID in DB
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.Warehouse">
+            <summary>
+            Warehouse DB data
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.ItemId">
+            <summary>
+            Stores the item ID in DB
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.ItemQuantity">
+            <summary>
+            Number of items
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.ItemState">
+            <summary>
+            Enum to choose the condition of the item. Correlated with the foreign keys of the Employee, Warehouse and External classes for reporting purposes
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.Item">
+            <summary>
+            Item DB data
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.ContractorType">
+            <summary>
+            Enum that stores types of contractor
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.CustomIdentityErrorDescriber">
+            <summary>
+            The class used to translate the error description into Polish inherits from the IdentityErrorDescriber class. Contains the overridden IdentityError classes for each error type.
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Department">
+            <summary>
+            Department class model used for creating DB with EFC and collecting info about departments
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Department.Id">
+            <summary>
+            Department database PK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Department.Name">
+            <summary>
+            Department's name
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Employee">
+            <summary>
+            Employee class model used for creating DB with EFC and collecting info about employees
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.Id">
+            <summary>
+            Employee database PK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.Name">
+            <summary>
+            Employee's Name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.Surname">
+            <summary>
+            Employee's Surname
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.Pesel">
+            <summary>
+            Universal Electronic System for Registration of the Population number
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.DepartmentId">
+            <summary>
+            Department's FK. Can be null.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.Department">
+            <summary>
+            Department's Name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.Street">
+            <summary>
+            Employee's address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.ZipCode">
+            <summary>
+            Postal Code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.City">
+            <summary>
+            City of residence
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.Items">
+            <summary>
+            Employee's item list
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Employee.FullName">
+            <summary>
+            Employee's full name 
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.ErrorViewModel">
+            <summary>
+            Viewmodel to handle the view describing the application error
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.External">
+            <summary>
+            External class model used for creating DB with EFC and collecting info about external clients or services
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.Id">
+            <summary>
+            External database PK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.Type">
+            <summary>
+            Enum used to catalog and select the type of client 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.Name">
+            <summary>
+            External's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.TaxId">
+            <summary>
+            External's tax identification number
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.Street">
+            <summary>
+            External's address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.ZipCode">
+            <summary>
+            External's postal code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.City">
+            <summary>
+            External's headquarters city
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.Items">
+            <summary>
+            List of items which was transferred to the client or external service
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.ForgotPasswordViewModel">
+            <summary>
+            Viewmodel to handle the view with the application password recovery form
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Item">
+            <summary>
+            Item class model used for creating DB with EFC and collecting info about items
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Id">
+            <summary>
+            Item database PK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Type">
+            <summary>
+            Item's type e.g. tools, electronics, clothes etc.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Name">
+            <summary>
+            Item's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Producer">
+            <summary>
+            Item's manufacturer
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Model">
+            <summary>
+            Item's model name or code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.ItemCode">
+            <summary>
+            Item's individual code that can be used to work with the scanner etc.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Quantity">
+            <summary>
+            Number of items
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Units">
+            <summary>
+            Enum used to select units of measure
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.WarrantyDate">
+            <summary>
+            Item's warranty end date. Can be null.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.State">
+            <summary>
+            Enum to choose the condition of the item. Correlated with the foreign keys of the Employee, Warehouse and External classes for reporting purposes
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.EmployeeId">
+            <summary>
+            Employee's FK. Can be null.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Employee">
+            <summary>
+            Employee DB data
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.WarehouseId">
+            <summary>
+            Warehouse's FK. Can be null.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Warehouse">
+            <summary>
+            Warehouse DB data
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.ExternalId">
+            <summary>
+            External's FK. Can be null.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.External">
+            <summary>
+            External DB data
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Item.Assign">
+            <summary>
+            A property to assign Item to Employee, Warehouse or External DB.
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.ItemState">
+            <summary>
+            Enum that stores item statuses
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.ItemUnits">
+            <summary>
+            Enum that stores item units
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.LoginViewModel">
+            <summary>
+            Viewmodel to handle the view with with the login form
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LoginViewModel.Login">
+            <summary>
+            A field to capture user's login
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LoginViewModel.Password">
+            <summary>
+            A field to capture user's password
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LoginViewModel.RememberMe">
+            <summary>
+            A field to capture checkbox status whether the logged user should be remembered
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.RegisterViewModel">
+            <summary>
+            Viewmodel to handle the view with the new user register form
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.Name">
+            <summary>
+            A field to capture new user's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.Surname">
+            <summary>
+            A field to capture new user's surname
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.EmployeeNumber">
+            <summary>
+            A field to capture new user's employee number
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.City">
+            <summary>
+            A field to capture new user's headquarters city
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.Email">
+            <summary>
+            A field to capture new user's email adress
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.Password">
+            <summary>
+            A field to capture new user's password
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.ConfirmPassword">
+            <summary>
+            A field to capture password confirmation
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.ResetPasswordViewModel">
+            <summary>
+            Viewmodel to handle the view with the new password selection form
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ResetPasswordViewModel.Email">
+            <summary>
+            A field to capture an email address of the account which password will be changed
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ResetPasswordViewModel.Password">
+            <summary>
+            A field to capture a new password
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ResetPasswordViewModel.ConfirmPassword">
+            <summary>
+            A field to capture a new password confirmation
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ResetPasswordViewModel.Token">
+            <summary>
+            A field to capture security token
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.StatusViewViewModel">
+            <summary>
+            Viewmodel to handle the view with the item status report
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StatusViewViewModel.State">
+            <summary>
+            A field to capture state of an item
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StatusViewViewModel.Items">
+            <summary>
+            A field to capture list of items
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.StocktakingViewModel">
+            <summary>
+            Viewmodel to handle the view with stocktaking a warehouse
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingViewModel.Items">
+            <summary>
+            A field to capture list of items
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingViewModel.WarehouseFullName">
+            <summary>
+            A field to capture name and adress of warehouse
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Warehouse">
+            <summary>
+            Warehouse class model used for creating DB with EFC and collecting info about warehouses
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.Id">
+            <summary>
+            Warehouse database PK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.Name">
+            <summary>
+            Warehouse's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.Street">
+            <summary>
+            Warehouse address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.ZipCode">
+            <summary>
+            Warehouse's postal code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.City">
+            <summary>
+            The city where the warehouse was built
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.Items">
+            <summary>
+            A list of items stored in warehouse
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.AssignFullName">
+            <summary>
+            A property to assign Warehouse to Item DB
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.WMSIdentityUser">
+            <summary>
+            Class inheriting from IdentityUser extending its properties with data needed in the application
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.Name">
+            <summary>
+            Employee's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.Surname">
+            <summary>
+            Employee's surname
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.EmployeeNumber">
+            <summary>
+            Employee's registration number
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.City">
+            <summary>
+            Employee's headquarters city
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Program">
+            <summary>
+            Main class responsible for starting the application
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Program.CreateHostBuilder(System.String[])">
+            <summary>
+            Static method responsible for the host start configuration
+            </summary>
+            <param name="args"></param>
+            <returns>Returns the configured object of the Host class</returns>
+        </member>
+        <member name="T:DotNetWMS.Resources.CustomErrorMessages">
+            <summary>
+            The class responsible for storing custom error messages
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Resources.DotNetWMSContextSeed">
+            <summary>
+            The class is responsible for injecting the records into the created database. These records are used for the proper functionality of the application 
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Resources.DotNetWMSContextSeed._context">
+            <summary>
+            A field for handling the delivery of information to the DB associated with the Entity Core framework
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Resources.DotNetWMSContextSeed.roleManager">
+            <summary>
+            Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Resources.DotNetWMSContextSeed.SeedRoles">
+            <summary>
+            The method is responsible for injecting data about roles in the application
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Resources.RoleAssignExtension">
+            <summary>
+            Static class used in views which access requires authorization, to check whether the user has been assigned to the role authorizing him to run a given view
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Resources.RoleAssignExtension.IsInAllRoles(System.Security.Principal.IPrincipal,System.String[])">
+            <summary>
+            The method checks that the user is assigned to all provided roles
+            </summary>
+            <param name="principal">Interface for checking if the user is assigned to the provided role</param>
+            <param name="roles">User-assigned roles in the application</param>
+            <returns>Returns true if the user is assigned to each role. Otherwise - returns false</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.RoleAssignExtension.IsInAnyRoles(System.Security.Principal.IPrincipal,System.String[])">
+            <summary>
+            The method checks that the user is assigned to any provided roles
+            </summary>
+            <param name="principal">Interface for checking if the user is assigned to the provided role</param>
+            <param name="roles">User-assigned roles in the application</param>
+            <returns>Returns true if the user is assigned to any role. Otherwise - returns false</returns>
+        </member>
+        <member name="T:DotNetWMS.Startup">
+            <summary>
+            Class responsible for application configuration
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services">Parameter that enables adding and configuring services</param>
+        </member>
+        <member name="M:DotNetWMS.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="app">Parameter for configuring application elements</param>
+            <param name="env">Parameter for configuring WebHost environment elements</param>
+        </member>
+    </members>
+</doc>

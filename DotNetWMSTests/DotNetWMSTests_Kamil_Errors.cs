@@ -20,7 +20,7 @@ namespace DotNetWMSTests
     class DotNetWMSTests_Kamil_Errors : DotNetWMSTests_Base
     {
         private Mock<IStatusCodeReExecuteFeature> _status;
-        private Mock<ILogger> _logger;
+        private Mock<ILogger<ErrorController>> _logger;
 
         [SetUp]
         public void Setup()
@@ -28,7 +28,7 @@ namespace DotNetWMSTests
             _status = new Mock<IStatusCodeReExecuteFeature>();
             _status.SetupGet(s => s.OriginalPath).Returns("invalid");
             _status.SetupGet(s => s.OriginalPathBase).Returns("");
-            _logger = new Mock<ILogger>();
+            _logger = new Mock<ILogger<ErrorController>>();
 
         }
         [Test]
