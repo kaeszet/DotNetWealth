@@ -46,10 +46,10 @@ namespace DotNetWMSTests
         public FakeRoleManager() :
             base(
             new Mock<IRoleStore<IdentityRole>>().Object,
-            new Mock<IEnumerable<IRoleValidator<IdentityRole>>>().Object,
+            new IRoleValidator<IdentityRole>[0],
             new Mock<ILookupNormalizer>().Object,
-            new IdentityErrorDescriber(),
-            new Mock<ILogger<RoleManager<IdentityRole>>>().Object
+            new Mock<IdentityErrorDescriber>().Object,
+            new Mock<ILogger<FakeRoleManager>>().Object
             
             )
         { 

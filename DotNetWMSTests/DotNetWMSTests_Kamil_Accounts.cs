@@ -128,9 +128,11 @@ namespace DotNetWMSTests
             var fakeUserManager = new FakeUserManagerBuilder()
                 .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success)).Build();
+            
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            
 
             var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
 
