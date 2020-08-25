@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UserSecretsId>54414458-2074-4699-a148-d087368fc233</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\GitHub\DotNetWMS\DotNetWMS\DotNetWMS.xml</DocumentationFile>
+    <DocumentationFile>C:\Users\Kamil Szydłowski\Documents\Git_repos\DotNetWMS\DotNetWMS\DotNetWMS.xml</DocumentationFile>
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 

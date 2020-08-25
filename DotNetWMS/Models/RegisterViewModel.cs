@@ -47,7 +47,7 @@ namespace DotNetWMS.Models
         /// A field to capture new user's email adress
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = CustomErrorMessages.IncorrectEmailAdress)]
         [Remote(action: "IsEmailInUse", controller: "Account")]
         public string Email { get; set; }
         /// <summary>
