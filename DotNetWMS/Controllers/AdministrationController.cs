@@ -121,7 +121,7 @@ namespace DotNetWMS.Controllers
                 RoleName = role.Name
             };
 
-            foreach (var user in userManager.Users)
+            foreach (var user in userManager.Users.ToList())
             {
                 if (await userManager.IsInRoleAsync(user, role.Name))
                 {
@@ -241,7 +241,7 @@ namespace DotNetWMS.Controllers
 
             var model = new List<Admin_UsersInRoleViewModel>();
 
-            foreach (var user in userManager.Users)
+            foreach (var user in userManager.Users.ToList())
             {
                 var userRoleViewModel = new Admin_UsersInRoleViewModel
                 {
