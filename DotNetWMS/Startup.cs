@@ -85,6 +85,15 @@ namespace DotNetWMS
             {
                 options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
             });
+            //Adds cookie policy for GDPR requirements
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential 
+                // cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                // requires using Microsoft.AspNetCore.Http;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
         }
         /// <summary>
@@ -120,6 +129,7 @@ namespace DotNetWMS
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoints =>
             {
