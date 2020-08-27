@@ -353,7 +353,9 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
+
             bool isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode && i.ItemCode != ItemCode);
+
             if (ModelState.IsValid)
             {
                 if (!isItemExists)
@@ -462,7 +464,7 @@ namespace DotNetWMS.Controllers
             }
             
             
-            if (sameItem != null && sameItem.Id != item.Id && sameItem.ExternalId == null)
+            if (sameItem != null && sameItem.Id != item.Id && sameItem.ExternalId == null && sameItem.WarehouseId == item.WarehouseId)
             {
                 ItemQuantity = sameItem.Quantity;
                 _context.Remove(sameItem);
@@ -539,6 +541,12 @@ namespace DotNetWMS.Controllers
             }
             
         }
+        /// <summary>
+        /// A private method responsible for creating different AssignTo type views
+        /// </summary>
+        /// <param name="search">Search phrase in the search field</param>
+        /// <param name="order">Sort names or warranty date in ascending or descending order</param>
+        /// <returns>List of items as IQueryable of item type</returns>
         private IQueryable<Item> CreateAssignItemView(string search, string order)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
@@ -570,6 +578,12 @@ namespace DotNetWMS.Controllers
             }
             return items;
         }
+        /// <summary>
+        /// A private method responsible for creating confirmation view for AssignTo type procedures
+        /// </summary>
+        /// <param name="id">Item ID to check</param>
+        /// <param name="method">Name of the method which determines the behavior of the task</param>
+        /// <returns>Item object to further processing</returns>
         private async Task<Item> CreateAssignItemConfirmationView(int? id, string method)
         {
 
@@ -616,6 +630,12 @@ namespace DotNetWMS.Controllers
             return null;
 
         }
+        /// <summary>
+        /// A private method responsible for processing task after user's confirmation
+        /// </summary>
+        /// <param name="item">The Item class object to be checked by the method</param>
+        /// <param name="method">Name of the method which determines the behavior of the task</param>
+        /// <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
         private async Task<IActionResult> CreateAssignItemConfirmationView(Item item, string method)
         {
             if (item.Quantity <= 0)
@@ -644,9 +664,30 @@ namespace DotNetWMS.Controllers
                 return await ItemPresentationInAssignViewWhenEqual(item, method);
             }
 
-            return NotFound();
+            switch (method)
+            {
+                case "Assign_to_employee_confirm":
+                    ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+                    break;
+                case "Assign_to_warehouse_confirm":
+                    ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
+                    break;
+                case "Assign_to_external_confirm":
+                    ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
+                    break;
+                default:
+                    return NotFound();
+            }
+
+            return View(item);
 
         }
+        /// <summary>
+        /// A private method responsible for items presentation in database when user assign part of the whole amount
+        /// </summary>
+        /// <param name="item">The Item class object to be checked by the method</param>
+        /// <param name="method">Name of the method which determines the behavior of the task</param>
+        /// <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
         private async Task<IActionResult> ItemPresentationInAssignViewWhenNotEqual(Item item, string method)
         {
             switch (method)
@@ -681,8 +722,9 @@ namespace DotNetWMS.Controllers
                     else
                     {
                         ModelState.AddModelError(string.Empty, $"Nie można przekazać przedmiotu temu samemu pracownikowi!");
+                        ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+                        return View(item);
                     }
-                    break;
                 case "Assign_to_warehouse_confirm":
                     if (ItemWarehouseId != item.WarehouseId)
                     {
@@ -713,8 +755,9 @@ namespace DotNetWMS.Controllers
                     else
                     {
                         ModelState.AddModelError(string.Empty, $"Nie można przekazać przedmiotu do tego samego magazynu!");
+                        ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
+                        return View(item);
                     }
-                    break;
                 case "Assign_to_external_confirm":
                     if (ItemExternalId != item.ExternalId)
                     {
@@ -745,14 +788,21 @@ namespace DotNetWMS.Controllers
                     else
                     {
                         ModelState.AddModelError(string.Empty, $"Nie można ponownie przekazać przedmiotu temu samemu podmiotowi!");
+                        ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
+                        return View(item);
                     }
-                    break;
                 default:
-                    break;
+                    return NotFound();
                     
             }
-            return NotFound();
+            
         }
+        /// <summary>
+        /// A private method responsible for items presentation in database when user assign all of chosen items
+        /// </summary>
+        /// <param name="item">The Item class object to be checked by the method</param>
+        /// <param name="method">Name of the method which determines the behavior of the task</param>
+        /// <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
         private async Task<IActionResult> ItemPresentationInAssignViewWhenEqual(Item item, string method)
         {
             switch (method)

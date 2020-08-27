@@ -695,6 +695,46 @@
             <param name="item">The Item class object to be checked by the method</param>
             <param name="extId">External ID to check</param>
         </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.CreateAssignItemView(System.String,System.String)">
+            <summary>
+            A private method responsible for creating different AssignTo type views
+            </summary>
+            <param name="search">Search phrase in the search field</param>
+            <param name="order">Sort names or warranty date in ascending or descending order</param>
+            <returns>List of items as IQueryable of item type</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.CreateAssignItemConfirmationView(System.Nullable{System.Int32},System.String)">
+            <summary>
+            A private method responsible for creating confirmation view for AssignTo type procedures
+            </summary>
+            <param name="id">Item ID to check</param>
+            <param name="method">Name of the method which determines the behavior of the task</param>
+            <returns>Item object to further processing</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.CreateAssignItemConfirmationView(DotNetWMS.Models.Item,System.String)">
+            <summary>
+            A private method responsible for processing task after user's confirmation
+            </summary>
+            <param name="item">The Item class object to be checked by the method</param>
+            <param name="method">Name of the method which determines the behavior of the task</param>
+            <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.ItemPresentationInAssignViewWhenNotEqual(DotNetWMS.Models.Item,System.String)">
+            <summary>
+            A private method responsible for items presentation in database when user assign part of the whole amount
+            </summary>
+            <param name="item">The Item class object to be checked by the method</param>
+            <param name="method">Name of the method which determines the behavior of the task</param>
+            <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.ItemPresentationInAssignViewWhenEqual(DotNetWMS.Models.Item,System.String)">
+            <summary>
+            A private method responsible for items presentation in database when user assign all of chosen items
+            </summary>
+            <param name="item">The Item class object to be checked by the method</param>
+            <param name="method">Name of the method which determines the behavior of the task</param>
+            <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
+        </member>
         <member name="T:DotNetWMS.Controllers.WarehousesController">
             <summary>
             Controller class to support the CRUD process for the Warehouse model
