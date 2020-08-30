@@ -29,11 +29,11 @@ namespace DotNetWMSTests.Selenium_test
         public IWebElement Password { get; set; }
         [FindsBy(How = How.Id, Using = "ConfirmPassword")]
         public IWebElement ConfPassword { get; set; }
-        [FindsBy(How = How.XPath, Using = "(.//*[normalize-space(text()) and normalize-space(.)='Potwierdź hasło'])[1]/following::button[1]")]
+        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Zarejestruj się')]")]
         public IWebElement Submit { get; set; }
-        [FindsBy(How = How.XPath, Using = "(.//*[normalize-space(text()) and normalize-space(.)='Rejestracja'])[1]/following::li[1]")]
+        [FindsBy(How = How.XPath, Using = "//li[contains(.,'Pole')]")]
         public IWebElement FirstExceptionOnList { get; set; }
-        [FindsBy(How = How.XPath, Using = "(.//*[normalize-space(text()) and normalize-space(.)='Identyfikator'])[1]/following::span[1]")]
+        [FindsBy(How = How.XPath, Using = "//span[contains(@id,'EmployeeNumber-error')]")]
         public IWebElement EmpIdSpan { get; set; }
 
         public void GoToPage()
