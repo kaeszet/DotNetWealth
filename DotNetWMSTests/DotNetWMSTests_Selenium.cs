@@ -81,7 +81,7 @@ namespace DotNetWMSTests
                 deptPage.DepartmentName.SendKeys("ZZZExistedDept");
                 deptPage.CreateButton.Click();
             }
-           
+            Thread.Sleep(1000);
             Assert.IsTrue(deptPage.CreateFailInfo.Displayed);
             ClearDataAfterTest();
             
@@ -205,10 +205,11 @@ namespace DotNetWMSTests
         {
             LoginPage loginPage = new LoginPage(driver);
             loginPage.GoToPage();
-            loginPage.UserName.SendKeys("TestoJan9012");
+            loginPage.UserName.SendKeys("AdModJan9012");
             loginPage.Password.SendKeys("Test123!");
             loginPage.Submit.Click();
-            Assert.IsTrue(loginPage.LoginSuccessButton.Displayed && loginPage.LoginSuccessButton.Text == "Wyloguj się\r\nTestoJan9012");
+            Thread.Sleep(1000);
+            Assert.IsTrue(loginPage.LoginSuccessButton.Displayed && loginPage.LoginSuccessButton.Text == "Wyloguj się\r\nAdMod9012");
 
         }
         [Test]
@@ -237,7 +238,7 @@ namespace DotNetWMSTests
             driver.FindElement(By.LinkText("Zarejestruj się")).Click();
             driver.FindElement(By.Id("Name")).SendKeys("Janusz");
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
-            driver.FindElement(By.Id("Surname")).SendKeys("Testowy");
+            driver.FindElement(By.Id("Surname")).SendKeys("AdMod");
             driver.FindElement(By.Id("EmployeeNumber")).SendKeys("123456789012");
             driver.FindElement(By.Id("Email")).SendKeys("a@a.pl");
             driver.FindElement(By.Id("Password")).SendKeys("Test123!");
