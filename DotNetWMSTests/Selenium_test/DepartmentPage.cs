@@ -14,11 +14,11 @@ namespace DotNetWMSTests.Selenium_test
             this.driver = driver;
             PageFactory.InitElements(driver, this);
         }
-        [FindsBy(How = How.LinkText, Using = "Create New")]
+        [FindsBy(How = How.LinkText, Using = "Dodaj nowe stanowisko")]
         public IWebElement CreateNewLinkText { get; set; }
         [FindsBy(How = How.Id, Using = "Name")]
         public IWebElement DepartmentName { get; set; }
-        [FindsBy(How = How.XPath, Using = "//input[@value='Create']")]
+        [FindsBy(How = How.XPath, Using = "//button[@type='submit'][contains(.,'Dodaj')]")]
         public IWebElement CreateButton { get; set; }
         [FindsBy(How = How.Id, Using = "Name-error")]
         public IWebElement CreateFailInfo{ get; set; }

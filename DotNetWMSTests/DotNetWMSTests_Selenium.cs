@@ -12,6 +12,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using DotNetWMSTests.Selenium_test;
 using System.Threading;
+using System.Linq;
 
 namespace DotNetWMSTests
 {
@@ -47,26 +48,29 @@ namespace DotNetWMSTests
         [Test]
         public void Department_CreateNewDeptWithNotExistingData_ReturnDeptMainPage()
         {
+            Login();
             DateTime dateTime = DateTime.Now;
             DepartmentPage deptPage = new DepartmentPage(driver);
             deptPage.GoToPage();
             deptPage.CreateNewLinkText.Click();
-            deptPage.DepartmentName.SendKeys($"TestDept + {dateTime.ToLongTimeString()}");
+            deptPage.DepartmentName.SendKeys($"ZZZTestDept + {dateTime.ToLongTimeString()}");
             deptPage.CreateButton.Click();
             Thread.Sleep(200);
             Assert.IsTrue(deptPage.CreateNewLinkText.Displayed);
+            ClearDataAfterTest();
 
         }
         [Test]
         public void Department_CreateNewDeptWithExistingData_ReturnErrorSpan()
         {
+            Login();
             bool isCreateFailInfoDisplayed;
             DepartmentPage deptPage = new DepartmentPage(driver);
             deptPage.GoToPage();
             deptPage.CreateNewLinkText.Click();
-            deptPage.DepartmentName.SendKeys("ExistedDept");
+            deptPage.DepartmentName.SendKeys("ZZZExistedDept");
             deptPage.CreateButton.Click();
-            Thread.Sleep(200);
+            Thread.Sleep(1000);
             try
             {
                 isCreateFailInfoDisplayed = deptPage.CreateFailInfo.Displayed;
@@ -74,50 +78,56 @@ namespace DotNetWMSTests
             catch (NoSuchElementException)
             {
                 deptPage.CreateNewLinkText.Click();
-                deptPage.DepartmentName.SendKeys("ExistedDept");
+                deptPage.DepartmentName.SendKeys("ZZZExistedDept");
                 deptPage.CreateButton.Click();
             }
            
             Assert.IsTrue(deptPage.CreateFailInfo.Displayed);
+            ClearDataAfterTest();
+            
 
         }
         [Test]
         public void Employee_LoginAddEditRemoveObject_PathWithCorrectData()
         {
             
-            driver.Navigate().GoToUrl(URI);
             Login();
-            driver.FindElement(By.XPath("//a/i")).Click();            
-            driver.FindElement(By.LinkText("Dodaj użytkownika")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//div[@class='card-body'][contains(.,'Przegląd pracowników')]")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.LinkText("Dodaj pracownika")).Click();
+            Thread.Sleep(1000);
             driver.FindElement(By.Id("Name")).SendKeys("Jessica");
-            driver.FindElement(By.Id("Surname")).SendKeys("Testowa");
+            driver.FindElement(By.Id("Surname")).SendKeys("ZZZ");
             UniquePesel = DateTime.Now.ToString("yMMddHHmmss");
             driver.FindElement(By.Id("Pesel")).SendKeys(UniquePesel);
             new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Księgowy/a");
             driver.FindElement(By.Id("Street")).SendKeys("św. Filipa");
             driver.FindElement(By.Id("ZipCode")).SendKeys("30-000");
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
-            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
-            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
-            driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[1]")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Dodaj')]")).Click();
+            Thread.Sleep(1000);
+            count = driver.FindElements(By.XPath("//tr")).Count - 1;
+            driver.FindElement(By.XPath($"(//i[contains(@class,'fas fa-edit')])[{count}]")).Click();
             UniquePesel = DateTime.Now.ToString("yyMMddHHmms");
             driver.FindElement(By.Id("Pesel")).SendKeys(UniquePesel);
             new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Sprzedawca");
-            driver.FindElement(By.XPath("//input[@value='Save']")).Click();
-            driver.FindElement(By.XPath($"//tr[{count}]/td[8]/a[2]/i")).Click();
-            driver.FindElement(By.LinkText("Back to List")).Click();
-            driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[3]")).Click();
-            driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Zapisz')]")).Click();
+            driver.FindElement(By.XPath($"(//i[contains(@class,'fas fa-info-circle')])[{count}]")).Click();
+            driver.FindElement(By.XPath("//a[@class='btn btn-outline-dark'][contains(.,'Wróć do podglądu')]")).Click();
+            driver.FindElement(By.XPath($"(//i[contains(@class,'fas fa-trash-alt')])[{count}]")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Usuń')]")).Click();
 
         }
         [Test]
         public void Employee_LoginAddEditRemoveObject_PathWithIncorrectData()
         {
-            driver.Navigate().GoToUrl(URI);
             Login();
-            driver.FindElement(By.XPath("//a/i")).Click();
-            
-            driver.FindElement(By.LinkText("Dodaj użytkownika")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//div[@class='card-body'][contains(.,'Przegląd pracowników')]")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.LinkText("Dodaj pracownika")).Click();
+            Thread.Sleep(1000);
             driver.FindElement(By.Id("Name")).SendKeys("Janusz");
             driver.FindElement(By.Id("Surname")).SendKeys("Testowa");
             driver.FindElement(By.Id("Pesel")).SendKeys("1234567");
@@ -125,7 +135,7 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("Street")).SendKeys("św. Filipa");
             driver.FindElement(By.Id("ZipCode")).SendKeys("30000");
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
-            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Dodaj')]")).Click();
 
             Assert.IsTrue(IsElementPresent(By.Id("Pesel-error")));
             Assert.IsTrue(IsElementPresent(By.Id("ZipCode-error")));
@@ -135,10 +145,10 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("ZipCode")).SendKeys("30-000");
             UniquePesel = DateTime.Now.ToString("yMMddHHmmss");
             driver.FindElement(By.Id("Pesel")).SendKeys(UniquePesel);
-            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
-            count = driver.FindElements(By.XPath("//*[@class='table']/tbody/tr")).Count;
-            driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[1]")).Click();
-            driver.FindElement(By.XPath("//body")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Dodaj')]")).Click();
+            Thread.Sleep(1000);
+            count = driver.FindElements(By.XPath("//tr")).Count - 1;
+            driver.FindElement(By.XPath($"(//i[contains(@class,'fas fa-edit')])[{count}]")).Click();
             driver.FindElement(By.Id("Name")).Clear();
             driver.FindElement(By.Id("Pesel")).Clear();
             driver.FindElement(By.Id("Name")).SendKeys("Grażyna");
@@ -146,7 +156,7 @@ namespace DotNetWMSTests
             new SelectElement(driver.FindElement(By.Id("DepartmentId"))).SelectByText("Księgowy/a");
             driver.FindElement(By.Id("ZipCode")).Clear();
             driver.FindElement(By.Id("ZipCode")).SendKeys("aa000");
-            driver.FindElement(By.XPath("//input[@value='Save']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Zapisz')]")).Click();
 
             Assert.IsTrue(IsElementPresent(By.Id("Pesel-error")));
             Assert.IsTrue(IsElementPresent(By.Id("ZipCode-error")));
@@ -158,25 +168,25 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("Street")).Clear();
             driver.FindElement(By.Id("ZipCode")).Clear();
             driver.FindElement(By.Id("City")).Clear();
-            driver.FindElement(By.XPath("//input[@value='Save']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Zapisz')]")).Click();
 
             Assert.IsTrue(IsElementPresent(By.Id("Surname-error")));
             Assert.IsTrue(IsElementPresent(By.Id("Street-error")));
             Assert.IsTrue(IsElementPresent(By.Id("City-error")));
             Assert.IsTrue(IsElementPresent(By.Id("ZipCode-error")));
 
-            driver.FindElement(By.Id("Surname")).SendKeys("Testowa");
+            driver.FindElement(By.Id("Surname")).SendKeys("ZZZTestowa");
             driver.FindElement(By.Id("Street")).SendKeys("św. Filipa");
             driver.FindElement(By.Id("ZipCode")).SendKeys("30-000");
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
-            driver.FindElement(By.XPath("//input[@value='Save']")).Click();
-            driver.FindElement(By.XPath($"//tr[{count}]/td[8]/a[2]/i")).Click();
-            driver.FindElement(By.LinkText("Edit")).Click();
-            driver.FindElement(By.LinkText("Back to List")).Click();
-            driver.FindElement(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[3]")).Click();
-            driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Zapisz')]")).Click();
+            driver.FindElement(By.XPath($"(//i[contains(@class,'fas fa-info-circle')])[{count}]")).Click();
+            driver.FindElement(By.XPath("//a[@class='btn btn-sm btn-warning'][contains(.,'Edytuj')]")).Click();
+            driver.FindElement(By.XPath("//a[@class='btn btn-outline-dark'][contains(.,'Wróć do podglądu')]")).Click();
+            driver.FindElement(By.XPath($"(//i[contains(@class,'fas fa-trash-alt')])[{count}]")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Usuń')]")).Click();
 
-            Assert.IsFalse(IsElementPresent(By.XPath($"(.//*[normalize-space(text()) and normalize-space(.)='Kraków'])[{count}]/following::a[3]")));
+            Assert.IsFalse(IsElementPresent(By.XPath($"(//i[contains(@class,'fas fa-info-circle')])[{count}]")));
 ;
         }
         [Test]
@@ -198,7 +208,7 @@ namespace DotNetWMSTests
             loginPage.UserName.SendKeys("TestoJan9012");
             loginPage.Password.SendKeys("Test123!");
             loginPage.Submit.Click();
-            Assert.IsTrue(loginPage.LoginSuccessButton.Displayed && loginPage.LoginSuccessButton.Text == "Logout TestoJan9012");
+            Assert.IsTrue(loginPage.LoginSuccessButton.Displayed && loginPage.LoginSuccessButton.Text == "Wyloguj się\r\nTestoJan9012");
 
         }
         [Test]
@@ -221,7 +231,7 @@ namespace DotNetWMSTests
 
         }
 
-        public void Registration()
+        private void Registration()
         {
             driver.Navigate().GoToUrl(URI);
             driver.FindElement(By.LinkText("Zarejestruj się")).Click();
@@ -235,17 +245,29 @@ namespace DotNetWMSTests
             driver.FindElement(By.XPath("(.//*[normalize-space(text()) and normalize-space(.)='Potwierdź hasło'])[1]/following::button[1]")).Click();
         }
         
-        public void Login()
+        private void Login()
         {
-            driver.Navigate().GoToUrl(URI);
-            driver.FindElement(By.LinkText("Zaloguj się")).Click();
-            driver.FindElement(By.Id("inputEmail")).SendKeys("TestoJan9012");
-            driver.FindElement(By.Id("inputPassword")).SendKeys("Test123!");
-            driver.FindElement(By.XPath("(.//*[normalize-space(text()) and normalize-space(.)='Hasło'])[1]/following::button[1]")).Click();
+            LoginPage loginPage = new LoginPage(driver);
+            loginPage.GoToPage();
+            loginPage.UserName.SendKeys("AdModJan9012");
+            loginPage.Password.SendKeys("Test123!");
+            loginPage.Submit.Click();
             if (IsElementPresent(By.XPath(invalidCredentials)))
             {
                 Registration();
             }
+        }
+
+        private void ClearDataAfterTest()
+        {
+            Thread.Sleep(1000);
+            if (IsElementPresent(By.XPath("//a[@class='btn btn-outline-dark'][contains(.,'Wróć do podglądu')]")))
+            {
+                driver.FindElement(By.XPath("//a[@class='btn btn-outline-dark'][contains(.,'Wróć do podglądu')]")).Click();
+            }
+            count = driver.FindElements(By.XPath("//tr")).Count - 1;
+            driver.FindElement(By.XPath($"(//i[contains(@class,'fas fa-trash-alt')])[{count}]")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Usuń')]")).Click();
         }
         private bool IsElementPresent(By by)
         {

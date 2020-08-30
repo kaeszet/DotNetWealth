@@ -13,6 +13,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using System.Linq;
 
 namespace DotNetWMSTests
 {
@@ -127,18 +132,29 @@ namespace DotNetWMSTests
         {
             var fakeUserManager = new FakeUserManagerBuilder()
                 .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success)).Build();
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
             
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
-            
+            var request = new Mock<HttpRequest>();
+            request.Setup(x => x.Scheme).Returns("https");
+            request.Setup(x => x.Host).Returns(HostString.FromUriComponent("https://localhost:44387"));
+            request.Setup(x => x.PathBase).Returns(PathString.FromUriComponent("/Account"));
+            var httpContext = Mock.Of<HttpContext>(_ => _.Request == request.Object);
+            var controllerContext = new ControllerContext() { HttpContext = httpContext, ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor() };
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
+
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object) { ControllerContext = controllerContext };
+            controller.Url = new Mock<IUrlHelper>().Object;
 
             RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
-            var result = await controller.Register(rvm);
-            Assert.That(result, Is.InstanceOf(typeof(RedirectToActionResult)));
+            var result = await controller.Register(rvm) as ViewResult;
+            string registrationSuccessfulInfo = result.ViewData.Values.ToArray()[0].ToString();
+            Assert.IsTrue(registrationSuccessfulInfo == "Rejestracja udana!");
 
 
         }
