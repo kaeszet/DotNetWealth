@@ -15,13 +15,13 @@ namespace DotNetWMSTests.Selenium_test
             PageFactory.InitElements(driver, this);
         }
 
-        [FindsBy(How = How.Id, Using = "inputEmail")]
+        [FindsBy(How = How.XPath, Using = "//input[contains(@name,'Login')]")]
         public IWebElement UserName { get; set; }
-        [FindsBy(How = How.Id, Using = "inputPassword")]
+        [FindsBy(How = How.XPath, Using = "//input[@name='Password']")]
         public IWebElement Password { get; set; }
-        [FindsBy(How = How.XPath, Using = "(.//*[normalize-space(text()) and normalize-space(.)='Hasło'])[1]/following::button[1]")]
+        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Zaloguj')]")]
         public IWebElement Submit { get; set; }
-        [FindsBy(How = How.XPath, Using = "(.//*[normalize-space(text()) and normalize-space(.)='Zarejestruj się'])[1]/following::li[1]")]
+        [FindsBy(How = How.XPath, Using = "//li[contains(.,'Nieprawidłowy login lub hasło')]")]
         public IWebElement LoginFailInfo { get; set; }
         [FindsBy(How = How.XPath, Using = "//button[@type='submit']")]
         public IWebElement LoginSuccessButton { get; set; }

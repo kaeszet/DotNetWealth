@@ -209,7 +209,7 @@ namespace DotNetWMSTests
             loginPage.Password.SendKeys("Test123!");
             loginPage.Submit.Click();
             Thread.Sleep(1000);
-            Assert.IsTrue(loginPage.LoginSuccessButton.Displayed && loginPage.LoginSuccessButton.Text == "Wyloguj się\r\nAdMod9012");
+            Assert.IsTrue(loginPage.LoginSuccessButton.Displayed && loginPage.LoginSuccessButton.Text == "Wyloguj się\r\nAdModJan9012");
 
         }
         [Test]
