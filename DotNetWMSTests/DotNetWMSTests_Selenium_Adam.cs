@@ -77,7 +77,7 @@ namespace DotNetWMSTests
         {
             Login();
             driver.FindElement(By.XPath("//div[@class='card-body'][contains(.,'Przegląd majątku')]")).Click();
-            Thread.Sleep(1000);
+            Thread.Sleep(1500);
             driver.FindElement(By.XPath("//a[contains(.,'Dodaj nowy produkt')]")).Click();
             Thread.Sleep(1000);
             driver.FindElement(By.Id("Type")).SendKeys("ZZZTestProd");
@@ -143,7 +143,7 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("Quantity")).SendKeys("1");
             new SelectElement(driver.FindElement(By.Id("State"))).SelectByText("Nowy");
             new SelectElement(driver.FindElement(By.Id("EmployeeId"))).SelectByIndex(1);
-            new SelectElement(driver.FindElement(By.Id("WarehouseId"))).SelectByText("Pawia");
+            new SelectElement(driver.FindElement(By.Id("WarehouseId"))).SelectByIndex(1);
             new SelectElement(driver.FindElement(By.Id("ExternalId"))).SelectByText("Brak");
             driver.FindElement(By.Id("WarrantyDate")).SendKeys("01-01-2022");
             driver.FindElement(By.XPath("//button[contains(.,'Dodaj')]")).Click();
