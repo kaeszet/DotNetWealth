@@ -23,7 +23,7 @@ namespace DotNetWMSTests.Selenium_test
         public IWebElement Submit { get; set; }
         [FindsBy(How = How.XPath, Using = "(.//*[normalize-space(text()) and normalize-space(.)='Zarejestruj się'])[1]/following::li[1]")]
         public IWebElement LoginFailInfo { get; set; }
-        [FindsBy(How = How.XPath, Using = "(.//*[normalize-space(text()) and normalize-space(.)='Kl. zewnętrzni'])[1]/following::button[1]")]
+        [FindsBy(How = How.XPath, Using = "//button[@type='submit']")]
         public IWebElement LoginSuccessButton { get; set; }
 
         public void GoToPage()

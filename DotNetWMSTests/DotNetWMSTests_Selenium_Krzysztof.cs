@@ -14,7 +14,9 @@ namespace DotNetWMSTests
     public class DotNetWMSTests_Selenium_Krzysztof
     {
         private IWebDriver driver;
-
+        private int count;
+        private const string URI = "https://localhost:44387/";
+        private string invalidCredentials = "(.//*[normalize-space(text()) and normalize-space(.)='Zarejestruj się'])[1]/following::li[1]";
 
         [SetUp]
         public void SetupTest()
@@ -35,82 +37,160 @@ namespace DotNetWMSTests
             }
         }
 
-        [Test]
-        public void Externals_CreateTwoNewClient_ReturnViewList()
+        private void Registration()
         {
-            //First Client
-
-            driver.Navigate().GoToUrl("https://localhost:44387/");
-            driver.FindElement(By.XPath("//div[4]/div[2]/div/div[2]/a/i")).Click();
-            driver.FindElement(By.LinkText("Create New")).Click();
-            new SelectElement(driver.FindElement(By.Id("Type"))).SelectByText("Wypożyczający");
-            driver.FindElement(By.Id("Name")).SendKeys("Janek");
+            driver.Navigate().GoToUrl(URI);
+            driver.FindElement(By.LinkText("Zarejestruj się")).Click();
+            driver.FindElement(By.Id("Name")).SendKeys("Janusz");
+            driver.FindElement(By.Id("City")).SendKeys("Kraków");
+            driver.FindElement(By.Id("Surname")).SendKeys("Testowy");
+            driver.FindElement(By.Id("EmployeeNumber")).SendKeys("123456789012");
+            driver.FindElement(By.Id("Email")).SendKeys("a@a.pl");
+            driver.FindElement(By.Id("Password")).SendKeys("Test123!");
+            driver.FindElement(By.Id("ConfirmPassword")).SendKeys("Test123!");
+            driver.FindElement(By.XPath("(.//*[normalize-space(text()) and normalize-space(.)='Potwierdź hasło'])[1]/following::button[1]")).Click();
+        }
+        private void Login()
+        {
+            LoginPage loginPage = new LoginPage(driver);
+            loginPage.GoToPage();
+            loginPage.UserName.SendKeys("AdModJan9012");
+            loginPage.Password.SendKeys("Test123!");
+            loginPage.Submit.Click();
+            if (IsElementPresent(By.XPath(invalidCredentials)))
+            {
+                Registration();
+            }
+        }
+        private void ClearDataAfterTest()
+        {
+            Thread.Sleep(1000);
+            if (IsElementPresent(By.XPath("//a[@class='btn btn-outline-dark'][contains(.,'Wróć do podglądu')]")))
+            {
+                driver.FindElement(By.XPath("//a[@class='btn btn-outline-dark'][contains(.,'Wróć do podglądu')]")).Click();
+            }
+            if (IsElementPresent(By.XPath("//h1[contains(.,'Przekaż na stan')]")) || IsElementPresent(By.XPath("//h1[contains(.,'Przekaż do magazynu')]")) || IsElementPresent(By.XPath("//h1[contains(.,'Przekaż na zewnątrz')]")))
+            {
+                driver.FindElement(By.XPath("//i[contains(@class,'fas fa-arrow-left')]")).Click();
+                Thread.Sleep(200);
+                driver.FindElement(By.XPath("//div[@class='card-body'][contains(.,'Przegląd majątku')]")).Click();
+                Thread.Sleep(200);
+            }
+            count = driver.FindElements(By.XPath("//tr")).Count - 1;
+            driver.FindElement(By.XPath($"(//i[contains(@class,'fas fa-trash-alt')])[{count}]")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Usuń')]")).Click();
+        }
+        private void CreateExternalForTest()
+        {
+            Login();
+            driver.FindElement(By.XPath("//div[@class='card-body'][contains(.,'Przegląd kl. zewn.')]")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//a[contains(.,'Dodaj nowego klienta')]")).Click();
+            Thread.Sleep(1000);
+            new SelectElement(driver.FindElement(By.Id("Type"))).SelectByIndex(1);
+            driver.FindElement(By.Id("Name")).SendKeys("ZZZTestowyKlient");
             driver.FindElement(By.Id("TaxId")).SendKeys("4440001119");
             driver.FindElement(By.Id("Street")).SendKeys("Górników");
             driver.FindElement(By.Id("ZipCode")).SendKeys("31-111");
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
-            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Dodaj')]")).Click();
+            Thread.Sleep(200);
+            driver.FindElement(By.XPath("//i[contains(@class,'fas fa-arrow-left')]")).Click();
 
-            //Second Client
+        }
 
-            driver.FindElement(By.LinkText("Create New")).Click();
-            new SelectElement(driver.FindElement(By.Id("Type"))).SelectByText("Serwis");
-            driver.FindElement(By.Id("Name")).SendKeys("Waldek");
-            driver.FindElement(By.Id("TaxId")).SendKeys("1234567890");
-            driver.FindElement(By.Id("Street")).SendKeys("Pole 1");
-            driver.FindElement(By.Id("ZipCode")).SendKeys("01-112");
+        [Test]
+        public void Externals_CreateNewClient_ReturnViewList()
+        {
+
+            Login();
+            driver.FindElement(By.XPath("//h6[@class='card-title'][contains(.,'Przegląd kl. zewn.')]")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//a[contains(.,'Dodaj nowego klienta')]")).Click();
+            Thread.Sleep(1000);
+            new SelectElement(driver.FindElement(By.Id("Type"))).SelectByText("Wypożyczający");
+            driver.FindElement(By.Id("Name")).SendKeys("ZZZJanek");
+            driver.FindElement(By.Id("TaxId")).SendKeys("4440001119");
+            driver.FindElement(By.Id("Street")).SendKeys("Górników");
+            driver.FindElement(By.Id("ZipCode")).SendKeys("31-111");
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
-            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Dodaj')]")).Click();
+            Assert.IsTrue(IsElementPresent(By.XPath("//td[contains(.,'ZZZJanek')]")));
+            ClearDataAfterTest();
+
         }
 
         [Test]
         public void Externals_DeleteClient_ReturnView()
         {
-            driver.Navigate().GoToUrl("https://localhost:44387/Externals");
-            driver.FindElement(By.LinkText("Delete")).Click();
-            driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
-        }
+            CreateExternalForTest();
+            driver.FindElement(By.XPath("//h6[@class='card-title'][contains(.,'Przegląd kl. zewn.')]")).Click();
+            Thread.Sleep(1000);
+            count = driver.FindElements(By.XPath("//tr")).Count - 1;
+            driver.FindElement(By.XPath($"(//a[contains(@class,'btn btn-sm btn-danger text-dark')])[{count}]")).Click();
+            Thread.Sleep(200);
+            driver.FindElement(By.XPath("//button[contains(.,'Usuń')]")).Click();
+            Assert.IsFalse(IsElementPresent(By.XPath($"(//a[contains(@class,'btn btn-sm btn-danger text-dark')])[{count}]")));
 
+        }
 
         [Test]
         public void Externals_CreateNewClientWithValidation_ReturnViewTest()
         {
-            driver.Navigate().GoToUrl("https://localhost:44387/Externals");
-            driver.FindElement(By.LinkText("Create New")).Click();           
+            Login();
+            driver.FindElement(By.XPath("//h6[@class='card-title'][contains(.,'Przegląd kl. zewn.')]")).Click();
+            Thread.Sleep(1000);
+            count = driver.FindElements(By.XPath("//tr")).Count - 1;
+            driver.FindElement(By.XPath("//a[contains(.,'Dodaj nowego klienta')]")).Click();
+            Thread.Sleep(1000);
             driver.FindElement(By.Id("Name")).SendKeys("Janek"); 
             driver.FindElement(By.Id("TaxId")).SendKeys("1122332");       
             driver.FindElement(By.Id("Street")).SendKeys("Twoja 11");
             driver.FindElement(By.Id("ZipCode")).SendKeys("11223");
-            driver.FindElement(By.XPath("//main/div")).Click();
             driver.FindElement(By.Id("City")).SendKeys("Rzeszów");
-            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
-            driver.FindElement(By.Id("TaxId")).SendKeys("112233211");
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Dodaj')]")).Click();
+
+            Assert.IsTrue(IsElementPresent(By.Id("TaxId-error")));
+            Assert.IsTrue(IsElementPresent(By.Id("ZipCode-error")));
+
+            driver.FindElement(By.Id("TaxId")).Clear();
             driver.FindElement(By.Id("TaxId")).SendKeys("1122332111");
+            driver.FindElement(By.Id("ZipCode")).Clear();
             driver.FindElement(By.Id("ZipCode")).SendKeys("11-223");
-            driver.FindElement(By.XPath("//input[@value='Create']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Dodaj')]")).Click();
+            Thread.Sleep(200);
+            int countForAssertion = driver.FindElements(By.XPath("//tr")).Count - 1;
+
+            Assert.IsTrue(++count == countForAssertion);
+            ClearDataAfterTest();
+
         }
 
         [Test]
         public void Externals_SearchClientWithNipNumberAndEdit_ReturnViewTest()
         {
-            driver.Navigate().GoToUrl("https://localhost:44387/Externals?search=");
-            driver.FindElement(By.Name("search")).SendKeys("6792480093");
-            driver.FindElement(By.XPath("//button/i")).Click();
-            driver.FindElement(By.LinkText("Edit")).Click();
+            CreateExternalForTest();
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//h6[@class='card-title'][contains(.,'Przegląd kl. zewn.')]")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//input[@name='search']")).SendKeys("4440001119");
+            driver.FindElement(By.XPath("//i[contains(@class,'fab fa-sistrix')]")).Click();
+            driver.FindElement(By.XPath("(//i[contains(@class,'fas fa-info-circle')])[1]")).Click();
+            driver.FindElement(By.XPath("//a[@class='btn btn-sm btn-warning'][contains(.,'Edytuj')]")).Click();
             driver.FindElement(By.Id("Name")).Clear();
-            driver.FindElement(By.Id("Name")).SendKeys("JanekEdit");
-            driver.FindElement(By.XPath("//input[@value='Save']")).Click();
+            driver.FindElement(By.Id("Name")).SendKeys("ZZZTestowyKlient2");
+            driver.FindElement(By.XPath("//button[contains(.,'Zapisz')]")).Click();
+            Assert.IsTrue(IsElementPresent(By.XPath("//td[contains(.,'ZZZTestowyKlient2')]")));
+            ClearDataAfterTest();
         }
 
         [Test]
         public void Error_OpenErrorMessageIfPageDoesNotExistAndBackToHomePage_ReturnErrorView()
         {
-            driver.Navigate().GoToUrl("https://localhost:44387/");
-            driver.FindElement(By.XPath("//div[4]/div[2]/div/div[2]/a/i")).Click();
-
+            Login();
             driver.Navigate().GoToUrl("https://localhost:44387/External/invalid");
-
-            driver.FindElement(By.LinkText("Wróć do strony głównej")).Click();
+            Assert.IsTrue(IsElementPresent(By.XPath("//a[contains(.,'Wróć do strony głównej')]")));
 
         }
 
