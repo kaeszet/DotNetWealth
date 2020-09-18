@@ -13,6 +13,9 @@ using OpenQA.Selenium.Support.UI;
 using DotNetWMSTests.Selenium_test;
 using System.Threading;
 using System.Linq;
+using System.Data;
+using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace DotNetWMSTests
 {
@@ -20,6 +23,8 @@ namespace DotNetWMSTests
     public class DotNetWMSTests_Selenium
     {
 
+        private SqlConnection connection;
+        private SqlCommand command;
         private IWebDriver driver;
         private const string URI = "https://localhost:44387/";
         private string UniquePesel;
@@ -203,12 +208,18 @@ namespace DotNetWMSTests
         [Test]
         public void AccountLogin_UseValidLoginAndPassword_ReturnLoginSuccessButton()
         {
+            Login();
             LoginPage loginPage = new LoginPage(driver);
-            loginPage.GoToPage();
-            loginPage.UserName.SendKeys("AdModJan9012");
-            loginPage.Password.SendKeys("Test123!");
-            loginPage.Submit.Click();
+            //loginPage.GoToPage();
+            //loginPage.UserName.SendKeys("AdModJan9012");
+            //loginPage.Password.SendKeys("Test123!");
+            //loginPage.Submit.Click();
             Thread.Sleep(1000);
+            if (IsElementPresent(By.XPath("//span[contains(@class,'navbar-toggler-icon')]")))
+            {
+                driver.FindElement(By.XPath("//span[contains(@class,'navbar-toggler-icon')]")).Click();
+                Thread.Sleep(200);
+            }
             Assert.IsTrue(loginPage.LoginSuccessButton.Displayed && loginPage.LoginSuccessButton.Text == "Wyloguj się\r\nAdModJan9012");
 
         }
@@ -234,8 +245,7 @@ namespace DotNetWMSTests
 
         private void Registration()
         {
-            driver.Navigate().GoToUrl(URI);
-            driver.FindElement(By.LinkText("Zarejestruj się")).Click();
+            driver.Navigate().GoToUrl("https://localhost:44387/Account/Register");
             driver.FindElement(By.Id("Name")).SendKeys("Janusz");
             driver.FindElement(By.Id("City")).SendKeys("Kraków");
             driver.FindElement(By.Id("Surname")).SendKeys("AdMod");
@@ -244,6 +254,18 @@ namespace DotNetWMSTests
             driver.FindElement(By.Id("Password")).SendKeys("Test123!");
             driver.FindElement(By.Id("ConfirmPassword")).SendKeys("Test123!");
             driver.FindElement(By.XPath("(.//*[normalize-space(text()) and normalize-space(.)='Potwierdź hasło'])[1]/following::button[1]")).Click();
+            Thread.Sleep(2000);
+            connection = new SqlConnection("Server=(localdb)\\mssqllocaldb;Database=DotNetWMSContext-1;Trusted_Connection=True;MultipleActiveResultSets=true");
+            connection.Open();
+            command = new SqlCommand("UPDATE [dbo].[AspNetUsers] SET [EmailConfirmed]='true' WHERE [UserName]='AdModJan9012'", connection);
+            command.ExecuteNonQuery();
+            Login();
+            Thread.Sleep(1000);
+            driver.Navigate().GoToUrl("https://localhost:44387/Administration/EditUsersInRole?roleid=fd9c26cd-4cf0-4e55-9f99-c1bf4a01d8e8");
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//input[@type='checkbox']")).Click();
+            driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Zaktualizuj')]")).Click();
+            driver.FindElement(By.XPath("//img[@src='/images/PepeLogo.png']")).Click();
         }
         
         private void Login()
