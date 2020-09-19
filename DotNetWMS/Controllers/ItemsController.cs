@@ -622,7 +622,7 @@ namespace DotNetWMS.Controllers
                 
                 ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
                 ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
-                ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
+                ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
 
                 return item;
             }
