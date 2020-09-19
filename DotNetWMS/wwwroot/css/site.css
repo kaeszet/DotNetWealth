@@ -89,11 +89,6 @@ body {
     box-shadow: 0px 0px 5px 0px #adb5bd;
 }
 
-.navbar-nav .nav-item:hover {
-    background-color: #e9ecef;
-    border-top-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-}
 
 .footer {
     box-shadow: 0 0 5px #adb5bd;
@@ -102,8 +97,12 @@ body {
 
 /* INDEX */
 
+.btn
+{
+    transition: all .4s ease-in-out;
+}
 .btn:hover{
-    transform: scale(1.1);
+    transform: scale(0.95);
 }
 
 .col-category{
@@ -121,7 +120,6 @@ body {
 }
 .category-body a {
     width: 40%;
-    border-radius: 20px;
     margin: 5%;
     color: #000;
     background-color: #fff;
@@ -145,18 +143,14 @@ body {
     position: absolute;
     right: 1%;
     height: 80%;
-    box-shadow: 0 0 5px 0px #adb5bd;
-    border-bottom-left-radius: 20px;
-    border-top-right-radius: 20px;
     transition: all .3s ease-in-out;
 }
 
 .logout-form:hover{
-    transform: scale(1.1);
-    background-color: #adb5bd;
+    transform: scale(0.95);
 }
 .logout-form:hover > button {
-    color: #fff;
+    color: #000;
 }
 
 .logout-form button{
@@ -315,7 +309,6 @@ input[type=checkbox]{
 }
 
 .card-register {
-    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
     padding: 10px;
     height: 60%;
     display: flex;
