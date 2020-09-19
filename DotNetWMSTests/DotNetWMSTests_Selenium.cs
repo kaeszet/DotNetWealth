@@ -217,7 +217,7 @@ namespace DotNetWMSTests
             Thread.Sleep(1000);
             if (IsElementPresent(By.XPath("//span[contains(@class,'navbar-toggler-icon')]")))
             {
-                driver.FindElement(By.XPath("//span[contains(@class,'navbar-toggler-icon')]")).Click();
+                driver.FindElement(By.XPath("//button[contains(@class,'navbar-toggler')]")).Click();
                 Thread.Sleep(200);
             }
             Assert.IsTrue(loginPage.LoginSuccessButton.Displayed && loginPage.LoginSuccessButton.Text == "Wyloguj się\r\nAdModJan9012");
@@ -261,7 +261,9 @@ namespace DotNetWMSTests
             command.ExecuteNonQuery();
             Login();
             Thread.Sleep(1000);
-            driver.Navigate().GoToUrl("https://localhost:44387/Administration/EditUsersInRole?roleid=fd9c26cd-4cf0-4e55-9f99-c1bf4a01d8e8");
+            driver.Navigate().GoToUrl("https://localhost:44387/Administration/ListOfRoles");
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("(//a[contains(.,'Przypisz użytkownika')])[3]")).Click();
             Thread.Sleep(1000);
             driver.FindElement(By.XPath("//input[@type='checkbox']")).Click();
             driver.FindElement(By.XPath("//button[@type='submit'][contains(.,'Zaktualizuj')]")).Click();
