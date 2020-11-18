@@ -5,42 +5,48 @@
 }
 
 <div class="row">
-        <div class="col-md-8">
-            <div class="shadow-lg bg-light p-3 mt-4">
+    <div class="col-md-8 m-auto">
+        <div class="card shadow-sm">
+            <h5 class="card-header">Logowanie</h5>
+            <div class="card-body">
                 <form method="post" class="form-signin">
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="text-center">
-                        <img src="~/images/PepeLogo.png" style=" width: 70%" alt="">
-                        <h1 class="h3 mb-3 font-weight-normal">Logowanie</h1>
+                    @*<div asp-validation-summary="All" class="text-danger"></div>*@
+                    <div class="form-group">
+                        <label asp-for="Login" class="mb-0" for="login">Login</label>
+                        <input asp-for="Login" id="inputEmail" class="form-control" placeholder="Login">
+                        <small class="text-danger font-weight-bold"><span asp-validation-for="Login"></span></small>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Login" class="sr-only">Login</label>
-                        <input asp-for="Login" id="inputEmail" class="form-control" placeholder="Login" required autofocus>
-                        <span asp-validation-for="Login" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Password" class="sr-only">Hasło</label>
+                        <label asp-for="Password" class="mb-0" for="inputPassword">Hasło</label>
                         <input asp-for="Password" id="inputPassword" class="form-control" placeholder="Hasło" required>
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <small class="text-danger font-weight-bold"><span asp-validation-for="Password"></span></small>
                     </div>
-                    <div class="form-group">
-                        <div class="checkbox mb-3 ml-4">
-                            <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
-                            <label asp-for="RememberMe" class="form-check-label ml-2"></label>
-                        </div>
+                    <div class="form-group form-check d-flex align-items-center">
+                        <input asp-for="RememberMe" type="checkbox" id="remember" class="form-check-input" />
+                        <label asp-for="RememberMe" for="remember" class="form-check-label ml-2"></label>
                     </div>
-                    <button class="btn btn-lg btn-success btn-block" type="submit">Zaloguj</button>
-                    <a asp-action="ForgotPassword">Zapomniałeś hasła?</a>
+                    <div class="d-flex mb-2">
+                        <button class="btn btn-primary d-block mr-2" type="submit">Zaloguj</button>
+                        <a asp-action="ForgotPassword" class="btn btn-light">Zapomniałeś hasła?</a>
+                    </div>
                 </form>
             </div>
         </div>
+
+        <div class="card mx-auto mt-3" style="width: 18rem;">
+            <div class="card-body text-center">
+                <h5 class="card-title">Nie masz jeszcze konta</h5>
+                <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Zarejestruj się</a>
+            </div>
+        </div>
+    </div>
         
-        <div class="col-md-4 col-register">
+        @*<div class="col-md-4 col-register">
             <div class="card-register shadow-lg bg-light">
                 <img src="~/images/pepe.png" style="width: 35%"/>
                 <h4 class="w-100 text-center">Nie masz konta ?</h4>
                 <a asp-controller="Account" asp-action="Register" class="btn btn-outline-info">Zarejestruj się</a>
                 
             </div>
-        </div>
+        </div>*@
 </div>
