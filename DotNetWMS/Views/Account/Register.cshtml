@@ -4,70 +4,71 @@
     ViewData["Title"] = "Register User";
 }
 
-    <div class="card border-dark mb-3">
-        <div class="card-header"><h4>Rejestracja</h4></div>
-        <div class="card-body text-dark">
+    <div class="row">
+        <div class="col-md-10 m-auto">
+            <div class="card shadow-sm">
+                <div class="card-header"><h4>Rejestracja</h4></div>
+                <div class="card-body">
 
 
-            <form method="post">
-                <div asp-validation-summary="All" class="text-danger"></div>
+                    <form method="post">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="Name" class="mb-0"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Imię" />
+                                <small class="font-weight-bold text-danger"><span asp-validation-for="Name"></span></small>
+                            </div>
 
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Name"></label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="Surname" class="mb-0"></label>
+                                <input asp-for="Surname" class="form-control" placeholder="Nazwisko" />
+                                <small class="font-weight-bold text-danger"><span asp-validation-for="Surname" class="text-danger"></span></small>
+                            </div>
+                        </div>
 
-                    <div class="form-group col-md-6">
-                        <label asp-for="Surname"></label>
-                        <input asp-for="Surname" class="form-control" />
-                        <span asp-validation-for="Surname" class="text-danger"></span>
-                    </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="EmployeeNumber" class="mb-0"></label>
+                                <input asp-for="EmployeeNumber" class="form-control" placeholder="Identyfikator" />
+                                <small class="font-weight-bold text-danger"><span asp-validation-for="EmployeeNumber" class="text-danger"></span></small>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label asp-for="City" class="mb-0"></label>
+                                <input asp-for="City" class="form-control" placeholder="Oddział" />
+                                <small class="font-weight-bold text-danger"><span asp-validation-for="City" class="text-danger"></span></small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email" class="mb-0"></label>
+                            <input asp-for="Email" class="form-control" placeholder="Email" />
+                            <small class="font-weight-bold text-danger"><span asp-validation-for="Email" class="text-danger"></span></small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="Password" class="mb-0"></label>
+                                <input asp-for="Password" class="form-control" placeholder="Hasło" />
+                                <small class="font-weight-bold text-danger"><span asp-validation-for="Password" class="text-danger"></span></small>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="ConfirmPassword" class="mb-0"></label>
+                                <input asp-for="ConfirmPassword" class="form-control" placeholder="Potwierdz hasło" />
+                                <small class="font-weight-bold text-danger"><span asp-validation-for="ConfirmPassword" class="text-danger"></span></small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Zarejestruj się</button>
+                        </div>
+                    </form>
+
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="EmployeeNumber"></label>
-                        <input asp-for="EmployeeNumber" class="form-control" />
-                        <span asp-validation-for="EmployeeNumber" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label asp-for="City"></label>
-                        <input asp-for="City" class="form-control" />
-                        <span asp-validation-for="City" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Email"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Password"></label>
-                        <input asp-for="Password" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="ConfirmPassword"></label>
-                        <input asp-for="ConfirmPassword" class="form-control" />
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-success">Zarejestruj się</button>
-                </div>
-            </form>
-
+            </div>
         </div>
-    </div>
+        </div>
 
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+            @section Scripts {
+                @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+            }
