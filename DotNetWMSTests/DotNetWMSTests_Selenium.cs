@@ -47,7 +47,7 @@ namespace DotNetWMSTests
             }
             catch (Exception)
             {
-                // Ignore errors if unable to close the browser
+                
             }
         }
         [Test]
