@@ -20,94 +20,112 @@
     </environment>
 
 </head>
-<body>
-        <header class="bg-light shadow sticky-top top-0">
-            <div class="container-lg navbar navbar-expand-lg navbar-light">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="~/images/PepeLogo.png" style="height: 54px; width: 160px" alt=""></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav mr-auto">
+<body class="min-vh-100">
 
-                    <!--kadry-->
-                    @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Employees" asp-action="Index">Pracownicy</a>
-                        </li>
-                    }
-
-                    <!--standard-->
-                    @if (signInManager.IsSignedIn(User))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Items" asp-action="Index">Majątek</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Warehouses" asp-action="Index">Magazyny</a>
-                        </li>
-                    }
-
-                    @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Externals" asp-action="Index">Kl. zewnętrzni</a>
-                        </li>
-                    }
-
-                </ul>
-
-                @if (signInManager.IsSignedIn(User))
-                {
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            @User.Identity.Name
+    @if (signInManager.IsSignedIn(User))
+    {
+        <header class="sticky-top top-0">
+            <div class="container-fluid">
+                <div class="row p-0">
+                    <div class="col-md-2 d-flex bg-white">
+                        <a class="navbar-brand m-auto" asp-controller="Home" asp-action="Index">
+                            <img src="~/images/PepeLogo.png" style="width: 160px" alt="">
                         </a>
+                    </div>
 
-                        <form method="post" asp-controller="Account" asp-action="Logout">
-                            <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="dropdownMenuLink">
-                                <h6 class="dropdown-header">Panel administracyjny</h6>
-                                @*admin*@
-                                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    <div class="col-md-10 shadow navbar navbar-expand-lg navbar-dark bg-dark">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarText">
+                            <ul class="navbar-nav mr-auto">
+
+                                <!--kadry-->
+                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
                                 {
-                                    <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
-                                    <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
-                                    <div class="dropdown-divider"></div>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Employees" asp-action="Index">Pracownicy</a>
+                                    </li>
                                 }
-                                <button type="submit" class="dropdown-item text-danger">Wyloguj się</button>
+
+                                <!--standard-->
+                                @if (signInManager.IsSignedIn(User))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Items" asp-action="Index">Majątek</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Warehouses" asp-action="Index">Magazyny</a>
+                                    </li>
+                                }
+
+                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
+                                    </li>
+                                }
+
+                            </ul>
+
+                            <div class="dropdown">
+                                <a class="btn btn-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </a>
+
+                                <form method="post" asp-controller="Account" asp-action="Logout">
+                                    <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="dropdownMenuLink">
+                                        <h6 class="dropdown-header">Panel administracyjny</h6>
+                                        @*admin*@
+                                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                                        {
+                                            <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
+                                            <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
+                                            <div class="dropdown-divider"></div>
+                                        }
+                                        <button type="submit" class="dropdown-item text-danger">Wyloguj się</button>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                }
-                else
-                {
-                    <div>
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary mr-1">Zaloguj się</a>
-                        <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Zarejestruj się</a>
-                    </div>
-                }
+                </div>
             </div>
+        </header>
+    }
 
-            </div>
-    </header>
 
 
-    <div class="container-lg">
-        <div class="container py-3">
+    @if (!signInManager.IsSignedIn(User))
+    {
+        <div class="container-fluid vh-100 d-flex bg-light">
             @RenderBody()
         </div>
-        <partial name="_CookieConsentPartial" />
-    </div>
+    }
+    else
+    {
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 sidebar bg-light border-right">
 
-    <footer class="footer bg-light py-3 text-center shadow border fixed-bottom">
-        <div class="container">
-            &copy; 2019-2020 - DotNetFortune - <a asp-area="" asp-controller="Home" asp-action="AboutUs" class="aboutUs">O nas</a>
+            </div>
+            <div class="col-md-10 ml-auto py-3">
+                @RenderBody()
+            </div>
         </div>
-    </footer>
+    </div>
+    }
+    <partial name="_CookieConsentPartial" />
+
+    @*<footer class="footer bg-light py-3 text-center shadow border fixed-bottom">
+            <div class="container">
+                &copy; 2019-2020 - DotNetFortune - <a asp-area="" asp-controller="Home" asp-action="AboutUs" class="aboutUs">O nas</a>
+            </div>
+        </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
-</body>
+    </body>
 </html>
