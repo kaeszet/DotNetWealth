@@ -58,6 +58,7 @@ namespace DotNetWMS.Controllers
         public IActionResult ListOfUsers()
         {
             var users = userManager.Users;
+
             return View(users);
         }
         /// <summary>
