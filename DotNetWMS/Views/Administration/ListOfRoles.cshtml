@@ -5,69 +5,83 @@
     ViewBag.Title = "All Roles";
     Model.OrderBy(m => m.Name);
 }
-
-<h1>Lista ról</h1>
-<div class="roles-list">
-    @if (Model.Any())
-    {
-
-        <div class="button-add"><a asp-action="CreateRole" asp-controller="administration" class="btn btn-success mb-3"><i class="fas fa-plus"></i> Stwórz rolę</a></div>
-
-
-        var sortedModel = Model.OrderBy(m => m.Name);
-        foreach (var role in sortedModel)
-        {
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">@role.Name</h5>
-                    <hr />
-                    <h6 class="card-subtitle mb-2 text-muted">ID roli :</h6>
-                    <p class="card-text">@role.Id</p>
-                    <hr />
-                    @if (Admin_DefaultRoles.IsDefaultRole(role.Name))
-                    {
-                        <div class="button-admin">
-                            <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm btn-light"><i class="fas fa-info-circle"></i> Szczegóły</a>
-                            <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="btn btn-sm btn-light"><i class="fas fa-edit"></i> Przypisz użytkownika</a>
-                        </div>
-                    }
-                    else
-                    {
-                <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
-                    <div class="button-admin">
-                        <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edytuj</a>
-
-                        <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-id="@role.Id" class="btn btn-sm btn-light"><i class="fas fa-edit"></i>    Przypisz uzytkownika</a>
-
-                        <span id="confirmDeleteSpan_@role.Id" style="display:none">
-                            <span><b>Jesteś pewien?</b></span>
-                            <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i></button>
-                            <a href="#" class="btn btn-danger" onclick="confirmDelete('@role.Id', false)"><i class="fas fa-window-close"></i></a>
-                        </span>
-                        <span id="deleteSpan_@role.Id">
-                            <a href="#" class="btn btn-sm btn-danger" onclick="confirmDelete('@role.Id', true)"><i class="fas fa-trash-alt"></i> Usuń</a>
-                        </span>
-                    </div>
-                </form>
-                    }
-                </div>
-            </div>
-        }
-
-    }
-    else
-    {
-        <div class="card">
-            <div class="card-header">
-                Brak ról
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">Aby stworzyć rolę, kliknij poniżej:</h5>
-                <a asp-controller="Administration" asp-action="CreateRole" class="btn btn-primary">Stwórz rolę</a>
-            </div>
+    
+    <div>
+        <div class="d-flex justify-content-between">
+            <h2 class="my-0">Lista ról</h2>
+            <a asp-action="CreateRole" asp-controller="administration" class="btn btn-success my-auto"><i class="fas fa-plus"></i> Stwórz rolę</a>
         </div>
-    }
-</div>
-@section Scripts {
-    <script src="~/js/DeleteConfirmation.js"></script>
-}
+    </div>
+        <hr />
+        <div class="row">
+            <div class="col-12">
+                @if (Model.Any())
+                {
+                    var sortedModel = Model.OrderBy(m => m.Name);
+                    var index = 1;
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr class="bg-light">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nazwa</th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Więcej</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var role in sortedModel)
+                                {
+                                    <tr>
+                                        <th scope="row">@index</th>
+                                        <td class="font-weight-bold">@role.Name</td>
+                                        <td>@role.Id</td>
+                                        <td>
+                                            <div class="d-flex align-items-start flex-column">
+                                                @if (Admin_DefaultRoles.IsDefaultRole(role.Name))
+                                                {
+                                                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm my-1 border btn-light"><i class="fas fa-info-circle mr-1"></i>Szczegóły</a>
+                                                    <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="btn btn-sm my-1 border btn-light"><i class="fas fa-edit mr-1"></i> Przypisz użytkownika</a>
+                                                }
+                                                else
+                                                {
+                                                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm my-1 border btn-warning"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+                                                    <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="btn btn-sm my-1 border btn-light"><i class="fas fa-edit mr-1"></i>Przypisz uzytkownika</a>
+                                                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                                                        <div id="confirmDeleteSpan_@role.Id" style="display:none">
+                                                            <span><b>Jesteś pewien?</b></span>
+                                                            <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i></button>
+                                                            <button type="button" class="btn btn-danger" onclick="confirmDelete('@role.Id', false)"><i class="fas fa-window-close"></i></button>
+                                                        </div>
+                                                        <div id="deleteSpan_@role.Id">
+                                                            <button type="button" class="btn btn-sm my-1 btn-danger" onclick="confirmDelete('@role.Id', true)"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
+                                                        </div>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    index++;
+                                }
+                            </tbody>
+                        </table>
+                        </div>
+                        }
+                        else
+                        {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <h4 class="alert-heading">Brak ról!</h4>
+                            <hr>
+                            <p class="mb-0">Aby dodać nową rolę, kliknij powyższy przycisk "Stwórz rolę"</p>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        }
+                    </div>
+                </div>
+        @section Scripts {
+            <script src="~/js/DeleteConfirmation.js"></script>
+        }

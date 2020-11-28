@@ -1,12 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;1,600&display=swap');
 
-table {
-    border-collapse: collapse;
-    border-radius: 1em;
-    overflow: hidden;
-    box-shadow: 2px 2px 5px 0px #adb5bd;
-}
-
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -135,10 +128,6 @@ body {
 
 .button-col .btn{
     margin: 2px;
-}
-
-.table .thead-light a {
-    color: #495057;
 }
 
 header
