@@ -9,7 +9,7 @@
     <div>
         <div class="d-flex justify-content-between">
             <h2 class="my-0">Lista ról</h2>
-            <a asp-action="CreateRole" asp-controller="administration" class="btn btn-success my-auto"><i class="fas fa-plus"></i> Stwórz rolę</a>
+            <a asp-action="CreateRole" asp-controller="administration" class="btn btn-success my-auto"><i class="fas fa-plus mr-1"></i>Dodaj rolę</a>
         </div>
     </div>
         <hr />
@@ -21,12 +21,12 @@
                     var index = 1;
                     <div class="table-responsive">
                         <table class="table table-hover">
-                            <thead>
-                                <tr class="bg-light">
+                            <thead class="thead-light">
+                                <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Nazwa</th>
                                     <th scope="col">ID</th>
-                                    <th scope="col">Więcej</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,16 +48,31 @@
                                                 {
                                                     <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm my-1 border btn-warning"><i class="fas fa-edit mr-1"></i>Edytuj</a>
                                                     <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="btn btn-sm my-1 border btn-light"><i class="fas fa-edit mr-1"></i>Przypisz uzytkownika</a>
-                                                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
-                                                        <div id="confirmDeleteSpan_@role.Id" style="display:none">
-                                                            <span><b>Jesteś pewien?</b></span>
-                                                            <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i></button>
-                                                            <button type="button" class="btn btn-danger" onclick="confirmDelete('@role.Id', false)"><i class="fas fa-window-close"></i></button>
+
+                                                    <button type="button" class="btn btn-sm my-1 btn-danger" data-toggle="modal" data-target="#remove_@role.Id"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
+
+                                                    <div class="modal fade" id="remove_@role.Id" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="label_remove_@role.Id" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title font-weight-bold" id="label_remove_@role.Id">Usuwanie roli</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Czy na pewno chcesz usunąć rolę o nazwie: <b>@role.Name</b> ?
+                                                                    <div class="text-muted small font-weight-bold">ID: @role.Id</div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                                                                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-window-close mr-1"></i>Nie</button>
+                                                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check-circle mr-1"></i>Tak</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div id="deleteSpan_@role.Id">
-                                                            <button type="button" class="btn btn-sm my-1 btn-danger" onclick="confirmDelete('@role.Id', true)"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
-                                                        </div>
-                                                    </form>
+                                                    </div>
                                                 }
                                             </div>
                                         </td>
@@ -74,7 +89,7 @@
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <h4 class="alert-heading">Brak ról!</h4>
                             <hr>
-                            <p class="mb-0">Aby dodać nową rolę, kliknij powyższy przycisk "Stwórz rolę"</p>
+                            <p class="mb-0">Aby stworzyć nową rolę, kliknij powyższy przycisk "Dodaj rolę"</p>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -82,6 +97,6 @@
                         }
                     </div>
                 </div>
-        @section Scripts {
+        @*@section Scripts {
             <script src="~/js/DeleteConfirmation.js"></script>
-        }
+        }*@

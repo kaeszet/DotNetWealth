@@ -1,9 +1,13 @@
-﻿@model DotNetWMS.Models.RegisterViewModel
+﻿@using DotNetWMS.Resources
+@inject SignInManager<WMSIdentityUser> signInManager;
+@model DotNetWMS.Models.RegisterViewModel
 
 @{
     ViewData["Title"] = "Register User";
 }
 
+@if (!signInManager.IsSignedIn(User))
+{
     <div class="card shadow m-auto">
         <div class="card-body">
             <img src="~/images/PepeLogo.png" class="mw-100 mh-100" alt="">
@@ -63,7 +67,74 @@
 
         </div>
     </div>
+}
+else
+{
+    <div>
+        <h2>Dodaj nowego użytkownika</h2>
+    </div>
+    <hr />
+    <div class="card m-auto">
+        <div class="card-body">
+            <a asp-controller="Administration" asp-action="ListOfUsers" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy użytkowników</a>
+            <div asp-validation-summary="All" class="text-danger font-weight-bold small mb-3"></div>
+                <form method="post">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <small><label asp-for="Name" class="mb-0 font-weight-bold"></label></small>
+                            <input asp-for="Name" class="form-control" placeholder="Imię" />
+                            <small class="font-weight-bold text-danger"><span asp-validation-for="Name"></span></small>
+                        </div>
 
-            @section Scripts {
-                @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-            }
+                        <div class="form-group col-md-6">
+                            <small><label asp-for="Surname" class="mb-0 font-weight-bold"></label></small>
+                            <input asp-for="Surname" class="form-control" placeholder="Nazwisko" />
+                            <small class="font-weight-bold text-danger"><span asp-validation-for="Surname" class="text-danger"></span></small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <small><label asp-for="EmployeeNumber" class="mb-0 font-weight-bold"></label></small>
+                            <input asp-for="EmployeeNumber" class="form-control" placeholder="Identyfikator" />
+                            <small class="font-weight-bold text-danger"><span asp-validation-for="EmployeeNumber" class="text-danger"></span></small>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <small><label asp-for="City" class="mb-0 font-weight-bold"></label></small>
+                            <input asp-for="City" class="form-control" placeholder="Oddział" />
+                            <small class="font-weight-bold text-danger"><span asp-validation-for="City" class="text-danger"></span></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <small><label asp-for="Email" class="mb-0 font-weight-bold"></label></small>
+                        <input asp-for="Email" class="form-control" placeholder="Email" />
+                        <small class="font-weight-bold text-danger"><span asp-validation-for="Email" class="text-danger"></span></small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <small><label asp-for="Password" class="mb-0 font-weight-bold"></label></small>
+                            <input asp-for="Password" class="form-control" placeholder="Hasło" />
+                            <small class="font-weight-bold text-danger"><span asp-validation-for="Password" class="text-danger"></span></small>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <small><label asp-for="ConfirmPassword" class="mb-0 font-weight-bold"></label></small>
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="Potwierdz hasło" />
+                            <small class="font-weight-bold text-danger"><span asp-validation-for="ConfirmPassword" class="text-danger"></span></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Zarejestruj</button>
+                    </div>
+                </form>
+
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
