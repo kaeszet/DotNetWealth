@@ -16,7 +16,7 @@ namespace DotNetWMS.Models
         /// The role's name for an application user
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
-        [Display(Name = "Podaj nazwę roli:")]
+        [Display(Name = "Nazwa roli")]
         public string RoleName { get; set; }
     }
 }

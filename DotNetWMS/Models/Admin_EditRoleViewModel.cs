@@ -27,7 +27,7 @@ namespace DotNetWMS.Models
         /// A field to capture the role name
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
-        [Display(Name = "Nazwa roli:")]
+        [Display(Name = "Nazwa roli")]
         public string RoleName { get; set; }
         /// <summary>
         /// List of users stored as 'string' values

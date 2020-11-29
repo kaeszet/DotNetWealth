@@ -3,35 +3,36 @@
 @{
     var roleId = ViewBag.roleId;
 }
-
-<div class="card border-dark mb-3">
-    <div class="card-header"><h4>Przypisz użytkowników do ról</h4></div>
+<div>
+    <h2>Przypisz użytkowników do ról</h2>
+</div>
+<hr />
+<div class="card mb-3">
     <div class="card-body text-dark">
-
-
+        <div class="d-flex flex-column align-items-start">
+            <a asp-action="EditRole" asp-route-id="@roleId" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Szczegóły</a>
+            <a asp-action="ListOfRoles" class="btn btn-outline-dark btn-sm my-2"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy ról</a>
+        </div>
         <form method="post" class="form-edit-role">
-
-            @for (int i = 0; i < Model.Count; i++)
-            {
-                <div class="form-check mb-3">
-                    <input type="hidden" asp-for="@Model[i].UserId" />
-                    <input type="hidden" asp-for="@Model[i].UserName" />
-                    <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-                    <label class="form-check-label" asp-for="@Model[i].IsSelected">@Model[i].UserName</label>
-                    <span asp-validation-for="@Model[i].IsSelected" class="text-danger"></span>
-                    <hr />
-                </div>
-            }
-
-            <div class="form-group button-admin-users">
-                <button type="submit" class="btn btn-success">Zaktualizuj <i class="fas fa-plus"></i></button>
-                <a asp-action="EditRole" asp-route-id="@roleId" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i> Szczegóły</a>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item font-weight-bold">Uzytkownicy</li>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <li class="list-group-item">
+                        <div class="custom-control custom-checkbox">
+                            <input type="hidden" asp-for="@Model[i].UserId" />
+                            <input type="hidden" asp-for="@Model[i].UserName" />
+                            <input class="custom-control-input" asp-for="@Model[i].IsSelected">
+                            <label class="custom-control-label" asp-for="@Model[i].IsSelected">@Model[i].UserName</label>
+                            <span asp-validation-for="@Model[i].IsSelected" class="text-danger small font-weight-bold"></span>
+                        </div>
+                    </li>
+                }
+                </ul>
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Zapisz</button>
             </div>
         </form>
-
     </div>
 </div>
-
-<a asp-action="ListOfRoles" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i> Wróć do listy ról</a>
-
 

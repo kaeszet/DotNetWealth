@@ -8,14 +8,15 @@
         <div class="card-body">
             <img src="~/images/PepeLogo.png" class="mw-100 mh-100" alt="">
             <h3 class="text-center font-weight-bold my-4">Logowanie</h3>
+            <div asp-validation-summary="All" class="text-danger small font-weight-bold"></div>
             <form method="post" class="form-signin">
                 <div class="form-group">
                     <input asp-for="Login" id="inputEmail" class="form-control login" placeholder="Login">
-                    <small class="text-danger font-weight-bold"><span asp-validation-for="Login"></span></small>
+                    <span asp-validation-for="Login" class="small text-danger font-weight-bold"></span>
                 </div>
                 <div class="form-group">
                     <input asp-for="Password" id="inputPassword" class="form-control login" placeholder="Hasło" required>
-                    <small class="text-danger font-weight-bold"><span asp-validation-for="Password"></span></small>
+                    <span asp-validation-for="Password" class="small text-danger font-weight-bold"></span>
                 </div>
                 <div class="form-group form-check d-flex align-items-center mx-auto w-fit">
                     <input asp-for="RememberMe" type="checkbox" id="remember" class="form-check-input mt-0 c-pointer" style="width:15px; height:15px;" />
@@ -34,13 +35,3 @@
             <p class="text-muted m-auto text-center">&copy; 2019-2020</p>
         </div>
     </div>
-
-        @*<div class="card m-auto mt-3" style="width: 18rem;">
-            <div class="card-body text-center">
-                <h5 class="card-title">Nie masz jeszcze konta</h5>
-                <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Zarejestruj się</a>
-            </div>
-        </div>*@
-    @*</div>
-       
-</div>*@
