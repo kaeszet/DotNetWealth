@@ -14,29 +14,32 @@
 <hr />
 <div class="card mb-3">
     <div class="card-body">
-        <a asp-action="Index" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
+        <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
 
         <ul class="list-group list-group-flush">
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name)</li>
+            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name) i @Html.DisplayNameFor(model => model.Surname)</li>
+            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name) @Html.DisplayFor(model => model.Surname)</li>
 
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Surname)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Surname)</li>
+            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
+            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
+
+            @*<li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Surname)</li>
+        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Surname)</li>*@
 
             <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Pesel)</li>
             <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Pesel)</li>
 
-            <li class="list-group-item font-weight-bold">@Html.DisplayFor(model => model.Department.Name)</li>
+            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Department)</li>
             <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
 
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street)</li>
+            @*<li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
+        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street)</li>
 
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.ZipCode)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.ZipCode)</li>
+        <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.ZipCode)</li>
+        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.ZipCode)</li>
 
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.City)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.City)</li>
+        <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.City)</li>
+        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.City)</li>*@
         </ul>
     </div>
 </div>
