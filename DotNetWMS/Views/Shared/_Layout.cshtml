@@ -100,6 +100,8 @@
     @if (!signInManager.IsSignedIn(User))
     {
         <div class="container-fluid vh-100 d-flex bg-light">
+            <partial name="_CookieConsentPartial" />
+
             @RenderBody()
         </div>
     }
@@ -167,12 +169,12 @@
                 }
             </div>
             <div class="col-md-10 ml-auto py-3">
+                <partial name="_CookieConsentPartial" />
                 @RenderBody()
             </div>
         </div>
     </div>
     }
-    <partial name="_CookieConsentPartial" />
 
     @*<footer class="footer bg-light py-3 text-center shadow border fixed-bottom">
             <div class="container">
