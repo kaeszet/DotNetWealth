@@ -5,88 +5,55 @@
     ViewData["Title"] = "Details";
 }
 
-    <div>
-        <h4>Szczegóły o produkcie</h4>
+<div>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="my-0">Szczegóły o produkcie</h2>
         @if (User.IsInAnyRoles("StandardPlus,Moderator"))
         {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edytuj</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success"><i class="fas fa-edit mr-1"></i> Edytuj</a>
         }
-        <hr />
-        <dl class="row details-view">
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.Type)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.Type)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.Name)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.Producer)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.Producer)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.Model)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.Model)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.ItemCode)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.ItemCode)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.Quantity)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.Quantity)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.Units)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.Units)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.WarrantyDate)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.WarrantyDate)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.State)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.State)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.Employee)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.Employee.FullName)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.Warehouse)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.Warehouse.Street)
-            </dd>
-            <dt class="col-sm-2 list-group-item">
-                @Html.DisplayNameFor(model => model.External)
-            </dt>
-            <dd class="col-sm-10 list-group-item dd-list">
-                @Html.DisplayFor(model => model.External.Name)
-            </dd>
-        </dl>
     </div>
-    <div>
-        <a asp-action="Index" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
+</div>
+<hr />
+
+<div class="card mb-3">
+    <div class="card-body">
+        <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
+           
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Name) | @Html.DisplayNameFor(model => model.Type) | @Html.DisplayNameFor(model => model.Model)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name) | @Html.DisplayFor(model => model.Type) | @Html.DisplayFor(model => model.Model)</li>
+
+                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Producer)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Producer)</li>
+
+                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.ItemCode)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.ItemCode)</li>
+
+                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.WarrantyDate)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.WarrantyDate)</li>
+
+                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Warehouse)</li>
+                    <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.Warehouse.Street)</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Quantity) / @Html.DisplayNameFor(model => model.Units)</li>
+                    <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.Quantity) / @Html.DisplayFor(model => model.Units)</li>
+
+                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.State)</li>
+                    <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.State)</li>
+
+                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.External)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.External.Name)</li>
+
+                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Employee)</li>
+                    <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.Employee.FullName)</li>
+                </ul>
+            </div>
+        </div>
     </div>
+</div>

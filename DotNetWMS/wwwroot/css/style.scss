@@ -56,6 +56,13 @@ footer {
 	width: fit-content;
 }
 
+.dropdown-menu
+{
+	&.show
+	{
+		z-index: 1040;
+	}
+}
 .dropdown-item {
 
 	&.danger {
@@ -64,12 +71,14 @@ footer {
 		&:hover {
 			background-color: $red-200;
 		}
+
 		&:focus {
 			color: $white !important;
 			background-color: $red;
 		}
 	}
 }
+
 
 .sidebar {
 	position: fixed;

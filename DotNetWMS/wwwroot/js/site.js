@@ -6,6 +6,12 @@
 $(document).ready(function ()
 {
     //Active nav list
+    let first = $(location).attr('pathname');
+
+    first.indexOf(1);
+    first.toLowerCase();
+    first = first.split("/")[1];
+
     $('.sidebar .list-group-item[href="' + location.pathname + '"]').addClass('active');
 
     //Input search table
@@ -17,4 +23,12 @@ $(document).ready(function ()
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+
+    $('.table-responsive').on('show.bs.dropdown', function () {
+        $('.table-responsive').css("overflow-x", "inherit");
+    });
+
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $('.table-responsive').css("overflow-x", "auto");
+    })
 });
