@@ -5,13 +5,13 @@
 
 $(document).ready(function ()
 {
+    //bootstrap-select
+    $('select').selectpicker({
+        style: 'btn-form',
+        styleBase: 'form-control'
+    });
+
     //Active nav list
-    let first = $(location).attr('pathname');
-
-    first.indexOf(1);
-    first.toLowerCase();
-    first = first.split("/")[1];
-
     $('.sidebar .list-group-item[href="' + location.pathname + '"]').addClass('active');
 
     //Input search table
