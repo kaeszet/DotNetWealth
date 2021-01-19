@@ -120,9 +120,40 @@ footer {
 
 /* FORM */
 
-.form-control:focus {
-	border-color: #adb5bd;
-	box-shadow: 0 0 0 0.2rem #dee2e6;
+.form-control {
+	background-color: #fafafa;
+
+	&:focus {
+		border-color: #adb5bd;
+		box-shadow: 0 0 0 0.2rem #dee2e6;
+	}
+}
+
+.bootstrap-select {
+	.btn-form {
+		background-color: #fafafa !important;
+		border: 1px solid #ced4da !important;
+
+		&:focus, &:active {
+			background-color: #fff !important;
+			border-color: #adb5bd !important;
+			box-shadow: 0 0 0 0.2rem #dee2e6 !important;
+		}
+	}
+
+	&.disabled, & > .disabled {
+		background-color: #e9ecef !important;
+		opacity: 1;
+	}
+}
+.bootstrap-select .dropdown-toggle:focus
+{
+	outline: none !important;
+}
+.show > .btn-form.dropdown-toggle {
+	background-color: #fff !important;
+	border-color: #adb5bd !important;
+	box-shadow: 0 0 0 0.2rem #dee2e6 !important;
 }
 
 .validation-summary-errors {
