@@ -7,15 +7,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DotNetFortune</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+
     <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap-select/dist/css/bootstrap-select.css" />
+        <link rel="stylesheet" href="~/css/style.css" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     </environment>
+
     <environment exclude="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap-select/dist/css/bootstrap-select.min.css" />
+        <link rel="stylesheet" href="~/css/style.css" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
     </environment>
 
@@ -84,7 +87,7 @@
                                             <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
                                             <div class="dropdown-divider"></div>
                                         }
-                                        <button type="submit" class="dropdown-item text-danger">Wyloguj się</button>
+                                        <button type="submit" class="dropdown-item danger text-danger">Wyloguj się</button>
                                     </div>
                                 </form>
                             </div>
@@ -107,83 +110,92 @@
     }
     else
     {
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-2 sidebar overflow-auto bg-light border-right pb-3">
-                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                {
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2 sidebar overflow-auto bg-light border-right pb-3">
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <div class="title mt-3">
+                            <small class="text-muted font-weight-bold text-uppercase m-0">Panel administracyjny</small>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a asp-controller="Administration" asp-action="ListOfRoles" class="list-group-item list-group-item-action"><i class="fas fa-user-tag mr-1"></i>Lista ról</a>
+                            <a asp-controller="Administration" asp-action="ListOfUsers" class="list-group-item list-group-item-action"><i class="fas fa-user mr-1"></i>Użytkownicy</a>
+                        </div>
+                    }
+                    @if (User.IsInAnyRoles("Kadry,Moderator"))
+                    {
+                        <div class="title mt-3">
+                            <small class="text-muted font-weight-bold text-uppercase m-0">Pracownicy</small>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a asp-controller="Employees" asp-action="Index" class="list-group-item list-group-item-action"><i class="far fa-id-card mr-1"></i>Przegląd pracowników</a>
+                            <a asp-controller="Departments" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-briefcase mr-1"></i> Przegląd stanowisk</a>
+                        </div>
+                    }
                     <div class="title mt-3">
-                        <small class="text-muted font-weight-bold text-uppercase m-0">Panel administracyjny</small>
+                        <small class="text-muted font-weight-bold text-uppercase m-0">Majątek</small>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a asp-controller="Administration" asp-action="ListOfRoles" class="list-group-item list-group-item-action"><i class="fas fa-user-tag mr-1"></i>Lista ról</a>
-                        <a asp-controller="Administration" asp-action="ListOfUsers" class="list-group-item list-group-item-action"><i class="fas fa-user mr-1"></i>Użytkownicy</a>
+                        <a asp-controller="Items" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Przegląd majątku</a>
+                        @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                        {
+                            <a asp-controller="Items" asp-action="Assign_to_employee" class="list-group-item list-group-item-action"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
+                            <a asp-controller="Items" asp-action="Assign_to_warehouse" class="list-group-item list-group-item-action"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
+                        }
+                        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
+                        {
+                            <a asp-controller="Items" asp-action="Assign_to_external" class="list-group-item list-group-item-action"><i class="fas fa-truck-loading mr-1"></i>Przekaż na zewnątrz</a>
+                        }
                     </div>
-                }
-                @if (User.IsInAnyRoles("Kadry,Moderator"))
-                {
+
                     <div class="title mt-3">
-                        <small class="text-muted font-weight-bold text-uppercase m-0">Pracownicy</small>
+                        <small class="text-muted font-weight-bold text-uppercase m-0">Magazyn</small>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a asp-controller="Employees" asp-action="Index" class="list-group-item list-group-item-action"><i class="far fa-id-card mr-1"></i>Przegląd pracowników</a>
-                        <a asp-controller="Departments" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-briefcase mr-1"></i> Przegląd stanowisk</a>
+                        <a asp-controller="Warehouses" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Przegląd magazynów</a>
+                        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
+                        {
+                            <a asp-controller="Warehouses" asp-action="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
+                        }
                     </div>
-                }
-                <div class="title mt-3">
-                    <small class="text-muted font-weight-bold text-uppercase m-0">Majątek</small>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a asp-controller="Items" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Przegląd majątku</a>
+
                     @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                     {
-                        <a asp-controller="Items" asp-action="Assign_to_employee" class="list-group-item list-group-item-action"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
-                        <a asp-controller="Items" asp-action="Assign_to_warehouse" class="list-group-item list-group-item-action"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
-                    }
-                    @if (User.IsInAnyRoles("StandardPlus,Moderator"))
-                    {
-                        <a asp-controller="Items" asp-action="Assign_to_external" class="list-group-item list-group-item-action"><i class="fas fa-truck-loading mr-1"></i>Przekaż na zewnątrz</a>
-                    }
-                </div>
-
-                <div class="title mt-3">
-                    <small class="text-muted font-weight-bold text-uppercase m-0">Magazyn</small>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a asp-controller="Warehouses" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Przegląd magazynów</a>
-                    @if (User.IsInAnyRoles("StandardPlus,Moderator"))
-                    {
-                        <a asp-controller="Warehouses" asp-action="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
+                        <div class="title mt-3">
+                            <small class="text-muted font-weight-bold text-uppercase m-0">Klienci zewnętrzni</small>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a asp-controller="Externals" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-glasses mr-1"></i>Przegląd klientów zewnętrznych</a>
+                            <a asp-controller="Externals" asp-action="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
+                        </div>
                     }
                 </div>
-
-                @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
-                {
-                    <div class="title mt-3">
-                        <small class="text-muted font-weight-bold text-uppercase m-0">Klienci zewnętrzni</small>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        <a asp-controller="Externals" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-glasses mr-1"></i>Przegląd klientów zewnętrznych</a>
-                        <a asp-controller="Externals" asp-action="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
-                    </div>
-                }
-            </div>
-            <div class="col-md-10 ml-auto py-3">
-                <partial name="_CookieConsentPartial" />
-                @RenderBody()
+                <div class="col-md-10 ml-auto py-3 content-body">
+                    <partial name="_CookieConsentPartial" />
+                    @RenderBody()
+                </div>
             </div>
         </div>
-    </div>
     }
 
-    @*<footer class="footer bg-light py-3 text-center shadow border fixed-bottom">
+    @if (signInManager.IsSignedIn(User))
+    {
+        <footer class="col-md-10 ml-auto border-left-0 bg-light py-2 text-center border fixed-bottom">
             <div class="container">
                 &copy; 2019-2020 - DotNetFortune - <a asp-area="" asp-controller="Home" asp-action="AboutUs" class="aboutUs">O nas</a>
             </div>
-        </footer>*@
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
-    </body>
+
+            <div>
+                <script src="~/lib/jquery/dist/jquery.min.js"></script>
+                <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+                <script src="~/lib/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+                <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+                <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+                <script src="~/js/site.js" asp-append-version="true"></script>
+                @RenderSection("Scripts", required: false)
+            </div>
+        </footer>
+    }
+</body>
 </html>

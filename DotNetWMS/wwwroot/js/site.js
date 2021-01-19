@@ -5,6 +5,12 @@
 
 $(document).ready(function ()
 {
+    //bootstrap-select
+    $('select').selectpicker({
+        style: 'btn-form',
+        styleBase: 'form-control'
+    });
+
     //Active nav list
     $('.sidebar .list-group-item[href="' + location.pathname + '"]').addClass('active');
 
@@ -17,4 +23,12 @@ $(document).ready(function ()
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
+
+    $('.table-responsive').on('show.bs.dropdown', function () {
+        $('.table-responsive').css("overflow-x", "inherit");
+    });
+
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $('.table-responsive').css("overflow-x", "auto");
+    })
 });

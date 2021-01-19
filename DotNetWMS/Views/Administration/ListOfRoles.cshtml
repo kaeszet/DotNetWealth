@@ -49,43 +49,53 @@
                                         <td class="font-weight-bold">@role.Name</td>
                                         <td>@role.Id</td>
                                         <td>
-                                            <div class="d-flex align-items-start flex-column">
-                                                @if (Admin_DefaultRoles.IsDefaultRole(role.Name))
-                                                {
-                                                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm my-1 border btn-light"><i class="fas fa-info-circle mr-1"></i>Szczegóły</a>
-                                                    <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="btn btn-sm my-1 border btn-light"><i class="fas fa-edit mr-1"></i> Przypisz użytkownika</a>
-                                                }
-                                                else
-                                                {
-                                                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm my-1 border btn-warning"><i class="fas fa-edit mr-1"></i>Edytuj</a>
-                                                    <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="btn btn-sm my-1 border btn-light"><i class="fas fa-edit mr-1"></i>Przypisz uzytkownika</a>
+                                            <div class="btn-group dropleft">
+                                                <button type="button" class="btn btn-sm my-1 border btn-light dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                                                    Więcej
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-lg-right">
+                                                    <h6 class="dropdown-header font-weight-bold">Co chcesz zrobić?</h6>
+                                                    @if (Admin_DefaultRoles.IsDefaultRole(role.Name))
+                                                    {
+                                                        <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="dropdown-item"><i class="fas fa-info-circle mr-1"></i>Szczegóły</a>
+                                                        <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="dropdown-item"><i class="fas fa-edit mr-1"></i>Przypisz użytkownika</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="dropdown-item"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+                                                        <a asp-controller="Administration" asp-action="EditUsersInRole" asp-route-roleid="@role.Id" class="dropdown-item"><i class="fas fa-edit mr-1"></i>Przypisz uzytkownika</a>
 
-                                                    <button type="button" class="btn btn-sm my-1 btn-danger" data-toggle="modal" data-target="#remove_@role.Id"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
+                                                        <div class="dropdown-divider"></div>
 
-                                                    <div class="modal fade" id="remove_@role.Id" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="label_remove_@role.Id" aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title font-weight-bold" id="label_remove_@role.Id">Usuwanie roli</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    Czy na pewno chcesz usunąć rolę o nazwie: <b>@role.Name</b> ?
-                                                                    <div class="text-muted small font-weight-bold">ID: @role.Id</div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
-                                                                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-window-close mr-1"></i>Nie</button>
-                                                                        <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check-circle mr-1"></i>Tak</button>
-                                                                    </form>
-                                                                </div>
+                                                        <button type="button" class="dropdown-item danger text-danger" data-toggle="modal" data-target="#remove_@role.Id"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
+                                                    }
+                                                </div>
+                                            </div>
+                                            @if (!Admin_DefaultRoles.IsDefaultRole(role.Name))
+                                            {
+                                                <div class="modal fade" id="remove_@role.Id" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="label_remove_@role.Id" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title font-weight-bold" id="label_remove_@role.Id">Usuwanie roli</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Czy na pewno chcesz usunąć rolę o nazwie: <b>@role.Name</b> ?
+                                                                <div class="text-muted small font-weight-bold">ID: @role.Id</div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                                                                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-window-close mr-1"></i>Nie</button>
+                                                                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check-circle mr-1"></i>Tak</button>
+                                                                </form>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                }
-                                            </div>
+                                                </div>
+                                            }
                                         </td>
                                     </tr>
 

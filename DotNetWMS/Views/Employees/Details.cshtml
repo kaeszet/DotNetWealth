@@ -6,9 +6,9 @@
 
 
 <div>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between align-items-center">
         <h2 class="my-0">Szczegóły</h2>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning my-auto"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success my-auto"><i class="fas fa-edit mr-1"></i>Edytuj</a>
     </div>
 </div>
 <hr />
@@ -23,23 +23,12 @@
             <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
             <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
 
-            @*<li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Surname)</li>
-        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Surname)</li>*@
 
             <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Pesel)</li>
             <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Pesel)</li>
 
             <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Department)</li>
             <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
-
-            @*<li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
-        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street)</li>
-
-        <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.ZipCode)</li>
-        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.ZipCode)</li>
-
-        <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.City)</li>
-        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.City)</li>*@
         </ul>
     </div>
 </div>
