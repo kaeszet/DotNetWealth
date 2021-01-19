@@ -4,16 +4,20 @@
     ViewData["Title"] = "Create";
 }
 
-<div class="card border-dark mb-3">
-    <div class="card-header"><h4>Dodawanie produktu</h4></div>
+<div>
+    <div class="d-flex justify-content-between">
+        <h2 class="my-0">Dodawanie produktu</h2>
+    </div>
+</div>
+<hr />
+<div class="card mb-3">
     <div class="card-body text-dark">
+        <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
 
-
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" class="mt-3">
             <div class="form-group">
-                <label asp-for="Producer" class="control-label"></label>
+                <label asp-for="Producer" class="font-weight-bold small mb-0"></label>
                 <input asp-for="Producer" class="form-control" />
                 <span asp-validation-for="Producer" class="text-danger"></span>
             </div>
@@ -21,19 +25,19 @@
             <div class="form-row">
 
                 <div class="form-group col-md-4">
-                    <label asp-for="Name" class="control-label"></label>
+                    <label asp-for="Name" class="font-weight-bold small mb-0"></label>
                     <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label asp-for="Type" class="control-label"></label>
+                    <label asp-for="Type" class="font-weight-bold small mb-0"></label>
                     <input asp-for="Type" class="form-control" />
                     <span asp-validation-for="Type" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label asp-for="Model" class="control-label"></label>
+                    <label asp-for="Model" class="font-weight-bold small mb-0"></label>
                     <input asp-for="Model" class="form-control" />
                     <span asp-validation-for="Model" class="text-danger"></span>
                 </div>
@@ -42,13 +46,13 @@
 
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="ItemCode" class="control-label"></label>
+                    <label asp-for="ItemCode" class="font-weight-bold small mb-0"></label>
                     <input asp-for="ItemCode" class="form-control" />
                     <span asp-validation-for="ItemCode" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label asp-for="State" class="control-label"></label>
+                    <label asp-for="State" class="font-weight-bold small mb-0"></label>
                     <select asp-for="State" class="form-control" asp-items="Html.GetEnumSelectList<ItemState>()"></select>
                     <span asp-validation-for="State" class="text-danger"></span>
                 </div>
@@ -57,18 +61,18 @@
             <div class="form-row">
 
                 <div class="form-group col-md-6">
-                    <label asp-for="WarrantyDate" class="control-label"></label>
+                    <label asp-for="WarrantyDate" class="font-weight-bold small mb-0"></label>
                     <input asp-for="WarrantyDate" class="form-control" />
                     <span asp-validation-for="WarrantyDate" class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-4">
-                    <label asp-for="Quantity" class="control-label"></label>
+                    <label asp-for="Quantity" class="font-weight-bold small mb-0"></label>
                     <input asp-for="Quantity" class="form-control" />
                     <span asp-validation-for="Quantity" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-2">
-                    <label asp-for="Units" class="control-label"></label>
+                    <label asp-for="Units" class="font-weight-bold small mb-0"></label>
                     <select asp-for="Units" class="form-control" asp-items="Html.GetEnumSelectList<ItemUnits>()"></select>
                     <span asp-validation-for="Units" class="text-danger"></span>
                 </div>
@@ -77,33 +81,36 @@
             <hr />
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label asp-for="EmployeeId" class="control-label"></label>
-                    <select asp-for="EmployeeId" class="form-control" asp-items="ViewBag.EmployeeId"><option value="" selected>Brak</option></select>
+                    <label asp-for="EmployeeId" class="font-weight-bold small mb-0"></label>
+                    <select asp-for="EmployeeId" class="form-control" 
+                            title="Brak"
+                            asp-items="ViewBag.EmployeeId"></select>
                     <span asp-validation-for="EmployeeId" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-4">
-                    <label asp-for="WarehouseId" class="control-label"></label>
-                    <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.WarehouseId"><option value="" selected>Brak</option></select>
+                    <label asp-for="WarehouseId" class="font-weight-bold small mb-0"></label>
+                    <select asp-for="WarehouseId" class="form-control" 
+                            title="Brak"
+                            asp-items="ViewBag.WarehouseId"></select>
                     <span asp-validation-for="WarehouseId" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-4">
-                    <label asp-for="ExternalId" class="control-label"></label>
-                    <select asp-for="ExternalId" class="form-control" asp-items="ViewBag.ExternalId"><option value="" selected>Brak</option></select>
+                    <label asp-for="ExternalId" class="font-weight-bold small mb-0"></label>
+                    <select asp-for="ExternalId" class="form-control" 
+                            title="Brak"    
+                            asp-items="ViewBag.ExternalId"></select>
                     <span asp-validation-for="ExternalId" class="text-danger"></span>
                 </div>
             </div>
 
 
             <div class="form-group">
-                <button type="submit" class="btn btn-success">Dodaj <i class="fas fa-plus"></i></button>
+                <button type="submit" class="btn btn-success btn-sm mr-1"><i class="fas fa-plus mr-1"></i>Dodaj</button>
             </div>
         </form>
 
     </div>
 </div>
-
-
-<a asp-action="Index" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

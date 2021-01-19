@@ -63,11 +63,17 @@
                             <td>@Html.DisplayFor(modelItem => item.ZipCode)</td>
                             <td>@Html.DisplayFor(modelItem => item.City)</td>
                             <td>
-                                <div class="d-flex align-items-start flex-column">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning my-1"><i class="fas fa-edit mr-1"></i>Edytuj</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light my-1"><i class="fas fa-info-circle mr-1"></i>Szczegóły</a>
-                                    @*<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger my-1"><i class="fas fa-trash-alt mr-1"></i>Usuń</a>*@
-                                    <button type="button" class="btn btn-sm my-1 btn-danger" data-toggle="modal" data-target="#remove_@item.Id"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-sm my-1 border btn-light dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                                        Więcej
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-lg-right">
+                                        <h6 class="dropdown-header font-weight-bold">Co chcesz zrobić?</h6>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-info-circle mr-1"></i>Szczegóły</a>
+                                        <div class="dropdown-divider"></div>
+                                        <button type="button" class="dropdown-item danger text-danger" data-toggle="modal" data-target="#remove_@item.Id"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
+                                    </div>
                                 </div>
 
                                 <div class="modal fade" id="remove_@item.Id" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="label_remove_@item.Id" aria-hidden="true">
