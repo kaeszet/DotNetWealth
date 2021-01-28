@@ -61,7 +61,7 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
             int warehouseId = Convert.ToInt32(warehouseFullName);
-            var items = _context.Items.Select(i => i).Where(i => i.WarehouseId == warehouseId).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+            var items = _context.Items.Select(i => i).Where(i => i.WarehouseId == warehouseId).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
             ViewData["ItemList"] = items;
 
             return PartialView("_StocktakingTable", items);

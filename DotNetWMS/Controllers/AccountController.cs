@@ -71,6 +71,8 @@ namespace DotNetWMS.Controllers
                     Name = model.Name,
                     Surname = model.Surname,
                     EmployeeNumber = model.EmployeeNumber,
+                    Street = model.Street,
+                    ZipCode = model.ZipCode,
                     City = model.City,
                     Email = model.Email
                 };
