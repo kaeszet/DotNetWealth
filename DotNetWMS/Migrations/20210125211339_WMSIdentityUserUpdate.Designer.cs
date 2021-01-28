@@ -4,14 +4,16 @@ using DotNetWMS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DotNetWMS.Migrations
 {
     [DbContext(typeof(DotNetWMSContext))]
-    partial class DotNetWMSContextModelSnapshot : ModelSnapshot
+    [Migration("20210125211339_WMSIdentityUserUpdate")]
+    partial class WMSIdentityUserUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,7 +167,7 @@ namespace DotNetWMS.Migrations
                     b.Property<int>("Units")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("WMSIdentityUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("WarehouseId")
@@ -180,7 +182,7 @@ namespace DotNetWMS.Migrations
 
                     b.HasIndex("ExternalId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("WMSIdentityUserId");
 
                     b.HasIndex("WarehouseId");
 
@@ -457,7 +459,7 @@ namespace DotNetWMS.Migrations
 
             modelBuilder.Entity("DotNetWMS.Models.Item", b =>
                 {
-                    b.HasOne("DotNetWMS.Models.Employee", null)
+                    b.HasOne("DotNetWMS.Models.Employee", "Employee")
                         .WithMany("Items")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -467,9 +469,9 @@ namespace DotNetWMS.Migrations
                         .HasForeignKey("ExternalId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("DotNetWMS.Models.WMSIdentityUser", "User")
+                    b.HasOne("DotNetWMS.Models.WMSIdentityUser", null)
                         .WithMany("Items")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("WMSIdentityUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("DotNetWMS.Models.Warehouse", "Warehouse")

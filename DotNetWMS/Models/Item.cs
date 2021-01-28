@@ -78,12 +78,12 @@ namespace DotNetWMS.Models
         /// Employee's FK. Can be null.
         /// </summary>
         [Display(Name = "Przypisz do pracownika:")]
-        public int? EmployeeId { get; set; }
+        public string UserId { get; set; }
         /// <summary>
         /// Employee DB data
         /// </summary>
         [Display(Name = "Pracownik")]
-        public Employee Employee { get; set; }
+        public WMSIdentityUser User { get; set; }
         /// <summary>
         /// Warehouse's FK. Can be null.
         /// </summary>
