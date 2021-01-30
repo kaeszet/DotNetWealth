@@ -58,6 +58,7 @@ namespace DotNetWMS.Models
         [Display(Name = "Miasto")]
         public string City { get; set; }
         public IList<Item> Items { get; set; }
+        public IList<Infobox> Messages { get; set; }
         public string FullName => $"{Surname} {Name}";
     }
 }

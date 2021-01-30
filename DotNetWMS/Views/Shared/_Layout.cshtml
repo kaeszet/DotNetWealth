@@ -85,6 +85,12 @@
                                         {
                                             <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
                                             <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
+                                            <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
+                                            <div class="dropdown-divider"></div>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
                                             <div class="dropdown-divider"></div>
                                         }
                                         <button type="submit" class="dropdown-item danger text-danger">Wyloguj się</button>

@@ -9,6 +9,9 @@ using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace DotNetWMS.Controllers
 {
@@ -22,6 +25,8 @@ namespace DotNetWMS.Controllers
         /// A field for handling the delivery of information to the DB associated with the Entity Core framework
         /// </summary>
         private readonly DotNetWMSContext _context;
+        private readonly UserManager<WMSIdentityUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         /// <summary>
         /// A static field for handling Item's ItemCode for properly creation of Assign-type views
         /// </summary>
@@ -44,9 +49,11 @@ namespace DotNetWMS.Controllers
         private static int? ItemExternalId;
 
 
-        public ItemsController(DotNetWMSContext context)
+        public ItemsController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
         /// <summary>
         /// GET method responsible for returning an Item's Assign_to_employee view and supports a search engine
@@ -132,20 +139,23 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
-            
+
             if (id != item.Id)
             {
                 return NotFound();
             }
-           
+
             if (ModelState.IsValid)
             {
-                return await CreateAssignItemConfirmationView(item, "Assign_to_employee_confirm"); 
+
+                return await CreateAssignItemConfirmationView(item, "Assign_to_employee_confirm");
 
             }
+
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             return View(item);
         }
+
         /// <summary>
         /// POST method responsible for processing the completed form on Assign_to_warehouse_confirm view
         /// </summary>
@@ -234,6 +244,9 @@ namespace DotNetWMS.Controllers
         /// <returns>Item's Details view</returns>
         public async Task<IActionResult> Details(int? id)
         {
+            
+            var url = _httpContextAccessor.HttpContext?.Request?.GetDisplayUrl();
+
             if (id == null)
             {
                 return NotFound();
@@ -715,6 +728,7 @@ namespace DotNetWMS.Controllers
                         _context.Update(item);
                         MergeSameItems(item, typeof(WMSIdentityUser));
                         ItemStatusCheck(item, ItemExternalId);
+                        SendInfo(item);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("Assign_to_employee");
 
@@ -816,6 +830,7 @@ namespace DotNetWMS.Controllers
                             _context.Update(item);
                             MergeSameItems(item, typeof(WMSIdentityUser));
                             ItemStatusCheck(item, ItemExternalId);
+                            SendInfo(item);
                             await _context.SaveChangesAsync();
                         }
 
@@ -889,6 +904,18 @@ namespace DotNetWMS.Controllers
                     break;
             }
             return NotFound();
+        }
+        private void SendInfo(Item item)
+        {
+            Infobox info = new Infobox()
+            {
+                Title = "Otrzymałeś przedmiot",
+                Message = $"Otrzymałeś \"{item.Name}\" w ilości {item.Quantity} {item.Units} od użytkownika {User.Identity.Name}",
+                ReceivedDate = DateTime.Now,
+                UserId = item.UserId
+
+            };
+            _context.Infoboxes.Add(info);
         }
     }
 }

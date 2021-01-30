@@ -41,6 +41,7 @@ namespace DotNetWMS
         {
             //Necessary service for the MVC model
             services.AddControllersWithViews();
+            services.AddHttpContextAccessor();
             //Entity Framework Core service
             services.AddDbContext<DotNetWMSContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DotNetWMSContext")));
             //Identity Core service
