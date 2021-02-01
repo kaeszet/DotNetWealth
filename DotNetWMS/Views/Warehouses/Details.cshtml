@@ -44,3 +44,7 @@
 <div>
     <a asp-action="Index" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
 </div>
+
+<div>
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
+</div>

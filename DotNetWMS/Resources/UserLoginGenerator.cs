@@ -9,12 +9,7 @@ namespace DotNetWMS.Resources
     {
         private static string PrepareAndNormalize(string word)
         {
-            //for (int i = 0; i < words.Length; i++)
-            //{
-            //    words[i] = words[i].Trim().ToLower();
-            //    words[i] = Normalize(words[i]);
-            //    set.Add(words[i]);
-            //}
+            
             word = word.Trim().ToLower();
             return Normalize(word);
             
