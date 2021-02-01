@@ -12,6 +12,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http;
+using DotNetWMS.Resources;
 
 namespace DotNetWMS.Controllers
 {
@@ -261,6 +262,8 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
 
             return View(item);
         }

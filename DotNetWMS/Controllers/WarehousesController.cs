@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
+using DotNetWMS.Resources;
 
 namespace DotNetWMS.Controllers
 {
@@ -25,10 +26,6 @@ namespace DotNetWMS.Controllers
         /// A static field for handling Warehouse's name for properly creation of Stocktaking view
         /// </summary>
         private static string Name;
-        /// <summary>
-        /// A static field for handling Warehouse's ID for properly creation of Stocktaking view
-        /// </summary>
-        private static int? wrhId;
 
         public WarehousesController(DotNetWMSContext context)
         {
@@ -113,7 +110,7 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
-
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCode(warehouse);
             return View(warehouse);
         }
         /// <summary>

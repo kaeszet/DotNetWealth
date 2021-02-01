@@ -9,6 +9,7 @@
     <div class="d-flex justify-content-between align-items-center">
         <h2 class="my-0">Szczegóły</h2>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success my-auto"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+        @*<a id="buttonForm" asp-controller="QrCodes" asp-action="ShowQRCode" asp-route-url="@Model.Id" class="btn btn-success my-auto">Generuj QR</a>*@
     </div>
 </div>
 <hr />
@@ -31,4 +32,11 @@
             <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
         </ul>
     </div>
+    <div>
+        <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
+    </div>
 </div>
+
+@*<div id="divPartial">
+    @await Html.PartialAsync("_QrCodePartial")
+</div>*@

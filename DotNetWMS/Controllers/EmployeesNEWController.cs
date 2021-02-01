@@ -2,6 +2,7 @@
 using DotNetWMS.Models;
 using static DotNetWMS.Resources.UserLoginGenerator;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetWMS.Resources;
 
 namespace DotNetWMS.Controllers
 {
@@ -17,14 +19,15 @@ namespace DotNetWMS.Controllers
     {
         private readonly DotNetWMSContext _context;
         private readonly UserManager<WMSIdentityUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EmployeesNEWController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager)
+        public EmployeesNEWController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userManager = userManager;
-
+            _httpContextAccessor = httpContextAccessor;
         }
-        
+
         public async Task<IActionResult> Index(string order, string search)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
@@ -52,6 +55,7 @@ namespace DotNetWMS.Controllers
 
         public async Task<IActionResult> Details(string id)
         {
+            var url = _httpContextAccessor.HttpContext?.Request?.GetDisplayUrl();
 
             if (string.IsNullOrEmpty(id))
             {
@@ -66,6 +70,8 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
 
             return View(user);
         }
@@ -122,7 +128,6 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
         /// </summary>
-        /// <param name="id">WMSIdentityUser ID to edit</param>
         /// <param name="user">WMSIdentityUser model class with binding DB attributes</param>
         /// <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
         [HttpPost]
