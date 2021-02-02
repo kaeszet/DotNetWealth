@@ -71,7 +71,7 @@ namespace DotNetWMSTests
         [Test]
         public void RegisterViewModel_CheckIsModelValidIfRequiredFieldAreFilled_ReturnTrue()
         {
-            var model = new RegisterViewModel() { Name = "Jessica", Surname = "Testowa", City = "Wie300", EmployeeNumber = "111111111111", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
+            var model = new RegisterViewModel() { Name = "Jessica", Surname = "Testowa", Street = "Śliczna", ZipCode = "30-000", City = "Wie300", EmployeeNumber = "11111111111", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
             var isModelValid = TryValidate(model, out _);
             Assert.IsTrue(isModelValid);
 
@@ -91,19 +91,19 @@ namespace DotNetWMSTests
         [Test]
         public void RegisterViewModel_CheckIsModelValidIfFilledWithLengthException_ReturnCorrectErrorMessages()
         {
-            var model = new RegisterViewModel() { Name = "Jessica", Surname = "Testowa", City = "Wie300", EmployeeNumber = "11111111110000", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
+            var model = new RegisterViewModel() { Name = "Jessica", Surname = "Testowa", Street = "Śliczna", ZipCode = "30-000", City = "Wie300", EmployeeNumber = "11111111110000", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
             ICollection<ValidationResult> results;
             var isModelValid = TryValidate(model, out results);
             ValidationResult[] arr = new ValidationResult[5];
             results.CopyTo(arr, 0);
-            Assert.IsTrue(arr[0].ErrorMessage == "The field Identyfikator must be a string with a maximum length of 12." && arr[1].ErrorMessage == "Nieprawidłowy identyfikator!");
+            Assert.IsTrue(arr[0].ErrorMessage == "The field Identyfikator must be a string with a maximum length of 11." && arr[1].ErrorMessage == "Nieprawidłowy identyfikator!");
             Assert.IsFalse(isModelValid);
 
         }
         [Test]
         public void RegisterViewModel_CheckIsModelValidIfFilledWithDifferentPassword_ReturnCorrectErrorMessages()
         {
-            var model = new RegisterViewModel() { Name = "Jessica", Surname = "Testowa", City = "Wie300", EmployeeNumber = "111111111111", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test1234!" };
+            var model = new RegisterViewModel() { Name = "Jessica", Surname = "Testowa", Street = "Śliczna", ZipCode = "30-000", City = "Wie300", EmployeeNumber = "11111111111", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test1234!" };
             ICollection<ValidationResult> results;
             var isModelValid = TryValidate(model, out results);
             ValidationResult[] arr = new ValidationResult[5];
