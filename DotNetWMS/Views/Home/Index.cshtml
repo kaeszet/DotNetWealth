@@ -1,140 +1,72 @@
 ﻿@using DotNetWMS.Resources
 @inject SignInManager<WMSIdentityUser> signInManager;
-@{
-    ViewData["Title"] = "Home Page";
-}
 
-    @if (signInManager.IsSignedIn(User))
-    {
 
+@if (signInManager.IsSignedIn(User))
+{
+    ViewData["Title"] = "Dashboard";
+    <h2>Dashboard</h2>
+    <hr />
     <div class="row">
-        <div class="col-12">
-            <h1>Widok główny</h1>
-        </div>
-        @*@if (User.IsInAnyRoles("Kadry,Moderator"))
-        {
-        <div class="col-md-6 col-category">
+        <div class="col-md-4">
+            <div class="card rounded-0 text-center">
+                <div class="card-body">
+                    <i class="fas fa-flag fa-4x mb-3"></i>
 
-            <div class="card bg-light mb-3">
-                <div class="card-header text-center"><h2>Pracownicy</h2></div>
-                <div class="category-body">
-                    <a asp-controller="Employees" asp-action="Index" type="button" class="rounded">
-                    <div class="card-body">
-                        <h6 class="card-title">Przegląd pracowników</h6>
-                         <i class="far fa-id-card fa-4x"></i>
-                    </div>
-                    </a>
-                    <a asp-controller="Departments" asp-action="Index" type="button" class="rounded"><div class="card-body">
-                        <h6 class="card-title">Przegląd stanowisk</h6>
-                        <i class="fas fa-briefcase fa-4x"></i>
-                    </div></a>
-                    </div>
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
                 </div>
-
-            </div>
-        }
-
-    <div class="col-md-6 col-category">
-
-        <div class="card bg-light mb-3">
-            <div class="card-header text-center"><h2>Majątek</h2></div>
-            <div class="category-body">
-                <a asp-controller="Items" asp-action="Index" type="button" class="rounded">
-                    <div class="card-body">
-                        <h6 class="card-title">Przegląd majątku</h6>
-
-                        <i class="fas fa-coins fa-4x"></i>
-                    </div>
-                </a>
-                @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
-                {
-                    <a asp-controller="Items" asp-action="Assign_to_employee" type="button" class="rounded">
-                        <div class="card-body">
-                            <h6 class="card-title">Przekaż na stan</h6>
-                            <i class="fas fa-hand-holding-usd fa-4x"></i>
-                        </div>
-                    </a>
-                    <a asp-controller="Items" asp-action="Assign_to_warehouse" type="button" class="rounded">
-                        <div class="card-body">
-                            <h6 class="card-title">Przekaż do magazynu</h6>
-                            <i class="fas fa-pallet fa-4x"></i>
-                        </div>
-                    </a>
-                }
-                @if (User.IsInAnyRoles("StandardPlus,Moderator"))
-                {
-                    <a asp-controller="Items" asp-action="Assign_to_external" type="button" class="rounded">
-                        <div class="card-body">
-                            <h6 class="card-title">Przekaż na zewnątrz</h6>
-                            <i class="fas fa-truck-loading fa-4x"></i>
-                        </div>
-                    </a>
-                }
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="card rounded-0 text-center">
+                <div class="card-body">
+                    <i class="fas fa-flag fa-4x mb-3"></i>
 
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card rounded-0 text-center">
+                <div class="card-body">
+                    <i class="fas fa-flag fa-4x mb-3"></i>
+
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="col-md-6 col-category">
-
-        <div class="card bg-light mb-3">
-            <div class="card-header text-center"><h2>Magazyny</h2></div>
-            <div class="category-body">
-                <a asp-controller="Warehouses" asp-action="Index" type="button" class="rounded">
-                    <div class="card-body">
-                        <h6 class="card-title">Przegląd magazynów</h6>
-                        <i class="fas fa-boxes fa-4x"></i>
-                    </div>
-                </a>
-                @if (User.IsInAnyRoles("StandardPlus,Moderator"))
-                {
-                    <a asp-controller="Warehouses" asp-action="Stocktaking" type="button" class="rounded">
-                        <div class="card-body">
-                            <h6 class="card-title">Inwentaryzacja</h6>
-                            <i class="fas fa-calculator fa-4x"></i>
-                        </div>
-                    </a>
-                }
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="alert alert-primary alert-dismissible fade show rounded-0" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="alert-heading">Nowe powiadomienie!</h4>
+                <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+                <hr>
+                <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
             </div>
-            </div>
-
-
         </div>
-        @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
-        {
-            <div class="col-md-6 col-category">
+    </div>
 
-                <div class="card bg-light mb-3">
-                    <div class="card-header text-center"><h2>Klienci zewnętrzni</h2></div>
-                    <div class="category-body">
-                        <a asp-controller="Externals" asp-action="Index" type="button">
-                            <div class="card-body">
-                                <h6 class="card-title">Przegląd kl. zewn.</h6>
-                                <i class="fas fa-glasses fa-4x"></i>
-                            </div>
-                        </a>
-                        <a asp-controller="Externals" asp-action="StatusView" type="button">
-                            <div class="card-body">
-                                <h6 class="card-title">Podgląd stanu</h6>
-                                <i class="fas fa-search-dollar fa-4x"></i>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-		}*@
-        </div>
-        
-    }
-    else
-    {
-        <div class="jumbotron shadow text-center m-auto w-100">
-            <img src="~/images/PepeLogo.png" class="mw-100 mh-100" alt="">
-            <h1 class="display-4 mt-4">Witaj w .NetFortune!</h1>
-            <p class="lead">Kliknij <b>start</b> i rozpocznij pracę z .NetFortune</p>
-            <hr class="my-4">
-            <a asp-controller="Account" asp-action="Login" class="btn btn-success btn-lg" role="button">Start</a>
-        </div>
-    }
+}
+else
+{
+    ViewData["Title"] = "Home";
+    <div class="jumbotron shadow text-center m-auto w-100">
+        <img src="~/images/PepeLogo.png" class="mw-100 mh-100" alt="">
+        <h1 class="display-4 mt-4">Witaj w .NetFortune!</h1>
+        <p class="lead">Kliknij <b>start</b> i rozpocznij pracę z .NetFortune</p>
+        <hr class="my-4">
+        <a asp-controller="Account" asp-action="Login" class="btn btn-success btn-lg" role="button">Start</a>
+    </div>
+}
 

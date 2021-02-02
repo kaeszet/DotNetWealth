@@ -15,45 +15,42 @@
     </div>
 </div>
 <hr />
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
+           
+    <div class="row mt-2">
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Name) | @Html.DisplayNameFor(model => model.Type) | @Html.DisplayNameFor(model => model.Model)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name) | @Html.DisplayFor(model => model.Type) | @Html.DisplayFor(model => model.Model)</li>
 
-<div class="card mb-3">
-    <div class="card-body">
-        <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Producer)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Producer)</li>
 
-        <div class="row">
-            <div class="col-md-6">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Name) | @Html.DisplayNameFor(model => model.Type) | @Html.DisplayNameFor(model => model.Model)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name) | @Html.DisplayFor(model => model.Type) | @Html.DisplayFor(model => model.Model)</li>
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.ItemCode)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.ItemCode)</li>
 
-                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Producer)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Producer)</li>
+                <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.WarrantyDate)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.WarrantyDate)</li>
 
-                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.ItemCode)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.ItemCode)</li>
+                <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Warehouse)</li>
+                <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.Warehouse.Street)</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Quantity) / @Html.DisplayNameFor(model => model.Units)</li>
+                <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.Quantity) / @Html.DisplayFor(model => model.Units)</li>
 
-                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.WarrantyDate)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.WarrantyDate)</li>
+                <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.State)</li>
+                <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.State)</li>
 
-                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Warehouse)</li>
-                    <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.Warehouse.Street)</li>
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.Quantity) / @Html.DisplayNameFor(model => model.Units)</li>
-                    <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.Quantity) / @Html.DisplayFor(model => model.Units)</li>
+                <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.External)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.External.Name)</li>
 
-                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.State)</li>
-                    <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.State)</li>
-
-                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.External)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.External.Name)</li>
-
-                    <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.User)</li>
-                    <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.User.FullName)</li>
-                </ul>
-            </div>
+                <li class="list-group-item font-weight-bold"> @Html.DisplayNameFor(model => model.User)</li>
+                <li class="list-group-item pl-5"> @Html.DisplayFor(model => model.User.FullName)</li>
+            </ul>
         </div>
         <div>
             <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
