@@ -9,15 +9,11 @@
     <title>@ViewData["Title"] - DotNetFortune</title>
 
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap-select/dist/css/bootstrap-select.css" />
         <link rel="stylesheet" href="~/css/style.css" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
     </environment>
 
     <environment exclude="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap-select/dist/css/bootstrap-select.min.css" />
         <link rel="stylesheet" href="~/css/style.css" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
     </environment>
@@ -119,6 +115,15 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 sidebar overflow-auto bg-light border-right pb-3">
+                    <div class="card border-0 rounded-0 bg-light">
+                        <img src="~/images/pepe.png" class="mw-100 mh-100 p-1 mx-auto mt-2 rounded-circle border shadow-sm" width="120" alt="...">
+                        <div class="card-body">
+                            <p class="card-text">Some quick example text.</p>
+                        </div>
+                    </div>
+                    <div class="list-group list-group-flush border-top border-bottom">
+                        <a href="/" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
+                    </div>
                     @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
                         <div class="title mt-3">

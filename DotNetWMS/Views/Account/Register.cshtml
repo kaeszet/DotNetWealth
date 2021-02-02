@@ -85,11 +85,12 @@
 else
 {
     <div>
-        <h2>Dodaj nowego użytkownika</h2>
+        <div class="d-flex justify-content-between">
+            <h2 class="my-0">Dodaj nowego użytkownika</h2>
+        </div>
     </div>
     <hr />
-    <div class="card m-auto">
-        <div class="card-body">
+    <div class="mb-3">
             <a asp-controller="Administration" asp-action="ListOfUsers" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy użytkowników</a>
             <div asp-validation-summary="All" class="text-danger font-weight-bold small mb-3"></div>
             <form method="post">
@@ -129,6 +130,7 @@ else
                     </div>
 
                     <div class="form-group col-md-6">
+
                         <small><label asp-for="City" class="mb-0 font-weight-bold"></label></small>
                         <input asp-for="City" class="form-control" placeholder="Oddział" />
                         <small class="font-weight-bold text-danger"><span asp-validation-for="City" class="text-danger"></span></small>
@@ -153,13 +155,10 @@ else
                         <small class="font-weight-bold text-danger"><span asp-validation-for="ConfirmPassword" class="text-danger"></span></small>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Zarejestruj</button>
                 </div>
             </form>
-
-        </div>
     </div>
 }
 
