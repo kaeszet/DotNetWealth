@@ -2,7 +2,7 @@
   {
     "outputFile": "wwwroot/css/style.css",
     "inputFile": "wwwroot/css/style.scss",
-    "options": { "sourceMap": true },
+    "options": { "sourceMap": true }
   }
 
 ]
