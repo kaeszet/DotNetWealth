@@ -9,6 +9,10 @@ using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http;
+using DotNetWMS.Resources;
 
 namespace DotNetWMS.Controllers
 {
@@ -22,6 +26,8 @@ namespace DotNetWMS.Controllers
         /// A field for handling the delivery of information to the DB associated with the Entity Core framework
         /// </summary>
         private readonly DotNetWMSContext _context;
+        private readonly UserManager<WMSIdentityUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         /// <summary>
         /// A static field for handling Item's ItemCode for properly creation of Assign-type views
         /// </summary>
@@ -31,9 +37,9 @@ namespace DotNetWMS.Controllers
         /// </summary>
         private static decimal ItemQuantity;
         /// <summary>
-        /// A static field for handling EmployeeId for properly creation of Assign_to_employee view
+        /// A static field for handling UserId for properly creation of Assign_to_employee view
         /// </summary>
-        private static int? ItemEmployeeId;
+        private static string ItemEmployeeId;
         /// <summary>
         /// A static field for handling WarehouseId for properly creation of Assign_to_warehouse view
         /// </summary>
@@ -44,9 +50,11 @@ namespace DotNetWMS.Controllers
         private static int? ItemExternalId;
 
 
-        public ItemsController(DotNetWMSContext context)
+        public ItemsController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
         /// <summary>
         /// GET method responsible for returning an Item's Assign_to_employee view and supports a search engine
@@ -130,22 +138,25 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
-            
+
             if (id != item.Id)
             {
                 return NotFound();
             }
-           
+
             if (ModelState.IsValid)
             {
-                return await CreateAssignItemConfirmationView(item, "Assign_to_employee_confirm"); 
+
+                return await CreateAssignItemConfirmationView(item, "Assign_to_employee_confirm");
 
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             return View(item);
         }
+
         /// <summary>
         /// POST method responsible for processing the completed form on Assign_to_warehouse_confirm view
         /// </summary>
@@ -155,7 +166,7 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "Standard,StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Assign_to_warehouse_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Assign_to_warehouse_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
 
             if (id != item.Id)
@@ -179,7 +190,7 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Assign_to_external_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Assign_to_external_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
 
             if (id != item.Id)
@@ -216,13 +227,13 @@ namespace DotNetWMS.Controllers
 
             switch (order)
             {
-                case "name_desc": items = items.OrderByDescending(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                case "name_desc": items = items.OrderByDescending(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
-                case "date_desc": items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                case "date_desc": items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
-                case "WarrantyDate": items = items.OrderBy(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                case "WarrantyDate": items = items.OrderBy(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
-                default: items = items.OrderBy(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                default: items = items.OrderBy(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
             }
             return View(await items.AsNoTracking().ToListAsync());
@@ -234,13 +245,16 @@ namespace DotNetWMS.Controllers
         /// <returns>Item's Details view</returns>
         public async Task<IActionResult> Details(int? id)
         {
+            
+            var url = _httpContextAccessor.HttpContext?.Request?.GetDisplayUrl();
+
             if (id == null)
             {
                 return NotFound();
             }
 
             var item = await _context.Items
-                .Include(i => i.Employee)
+                .Include(i => i.User)
                 .Include(i => i.External)
                 .Include(i => i.Warehouse)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -248,6 +262,8 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
 
             return View(item);
         }
@@ -259,7 +275,7 @@ namespace DotNetWMS.Controllers
         public IActionResult Create()
         {
             
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName");
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name");
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street");
             return View();
@@ -272,7 +288,7 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
             bool isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode);
             if (ModelState.IsValid)
@@ -290,7 +306,7 @@ namespace DotNetWMS.Controllers
                 }
                 
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
@@ -333,7 +349,7 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
@@ -347,7 +363,7 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,EmployeeId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
             if (id != item.Id)
             {
@@ -386,7 +402,7 @@ namespace DotNetWMS.Controllers
                 
                 
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
             return View(item);
@@ -405,7 +421,7 @@ namespace DotNetWMS.Controllers
             }
 
             var item = await _context.Items
-                .Include(i => i.Employee)
+                .Include(i => i.User)
                 .Include(i => i.External)
                 .Include(i => i.Warehouse)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -451,8 +467,8 @@ namespace DotNetWMS.Controllers
             Item sameItem = null;
             switch (obj.Name)
             {
-                case "Employee":
-                    sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.EmployeeId == item.EmployeeId);
+                case "User":
+                    sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.UserId == item.UserId);
                     break;
                 case "Warehouse":
                     sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.WarehouseId == item.WarehouseId);
@@ -519,7 +535,7 @@ namespace DotNetWMS.Controllers
                 {
                     item.State = ItemState.InWarehouse;
                 }
-                if (item.WarehouseId == null && item.EmployeeId != null)
+                if (item.WarehouseId == null && item.UserId != null)
                 {
                     item.State = ItemState.InEmployee;
                 }
@@ -530,7 +546,7 @@ namespace DotNetWMS.Controllers
                 {
                     item.State = ItemState.InWarehouse;
                 }
-                else if (item.WarehouseId == null && item.EmployeeId != null)
+                else if (item.WarehouseId == null && item.UserId != null)
                 {
                     item.State = ItemState.InEmployee;
                 }
@@ -564,16 +580,16 @@ namespace DotNetWMS.Controllers
             switch (order)
             {
                 case "name_desc":
-                    items = items.OrderByDescending(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    items = items.OrderByDescending(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
                 case "date_desc":
-                    items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
                 case "WarrantyDate":
-                    items = items.OrderBy(i => i.WarrantyDate).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    items = items.OrderBy(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
                 default:
-                    items = items.OrderBy(i => i.Name).Include(i => i.Employee).Include(i => i.External).Include(i => i.Warehouse);
+                    items = items.OrderBy(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
             }
             return items;
@@ -601,7 +617,7 @@ namespace DotNetWMS.Controllers
                 switch (method)
                 {
                     case "Assign_to_employee_confirm":
-                        ItemEmployeeId = item.EmployeeId;
+                        ItemEmployeeId = item.UserId;
                         if (item.ExternalId != null)
                         {
                             var ext = await _context.Externals.FindAsync(item.ExternalId);
@@ -620,7 +636,7 @@ namespace DotNetWMS.Controllers
                 }
 
                 
-                ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+                ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
                 ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
                 ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
 
@@ -667,7 +683,7 @@ namespace DotNetWMS.Controllers
             switch (method)
             {
                 case "Assign_to_employee_confirm":
-                    ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+                    ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
                     break;
                 case "Assign_to_warehouse_confirm":
                     ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
@@ -693,7 +709,7 @@ namespace DotNetWMS.Controllers
             switch (method)
             {
                 case "Assign_to_employee_confirm":
-                    if (ItemEmployeeId != item.EmployeeId)
+                    if (ItemEmployeeId != item.UserId)
                     {
                         Item newItem = new Item()
                         {
@@ -706,15 +722,16 @@ namespace DotNetWMS.Controllers
                             Units = item.Units,
                             WarrantyDate = item.WarrantyDate,
                             State = item.State,
-                            EmployeeId = ItemEmployeeId,
+                            UserId = ItemEmployeeId,
                             WarehouseId = item.WarehouseId,
                             ExternalId = item.ExternalId
                         };
 
                         _context.Add(newItem);
                         _context.Update(item);
-                        MergeSameItems(item, typeof(Employee));
+                        MergeSameItems(item, typeof(WMSIdentityUser));
                         ItemStatusCheck(item, ItemExternalId);
+                        SendInfo(item);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("Assign_to_employee");
 
@@ -722,7 +739,7 @@ namespace DotNetWMS.Controllers
                     else
                     {
                         ModelState.AddModelError(string.Empty, $"Nie można przekazać przedmiotu temu samemu pracownikowi!");
-                        ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName", item.EmployeeId);
+                        ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
                         return View(item);
                     }
                 case "Assign_to_warehouse_confirm":
@@ -739,7 +756,7 @@ namespace DotNetWMS.Controllers
                             Units = item.Units,
                             WarrantyDate = item.WarrantyDate,
                             State = item.State,
-                            EmployeeId = item.EmployeeId,
+                            UserId = item.UserId,
                             WarehouseId = ItemWarehouseId,
                             ExternalId = item.ExternalId
                         };
@@ -772,7 +789,7 @@ namespace DotNetWMS.Controllers
                             Units = item.Units,
                             WarrantyDate = item.WarrantyDate,
                             State = item.State,
-                            EmployeeId = item.EmployeeId,
+                            UserId = item.UserId,
                             WarehouseId = item.WarehouseId,
                             ExternalId = ItemExternalId
                         };
@@ -811,11 +828,12 @@ namespace DotNetWMS.Controllers
 
                     try
                     {
-                        if (ItemEmployeeId != item.EmployeeId)
+                        if (ItemEmployeeId != item.UserId)
                         {
                             _context.Update(item);
-                            MergeSameItems(item, typeof(Employee));
+                            MergeSameItems(item, typeof(WMSIdentityUser));
                             ItemStatusCheck(item, ItemExternalId);
+                            SendInfo(item);
                             await _context.SaveChangesAsync();
                         }
 
@@ -889,6 +907,18 @@ namespace DotNetWMS.Controllers
                     break;
             }
             return NotFound();
+        }
+        private void SendInfo(Item item)
+        {
+            Infobox info = new Infobox()
+            {
+                Title = "Otrzymałeś przedmiot",
+                Message = $"Otrzymałeś \"{item.Name}\" w ilości {item.Quantity} {item.Units} od użytkownika {User.Identity.Name}",
+                ReceivedDate = DateTime.Now,
+                UserId = item.UserId
+
+            };
+            _context.Infoboxes.Add(info);
         }
     }
 }

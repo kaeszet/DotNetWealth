@@ -24,7 +24,7 @@ namespace DotNetWMSTests
         public void Model_CheckIsModelValidIfFilledWithLenghtException_ReturnFalse()
         {
 
-            var emp = new Item() { Id = 4, Type = "Komputer osobisty_Komputer osobisty", Name = "Laptop", Producer = "Lenovo", Model = "X1 Carbon", ItemCode = "2", Quantity = 1, Units = 0, WarrantyDate = DateTime.Now, State = 0, EmployeeId = 2, WarehouseId = 2, ExternalId = 1 };
+            var emp = new Item() { Id = 4, Type = "Komputer osobisty_Komputer osobisty", Name = "Laptop", Producer = "Lenovo", Model = "X1 Carbon", ItemCode = "2", Quantity = 1, Units = 0, WarrantyDate = DateTime.Now, State = 0, UserId = "", WarehouseId = 2, ExternalId = 1 };
             var isModelValid = TryValidate(emp, out _);
             Assert.IsFalse(isModelValid);
 
@@ -42,7 +42,7 @@ namespace DotNetWMSTests
         [Test]
         public void Model_CheckIsModelValidIfRequiredFieldAreFilled_ReturnTrue()
         {
-            var emp = new Item() { Id = 4, Type = "Komputer osobisty", Name = "Laptop", Producer = "Lenovo", Model = "X1 Carbon", ItemCode = "2", Quantity = 1, Units = 0, WarrantyDate = DateTime.Now, State = 0, EmployeeId = 2, WarehouseId = 2, ExternalId = 1 };
+            var emp = new Item() { Id = 4, Type = "Komputer osobisty", Name = "Laptop", Producer = "Lenovo", Model = "X1 Carbon", ItemCode = "2", Quantity = 1, Units = 0, WarrantyDate = DateTime.Now, State = 0, UserId = "", WarehouseId = 2, ExternalId = 1 };
             var isModelValid = TryValidate(emp, out _);
             Assert.IsTrue(isModelValid);
 
@@ -72,7 +72,7 @@ namespace DotNetWMSTests
             _context.Database.EnsureCreated();
             Initialize(_context);
 
-            var emp = new Item() { Id = 4, Type = "Komputer osobisty", Name = "Laptop", Producer = "Lenovo", Model = "X1 Carbon", ItemCode = "2", Quantity = 1, Units = 0, WarrantyDate = DateTime.Now, State = 0, EmployeeId = 2, WarehouseId = 2, ExternalId = 1 };
+            var emp = new Item() { Id = 4, Type = "Komputer osobisty", Name = "Laptop", Producer = "Lenovo", Model = "X1 Carbon", ItemCode = "2", Quantity = 1, Units = 0, WarrantyDate = DateTime.Now, State = 0, UserId = "", WarehouseId = 2, ExternalId = 1 };
             var controller = new ItemsController(_context);
             var result = await controller.Create(emp) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));
@@ -219,7 +219,7 @@ namespace DotNetWMSTests
             _context.Database.EnsureCreated();
             Initialize(_context);
 
-            var emp = new Item() { Id = 4, Type = "Komputer osobisty", Name = "Laptop", Producer = "Lenovo", Model = "X1 Carbon", ItemCode = "2", Quantity = 1, Units = 0, WarrantyDate = DateTime.Now, State = 0, EmployeeId = 2, WarehouseId = 2, ExternalId = 1 };
+            var emp = new Item() { Id = 4, Type = "Komputer osobisty", Name = "Laptop", Producer = "Lenovo", Model = "X1 Carbon", ItemCode = "2", Quantity = 1, Units = 0, WarrantyDate = DateTime.Now, State = 0, UserId = "", WarehouseId = 2, ExternalId = 1 };
             var controller = new ItemsController(_context);
             await controller.Create(emp);
             var result = await controller.DeleteConfirmed(4) as RedirectToActionResult;
