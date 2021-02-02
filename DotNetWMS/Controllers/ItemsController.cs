@@ -913,7 +913,7 @@ namespace DotNetWMS.Controllers
             Infobox info = new Infobox()
             {
                 Title = "Otrzymałeś przedmiot",
-                Message = $"Otrzymałeś \"{item.Name}\" w ilości {item.Quantity} {item.Units} od użytkownika {User.Identity.Name}",
+                Message = $"Otrzymałeś \"{item.Name}\" w ilości {item.Quantity} {item.Units} od użytkownika {User?.Identity?.Name}",
                 ReceivedDate = DateTime.Now,
                 UserId = item.UserId
 
