@@ -25,4 +25,7 @@
         <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
         <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
     </ul>
+
+<div>
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
 </div>
