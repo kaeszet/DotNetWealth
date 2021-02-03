@@ -1,9 +1,12 @@
 ﻿using DotNetWMS.Controllers;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -25,7 +28,16 @@ namespace DotNetWMSTests
         public async Task Assign_WhenCalled_GetCollectionOfItems()
         {
 
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             await controller.Assign_to_employee(string.Empty, string.Empty);
             var itemsCollection = (ICollection<Item>)controller.ViewData.Model;
             Assert.That(itemsCollection, Is.InstanceOf(typeof(ICollection<Item>)));
@@ -35,7 +47,16 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_WhenCalled_CreateViewResultObject()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             var result = await controller.Assign_to_employee(string.Empty, string.Empty) as ViewResult;
             Assert.IsAssignableFrom<List<Item>>(result.Model);
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -45,7 +66,16 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_Confirm_WhenCalledWithCorrectId_ReturnModelWhichIsNotNull()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             var result = await controller.Assign_to_employee_confirm(1) as ViewResult;
             Assert.IsNotNull(result.Model);
 
@@ -54,7 +84,16 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_Confirm_WhenCalledWithIncorrectId_ReturnNotFoundResult()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             var result = await controller.Assign_to_employee_confirm(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
             result = result as ViewResult;
@@ -64,7 +103,16 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_Confirm_WhenCalledWithNull_ReturnNotFoundResult()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             var result = await controller.Assign_to_employee_confirm(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
     
@@ -72,7 +120,16 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_Confirm_WhenSaveWithNoChangesInView_ReturnActionResult()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
             info.SetValue(null, 3.0M);
             var item = _context.Items.Find(1);
@@ -83,7 +140,16 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_Confirm_WhenAttemptToSaveItemWithNegativeQuantity_ReturnErrorMessage()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
             info.SetValue(null, 3.0M);
             var item = _context.Items.Find(1);
@@ -102,11 +168,20 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_Confirm_WhenAttemptToSaveItemWithDifferentQuantityAndSameEmpoloyee_ReturnErrorMessage()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
             info.SetValue(null, 3.0M);
             info = controller.GetType().GetField("ItemEmployeeId", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, 1);
+            info.SetValue(null, "1");
             var item = _context.Items.Find(1);
             item.Quantity = 2.0M;
             var result = await controller.Assign_to_employee_confirm(1, item) as ViewResult;
@@ -123,7 +198,16 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_Confirm_WhenAttemptToSaveItemWithHigherQuantityThanBefore_ReturnErrorMessage()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
             info.SetValue(null, 3.0M);
             var item = _context.Items.Find(1);
@@ -142,11 +226,20 @@ namespace DotNetWMSTests
         [Test]
         public async Task Assign_Confirm_WhenSaveAndUsingCorrectData_ReturnActionResult()
         {
-            var controller = new ItemsController(_context);
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(x => x.Setup(um => um.GenerateEmailConfirmationTokenAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync("RandomString"))
+                .Build();
+
+            var fakeContextAccessor = new Mock<IHttpContextAccessor>();
+
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
             FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
             info.SetValue(null, 3.0M);
             info = controller.GetType().GetField("ItemEmployeeId", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, 2);
+            info.SetValue(null, "2");
             var item = _context.Items.Find(1);
             item.Quantity = 2.0M;
             var result = await controller.Assign_to_employee_confirm(1, item);

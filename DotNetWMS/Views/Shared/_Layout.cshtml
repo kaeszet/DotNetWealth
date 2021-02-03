@@ -44,7 +44,7 @@
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Employees" asp-action="Index">Pracownicy</a>
+                                        <a class="nav-link" asp-controller="EmployeesControllerNEW" asp-action="Index">Pracownicy</a>
                                     </li>
                                 }
 
@@ -81,6 +81,12 @@
                                         {
                                             <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
                                             <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
+                                            <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
+                                            <div class="dropdown-divider"></div>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
                                             <div class="dropdown-divider"></div>
                                         }
                                         <button type="submit" class="dropdown-item danger text-danger">Wyloguj się</button>
@@ -134,7 +140,7 @@
                             <small class="text-muted font-weight-bold text-uppercase m-0">Pracownicy</small>
                         </div>
                         <div class="list-group list-group-flush">
-                            <a asp-controller="Employees" asp-action="Index" class="list-group-item list-group-item-action"><i class="far fa-id-card mr-1"></i>Przegląd pracowników</a>
+                            <a asp-controller="EmployeesNEW" asp-action="Index" class="list-group-item list-group-item-action"><i class="far fa-id-card mr-1"></i>Przegląd pracowników</a>
                             <a asp-controller="Departments" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-briefcase mr-1"></i> Przegląd stanowisk</a>
                         </div>
                     }
