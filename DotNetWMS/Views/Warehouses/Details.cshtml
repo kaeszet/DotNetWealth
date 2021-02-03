@@ -5,42 +5,24 @@
     ViewData["Title"] = "Details";
 }
 
-
 <div>
-    <h4>Szczegóły o magazynie</h4>
-    @if (User.IsInAnyRoles("StandardPlus,Moderator"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i> Edytuj</a>
-    }
-    <hr />
-    <dl class="row details-view">
-        <dt class="col-sm-2 list-group-item">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10 list-group-item dd-list">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2 list-group-item">
-            @Html.DisplayNameFor(model => model.Street)
-        </dt>
-        <dd class="col-sm-10 list-group-item dd-list">
-            @Html.DisplayFor(model => model.Street)
-        </dd>
-        <dt class="col-sm-2 list-group-item">
-            @Html.DisplayNameFor(model => model.ZipCode)
-        </dt>
-        <dd class="col-sm-10 list-group-item dd-list">
-            @Html.DisplayFor(model => model.ZipCode)
-        </dd>
-        <dt class="col-sm-2 list-group-item">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class="col-sm-10 list-group-item dd-list">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-    </dl>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="my-0">Szczegóły</h2>
+        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+        }
+    </div>
 </div>
+<hr />
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
 
-<div>
-    <a asp-action="Index" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
+    <ul class="list-group list-group-flush mt-2">
+        <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name)</li>
+        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name)</li>
+
+        <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
+        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
+    </ul>
 </div>

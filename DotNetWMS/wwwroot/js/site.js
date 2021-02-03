@@ -31,4 +31,21 @@ $(document).ready(function ()
     $('.table-responsive').on('hide.bs.dropdown', function () {
         $('.table-responsive').css("overflow-x", "auto");
     })
+
+    $centerNav = $(".sidebar").find('.active').offset().top - (($(window).height() / 2) - ($(".sidebar").find('.active').height() / 2));
+
+    if ($('.sidebar').length > 0) {
+        //$('.sidebar').animate({
+        //    scrollTop: $centerNav
+        //}, 500);
+        $('.sidebar').scrollTop($centerNav)
+    }
+
+    if ($('#stocktaking').length > 0) {
+        $('#stocktaking').on('click', function () {
+
+            $keyWord = $('#selectList').val();
+            $('#divPartial').load('/Warehouses/Stocktaking', { warehouseFullName: $keyWord });
+        })
+    }
 });

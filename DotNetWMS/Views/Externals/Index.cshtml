@@ -5,78 +5,131 @@
     ViewData["Title"] = "Index";
 }
 
-    <h1 class="index-title"><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Klienci zewnętrzni</h1>
-
-@if (User.IsInAnyRoles("StandardPlus,Moderator"))
-{
-<p>
-    <a asp-action="Create" class="modal-create btn btn-success"><i class="fas fa-user-plus"></i> Dodaj nowego klienta</a>
-</p>
-}
-<form asp-action="Index" method="get">
-    <div class="form-group">
-        <p>
-            Wyszukaj: <input type="text" name="search" value="@ViewData["Search"]" />
-            <button type="submit" class="btn btn-primary"><i class="fab fa-sistrix"></i></button> |
-            <a asp-action="Index" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
-        </p>
-    </div>
-</form>
-<table class="table table-hover table-responsive-lg">
-    <thead class="thead-light">
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-order="@ViewData["SortByType"]">@Html.DisplayNameFor(model => model.Type)</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-order="@ViewData["SortByName"]">@Html.DisplayNameFor(model => model.Name)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TaxId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Street)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ZipCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<div>
+    <div class="d-flex justify-content-between">
+        <h2 class="my-0">Klienci zewnętrzni</h2>
+        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TaxId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Street)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ZipCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.City)
-                </td>
-                <td class="button-col">
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-dark"><i class="fas fa-info-circle"></i></a>
-                    @if (User.IsInAnyRoles("StandardPlus, Moderator"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger text-dark"><i class="fas fa-trash-alt"></i></a>
-                    }
-                </td>
-            </tr>
+            <a asp-action="Create" class="modal-create btn btn-success"><i class="fas fa-user-plus mr-1"></i>Dodaj nowego klienta</a>
         }
-    </tbody>
-</table>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-12">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control search-control" value="@ViewData["Search"]" placeholder="Wyszukaj..." aria-label="Wyszukaj" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-success" type="submit" id="button-addon2"><i class="fab fa-sistrix mr-1"></i>Szukaj</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @{ 
+		var index = 1;
+    }
+    <div class="col-12">
+        <table class="table table-hover table-responsive-lg">
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>
+                        <a asp-action="Index" asp-route-order="@ViewData["SortByType"]">@Html.DisplayNameFor(model => model.Type)</a>
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-order="@ViewData["SortByName"]">@Html.DisplayNameFor(model => model.Name)</a>
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TaxId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Street)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ZipCode)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.City)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tableSearch">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="col">@index</th>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TaxId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Street)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ZipCode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.City)
+                        </td>
+                        <td class="button-col">
+
+                            <div class="btn-group dropleft">
+                                <button type="button" class="btn btn-sm my-1 border btn-light dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                                    Więcej
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-lg-right">
+                                    <h6 class="dropdown-header font-weight-bold">Co chcesz zrobić?</h6>
+                                    @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+                                    }
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-info-circle mr-1"></i>Szczegóły</a>
+                                    @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                                    {
+                                        <div class="dropdown-divider"></div>
+                                        <button type="button" class="dropdown-item danger text-danger" data-toggle="modal" data-target="#remove_@item.Id"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
+                                    }
+                                </div>
+                            </div>
+                            @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                            {
+                                <div class="modal fade" id="remove_@item.Id" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="label_remove_@item.Id" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title font-weight-bold" id="label_remove_@item.Id">Usuwanie pracownika</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Czy na pewno chcesz usunąć klienta zewnętrznego: <b>@item.Name</b> ?
+                                                <div class="text-muted small font-weight-bold">Adres: @item.Street, @item.ZipCode @item.City</div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form method="post" asp-action="Delete" asp-route-id="@item.Id">
+                                                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-window-close mr-1"></i>Nie</button>
+                                                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check-circle mr-1"></i>Tak</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+							}
+                            </td>
+                    </tr>
+					index++;
+				}
+            </tbody>
+        </table>
+    </div>
+</div>

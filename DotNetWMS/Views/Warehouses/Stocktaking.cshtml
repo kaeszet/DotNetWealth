@@ -5,37 +5,31 @@
     ViewData["Title"] = "Stocktaking";
 }
 
-    <div class="d-inline-flex">
-    <h1 class="index-title d-print-none"><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a></h1>
-        <h1>Inwentaryzacja</h1>
-    </div>
-
-
-<div class="row">
-    <div class="col-md-4">
-        <form id="form" method="post">
-            <div class="form-group">
-                <label asp-for="WarehouseFullName" class="control-label d-print-none"></label>
-                <select asp-for="WarehouseFullName" id="selectList" class="form-control" asp-items="ViewBag.WarehouseList"></select>
-                <span asp-validation-for="WarehouseFullName" class="text-danger"></span>
-            </div>
-        </form>
+<div>
+    <div class="d-flex justify-content-between">
+        <h2 class="my-0">Inwentaryzacja</h2>
     </div>
 </div>
+<hr />
 
-<button id="choose" class="btn btn-success d-print-none">Inwentaryzuj</button>
-<a class="btn btn-outline-primary d-print-none" href="javascript:window.print()"><i class="fas fa-print"></i></a>
+<div class="row">
+        <div class="form-group col-md-6">
+            <label asp-for="WarehouseFullName" class="control-label d-print-none"></label>
+            <div class="input-group">
+                <select asp-for="WarehouseFullName" id="selectList" class="form-control" asp-items="ViewBag.WarehouseList"></select>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-success" id="stocktaking" type="button">Inwentaryzuj</button>
+                </div>
+            </div>
+            <span asp-validation-for="WarehouseFullName" class="text-danger"></span>
+        </div>
+</div>
+
+<a class="btn btn-outline-primary" href="javascript:window.print()"><i class="fas fa-print"></i></a>
 
 <div id="divPartial" class="mt-3">
 
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        var url = '@Url.Action("Stocktaking", "Warehouses")';
-            $('#choose').click(function() {
-            var keyWord = $('#selectList').val();
-            $('#divPartial').load(url, { warehouseFullName: keyWord });
-            })
-    </script>
 }

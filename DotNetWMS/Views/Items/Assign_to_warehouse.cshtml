@@ -5,80 +5,98 @@
 
 }
 
-    <h1><a asp-controller="Home" asp-action="Index" class="btn btn-danger"><i class="fas fa-arrow-left"></i></a> Przekaż do magazynu</h1>
-<form asp-action="Assign_to_warehouse" method="get">
-    <div class="form-group">
-        <p>
-            Wyszukaj: <input type="text" name="search" value="@ViewData["Search"]" />
-            <button type="submit" class="btn btn-primary"><i class="fab fa-sistrix"></i></button> |
-            <a asp-action="Assign_to_warehouse" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
-        </p>
+<div>
+    <div class="d-flex justify-content-between">
+        <h2 class="my-0">Przekaż do magazynu</h2>
     </div>
-</form>
-<table class="table table-hover table-responsive-lg">
-    <thead class="thead-light">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                <a asp-action="Assign_to_warehouse" asp-route-order="@ViewData["SortByName"]">@Html.DisplayNameFor(model => model.Name)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Producer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ItemCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Units)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Warehouse)
-            </th>
+</div>
+<hr />
+<div class="row">
+    <div class="col-12">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="input-group mb-3">
+                    <input type="search" class="form-control search-control" value="@ViewData["Search"]" placeholder="Wyszukaj..." aria-label="Wyszukaj" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-success" type="submit" id="button-addon2"><i class="fab fa-sistrix mr-1"></i>Szukaj</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @{ 
+		var index = 1;
+    }
+    <div class="col-12">
+        <table class="table table-hover table-responsive-lg">
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        <a asp-action="Assign_to_warehouse" asp-route-order="@ViewData["SortByName"]">@Html.DisplayNameFor(model => model.Name)</a>
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Producer)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Model)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ItemCode)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Quantity)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Units)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Warehouse)
+                    </th>
 
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Producer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Model)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ItemCode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Units)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Warehouse.AssignFullName)
-                </td>
-                <td>
-                    <a asp-action="Assign_to_warehouse_confirm" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fas fa-file-signature"></i> Przypisz</a>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tableSearch">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th>@index</th>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Producer)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Model)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ItemCode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Units)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Warehouse.AssignFullName)
+                        </td>
+                        <td>
+                            <a asp-action="Assign_to_warehouse_confirm" asp-route-id="@item.Id" class="btn btn-sm btn-light border"><i class="fas fa-file-signature mr-1"></i>Przypisz</a>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                        </td>
+                    </tr>
+					index++;
+				}
+            </tbody>
+        </table>
+    </div>
+</div>
