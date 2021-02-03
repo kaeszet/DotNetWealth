@@ -33,9 +33,18 @@ namespace DotNetWMS.Models
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Identyfikator")]
-        [StringLength(12)]
-        [RegularExpression(@"[0-9]{12}", ErrorMessage = "Nieprawidłowy identyfikator!")]
+        [StringLength(11)]
+        [RegularExpression(@"[0-9]{11}", ErrorMessage = "Nieprawidłowy identyfikator!")]
         public string EmployeeNumber { get; set; }
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
+        [StringLength(40)]
+        [Display(Name = "Adres")]
+        public string Street { get; set; }
+        [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
+        [StringLength(6)]
+        [Display(Name = "Kod pocztowy")]
+        [RegularExpression(@"[0-9]{2}-[0-9]{3}", ErrorMessage = "Nieprawidłowy format kodu pocztowego xx-xxx")]
+        public string ZipCode { get; set; }
         /// <summary>
         /// A field to capture new user's headquarters city
         /// </summary>

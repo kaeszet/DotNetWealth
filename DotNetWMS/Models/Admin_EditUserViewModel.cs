@@ -43,8 +43,8 @@ namespace DotNetWMS.Models
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Identyfikator")]
-        [StringLength(12)]
-        [RegularExpression(@"[0-9]{12}", ErrorMessage = "Nieprawidłowy identyfikator!")]
+        [StringLength(11)]
+        [RegularExpression(@"[0-9]{11}", ErrorMessage = "Nieprawidłowy identyfikator!")]
         public string EmployeeNumber { get; set; }
         /// <summary>
         /// A field to capture the user's home city
