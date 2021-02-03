@@ -14,7 +14,7 @@
         <form method="post">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="RoleName" class="font-weight-bold mb-0 small"></label>
+                    <label asp-for="RoleName"></label>
                     @if (Admin_DefaultRoles.IsDefaultRole(Model.RoleName))
                     {
                         <input asp-for="RoleName" disabled class="form-control">

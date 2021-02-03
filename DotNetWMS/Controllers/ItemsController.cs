@@ -257,8 +257,7 @@ namespace DotNetWMS.Controllers
         /// <returns>Returns Item's Create view</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         public IActionResult Create()
-        {
-            
+        {  
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "FullName");
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name");
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street");

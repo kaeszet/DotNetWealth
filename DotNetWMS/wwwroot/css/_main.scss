@@ -130,6 +130,11 @@ footer {
 		box-shadow: 0 0 0 0.2rem #dee2e6;
 	}
 }
+label {
+	font-weight: bold;
+	font-size: 80%;
+	margin-bottom: 0;
+}
 
 .bootstrap-select {
 	.btn-form {
@@ -157,6 +162,22 @@ footer {
 	background-color: #fff !important;
 	border-color: #adb5bd !important;
 	box-shadow: 0 0 0 0.2rem #dee2e6 !important;
+}
+
+header {
+	.dropdown {
+		.btn {
+			color: rgba(255, 255, 255, 0.5);
+
+			&:hover, &:focus {
+				color: rgba(255, 255, 255, 0.75);
+			}
+
+			&:focus {
+				box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.15);
+			}
+		}
+	}
 }
 
 .validation-summary-errors {
