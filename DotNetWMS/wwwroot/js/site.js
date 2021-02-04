@@ -32,12 +32,9 @@ $(document).ready(function ()
         $('.table-responsive').css("overflow-x", "auto");
     })
 
-    $centerNav = $(".sidebar").find('.active').offset().top - (($(window).height() / 2) - ($(".sidebar").find('.active').height() / 2));
-
     if ($('.sidebar').length > 0) {
-        //$('.sidebar').animate({
-        //    scrollTop: $centerNav
-        //}, 500);
+
+        $centerNav = $(".sidebar").find('.active').offset().top - (($(window).height() / 2) - ($(".sidebar").find('.active').height() / 2));
         $('.sidebar').scrollTop($centerNav)
     }
 
@@ -51,9 +48,8 @@ $(document).ready(function ()
 
     if ($("#cookieConsent").length > 0)
     {
-        $("#cookieConsent").find('button[data-cookie-string]').on("click", function (ev) {
-            console.log($(this).data('cookie-string'))
+        $("#cookieConsent").find('button.close').on("click", function (ev) {
             document.cookie = $(this).data('cookie-string');
-        }, false);
+        });
     }
 });
