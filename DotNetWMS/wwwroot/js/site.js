@@ -48,4 +48,12 @@ $(document).ready(function ()
             $('#divPartial').load('/Warehouses/Stocktaking', { warehouseFullName: $keyWord });
         })
     }
+
+    if ($("#cookieConsent").length > 0)
+    {
+        $("#cookieConsent").find('button[data-cookie-string]').on("click", function (ev) {
+            console.log($(this).data('cookie-string'))
+            //document.cookie = $(this).data('cookie-string');
+        }, false);
+    }
 });
