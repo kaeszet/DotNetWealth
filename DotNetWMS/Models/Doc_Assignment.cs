@@ -37,6 +37,7 @@ namespace DotNetWMS.Models
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd MMMM yyyy HH:mm:ss}")]
         public DateTime? ConfirmationDate { get; set; }
         private List<String> _items { get; set; }
+        [NotMapped]
         public List<string> Items 
         { 
             get { return _items; }

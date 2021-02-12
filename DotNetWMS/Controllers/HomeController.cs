@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
+using DotNetWMS.Data;
 
 namespace DotNetWMS.Controllers
 {
@@ -20,10 +21,12 @@ namespace DotNetWMS.Controllers
         /// The field responsible for communication with Nlog
         /// </summary>
         private readonly ILogger<HomeController> _logger;
+        private readonly DotNetWMSContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, DotNetWMSContext context)
         {
             _logger = logger;
+            _context = context;
         }
         /// <summary>
         /// GET method responsible for returning a Home's Index view
@@ -31,6 +34,10 @@ namespace DotNetWMS.Controllers
         /// <returns>Returns an Home's Index view</returns>
         public IActionResult Index()
         {
+            if (User?.Identity?.Name != null)
+            {
+                ViewData["isAnyNewMessages"] = _context.Infoboxes.Any(m => m.IsChecked == false && m.User.NormalizedUserName == User.Identity.Name);
+            }
             return View();
         }
         /// <summary>

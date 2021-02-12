@@ -266,6 +266,87 @@ namespace DotNetWMS.Controllers
             }
             
         }
+
+        public async Task<IActionResult> StocktakingIndex(StocktakingViewModel model)
+        {
+            var warehouses = await _context.Warehouses.ToListAsync();
+            ViewData["WarehouseList"] = new SelectList(warehouses, "Id", "AssignFullName");
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> StocktakingIndex(string warehouseFullName)
+        {
+            int id = Convert.ToInt32(warehouseFullName);
+            ViewBag.warehouseId = id;
+            var itemsInWarehouse = await _context.Items.Select(i => i).Where(i => i.WarehouseId == id).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse).ToListAsync();
+            if (itemsInWarehouse.Count == 0)
+            {
+                ViewData["InfoMessage"] = "W wybranym magazynie nie ma przedmiotów!";
+            }
+
+            var model = new List<StocktakingNewViewModel>();
+            foreach (var item in itemsInWarehouse)
+            {
+                var stocktakingViewModel = new StocktakingNewViewModel()
+                {
+                    ItemType = item.Type,
+                    ItemModel = item.Model,
+                    ItemName = item.Name,
+                    ItemCode = item.ItemCode,
+                    ItemQuantity = item.Quantity
+                };
+
+                model.Add(stocktakingViewModel);
+            }
+
+            return PartialView("_StocktakingIndexTable", model);
+        }
+        public async Task<IActionResult> StocktakingBegin(List<StocktakingNewViewModel> model, int? id)
+        {
+            ViewBag.warehouseId = id;
+            
+            var itemsToCorrect = model.Where(m => m.ToCorrect).ToList();
+
+            foreach (var item in model)
+            {
+                if (item.ToDelete)
+                {
+                    var itemToDelete = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode);
+                    _context.Remove(itemToDelete);
+                }
+                if (item.IsDamaged)
+                {
+                    var itemDamaged = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode);
+                    itemDamaged.State = ItemState.Damaged;
+                    _context.Update(itemDamaged);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return View(itemsToCorrect);
+        }
+
+        public async Task<IActionResult> StocktakingEnd(List<StocktakingNewViewModel> model)
+        {
+            
+            foreach (var item in model)
+            {
+                var itemToUpdate = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode);
+
+                if (itemToUpdate != null)
+                {
+                    itemToUpdate.Quantity = item.ItemQuantity;
+                    itemToUpdate.Units = item.ItemUnits;
+                    _context.Update(itemToUpdate);
+                }
+            }
+            await _context.SaveChangesAsync();
+
+            ViewBag.ExceptionTitle = "Zakończono inwentaryzację!";
+            ViewBag.ExceptionMessage = "Poprawność można zweryfikować w zakładce przedmioty";
+            return View("GlobalExceptionHandler");
+        }
         /// <summary>
         /// A private method responsible for checking if there is a warehouse with the given id
         /// </summary>
