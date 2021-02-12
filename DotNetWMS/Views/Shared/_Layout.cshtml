@@ -69,7 +69,7 @@
                             </ul>
 
                             <div class="dropdown">
-                                <a class="btn btn-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="btn dropdown-toggle rounded-0" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     @User.Identity.Name
                                 </a>
 
@@ -115,12 +115,12 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 sidebar overflow-auto bg-light border-right pb-3">
-                    <div class="card border-0 rounded-0 bg-light">
-                        <img src="~/images/pepe.png" class="mw-100 mh-100 p-1 mx-auto mt-2 rounded-circle border shadow-sm" width="120" alt="...">
-                        <div class="card-body">
-                            <p class="card-text">Some quick example text.</p>
-                        </div>
-                    </div>
+                    @*<div class="card border-0 rounded-0 bg-light">
+                            <img src="~/images/pepe.png" class="mw-100 mh-100 p-1 mx-auto mt-2 rounded-circle border shadow-sm" width="120" alt="...">
+                            <div class="card-body">
+                                <p class="card-text">Some quick example text.</p>
+                            </div>
+                        </div>*@
                     <div class="list-group list-group-flush border-top border-bottom">
                         <a href="/" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
                     </div>
@@ -196,17 +196,16 @@
             <div class="container">
                 &copy; 2019-2020 - DotNetFortune - <a asp-area="" asp-controller="Home" asp-action="AboutUs" class="aboutUs">O nas</a>
             </div>
-
-            <div>
-                <script src="~/lib/jquery/dist/jquery.min.js"></script>
-                <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-                <script src="~/lib/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-                <script src="~/lib/jquery-validate/jquery.validate.js"></script>
-                <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-                <script src="~/js/site.js" asp-append-version="true"></script>
-                @RenderSection("Scripts", required: false)
-            </div>
         </footer>
     }
+    <div>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @RenderSection("Scripts", required: false)
+    </div>
 </body>
 </html>

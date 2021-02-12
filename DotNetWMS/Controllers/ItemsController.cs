@@ -260,7 +260,6 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator")]
         public IActionResult Create()
         {
-            
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName");
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name");
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street");

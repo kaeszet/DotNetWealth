@@ -11,16 +11,9 @@
 <div id="cookieConsent" class="alert alert-primary alert-dismissible fade show align-bottom" role="alert">
     W celu świadczenia usług najwyższej jakości nasza witryna wykorzystuje pliki cookies.
     <a class="alert-link" asp-area="" asp-controller="Home" asp-action="AboutUs">Dowiedz się więcej</a>.
+
     <button type="button" class="close" data-dismiss="alert" aria-label="Close" data-cookie-string="@cookieString">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-    <script>
-        (function () {
-            var button = document.querySelector("#cookieConsent button[data-cookie-string]");
-            button.addEventListener("click", function (event) {
-                document.cookie = button.dataset.cookieString;
-            }, false);
-        })();
-    </script>
 }
