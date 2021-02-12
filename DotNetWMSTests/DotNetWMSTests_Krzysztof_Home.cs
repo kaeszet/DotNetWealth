@@ -20,7 +20,7 @@ namespace DotNetWMSTests
 		[Test]
 		public void ShowIndexViews()
 		{
-			var index = new HomeController(_logger);
+			var index = new HomeController(_logger, _context);
 			var resultIndex = index.Index();
 
 			Assert.IsInstanceOf(typeof(ViewResult), resultIndex);
@@ -28,7 +28,7 @@ namespace DotNetWMSTests
 		[Test]
 		public void ShowPrivacyViews()
 		{
-			var privacy = new HomeController(_logger);
+			var privacy = new HomeController(_logger, _context);
 			var resultPrivacy = privacy.AboutUs();
 
 			Assert.IsInstanceOf(typeof(ViewResult), resultPrivacy);
@@ -37,7 +37,7 @@ namespace DotNetWMSTests
 		[Test]
 		public void ShowErrorViews()
 		{
-			var error = new HomeController(_logger);
+			var error = new HomeController(_logger, _context);
 
 
 			error.ControllerContext = new ControllerContext();

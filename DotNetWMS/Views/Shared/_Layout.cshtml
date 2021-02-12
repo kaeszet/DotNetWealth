@@ -44,7 +44,7 @@
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="EmployeesControllerNEW" asp-action="Index">Pracownicy</a>
+                                        <a class="nav-link" asp-controller="EmployeesNEW" asp-action="Index">Pracownicy</a>
                                     </li>
                                 }
 
@@ -167,7 +167,7 @@
                         <a asp-controller="Warehouses" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Przegląd magazynów</a>
                         @if (User.IsInAnyRoles("StandardPlus,Moderator"))
                         {
-                            <a asp-controller="Warehouses" asp-action="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
+                            <a asp-controller="Warehouses" asp-action="StocktakingIndex" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
                         }
                     </div>
 
