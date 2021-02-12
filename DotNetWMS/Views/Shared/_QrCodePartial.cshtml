@@ -1,5 +1,7 @@
-﻿<h6>test</h6>
-@if (TempData["QRCode"] != null)
+﻿@if (TempData["QRCode"] != null)
 {
     <img src="@TempData["QRCode"]" style="width:200px;height:200px;" />
+    <script>
+        window.print();
+    </script>
 }
