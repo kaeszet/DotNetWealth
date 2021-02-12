@@ -25,6 +25,7 @@ namespace DotNetWMS.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<External> Externals { get; set; }
         public DbSet<Infobox> Infoboxes { get; set; }
+        public DbSet<Doc_Assignment> Doc_Assignments { get; set; }
 
         /// <summary>
         /// The method is used to store the database creation settings

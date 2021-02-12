@@ -21,10 +21,11 @@
 }
 else
 {
-    <div class="alert alert-info">
-        <h5>@ViewBag.ExceptionTitle</h5>
-        <p>@ViewBag.ExceptionMessage</p>
-    </div>
+<div class="alert alert-info">
+    <h5>@ViewBag.ExceptionTitle</h5>
+    <p>@ViewBag.ExceptionMessage</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Wróć do strony głównej</a>
+</div>
 }
 
 

@@ -76,8 +76,11 @@ namespace DotNetWMS
             //Adds the units presentation characteristic for Polish culture
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("pl") };
-                options.DefaultRequestCulture = new RequestCulture("en", "en");
+                var culture = CultureInfo.CreateSpecificCulture("pl-PL");
+                var dateFormat = new DateTimeFormatInfo { ShortDatePattern = "dd.MM.yyyy", LongDatePattern = "dd.MM.yyyy hh:mm:ss tt" };
+                culture.DateTimeFormat = dateFormat;
+                var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("pl"), culture };
+                options.DefaultRequestCulture = new RequestCulture(culture);
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
@@ -104,7 +107,7 @@ namespace DotNetWMS
         /// <param name="env">Parameter for configuring WebHost environment elements</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var defaultCulture = new CultureInfo("en-US");
+            var defaultCulture = new CultureInfo("pl-PL");
             var localizationOptions = new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture(defaultCulture),

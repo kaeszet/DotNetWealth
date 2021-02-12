@@ -28,26 +28,11 @@ namespace DotNetWMS.Controllers
         private readonly DotNetWMSContext _context;
         private readonly UserManager<WMSIdentityUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        /// <summary>
-        /// A static field for handling Item's ItemCode for properly creation of Assign-type views
-        /// </summary>
-        private static string ItemCode;
+        
         /// <summary>
         /// A static field for handling Item's ItemQuantity for properly creation of Assign-type views
         /// </summary>
-        private static decimal ItemQuantity;
-        /// <summary>
-        /// A static field for handling UserId for properly creation of Assign_to_employee view
-        /// </summary>
-        private static string ItemEmployeeId;
-        /// <summary>
-        /// A static field for handling WarehouseId for properly creation of Assign_to_warehouse view
-        /// </summary>
-        private static int? ItemWarehouseId;
-        /// <summary>
-        /// A static field for handling ExternalId for properly creation of Assign_to_external view
-        /// </summary>
-        private static int? ItemExternalId;
+        //private static decimal ItemQuantity;
 
 
         public ItemsController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
@@ -264,6 +249,7 @@ namespace DotNetWMS.Controllers
             }
 
             ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
+            ViewData["url"] = url;
 
             return View(item);
         }
@@ -290,13 +276,22 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
-            bool isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode);
+            //bool isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode);
+            bool isItemExists = ItemExists(item);
+
             if (ModelState.IsValid)
             {
                 if (!isItemExists)
                 {
+                    string user = "";
+                    if (!string.IsNullOrEmpty(item.UserId))
+                    {
+                        user = _context.Users.FirstOrDefault(u => u.Id == item.UserId).NormalizedUserName;
+                    }
+                    var itemOld = await _context.Items.AsNoTracking().FirstOrDefaultAsync(i => i.Id == item.Id);
+                    item.ItemCode = ItemCodeGenerator.Generate(item, user);
                     _context.Add(item);
-                    ItemStatusCheck(item, ItemExternalId);
+                    ItemStatusCheck(item, itemOld?.ExternalId);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -330,6 +325,20 @@ namespace DotNetWMS.Controllers
                 return Json($"Przedmiot o kodzie ({itemCode}) został już wprowadzony!");
             }
         }
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult IsItemExists(Item item)
+        {
+            bool isItemExists = _context.Items.Any(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate);
+
+            if (!isItemExists)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"Przedmiot został już wprowadzony do systemu!");
+            }
+        }
         /// <summary>
         /// GET method responsible for returning an Item's Edit view
         /// </summary>
@@ -344,7 +353,7 @@ namespace DotNetWMS.Controllers
             }
 
             var item = await _context.Items.FindAsync(id);
-            ItemCode = item.ItemCode;
+
             if (item == null)
             {
                 return NotFound();
@@ -370,7 +379,17 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            bool isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode && i.ItemCode != ItemCode);
+            var itemOld = await _context.Items.AsNoTracking().FirstOrDefaultAsync(i => i.Id == item.Id);
+
+            //static
+            //bool isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode && i.ItemCode != ItemCode);
+            bool isItemExists = false;
+
+            if (item.ItemCode != itemOld.ItemCode)
+            {
+                isItemExists = _context.Items.Any(i => i.ItemCode == item.ItemCode && i.ItemCode != itemOld.ItemCode);
+            }
+            
 
             if (ModelState.IsValid)
             {
@@ -378,8 +397,14 @@ namespace DotNetWMS.Controllers
                 {
                     try
                     {
+                        string user = "";
+                        if (item.UserId != null)
+                        {
+                            user = _context.Users.FirstOrDefault(u => u.Id == item.UserId).NormalizedUserName;
+                        }
+                        item.ItemCode = ItemCodeGenerator.Generate(item, user);
                         _context.Update(item);
-                        ItemStatusCheck(item, ItemExternalId);
+                        ItemStatusCheck(item, itemOld.ExternalId);
                         await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException)
@@ -457,6 +482,10 @@ namespace DotNetWMS.Controllers
         {
             return _context.Items.Any(e => e.Id == id);
         }
+        private bool ItemExists(Item item)
+        {
+            return _context.Items.Any(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate);
+        }
         /// <summary>
         /// Private method responsible for correctly combining the quantity of two identical items entered by the user
         /// </summary>
@@ -465,16 +494,21 @@ namespace DotNetWMS.Controllers
         private void MergeSameItems(Item item, Type obj)
         {
             Item sameItem = null;
+
+
             switch (obj.Name)
             {
-                case "User":
-                    sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.UserId == item.UserId);
+                case "WMSIdentityUser":
+                    //sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.UserId == item.UserId);
+                    sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.UserId == item.UserId);
                     break;
                 case "Warehouse":
-                    sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.WarehouseId == item.WarehouseId);
+                    //sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.WarehouseId == item.WarehouseId);
+                    sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.WarehouseId == item.WarehouseId);
                     break;
                 case "External":
-                    sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.ExternalId == item.ExternalId);
+                    //sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.ExternalId == item.ExternalId);
+                    sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.ExternalId == item.ExternalId);
                     break;
 
             }
@@ -482,9 +516,9 @@ namespace DotNetWMS.Controllers
             
             if (sameItem != null && sameItem.Id != item.Id && sameItem.ExternalId == null && sameItem.WarehouseId == item.WarehouseId)
             {
-                ItemQuantity = sameItem.Quantity;
+                //ItemQuantity = sameItem.Quantity;
                 _context.Remove(sameItem);
-                item.Quantity += ItemQuantity;
+                item.Quantity += sameItem.Quantity;
                 _context.Update(item);
             }
         }
@@ -500,37 +534,61 @@ namespace DotNetWMS.Controllers
             {
                 var ext = _context.Externals.Find(item.ExternalId);
 
-                switch (ext.Type)
+                if (item.State != ItemState.Damaged)
                 {
-                    case ContractorType.Sklep: item.State = ItemState.Ordered;
-                        break;
-                    case ContractorType.Serwis: item.State = ItemState.InRepair;
-                        break;
-                    case ContractorType.Wypożyczający: item.State = ItemState.InLoan;
-                        break;
-                    case ContractorType.Podwykonawca: item.State = ItemState.InLoan;
-                        break;
-                    default:
-                        break;
+                    switch (ext.Type)
+                    {
+                        case ContractorType.Sklep:
+                            item.State = ItemState.Ordered;
+                            break;
+                        case ContractorType.Serwis:
+                            item.State = ItemState.InRepair;
+                            break;
+                        case ContractorType.Wypożyczający:
+                            item.State = ItemState.InLoan;
+                            break;
+                        case ContractorType.Podwykonawca:
+                            item.State = ItemState.InLoan;
+                            break;
+                        default:
+                            break;
+                    }
                 }
+                else
+                {
+                    if (ext.Type == ContractorType.Serwis)
+                    {
+                        item.State = ItemState.InRepair;
+                    }
+                }
+
+                SendInfo(item);
+
             }
-            else if (item.ExternalId == null && extId != null)
+            else if (item.ExternalId == null && extId != null && (item.State == ItemState.Ordered || item.State == ItemState.InRepair || item.State == ItemState.InLoan) )
             {
                 var ext = _context.Externals.Find(extId);
 
                 switch (ext.Type)
                 {
-                    case ContractorType.Sklep: item.State = ItemState.New;
+                    case ContractorType.Sklep:
+                        item.State = ItemState.New;
                         break;
-                    case ContractorType.Serwis: item.State = ItemState.Repaired;
+                    case ContractorType.Serwis:
+                        item.State = ItemState.Repaired;
                         break;
-                    case ContractorType.Wypożyczający: item.State = ItemState.Returned;
+                    case ContractorType.Wypożyczający:
+                        item.State = ItemState.Returned;
                         break;
-                    case ContractorType.Podwykonawca: item.State = ItemState.Returned;
+                    case ContractorType.Podwykonawca:
+                        item.State = ItemState.Returned;
                         break;
                     default:
                         break;
                 }
+
+                SendInfo(item, ext.Name);
+
                 if (item.WarehouseId != null)
                 {
                     item.State = ItemState.InWarehouse;
@@ -540,7 +598,7 @@ namespace DotNetWMS.Controllers
                     item.State = ItemState.InEmployee;
                 }
             }
-            else if (item.ExternalId == null && extId == null)
+            else if (item.ExternalId == null && !(item.State == ItemState.Ordered || item.State == ItemState.InRepair || item.State == ItemState.InLoan))
             {
                 if (item.WarehouseId != null)
                 {
@@ -552,8 +610,14 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
-                    item.State = ItemState.Unknown;
+                    item.State = ItemState.Other;
                 }
+
+                SendInfo(item);
+            }
+            else
+            {
+                item.State = ItemState.Unknown;
             }
             
         }
@@ -612,12 +676,13 @@ namespace DotNetWMS.Controllers
                     return null;
                 }
 
-                ItemQuantity = item.Quantity;
+                //ItemQuantity = item.Quantity;
 
                 switch (method)
                 {
                     case "Assign_to_employee_confirm":
-                        ItemEmployeeId = item.UserId;
+                        //s
+                        //ItemEmployeeId = item.UserId;
                         if (item.ExternalId != null)
                         {
                             var ext = await _context.Externals.FindAsync(item.ExternalId);
@@ -625,10 +690,12 @@ namespace DotNetWMS.Controllers
                         }
                         break;
                     case "Assign_to_warehouse_confirm":
-                        ItemWarehouseId = item.WarehouseId;
+                        //s
+                        //ItemWarehouseId = item.WarehouseId;
                         break;
                     case "Assign_to_external_confirm":
-                        ItemExternalId = item.ExternalId;
+                        //s
+                        //ItemExternalId = item.ExternalId;
                         break;
 
                     default:
@@ -654,6 +721,8 @@ namespace DotNetWMS.Controllers
         /// <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
         private async Task<IActionResult> CreateAssignItemConfirmationView(Item item, string method)
         {
+            var itemOld = await _context.Items.AsNoTracking().FirstOrDefaultAsync(i => i.Id == item.Id);
+
             if (item.Quantity <= 0)
             {
                 ModelState.AddModelError(string.Empty, $"Nie można przekazać {item.Quantity} sztuk");
@@ -665,12 +734,12 @@ namespace DotNetWMS.Controllers
                 ModelState.AddModelError(string.Empty, $"Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
             }
 
-            else if (item.Quantity < ItemQuantity && item.Quantity > 0)
+            else if (item.Quantity < itemOld.Quantity && item.Quantity > 0)
             {
                 return await ItemPresentationInAssignViewWhenNotEqual(item, method);
             }
 
-            else if (item.Quantity > ItemQuantity)
+            else if (item.Quantity > itemOld.Quantity)
             {
                 ModelState.AddModelError(string.Empty, $"Ilość przekazanego przedmiotu nie może być wyższa, niż stan w magazynie");
             }
@@ -706,10 +775,12 @@ namespace DotNetWMS.Controllers
         /// <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
         private async Task<IActionResult> ItemPresentationInAssignViewWhenNotEqual(Item item, string method)
         {
+            var itemOld = await _context.Items.AsNoTracking().FirstOrDefaultAsync(i => i.Id == item.Id);
+
             switch (method)
             {
                 case "Assign_to_employee_confirm":
-                    if (ItemEmployeeId != item.UserId)
+                    if (itemOld.UserId != item.UserId)
                     {
                         Item newItem = new Item()
                         {
@@ -718,20 +789,20 @@ namespace DotNetWMS.Controllers
                             Producer = item.Producer,
                             Model = item.Model,
                             ItemCode = item.ItemCode,
-                            Quantity = ItemQuantity - item.Quantity,
+                            Quantity = itemOld.Quantity - item.Quantity,
                             Units = item.Units,
                             WarrantyDate = item.WarrantyDate,
                             State = item.State,
-                            UserId = ItemEmployeeId,
+                            UserId = itemOld.UserId,
                             WarehouseId = item.WarehouseId,
                             ExternalId = item.ExternalId
                         };
-
+                        
                         _context.Add(newItem);
                         _context.Update(item);
                         MergeSameItems(item, typeof(WMSIdentityUser));
-                        ItemStatusCheck(item, ItemExternalId);
-                        SendInfo(item);
+                        ItemStatusCheck(item, itemOld.ExternalId);
+                        //SendInfo(item, ItemState.InEmployee);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("Assign_to_employee");
 
@@ -743,7 +814,7 @@ namespace DotNetWMS.Controllers
                         return View(item);
                     }
                 case "Assign_to_warehouse_confirm":
-                    if (ItemWarehouseId != item.WarehouseId)
+                    if (itemOld.WarehouseId != item.WarehouseId)
                     {
                         Item newItem = new Item()
                         {
@@ -752,19 +823,19 @@ namespace DotNetWMS.Controllers
                             Producer = item.Producer,
                             Model = item.Model,
                             ItemCode = item.ItemCode,
-                            Quantity = ItemQuantity - item.Quantity,
+                            Quantity = itemOld.Quantity - item.Quantity,
                             Units = item.Units,
                             WarrantyDate = item.WarrantyDate,
                             State = item.State,
                             UserId = item.UserId,
-                            WarehouseId = ItemWarehouseId,
+                            WarehouseId = itemOld.WarehouseId,
                             ExternalId = item.ExternalId
                         };
 
                         _context.Add(newItem);
                         _context.Update(item);
                         MergeSameItems(item, typeof(Warehouse));
-                        ItemStatusCheck(item, ItemExternalId);
+                        ItemStatusCheck(item, itemOld.ExternalId);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("Assign_to_warehouse");
 
@@ -776,7 +847,7 @@ namespace DotNetWMS.Controllers
                         return View(item);
                     }
                 case "Assign_to_external_confirm":
-                    if (ItemExternalId != item.ExternalId)
+                    if (itemOld.ExternalId != item.ExternalId)
                     {
                         Item newItem = new Item()
                         {
@@ -785,19 +856,19 @@ namespace DotNetWMS.Controllers
                             Producer = item.Producer,
                             Model = item.Model,
                             ItemCode = item.ItemCode,
-                            Quantity = ItemQuantity - item.Quantity,
+                            Quantity = itemOld.Quantity - item.Quantity,
                             Units = item.Units,
                             WarrantyDate = item.WarrantyDate,
                             State = item.State,
                             UserId = item.UserId,
                             WarehouseId = item.WarehouseId,
-                            ExternalId = ItemExternalId
+                            ExternalId = itemOld.ExternalId
                         };
 
                         _context.Add(newItem);
                         _context.Update(item);
                         MergeSameItems(item, typeof(External));
-                        ItemStatusCheck(item, ItemExternalId);
+                        ItemStatusCheck(item, itemOld.ExternalId);
                         await _context.SaveChangesAsync();
                         return RedirectToAction("Assign_to_external");
 
@@ -822,18 +893,25 @@ namespace DotNetWMS.Controllers
         /// <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
         private async Task<IActionResult> ItemPresentationInAssignViewWhenEqual(Item item, string method)
         {
+            string user = "";
+            if (item.UserId != null)
+            {
+                user = _context.Users.FirstOrDefault(u => u.Id == item.UserId).NormalizedUserName;
+            }
+            var itemOld = await _context.Items.AsNoTracking().FirstOrDefaultAsync(i => i.Id == item.Id);
+
             switch (method)
             {
                 case "Assign_to_employee_confirm":
 
                     try
                     {
-                        if (ItemEmployeeId != item.UserId)
+                        if (itemOld.UserId != item.UserId)
                         {
+                            item.ItemCode = ItemCodeGenerator.Generate(item, user);
                             _context.Update(item);
                             MergeSameItems(item, typeof(WMSIdentityUser));
-                            ItemStatusCheck(item, ItemExternalId);
-                            SendInfo(item);
+                            ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
                         }
 
@@ -855,11 +933,12 @@ namespace DotNetWMS.Controllers
 
                     try
                     {
-                        if (ItemWarehouseId != item.WarehouseId)
+                        if (itemOld.WarehouseId != item.WarehouseId)
                         {
+                            item.ItemCode = ItemCodeGenerator.Generate(item, user);
                             _context.Update(item);
                             MergeSameItems(item, typeof(Warehouse));
-                            ItemStatusCheck(item, ItemExternalId);
+                            ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
                         }
 
@@ -881,11 +960,12 @@ namespace DotNetWMS.Controllers
 
                     try
                     {
-                        if (ItemExternalId != item.ExternalId)
+                        if (itemOld.ExternalId != item.ExternalId)
                         {
+                            item.ItemCode = ItemCodeGenerator.Generate(item, user);
                             _context.Update(item);
                             MergeSameItems(item, typeof(External));
-                            ItemStatusCheck(item, ItemExternalId);
+                            ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
                         }
 
@@ -908,17 +988,119 @@ namespace DotNetWMS.Controllers
             }
             return NotFound();
         }
-        private void SendInfo(Item item)
+        private void SendInfo(Item item, string externalOldName = "")
         {
-            Infobox info = new Infobox()
-            {
-                Title = "Otrzymałeś przedmiot",
-                Message = $"Otrzymałeś \"{item.Name}\" w ilości {item.Quantity} {item.Units} od użytkownika {User?.Identity?.Name}",
-                ReceivedDate = DateTime.Now,
-                UserId = item.UserId
+            string UserIdentityName = !string.IsNullOrEmpty(User?.Identity?.Name) ? User.Identity.Name : "";
+            DateTime receivedDate = DateTime.Now;
+            Infobox info = new Infobox();
+            string loggedUserId = _context.Users.FirstOrDefault(u => u.NormalizedUserName == UserIdentityName)?.Id;
 
-            };
-            _context.Infoboxes.Add(info);
+            switch (item.State)
+            {
+                case ItemState.Ordered:
+
+                    var itemExt = item.External;
+                    string itemExtName = itemExt != null ? itemExt.Name : "której nazwy nie podano";
+
+                    info.Title = "Zamówiłeś przedmiot";
+                    info.Message = $"Zamówiłeś \"{item.Name}\" w ilości {item.Quantity} {item.Units} od firmy {itemExtName}";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.New:
+
+                    //var ext = _context.Externals.Find(ItemExternalId);
+                    //string extName = ext != null ? ext.Name : "której nazwy nie podano";
+
+                    info.Title = "Otrzymałeś zamówiony przedmiot";
+                    info.Message = $"Otrzymałeś zamówienie \"{item.Name}\" w ilości {item.Quantity} {item.Units} od firmy {externalOldName}";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.Damaged:
+
+                    info.Title = "Oznaczyłeś przedmiot jako uszkodzony";
+                    info.Message = $"Przedmiot \"{item.Name}\" w ilości {item.Quantity} {item.Units} został oznaczony jako uszkodzony";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.Repaired:
+
+                    info.Title = "Przedmiot został naprawiony";
+                    info.Message = $"Przedmiot \"{item.Name}\" w ilości {item.Quantity} {item.Units} został naprawiony przez {externalOldName}";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.Returned:
+
+                    info.Title = "Przedmiot został zwrócony";
+                    info.Message = $"Przedmiot \"{item.Name}\" w ilości {item.Quantity} {item.Units} został zwrócony przez {externalOldName}";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.InWarehouse:
+
+                    //TODO: zabezp przed null
+                    var warehouseFullName = _context.Warehouses.Find(item.WarehouseId).Name;
+
+                    info.Title = "Przedmiot w magazynie";
+                    info.Message = $"Przedmiot \"{item.Name}\" w ilości {item.Quantity} {item.Units} został wysłany do magazynu {warehouseFullName}";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.InEmployee:
+
+                    info.Title = "Otrzymałeś przedmiot";
+                    info.Message = $"Otrzymałeś \"{item.Name}\" w ilości {item.Quantity} {item.Units} od użytkownika {UserIdentityName}";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = item.UserId;
+                    break;
+
+                case ItemState.InRepair:
+
+                    info.Title = "Przedmiot w naprawie";
+                    info.Message = $"Przekazałeś \"{item.Name}\" w ilości {item.Quantity} {item.Units} do firmy {item.External.Name}";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.InLoan:
+
+                    info.Title = "Wypożyczyłeś przedmiot";
+                    info.Message = $"Przedmiot \"{item.Name}\" w ilości {item.Quantity} {item.Units} został wypożyczony podmiotowi {item.External.Name}";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.OutOfWarranty:
+
+                    break;
+
+                case ItemState.Other:
+                    info.Title = "Przedmiot nieprzypisany";
+                    info.Message = $"Przedmiot \"{item.Name}\" w ilości {item.Quantity} {item.Units} jest na stanie, ale aktualnie nie jest przypisany";
+                    info.ReceivedDate = receivedDate;
+                    info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
+                    break;
+
+                case ItemState.Unknown:
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(info.Title))
+            {
+                _context.Infoboxes.Add(info);
+            }
+
         }
     }
 }
