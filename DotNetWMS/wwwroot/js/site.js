@@ -12,8 +12,6 @@ $(document).ready(function ()
     });
 
     //Active nav list
-    //$('.sidebar .list-group-item[href="' + location.pathname + '"]').addClass('active');
-
     if ($('.sidebar').length > 0)
     {
 
@@ -78,41 +76,108 @@ $(document).ready(function ()
 
 (function ($)
 {
-    $.fn.myfunction = function () {
-        alert('hello world');
-        return this;
+    //geocoder function
+    $.fn.geocodeAddress = function (value) {
+        $geocoder.geocode({ address: value }, (results, status) => {
+
+            if (status === "OK")
+            {
+                clearMarker(null);
+                $allMarkers = [];
+                let street = [];
+
+                const componentForm = {
+                    street_number: "short_name",
+                    route: "long_name",
+                    locality: "long_name",
+                    administrative_area_level_1: "short_name",
+                    country: "long_name",
+                    postal_code: "short_name",
+                };
+
+                for (const component of results[0].address_components) {
+                    const addressType = component.types[0];
+
+                    if (componentForm[addressType]) {
+                        const val = component[componentForm[addressType]];
+
+                        if ($('#' + addressType).length > 0) $('#' + addressType).val(val);
+                        if (addressType == 'street_number' || addressType == 'route')
+                        {
+                            street[addressType] = val;
+                        }
+                    }
+                }
+                $('#address').val(street['route'] + ' ' + street['street_number']);
+
+                $map.setCenter(results[0].geometry.location);
+                let marker = new google.maps.Marker({
+                    map: $map,
+                    position: results[0].geometry.location,
+                });
+                $allMarkers.push(marker)
+
+            } else alert("Wystąpił błąd usługi Geocode z powodu: " + status);
+        });
+
+        function clearMarker(val)
+        {
+            for (let i = 0; i < $allMarkers.length; i++) {
+                $allMarkers[i].setMap(val);
+            }
+        }
     };
 
 })(jQuery);
 
 function initMap()
 {
-    console.log('asd')
-    var myCenter = new google.maps.LatLng(50.046912, 19.998207);
-    var mapProp = { center: myCenter, zoom: 12, scrollwheel: false, draggable: true, mapTypeId: google.maps.MapTypeId.ROADMAP };
-    var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-    var marker = new google.maps.Marker({ position: myCenter });
+    $allMarkers = [];
 
-    marker.setMap(map);
+    // Current location
+    if (navigator.geolocation)
+    {
+        navigator.geolocation.getCurrentPosition(function (pos) {
 
-    const geocoder = new google.maps.Geocoder();
-    geocodeAddress(geocoder, map);
-}
+            $myLocation = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
 
-function geocodeAddress(geocoder, resultsMap)
-{
-    const address = adressToGeoCode;
-    geocoder.geocode({ address: address }, (results, status) => {
-        if (status === "OK") {
-            resultsMap.setCenter(results[0].geometry.location);
-            new google.maps.Marker({
-                map: resultsMap,
-                position: results[0].geometry.location,
+            $props = {
+                center: $myLocation,
+                zoom: 12,
+                gestureHandling: 'cooperative'
+            };
+
+            $map = new google.maps.Map($('#map')[0], $props);
+            let marker = new google.maps.Marker({
+                map: $map,
+                position: $myLocation
             });
-        } else {
-            alert(
-                "Wystąpił błąd usługi Geocode z powodu: " + status
-            );
-        }
-    });
+
+            $allMarkers.push(marker);
+
+        }, function (error) {
+
+            console.log(error)
+
+        });
+    }
+    else alert("Geolokalizacja nie jest obsługiwana przez twoją przeglądarkę.");
+
+    // Geocoder
+    $geocoder = new google.maps.Geocoder();
+
+    if ($('#address').length > 0)
+    {
+        $('#address').on('change autocompletechange', function (ev) {
+
+            $(this).geocodeAddress($(this).val());
+        })
+
+        $('#address').on('keypress', function (ev) {
+            if (ev.which == 13) {
+                ev.preventDefault();
+                $('#address').blur();
+            }
+        })
+    }
 }
