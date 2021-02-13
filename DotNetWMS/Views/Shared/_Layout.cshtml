@@ -24,11 +24,11 @@
     @if (signInManager.IsSignedIn(User))
     {
         <header class="sticky-top top-0">
-            <div class="container-fluid">
-                <div class="row p-0">
+            <div class="container-fluid h-100">
+                <div class="row h-100">
                     <div class="col-md-2 d-flex bg-dark">
                         <a class="navbar-brand m-auto" asp-controller="Home" asp-action="Index">
-                            <img src="~/images/PepeLogo.png" style="width: 160px" alt="">
+                            <img src="~/images/logo.png" style="width: 160px" alt="">
                         </a>
                     </div>
 
@@ -44,7 +44,7 @@
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="EmployeesControllerNEW" asp-action="Index">Pracownicy</a>
+                                        <a class="nav-link" asp-controller="EmployeesNEW" asp-action="Index">Pracownicy</a>
                                     </li>
                                 }
 
@@ -115,14 +115,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-2 sidebar overflow-auto bg-light border-right pb-3">
-                    @*<div class="card border-0 rounded-0 bg-light">
-                            <img src="~/images/pepe.png" class="mw-100 mh-100 p-1 mx-auto mt-2 rounded-circle border shadow-sm" width="120" alt="...">
-                            <div class="card-body">
-                                <p class="card-text">Some quick example text.</p>
-                            </div>
-                        </div>*@
                     <div class="list-group list-group-flush border-top border-bottom">
-                        <a href="/" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
+                        <a href="/" data-id="dashboard" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
                     </div>
                     @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
@@ -130,8 +124,8 @@
                             <small class="text-muted font-weight-bold text-uppercase m-0">Panel administracyjny</small>
                         </div>
                         <div class="list-group list-group-flush">
-                            <a asp-controller="Administration" asp-action="ListOfRoles" class="list-group-item list-group-item-action"><i class="fas fa-user-tag mr-1"></i>Lista ról</a>
-                            <a asp-controller="Administration" asp-action="ListOfUsers" class="list-group-item list-group-item-action"><i class="fas fa-user mr-1"></i>Użytkownicy</a>
+                            <a asp-controller="Administration" asp-action="ListOfRoles" data-id="ListOfRoles" class="list-group-item list-group-item-action"><i class="fas fa-user-tag mr-1"></i>Lista ról</a>
+                            <a asp-controller="Administration" asp-action="ListOfUsers" data-id="ListOfUsers" class="list-group-item list-group-item-action"><i class="fas fa-user mr-1"></i>Użytkownicy</a>
                         </div>
                     }
                     @if (User.IsInAnyRoles("Kadry,Moderator"))
@@ -140,23 +134,23 @@
                             <small class="text-muted font-weight-bold text-uppercase m-0">Pracownicy</small>
                         </div>
                         <div class="list-group list-group-flush">
-                            <a asp-controller="EmployeesNEW" asp-action="Index" class="list-group-item list-group-item-action"><i class="far fa-id-card mr-1"></i>Przegląd pracowników</a>
-                            <a asp-controller="Departments" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-briefcase mr-1"></i> Przegląd stanowisk</a>
+                            <a asp-controller="EmployeesNEW" asp-action="Index" data-id="Employees" class="list-group-item list-group-item-action"><i class="far fa-id-card mr-1"></i>Przegląd pracowników</a>
+                            <a asp-controller="Departments" asp-action="Index" data-id="Departments" class="list-group-item list-group-item-action"><i class="fas fa-briefcase mr-1"></i> Przegląd stanowisk</a>
                         </div>
                     }
                     <div class="title mt-3">
                         <small class="text-muted font-weight-bold text-uppercase m-0">Majątek</small>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a asp-controller="Items" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Przegląd majątku</a>
+                        <a asp-controller="Items" asp-action="Index" data-id="Items" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Przegląd majątku</a>
                         @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                         {
-                            <a asp-controller="Items" asp-action="Assign_to_employee" class="list-group-item list-group-item-action"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
-                            <a asp-controller="Items" asp-action="Assign_to_warehouse" class="list-group-item list-group-item-action"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
+                            <a asp-controller="Items" asp-action="Assign_to_employee" data-id="Assign_to_employee" class="list-group-item list-group-item-action"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
+                            <a asp-controller="Items" asp-action="Assign_to_warehouse" data-id="Assign_to_warehouse" class="list-group-item list-group-item-action"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
                         }
                         @if (User.IsInAnyRoles("StandardPlus,Moderator"))
                         {
-                            <a asp-controller="Items" asp-action="Assign_to_external" class="list-group-item list-group-item-action"><i class="fas fa-truck-loading mr-1"></i>Przekaż na zewnątrz</a>
+                            <a asp-controller="Items" asp-action="Assign_to_external" data-id="Assign_to_external" class="list-group-item list-group-item-action"><i class="fas fa-truck-loading mr-1"></i>Przekaż na zewnątrz</a>
                         }
                     </div>
 
@@ -164,10 +158,10 @@
                         <small class="text-muted font-weight-bold text-uppercase m-0">Magazyn</small>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a asp-controller="Warehouses" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Przegląd magazynów</a>
+                        <a asp-controller="Warehouses" asp-action="Index" data-id="Warehouses" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Przegląd magazynów</a>
                         @if (User.IsInAnyRoles("StandardPlus,Moderator"))
                         {
-                            <a asp-controller="Warehouses" asp-action="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
+                            <a asp-controller="Warehouses" asp-action="Stocktaking" data-id="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
                         }
                     </div>
 
@@ -177,8 +171,8 @@
                             <small class="text-muted font-weight-bold text-uppercase m-0">Klienci zewnętrzni</small>
                         </div>
                         <div class="list-group list-group-flush">
-                            <a asp-controller="Externals" asp-action="Index" class="list-group-item list-group-item-action"><i class="fas fa-glasses mr-1"></i>Przegląd klientów zewnętrznych</a>
-                            <a asp-controller="Externals" asp-action="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
+                            <a asp-controller="Externals" asp-action="Index" data-id="Externals" class="list-group-item list-group-item-action"><i class="fas fa-glasses mr-1"></i>Przegląd klientów zewnętrznych</a>
+                            <a asp-controller="Externals" asp-action="StatusView" data-id="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
                         </div>
                     }
                 </div>
