@@ -11,6 +11,8 @@ namespace DotNetWMS.Models
     /// </summary>
     public enum ItemState
     {
+        [Display(Name = "Nieznany")]
+        Unknown,
         [Display(Name = "Zamówiony")]
         Ordered,
         [Display(Name = "Nowy")]
@@ -33,7 +35,6 @@ namespace DotNetWMS.Models
         OutOfWarranty,
         [Display(Name = "Inny")]
         Other,
-        [Display(Name = "Nieznany")]
-        Unknown
+        
     }
 }

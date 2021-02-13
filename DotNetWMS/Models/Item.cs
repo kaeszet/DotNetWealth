@@ -67,6 +67,7 @@ namespace DotNetWMS.Models
         /// </summary>
         [Display(Name = "Data gwarancji")]
         [DataType(DataType.Date)]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? WarrantyDate { get; set; }
         /// <summary>
         /// Enum to choose the condition of the item. Correlated with the foreign keys of the Employee, Warehouse and External classes for reporting purposes

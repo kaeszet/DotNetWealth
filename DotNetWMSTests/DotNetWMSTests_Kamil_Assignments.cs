@@ -130,8 +130,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
-            FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, 3.0M);
+
             var item = _context.Items.Find(1);
             var result = await controller.Assign_to_employee_confirm(1, item);
             Assert.That(result, Is.InstanceOf(typeof(IActionResult)));
@@ -150,8 +149,6 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
-            FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, 3.0M);
             var item = _context.Items.Find(1);
             item.Quantity = -1.0M;
             var result = await controller.Assign_to_employee_confirm(1, item) as ViewResult;
@@ -178,10 +175,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
-            FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, 3.0M);
-            info = controller.GetType().GetField("ItemEmployeeId", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, "1");
+            
             var item = _context.Items.Find(1);
             item.Quantity = 2.0M;
             var result = await controller.Assign_to_employee_confirm(1, item) as ViewResult;
@@ -208,8 +202,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
-            FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, 3.0M);
+            
             var item = _context.Items.Find(1);
             item.Quantity = 4.0M;
             var result = await controller.Assign_to_employee_confirm(1, item) as ViewResult;
@@ -236,10 +229,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
-            FieldInfo info = controller.GetType().GetField("ItemQuantity", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, 3.0M);
-            info = controller.GetType().GetField("ItemEmployeeId", BindingFlags.NonPublic | BindingFlags.Static);
-            info.SetValue(null, "2");
+
             var item = _context.Items.Find(1);
             item.Quantity = 2.0M;
             var result = await controller.Assign_to_employee_confirm(1, item);
