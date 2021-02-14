@@ -27,10 +27,13 @@
 <a class="btn btn-outline-primary d-print-none" onclick="printPartialDiv('divPartial')"><i class="fas fa-print"></i></a>
 
 <div id="divPartial" class="mt-3">
-    
+
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/js/CustomValidation.js"></script>
+
     <script>
         var url = '@Url.Action("StocktakingIndex", "Warehouses")';
             $('#choose').click(function() {
@@ -46,5 +49,14 @@
             window.print();
             document.body.innerHTML = restorepage;
         }
+
+        function checkboxChange(obj) {
+            var checkboxes = obj.closest('tr').getElementsByClassName("form-control-input");
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+            obj.checked = true;
+        }
     </script>
+
 }
