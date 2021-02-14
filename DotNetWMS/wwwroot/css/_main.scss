@@ -94,7 +94,7 @@ footer {
 		width: 0px;
 		background: transparent;
 	}
-	/* Optional: show position indicator in red */
+
 	&::-webkit-scrollbar-thumb {
 		background: #FF0000;
 	}
@@ -105,9 +105,9 @@ footer {
 		align-items: center;
 
 		&.active {
-			background-color: #e2e2e2 !important;
+			background-color: $silver !important;
 			border-color: rgba(0,0,0,.125) !important;
-			color: #007bff !important;
+			color: $primary !important;
 			font-weight: bold;
 		}
 
@@ -130,7 +130,7 @@ footer {
 /* FORM */
 
 .form-control {
-	background-color: #fafafa;
+	/*background-color: #fafafa;*/
 
 	&:focus {
 		border-color: #adb5bd;
