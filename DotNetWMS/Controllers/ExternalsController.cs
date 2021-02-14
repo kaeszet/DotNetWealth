@@ -67,24 +67,46 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="model">StatusViewViewModel class object used to check all items with the selected status</param>
         /// <returns>Returns External's StatusView</returns>
-        public IActionResult StatusView(StatusViewViewModel model)
+        public async Task<IActionResult> StatusView(StatusViewViewModel model)
         {
-            model.Items = _context.Items.Select(i => i).Where(i => i.State == model.State).ToList();
+            var users = await _context.Users.ToListAsync();
+            var warehouses = await _context.Warehouses.ToListAsync();
+
+            ViewData["UserList"] = new SelectList(users, "Id", "FullName");
+            ViewData["WarehouseList"] = new SelectList(warehouses, "Id", "AssignFullName");
+
             return View(model);
         }
-        /// <summary>
-        /// POST method to display the list of items with the previously selected status
-        /// </summary>
-        /// <param name="state">Parameter to pass the selection from the dropdown list</param>
-        /// <returns>Returns External's StatusView and items with the selected status</returns>
+        
         [HttpPost]
-        public IActionResult StatusView(ItemState state)
+        public IActionResult StatusView(string u, int? w, ItemState state, string order, string search)
         {
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["Search"] = search;
+            ViewData["InfoMessage"] = "Brak asortymentu spełniającego powyższe kryteria";
+            DateTime dateTime = DateTime.Now;
 
-            var items = _context.Items.Select(i => i).Where(i => i.State == state).ToList();
-            ViewData["ItemList"] = items;
+            IQueryable<Item> items = _context.Items.AsNoTracking().Where(i => (u == "All" || i.UserId == u) && (w == 0 || i.WarehouseId == w));
 
-            return PartialView("_StatusViewTable", items);
+            switch (state)
+            {
+                case ItemState.Unknown:
+                    break;
+                case ItemState.OutOfWarranty:
+                    items = items.Where(i => i.WarrantyDate < dateTime);
+                    break;
+                default:
+                    items = items.Where(i => i.State == state);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                items = items.Where(i => i.Type.Contains(search) || i.Producer.Contains(search) || i.Name.Contains(search) || i.Model.Contains(search) || i.ItemCode.Contains(search));
+            }
+
+
+            return PartialView("_StatusViewTable", items.ToList());
         }
         /// <summary>
         /// GET method responsible for returning an External's Details view

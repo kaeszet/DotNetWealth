@@ -32,39 +32,77 @@
 
             @for (int i = 0; i < Model.Count; i++)
             {
-                <tr>
-                    <td>
-                        @Model[i].ItemType
-                    </td>
-                    <td>
-                        @Model[i].ItemModel
-                    </td>
-                    <td>
-                        @Model[i].ItemName
-                    </td>
-                    <td>
-                        @Model[i].ItemCode
-                    </td>
-                    <td>
-                        <input asp-for="@Model[i].ItemQuantity" class="form-control" />
-                        <span asp-validation-for="@Model[i].ItemQuantity" class="text-danger small"></span>
-                    </td>
-                    <td>
-                        <select asp-for="@Model[i].ItemUnits" class="form-control" asp-items="Html.GetEnumSelectList<ItemUnits>()"></select>
-                        <span asp-validation-for="@Model[i].ItemUnits" class="text-danger small"></span>
+                if (Model[i].ToCorrect)
+                {
+                    <tr>
+                        <td>
+                            @Model[i].ItemType
+                        </td>
+                        <td>
+                            @Model[i].ItemModel
+                        </td>
+                        <td>
+                            @Model[i].ItemName
+                        </td>
+                        <td>
+                            @Model[i].ItemCode
+                        </td>
+                        <td>
+                            <input asp-for="@Model[i].ItemQuantity" class="form-control" />
+                            <span asp-validation-for="@Model[i].ItemQuantity" class="text-danger small"></span>
+                        </td>
+                        <td>
+                            <select asp-for="@Model[i].ItemUnit" asp-items="Html.GetEnumSelectList<ItemUnits>()"></select>
+                            <span asp-validation-for="@Model[i].ItemUnit" class="text-danger small"></span>
+                        </td>
+                        <td>
+                            <input type="hidden" asp-for="@Model[i].ItemType" />
+                            <input type="hidden" asp-for="@Model[i].ItemModel" />
+                            <input type="hidden" asp-for="@Model[i].ItemName" />
+                            <input type="hidden" asp-for="@Model[i].ItemCode" />
+                            <input type="hidden" asp-for="@Model[i].IsDamaged" />
+                            <input type="hidden" asp-for="@Model[i].ToCorrect" />
+                            <input type="hidden" asp-for="@Model[i].ToDelete" />
 
-                    </td>
-                    <td>
-                        <input type="hidden" asp-for="@Model[i].ItemType" />
-                        <input type="hidden" asp-for="@Model[i].ItemModel" />
-                        <input type="hidden" asp-for="@Model[i].ItemName" />
-                        <input type="hidden" asp-for="@Model[i].ItemCode" />
-                        <input type="hidden" asp-for="@Model[i].IsDamaged" />
-                        <input type="hidden" asp-for="@Model[i].ToCorrect" />
-                        <input type="hidden" asp-for="@Model[i].ToDelete" />
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr style="display:none">
+                        <td>
+                            @Model[i].ItemType
+                        </td>
+                        <td>
+                            @Model[i].ItemModel
+                        </td>
+                        <td>
+                            @Model[i].ItemName
+                        </td>
+                        <td>
+                            @Model[i].ItemCode
+                        </td>
+                        <td>
+                            <input asp-for="@Model[i].ItemQuantity" class="form-control" />
+                            <span asp-validation-for="@Model[i].ItemQuantity" class="text-danger small"></span>
+                        </td>
+                        <td>
+                            <select asp-for="@Model[i].ItemUnit" asp-items="Html.GetEnumSelectList<ItemUnits>()"></select>
+                            <span asp-validation-for="@Model[i].ItemUnit" class="text-danger small"></span>
+                        </td>
+                        <td>
+                            <input type="hidden" asp-for="@Model[i].ItemType" />
+                            <input type="hidden" asp-for="@Model[i].ItemModel" />
+                            <input type="hidden" asp-for="@Model[i].ItemName" />
+                            <input type="hidden" asp-for="@Model[i].ItemCode" />
+                            <input type="hidden" asp-for="@Model[i].IsDamaged" />
+                            <input type="hidden" asp-for="@Model[i].ToCorrect" />
+                            <input type="hidden" asp-for="@Model[i].ToDelete" />
 
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                }
+
             }
         </tbody>
     </table>
@@ -75,5 +113,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
     <script src="~/js/CustomValidation.js"></script>
 }

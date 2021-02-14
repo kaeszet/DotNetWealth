@@ -293,7 +293,9 @@ namespace DotNetWMS.Controllers
                     ItemModel = item.Model,
                     ItemName = item.Name,
                     ItemCode = item.ItemCode,
-                    ItemQuantity = item.Quantity
+                    ItemQuantity = item.Quantity.ToString(),
+                    ItemUnit = item.Units
+                    
                 };
 
                 model.Add(stocktakingViewModel);
@@ -304,8 +306,6 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> StocktakingBegin(List<StocktakingNewViewModel> model, int? id)
         {
             ViewBag.warehouseId = id;
-            
-            var itemsToCorrect = model.Where(m => m.ToCorrect).ToList();
 
             foreach (var item in model)
             {
@@ -316,15 +316,43 @@ namespace DotNetWMS.Controllers
                 }
                 if (item.IsDamaged)
                 {
+                    string UserIdentityName = !string.IsNullOrEmpty(User?.Identity?.Name) ? User.Identity.Name : "";
+                    string loggedUserId = _context.Users.AsNoTracking().FirstOrDefault(u => u.NormalizedUserName == UserIdentityName)?.Id;
+
                     var itemDamaged = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode);
                     itemDamaged.State = ItemState.Damaged;
+                    itemDamaged.ItemCode = ItemCodeGenerator.Generate(itemDamaged, UserIdentityName);
                     _context.Update(itemDamaged);
+
+                    Infobox info = new Infobox
+                    {
+                        Title = "Przedmiot uszkodzony",
+                        Message = $"Przedmiot \"{itemDamaged.Name}\" w ilości {itemDamaged.Quantity} {itemDamaged.Units} został oznaczony jako uszkodzony",
+                        ReceivedDate = DateTime.Now,
+                        UserId = string.IsNullOrEmpty(itemDamaged.UserId) ? loggedUserId : itemDamaged.UserId
+                    };
+
+                    if (!string.IsNullOrEmpty(info.Title))
+                    {
+                        _context.Infoboxes.Add(info);
+                    }
+
+                    break;
                 }
             }
 
             await _context.SaveChangesAsync();
 
-            return View(itemsToCorrect);
+            //model = model.Where(i => i.ToCorrect == true).ToList();
+
+            if (model.Count == 0)
+            {
+                ViewBag.ExceptionTitle = "Zakończono inwentaryzację!";
+                ViewBag.ExceptionMessage = "Poprawność można zweryfikować w zakładce przedmioty";
+                return View("GlobalExceptionHandler");
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> StocktakingEnd(List<StocktakingNewViewModel> model)
@@ -336,8 +364,8 @@ namespace DotNetWMS.Controllers
 
                 if (itemToUpdate != null)
                 {
-                    itemToUpdate.Quantity = item.ItemQuantity;
-                    itemToUpdate.Units = item.ItemUnits;
+                    itemToUpdate.Quantity = Convert.ToDecimal(item.ItemQuantity);
+                    itemToUpdate.Units = item.ItemUnit;
                     _context.Update(itemToUpdate);
                 }
             }

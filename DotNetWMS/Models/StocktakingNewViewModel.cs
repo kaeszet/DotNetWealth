@@ -18,11 +18,14 @@ namespace DotNetWMS.Models
         [Display(Name = "Kod przedmiotu")]
         public string ItemCode { get; set; }
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
+        //[Display(Name = "Ilość")]
+        //[Range(0.01, 10000, ErrorMessage = CustomErrorMessages.NumberRange)]
+        //public decimal ItemQuantity { get; set; }
         [Display(Name = "Ilość")]
-        [Range(0.01, 10000, ErrorMessage = CustomErrorMessages.NumberRange)]
-        public decimal ItemQuantity { get; set; }
+        [RegularExpression(@"^(?=.*[1-9])[0-9]{0,4}[.,]?[0-9]{1,2}$", ErrorMessage = "Błąd")]
+        public string ItemQuantity { get; set; }
         [Display(Name = "Jednostka")]
-        public ItemUnits ItemUnits { get; set; }
+        public ItemUnits ItemUnit { get; set; }
         [Display(Name = "Do poprawy?")]
         public bool ToCorrect { get; set; }
         [Display(Name = "Do usunięcia?")]

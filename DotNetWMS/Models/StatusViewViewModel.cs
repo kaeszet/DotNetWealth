@@ -19,6 +19,14 @@ namespace DotNetWMS.Models
         /// <summary>
         /// A field to capture list of items
         /// </summary>
-        public List<Item> Items { get; set; }
+        //public List<Item> Items { get; set; }
+        public string UserId { get; set; }
+        [Display(Name = "Użytkownik")]
+        public string UserFullName { get; set; }
+        public int? WarehouseId { get; set; }
+        [Display(Name = "Magazyn")]
+        public string WarehouseFullName { get; set; }
+
+
     }
 }
