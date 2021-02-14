@@ -28,12 +28,6 @@ namespace DotNetWMS.Controllers
         private readonly DotNetWMSContext _context;
         private readonly UserManager<WMSIdentityUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        
-        /// <summary>
-        /// A static field for handling Item's ItemQuantity for properly creation of Assign-type views
-        /// </summary>
-        //private static decimal ItemQuantity;
-
 
         public ItemsController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
@@ -292,6 +286,7 @@ namespace DotNetWMS.Controllers
                     _context.Add(item);
                     ItemStatusCheck(item, itemOld?.ExternalId);
                     await _context.SaveChangesAsync();
+                    await UpdateItemCode(item);
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -599,19 +594,22 @@ namespace DotNetWMS.Controllers
             }
             else if (item.ExternalId == null && !(item.State == ItemState.Ordered || item.State == ItemState.InRepair || item.State == ItemState.InLoan))
             {
-                if (item.WarehouseId != null)
+                if (item.State != ItemState.Damaged)
                 {
-                    item.State = ItemState.InWarehouse;
+                    if (item.WarehouseId != null)
+                    {
+                        item.State = ItemState.InWarehouse;
+                    }
+                    else if (item.WarehouseId == null && item.UserId != null)
+                    {
+                        item.State = ItemState.InEmployee;
+                    }
+                    else
+                    {
+                        item.State = ItemState.Other;
+                    }
                 }
-                else if (item.WarehouseId == null && item.UserId != null)
-                {
-                    item.State = ItemState.InEmployee;
-                }
-                else
-                {
-                    item.State = ItemState.Other;
-                }
-
+                
                 SendInfo(item);
             }
             else
@@ -675,33 +673,15 @@ namespace DotNetWMS.Controllers
                     return null;
                 }
 
-                //ItemQuantity = item.Quantity;
-
-                switch (method)
+                if (method == "Assign_to_employee_confirm")
                 {
-                    case "Assign_to_employee_confirm":
-                        //s
-                        //ItemEmployeeId = item.UserId;
-                        if (item.ExternalId != null)
-                        {
-                            var ext = await _context.Externals.FindAsync(item.ExternalId);
-                            ModelState.AddModelError(string.Empty, $"Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
-                        }
-                        break;
-                    case "Assign_to_warehouse_confirm":
-                        //s
-                        //ItemWarehouseId = item.WarehouseId;
-                        break;
-                    case "Assign_to_external_confirm":
-                        //s
-                        //ItemExternalId = item.ExternalId;
-                        break;
-
-                    default:
-                        break;
+                    if (item.ExternalId != null)
+                    {
+                        var ext = await _context.Externals.FindAsync(item.ExternalId);
+                        ModelState.AddModelError(string.Empty, $"Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
+                    }
                 }
 
-                
                 ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
                 ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
                 ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
@@ -796,13 +776,13 @@ namespace DotNetWMS.Controllers
                             WarehouseId = item.WarehouseId,
                             ExternalId = item.ExternalId
                         };
-                        
+
                         _context.Add(newItem);
                         _context.Update(item);
                         MergeSameItems(item, typeof(WMSIdentityUser));
                         ItemStatusCheck(item, itemOld.ExternalId);
-                        //SendInfo(item, ItemState.InEmployee);
                         await _context.SaveChangesAsync();
+                        await UpdateItemCode(item);
                         return RedirectToAction("Assign_to_employee");
 
                     }
@@ -836,6 +816,7 @@ namespace DotNetWMS.Controllers
                         MergeSameItems(item, typeof(Warehouse));
                         ItemStatusCheck(item, itemOld.ExternalId);
                         await _context.SaveChangesAsync();
+                        await UpdateItemCode(item);
                         return RedirectToAction("Assign_to_warehouse");
 
                     }
@@ -869,6 +850,7 @@ namespace DotNetWMS.Controllers
                         MergeSameItems(item, typeof(External));
                         ItemStatusCheck(item, itemOld.ExternalId);
                         await _context.SaveChangesAsync();
+                        await UpdateItemCode(item);
                         return RedirectToAction("Assign_to_external");
 
                     }
@@ -912,6 +894,7 @@ namespace DotNetWMS.Controllers
                             MergeSameItems(item, typeof(WMSIdentityUser));
                             ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
+                            await UpdateItemCode(item);
                         }
 
                     }
@@ -939,6 +922,7 @@ namespace DotNetWMS.Controllers
                             MergeSameItems(item, typeof(Warehouse));
                             ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
+                            await UpdateItemCode(item);
                         }
 
                     }
@@ -966,6 +950,7 @@ namespace DotNetWMS.Controllers
                             MergeSameItems(item, typeof(External));
                             ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
+                            await UpdateItemCode(item);
                         }
 
                     }
@@ -1009,9 +994,6 @@ namespace DotNetWMS.Controllers
 
                 case ItemState.New:
 
-                    //var ext = _context.Externals.Find(ItemExternalId);
-                    //string extName = ext != null ? ext.Name : "której nazwy nie podano";
-
                     info.Title = "Otrzymałeś zamówiony przedmiot";
                     info.Message = $"Otrzymałeś zamówienie \"{item.Name}\" w ilości {item.Quantity} {item.Units} od firmy {externalOldName}";
                     info.ReceivedDate = receivedDate;
@@ -1020,7 +1002,7 @@ namespace DotNetWMS.Controllers
 
                 case ItemState.Damaged:
 
-                    info.Title = "Oznaczyłeś przedmiot jako uszkodzony";
+                    info.Title = "Przedmiot uszkodzony";
                     info.Message = $"Przedmiot \"{item.Name}\" w ilości {item.Quantity} {item.Units} został oznaczony jako uszkodzony";
                     info.ReceivedDate = receivedDate;
                     info.UserId = string.IsNullOrEmpty(item.UserId) ? loggedUserId : item.UserId;
@@ -1100,6 +1082,12 @@ namespace DotNetWMS.Controllers
                 _context.Infoboxes.Add(info);
             }
 
+        }
+        private async Task UpdateItemCode(Item item)
+        {
+            item.ItemCode = ItemCodeGenerator.Generate(item, User?.Identity?.Name);
+            _context.Update(item);
+            await _context.SaveChangesAsync();
         }
     }
 }
