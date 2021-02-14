@@ -24,12 +24,13 @@
                 <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name)</li>
                 <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name)</li>
 
-                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
+                <li class="list-group-item font-weight-bold">@*@Html.DisplayNameFor(model => model.Street)*@Adres</li>
                 <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
             </ul>
         </div>
         <div class="col-md-6">
-            <div id="map" style="height: 400px;"></div>
+            <input type="hidden" id="addressDetails" value="@TempData["Adress"]"/>
+            <div id="map"  style="height: 400px;"></div>
         </div>
     </div>
 </div>
