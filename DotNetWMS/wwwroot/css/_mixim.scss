@@ -1,0 +1,26 @@
+﻿@mixin pos-fixed($top: null, $bottom: null, $left: null, $right: null) {
+	position: fixed;
+
+	@if($top) {
+		top: $top;
+	}
+
+	@if($bottom) {
+		bottom: $bottom;
+	}
+
+	@if($left) {
+		left: $left;
+	}
+
+	@if($right) {
+		right: $right;
+	}
+}
+
+@mixin label($weight: null, $size: null, $margin-top: null, $margin-bottom: null) {
+	font-weight: $weight;
+	font-size: $size;
+	margin-bottom: $margin-bottom;
+	margin-top: $margin-top;
+}
