@@ -161,7 +161,7 @@
                         <a asp-controller="Warehouses" asp-action="Index" data-id="Warehouses" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Przegląd magazynów</a>
                         @if (User.IsInAnyRoles("StandardPlus,Moderator"))
                         {
-                            <a asp-controller="Warehouses" asp-action="Stocktaking" data-id="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
+                            <a asp-controller="Warehouses" asp-action="StocktakingIndex" data-id="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
                         }
                     </div>
 
