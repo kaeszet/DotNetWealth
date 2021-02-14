@@ -12,19 +12,18 @@ $(document).ready(function ()
     });
 
     //Active nav list
-    if ($('.sidebar').length > 0)
-    {
+    if ($('.sidebar').length > 0) {
 
         $('.sidebar .list-group-item').each(function () {
 
             if ($(this).attr('href') == location.pathname) {
-                localStorage.setItem('active', $(this).data('id'))
 
+                localStorage.setItem('active', $(this).data('id'))
                 $(this).addClass('active');
             }
 
-            if ($(this).data('id') == localStorage.getItem('active'))
-            {
+            if ($(this).data('id') == localStorage.getItem('active')) {
+
                 $('.sidebar .list-group-item.active').removeClass('active');
                 $(this).addClass('active');
             }
@@ -56,18 +55,24 @@ $(document).ready(function ()
     }
 
     if ($('#stocktaking').length > 0) {
-        $('#stocktaking').on('click', function () {
 
-            $keyWord = $('#selectList').val();
-            $('#divPartial').load('/Warehouses/Stocktaking', { warehouseFullName: $keyWord });
+        $('#stocktaking').click(function () {
+            var keyWord = $('#selectList').val();
+            $('#divPartial').load(url, { warehouseFullName: keyWord });
         })
     }
 
-    if ($("#cookieConsent").length > 0)
-    {
+    if ($("#cookieConsent").length > 0){
         $("#cookieConsent").find('button.close').on("click", function (ev) {
             document.cookie = $(this).data('cookie-string');
         });
+    }
+
+    if ($('#print').length > 0) {
+
+        $('#print').on('click', function () {
+            $(this).printData();
+        })
     }
 
 
@@ -126,6 +131,24 @@ $(document).ready(function ()
             }
         }
     };
+
+    $.fn.printData = function () {
+
+        var contentToPrint = $('#' + $(this).data('content'));
+        var newWin = window.open('', 'Print-Window');
+
+        newWin.document.open();
+        newWin.document.write(
+            `<html><head>
+            <link rel="stylesheet" href="/css/style.css" />
+            <link rel="stylesheet" href="/lib/font-awesome/css/all.css" /></head>
+            <body onload="window.print()">` + contentToPrint.html() + `</body>
+            </html>`
+        );
+        newWin.document.close();
+
+        setTimeout(function () { newWin.close(); }, 10);
+    }
 
 })(jQuery);
 
