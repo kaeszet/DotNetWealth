@@ -83,6 +83,7 @@ $(document).ready(function ()
             {
                 clearMarker(null);
                 $allMarkers = [];
+
                 let street = [];
 
                 const componentForm = {
@@ -101,19 +102,18 @@ $(document).ready(function ()
                         const val = component[componentForm[addressType]];
 
                         if ($('#' + addressType).length > 0) $('#' + addressType).val(val);
-                        if (addressType == 'street_number' || addressType == 'route')
-                        {
-                            street[addressType] = val;
-                        }
+                        if (addressType == 'street_number' || addressType == 'route') street[addressType] = val;
                     }
                 }
                 $('#address').val(street['route'] + ' ' + street['street_number']);
 
                 $map.setCenter(results[0].geometry.location);
+
                 let marker = new google.maps.Marker({
                     map: $map,
                     position: results[0].geometry.location,
                 });
+
                 $allMarkers.push(marker)
 
             } else alert("Wystąpił błąd usługi Geocode z powodu: " + status);
@@ -129,6 +129,8 @@ $(document).ready(function ()
 
 })(jQuery);
 
+
+// Google Maps
 function initMap()
 {
     $allMarkers = [];

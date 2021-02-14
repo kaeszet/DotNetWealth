@@ -69,7 +69,7 @@
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label asp-for="WarehouseId" class="control-label"></label>
-                <select asp-for="WarehouseId" class="form-control" data-title="Brak" asp-items="ViewBag.WarehouseId"><option value="" selected>Brak</option></select>
+                <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.WarehouseId"><option value="" selected>Brak</option></select>
                 <span asp-validation-for="WarehouseId" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="UserId" />
