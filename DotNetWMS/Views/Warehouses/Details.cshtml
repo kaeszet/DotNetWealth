@@ -18,14 +18,22 @@
 <div class="mb-3">
     <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
 
-    <ul class="list-group list-group-flush mt-2">
-        <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name)</li>
-        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name)</li>
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush mt-2">
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name)</li>
 
-        <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
-        <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
-    </ul>
-
-<div>
-    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <div id="map" style="height: 400px;"></div>
+        </div>
+    </div>
 </div>
+
+@*<div>
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
+</div>*@

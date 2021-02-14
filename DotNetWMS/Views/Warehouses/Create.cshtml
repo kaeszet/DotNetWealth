@@ -26,18 +26,23 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="Street" class="control-label"></label>
-                <input asp-for="Street" class="form-control" />
+                <input asp-for="Street" id="address" class="form-control" />
                 <span asp-validation-for="Street" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
                 <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
+                <input asp-for="City" id="locality" class="form-control" />
                 <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="form-group col-md-2">
                 <label asp-for="ZipCode" class="control-label"></label>
-                <input asp-for="ZipCode" class="form-control" />
+                <input asp-for="ZipCode" id="postal_code" class="form-control" />
                 <span asp-validation-for="ZipCode" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <div id="map" style="height:300px; width:100%"></div>
             </div>
         </div>
 
