@@ -44,7 +44,7 @@
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="EmployeesNEW" asp-action="Index">Pracownicy</a>
+                                        <a class="nav-link" data-id="Employees" asp-controller="EmployeesNEW" asp-action="Index">Pracownicy</a>
                                     </li>
                                 }
 
@@ -52,17 +52,17 @@
                                 @if (signInManager.IsSignedIn(User))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Items" asp-action="Index">Majątek</a>
+                                        <a class="nav-link" data-id="Items" asp-controller="Items" asp-action="Index">Majątek</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Warehouses" asp-action="Index">Magazyny</a>
+                                        <a class="nav-link" data-id="Warehouses" asp-controller="Warehouses" asp-action="Index">Magazyny</a>
                                     </li>
                                 }
 
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
+                                        <a class="nav-link" data-id="Externals" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
                                     </li>
                                 }
 
@@ -196,11 +196,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
-    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAtidXOuBUaTkyMaSg_9IaxYNCilM6Q6s&callback=initMap"></script>
-    @*key=AIzaSyCAtidXOuBUaTkyMaSg_9IaxYNCilM6Q6s&*@
     @RenderSection("Scripts", required: false)
 </div>
 </body>

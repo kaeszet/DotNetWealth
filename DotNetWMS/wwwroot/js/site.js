@@ -19,16 +19,15 @@ $(document).ready(function ()
 
             if ($(this).attr('href') == location.pathname) {
                 localStorage.setItem('active', $(this).data('id'))
+
+                $(this).addClass('active');
             }
 
             if ($(this).data('id') == localStorage.getItem('active'))
             {
+                $('.sidebar .list-group-item.active').removeClass('active');
                 $(this).addClass('active');
             }
-
-            $(this).on('click', function () {
-                localStorage.setItem('active', $(this).data('id'))
-            })
         })
     }
 
@@ -77,8 +76,8 @@ $(document).ready(function ()
 (function ($)
 {
     //geocoder function
-    $.fn.geocodeAddress = function (value) {
-        $geocoder.geocode({ address: value }, (results, status) => {
+    $.fn.geocodeAddress = function () {
+        $geocoder.geocode({ address: $(this).val() }, (results, status) => {
 
             if (status === "OK")
             {
@@ -134,9 +133,10 @@ function initMap()
 {
     $allMarkers = [];
 
-    // Current location
+    // my current location
     if (navigator.geolocation)
     {
+        // my coordinates on the map
         navigator.geolocation.getCurrentPosition(function (pos) {
 
             $myLocation = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
