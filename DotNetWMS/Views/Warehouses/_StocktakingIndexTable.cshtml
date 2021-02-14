@@ -90,6 +90,7 @@
                         <input type="hidden" asp-for="@Model[i].ItemName" />
                         <input type="hidden" asp-for="@Model[i].ItemCode" />
                         <input type="hidden" asp-for="@Model[i].ItemQuantity" />
+                        <input type="hidden" asp-for="@Model[i].ItemUnit" />
                     </td>
                 </tr>
             }
@@ -107,6 +108,10 @@
     }
 
 </form>
+@*@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/CustomValidation.js"></script>
+}
 <script>
     function checkboxChange(obj) {
         var checkboxes = obj.closest('tr').getElementsByClassName("form-control-input");
@@ -115,5 +120,5 @@
         }
         obj.checked = true;
     }
-</script>
+</script>*@
 
