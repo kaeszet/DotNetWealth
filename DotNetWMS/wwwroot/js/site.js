@@ -8,7 +8,8 @@ $(document).ready(function ()
     //bootstrap-select
     $('select').selectpicker({
         style: 'btn-form',
-        styleBase: 'form-control'
+        styleBase: 'form-control',
+        size: 10,
     });
 
     //Active nav list
@@ -80,37 +81,57 @@ $(document).ready(function ()
 
 (function ($)
 {
+
     //geocoder function
-    $.fn.geocodeAddress = function () {
+    $.fn.geocodeAddress = function (type) {
+
         $geocoder.geocode({ address: $(this).val() }, (results, status) => {
+            if (status === "OK") {
 
-            if (status === "OK")
-            {
-                clearMarker(null);
-                $allMarkers = [];
+                if (type == 'find') {
 
-                let street = [];
+                    clearMarker(null);
+                    $allMarkers = [];
 
-                const componentForm = {
-                    street_number: "short_name",
-                    route: "long_name",
-                    locality: "long_name",
-                    administrative_area_level_1: "short_name",
-                    country: "long_name",
-                    postal_code: "short_name",
-                };
+                    let street = [];
 
-                for (const component of results[0].address_components) {
-                    const addressType = component.types[0];
+                    const componentForm = {
+                        street_number: "short_name",
+                        route: "long_name",
+                        locality: "long_name",
+                        administrative_area_level_1: "short_name",
+                        country: "long_name",
+                        postal_code: "short_name",
+                        premise: "short_name",
+                    };
+                    for (const component of results[0].address_components) {
+                        const addressType = component.types[0];
 
-                    if (componentForm[addressType]) {
-                        const val = component[componentForm[addressType]];
+                        if (componentForm[addressType]) {
+                            const val = component[componentForm[addressType]];
+                            
+                            if ($('#' + addressType).length > 0) $('#' + addressType).val(val);
+                            if (addressType == 'street_number' ||
+                                addressType == 'route' ||
+                                addressType == 'premise' ||
+                                addressType == 'locality') street[addressType] = val;
+                        }
+                    }
+                    if (Number.isInteger( Number(street['premise']) )) {
+                        $('#address').val(street['locality'] + ' ' + street['premise']);
 
-                        if ($('#' + addressType).length > 0) $('#' + addressType).val(val);
-                        if (addressType == 'street_number' || addressType == 'route') street[addressType] = val;
+                    } else {
+                        $('#address').val(street['route'] + ' ' + street['street_number']);
                     }
                 }
-                $('#address').val(street['route'] + ' ' + street['street_number']);
+
+                $props = {
+                    center: results[0].geometry.location,
+                    zoom: 14,
+                    gestureHandling: 'cooperative'
+                };
+
+                $map = new google.maps.Map($('#map')[0], $props);
 
                 $map.setCenter(results[0].geometry.location);
 
@@ -119,10 +140,11 @@ $(document).ready(function ()
                     position: results[0].geometry.location,
                 });
 
-                $allMarkers.push(marker)
+                $allMarkers.push(marker);
 
             } else alert("Wystąpił błąd usługi Geocode z powodu: " + status);
         });
+
 
         function clearMarker(val)
         {
@@ -156,50 +178,61 @@ $(document).ready(function ()
 // Google Maps
 function initMap()
 {
-    $allMarkers = [];
-
-    // my current location
-    if (navigator.geolocation)
-    {
-        // my coordinates on the map
-        navigator.geolocation.getCurrentPosition(function (pos) {
-
-            $myLocation = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-
-            $props = {
-                center: $myLocation,
-                zoom: 12,
-                gestureHandling: 'cooperative'
-            };
-
-            $map = new google.maps.Map($('#map')[0], $props);
-            let marker = new google.maps.Marker({
-                map: $map,
-                position: $myLocation
-            });
-
-            $allMarkers.push(marker);
-
-        }, function (error) {
-
-            console.log(error)
-
-        });
-    }
-    else alert("Geolokalizacja nie jest obsługiwana przez twoją przeglądarkę.");
-
     // Geocoder
     $geocoder = new google.maps.Geocoder();
+
+    $allMarkers = [];
+
+    if ($('#addressDetails').length > 0 && $('#addressDetails').val()) {
+
+        $('#addressDetails').geocodeAddress();
+    }
+    else if ($('#address').length > 0 && !$('#address').val()) {
+
+        // my current location
+        if (navigator.geolocation) {
+            // my coordinates on the map
+            navigator.geolocation.getCurrentPosition(function (pos) {
+
+                $myLocation = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+
+                $props = {
+                    center: $myLocation,
+                    zoom: 14,
+                    gestureHandling: 'cooperative'
+                };
+
+                $map = new google.maps.Map($('#map')[0], $props);
+                let marker = new google.maps.Marker({
+                    map: $map,
+                    position: $myLocation
+                });
+
+                $allMarkers.push(marker);
+
+            }, function (error) {
+
+                console.log(error)
+
+            });
+        }
+        else alert("Geolokalizacja nie jest obsługiwana przez twoją przeglądarkę.");
+    }
+    else {
+        $('#address').geocodeAddress('find');
+    }
 
     if ($('#address').length > 0)
     {
         $('#address').on('change autocompletechange', function (ev) {
 
-            $(this).geocodeAddress($(this).val());
+            $(this).geocodeAddress('find');
         })
 
         $('#address').on('keypress', function (ev) {
+
             if (ev.which == 13) {
+
                 ev.preventDefault();
                 $('#address').blur();
             }
