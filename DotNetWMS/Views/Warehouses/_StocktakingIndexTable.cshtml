@@ -42,45 +42,35 @@
             @for (int i = 0; i < Model.Count; i++)
             {
                 <tr>
+                    <td>@Model[i].ItemType</td>
+                    <td>@Model[i].ItemModel</td>
+                    <td>@Model[i].ItemName</td>
+                    <td>@Model[i].ItemCode</td>
+                    <td>@Model[i].ItemQuantity</td>
                     <td>
-                        @Model[i].ItemType
-                    </td>
-                    <td>
-                        @Model[i].ItemModel
-                    </td>
-                    <td>
-                        @Model[i].ItemName
-                    </td>
-                    <td>
-                        @Model[i].ItemCode
-                    </td>
-                    <td>
-                        @Model[i].ItemQuantity
-                    </td>
-                    <td>
-                        <div class="form-check form-check-inline">
-                            <input class="form-control-input" type="checkbox" id="inlineCheckbox2" value="option2" onchange="checkboxChange(this)">
-                            <label class="form-control-label" for="inlineCheckbox2"><i class="fas fa-check-circle"></i></label>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="ok_@i" value="1" class="custom-control-input" onchange="checkboxChange(this)">
+                            <label class="custom-control-label" for="ok_@i"></label>
                         </div>
                     </td>
                     <td>
-                        <div class="form-check form-check-inline">
-                            <input asp-for="@Model[i].ToCorrect" class="form-control-input" type="checkbox" onchange="checkboxChange(this)">
-                            <label asp-for="@Model[i].ToCorrect" class="form-control-label"><i class="fas fa-quidditch"></i></label>
+                        <div class="custom-control custom-checkbox">
+                            <input asp-for="@Model[i].ToCorrect" class="custom-control-input" type="checkbox" onchange="checkboxChange(this)">
+                            <label asp-for="@Model[i].ToCorrect" class="custom-control-label"></label>
                             <span asp-validation-for="@Model[i].ToCorrect" class="text-danger small font-weight-bold"></span>
                         </div>
                     </td>
                     <td>
-                        <div class="form-check form-check-inline">
-                            <input asp-for="@Model[i].ToDelete" class="form-control-input" type="checkbox" onchange="checkboxChange(this)">
-                            <label asp-for="@Model[i].ToDelete" class="form-control-label"><i class="far fa-times-circle"></i></label>
+                        <div class="custom-control custom-checkbox">
+                            <input asp-for="@Model[i].ToDelete" class="custom-control-input" type="checkbox" onchange="checkboxChange(this)">
+                            <label asp-for="@Model[i].ToDelete" class="custom-control-label"></label>
                             <span asp-validation-for="@Model[i].ToDelete" class="text-danger small font-weight-bold"></span>
                         </div>
                     </td>
                     <td>
-                        <div class="form-check form-check-inline">
-                            <input asp-for="@Model[i].IsDamaged" class="form-control-input" type="checkbox" onchange="checkboxChange(this)">
-                            <label asp-for="@Model[i].IsDamaged" class="form-control-label"><i class="far fa-sad-tear fa-2x"></i></label>
+                        <div class="custom-control custom-checkbox">
+                            <input asp-for="@Model[i].IsDamaged" class="custom-control-input" type="checkbox" onchange="checkboxChange(this)">
+                            <label asp-for="@Model[i].IsDamaged" class="custom-control-label"></label>
                             <span asp-validation-for="@Model[i].IsDamaged" class="text-danger small font-weight-bold"></span>
                         </div>
                     </td>
@@ -114,7 +104,7 @@
 }
 <script>
     function checkboxChange(obj) {
-        var checkboxes = obj.closest('tr').getElementsByClassName("form-control-input");
+        var checkboxes = obj.closest('tr').getElementsByClassName("custom-control-input");
         for (var i = 0; i < checkboxes.length; i++) {
             checkboxes[i].checked = false;
         }

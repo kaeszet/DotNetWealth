@@ -43,7 +43,7 @@
         const url = '@Url.Action("StocktakingIndex", "Warehouses")';
 
         function checkboxChange(obj) {
-            var checkboxes = obj.closest('tr').getElementsByClassName("form-control-input");
+            var checkboxes = obj.closest('tr').getElementsByClassName("custom-control-input");
             for (var i = 0; i < checkboxes.length; i++) {
                 checkboxes[i].checked = false;
             }
