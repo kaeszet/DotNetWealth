@@ -24,3 +24,7 @@
 	margin-bottom: $margin-bottom;
 	margin-top: $margin-top;
 }
+
+@mixin rounded($size){
+	border-radius: $size + rem;
+}

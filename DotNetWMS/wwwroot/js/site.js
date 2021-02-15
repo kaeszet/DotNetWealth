@@ -85,8 +85,10 @@ $(document).ready(function ()
     //geocoder function
     $.fn.geocodeAddress = function (type) {
 
-        $geocoder.geocode({ address: $(this).val() }, (results, status) => {
+        let _this = $(this);
+        $geocoder.geocode({ address: _this.val() }, (results, status) => {
             if (status === "OK") {
+                let place = results[0];
 
                 if (type == 'find') {
 
@@ -94,6 +96,11 @@ $(document).ready(function ()
                     $allMarkers = [];
 
                     let street = [];
+
+                    _this.val(place.formatted_address);
+
+                    $('#lat').val(place.geometry.location.lat())
+                    $('#lng').val(place.geometry.location.lng())
 
                     const componentForm = {
                         street_number: "short_name",
@@ -104,13 +111,14 @@ $(document).ready(function ()
                         postal_code: "short_name",
                         premise: "short_name",
                     };
-                    for (const component of results[0].address_components) {
+                    for (const component of place.address_components) {
                         const addressType = component.types[0];
 
                         if (componentForm[addressType]) {
                             const val = component[componentForm[addressType]];
                             
                             if ($('#' + addressType).length > 0) $('#' + addressType).val(val);
+
                             if (addressType == 'street_number' ||
                                 addressType == 'route' ||
                                 addressType == 'premise' ||
@@ -118,26 +126,29 @@ $(document).ready(function ()
                         }
                     }
                     if (Number.isInteger( Number(street['premise']) )) {
-                        $('#address').val(street['locality'] + ' ' + street['premise']);
+                        $('#street').val(street['locality'] + ' ' + street['premise']);
 
                     } else {
-                        $('#address').val(street['route'] + ' ' + street['street_number']);
+                        if (typeof street['street_number'] != "undefined") $('#street').val(street['route'] + ' ' + street['street_number']);
+                        else $('#street').val(street['route']);
+                        
                     }
+                    console.log(street)
                 }
 
                 $props = {
-                    center: results[0].geometry.location,
+                    center: place.geometry.location,
                     zoom: 14,
                     gestureHandling: 'cooperative'
                 };
 
                 $map = new google.maps.Map($('#map')[0], $props);
 
-                $map.setCenter(results[0].geometry.location);
+                $map.setCenter(place.geometry.location);
 
                 let marker = new google.maps.Marker({
                     map: $map,
-                    position: results[0].geometry.location,
+                    position: place.geometry.location,
                 });
 
                 $allMarkers.push(marker);
@@ -164,7 +175,10 @@ $(document).ready(function ()
             `<html><head>
             <link rel="stylesheet" href="/css/style.css" />
             <link rel="stylesheet" href="/lib/font-awesome/css/all.css" /></head>
-            <body onload="window.print()">` + contentToPrint.html() + `</body>
+            <body onload="window.print()">
+            <h4>Inwentaryzacja</h4>`
+            + contentToPrint.html() + 
+            `</body>
             </html>`
         );
         newWin.document.close();
@@ -180,6 +194,14 @@ function initMap()
 {
     // Geocoder
     $geocoder = new google.maps.Geocoder();
+
+    //option for Autocomplete
+    let option = {
+        types: ["geocode"],
+        componentRestrictions: { country: 'pl' }
+    };
+    //Autocomplete
+    $autocomplete = new google.maps.places.Autocomplete($('#address')[0], option);
 
     $allMarkers = [];
 
@@ -219,7 +241,7 @@ function initMap()
         else alert("Geolokalizacja nie jest obsługiwana przez twoją przeglądarkę.");
     }
     else {
-        $('#address').geocodeAddress('find');
+        $('#address').geocodeAddress('find', $(''));
     }
 
     if ($('#address').length > 0)

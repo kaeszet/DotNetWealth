@@ -4,7 +4,7 @@
 
 /* ----- Main tags ----- */
 body {
-	font-family: 'Nunito', sans-serif;
+	font-family: $font-primary;
 }
 
 header {
@@ -172,4 +172,31 @@ header {
 			padding-right: 10px;
 		}
 	}
+}
+
+
+//Google autocomplete
+.pac-container {
+	@include rounded(0.25);
+	font-family: $font-primary;
+
+	.pac-item {
+		padding: 5px 10px;
+		cursor: pointer;
+		font-size: 13px;
+
+		.pac-item-query {
+			font-size: 15px;
+		}
+	}
+}
+.pac-logo {
+	&:after {
+		height: 40px;
+		background-size: auto 18px;
+		background-position: center;
+	}
+}
+.pac-matched {
+	color: $blue-700;
 }
