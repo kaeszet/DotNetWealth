@@ -13,9 +13,9 @@ namespace DotNetWMS.Models
     /// </summary>
     public class WMSIdentityUser : IdentityUser
     {
-/// <summary>
-/// Employee's name
-/// </summary>
+        /// <summary>
+        /// Employee's name
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Imię")]
         [StringLength(30)]
@@ -60,5 +60,7 @@ namespace DotNetWMS.Models
         public IList<Item> Items { get; set; }
         public IList<Infobox> Messages { get; set; }
         public string FullName => $"{Surname} {Name}";
+        public string[] FullNameForDocumentationView => new string[] { $"{Surname} {Name}", $"{EmployeeNumber}", $"{Street}", $"{ZipCode} {City}" };
+        public string FullNameForDocumentation => $"{Surname} {Name}{Environment.NewLine}{EmployeeNumber}{Environment.NewLine}{Street}{Environment.NewLine}{ZipCode} {City}";
     }
 }
