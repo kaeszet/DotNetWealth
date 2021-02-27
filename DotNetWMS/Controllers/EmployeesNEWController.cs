@@ -40,16 +40,11 @@ namespace DotNetWMS.Controllers
                 users = users.Where(e => e.Surname.Contains(search) || e.Name.Contains(search) || e.EmployeeNumber.Contains(search));
             }
 
-            switch (order)
+            users = order switch
             {
-                case "name_desc":
-                    users = users.OrderByDescending(e => e.Surname).Include(e => e.Department);
-                    break;
-                default:
-                    users = users.OrderBy(e => e.Surname).Include(e => e.Department);
-                    break;
-            }
-
+                "name_desc" => users.OrderByDescending(e => e.Surname).Include(e => e.Department),
+                _ => users.OrderBy(e => e.Surname).Include(e => e.Department),
+            };
             return View(await users.AsNoTracking().ToListAsync());
         }
 
@@ -72,6 +67,7 @@ namespace DotNetWMS.Controllers
             }
 
             ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
 
             return View(user);
         }
@@ -123,6 +119,8 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
+
             return View(user);
         }
         /// <summary>
@@ -182,6 +180,8 @@ namespace DotNetWMS.Controllers
                 }
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
+
             return View(user);
         }
         /// <summary>

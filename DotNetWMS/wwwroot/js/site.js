@@ -4,7 +4,7 @@
 
 // Write your JavaScript code.
 
-$(document).ready(function ()
+$(function ()
 {
     //bootstrap-select
     $('select').selectpicker({
@@ -71,8 +71,6 @@ $(document).ready(function ()
             $(this).printData();
         })
     }
-
-
 });
 
 (function ($)
@@ -164,8 +162,13 @@ $(document).ready(function ()
 
     $.fn.printData = function () {
 
-        var contentToPrint = $('#' + $(this).data('content'));
-        var newWin = window.open('', 'Print-Window');
+        let ToPrint = $('#' + $(this).data('content'));
+        let newWin = window.open('', 'Print-Window');
+
+        $('body').append('<div id="contentToPrint" style="display: none;"></div>');
+        let newContent = $('#contentToPrint');
+        newContent.append(ToPrint.html())
+        newContent.find('[data-hidden=true]').remove();
 
         newWin.document.open();
         newWin.document.write(
@@ -174,11 +177,12 @@ $(document).ready(function ()
             <link rel="stylesheet" href="/lib/font-awesome/css/all.css" /></head>
             <body onload="window.print()">
             <h4>Inwentaryzacja</h4>`
-            + contentToPrint.html() + 
+            + newContent.html() + 
             `</body>
             </html>`
         );
         newWin.document.close();
+        newContent.remove();
 
         setTimeout(function () { newWin.close(); }, 10);
     }
@@ -273,9 +277,23 @@ $(document).ready(function ()
 
 })(jQuery);
 
+//Stocktasking table
+function checkboxChange(obj) {
+
+    var checkboxes = $(obj).closest('tr').find("input:checkbox");
+    checkboxes.each(function () {
+        if ($(this).attr('id') != $(obj).attr('id')) {
+            $(this).prop('checked', false);
+            $(this).attr('checked', false);
+        }
+        else {
+            $(this).attr('checked', true);
+        }
+    })
+}
+
 // Google Maps
-function initMap()
-{
+function initMap() {
     let a = $('#address');
     // Geocoder
     $geocoder = new google.maps.Geocoder();
@@ -327,8 +345,7 @@ function initMap()
         else alert("Geolokalizacja nie jest obsługiwana przez twoją przeglądarkę.");
     }
 
-    if (a.length > 0 && a.attr('type') == 'search')
-    {
+    if (a.length > 0 && a.attr('type') == 'search') {
         a.on('change autocompletechange', function (ev) {
 
             $(this).geocodeAddress();

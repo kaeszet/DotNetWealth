@@ -9,7 +9,7 @@ namespace DotNetWMS.Resources
     public static class GoogleMapsGenerator
     {
         public static string PrepareAdressToGeoCode(Warehouse warehouse) => $"{warehouse.Street}, {warehouse.ZipCode} {warehouse.City}";
-
         public static string PrepareAdressToGeoCodeExternal(External external) => $"{external.Street}, {external.ZipCode} {external.City}";
+        public static string PrepareAdressToGeoCodeEmployee(WMSIdentityUser user) => $"{user.Street}, {user.ZipCode} {user.City}";
     }
 }

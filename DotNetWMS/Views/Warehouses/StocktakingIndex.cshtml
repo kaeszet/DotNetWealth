@@ -40,15 +40,7 @@
     <script src="~/js/CustomValidation.js"></script>
 
     <script>
-        const url = '@Url.Action("StocktakingIndex", "Warehouses")';
-
-        function checkboxChange(obj) {
-            var checkboxes = obj.closest('tr').getElementsByClassName("custom-control-input");
-            for (var i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = false;
-            }
-            obj.checked = true;
-        }
+		const url = '@Url.Action("StocktakingIndex", "Warehouses")';
     </script>
 
 }

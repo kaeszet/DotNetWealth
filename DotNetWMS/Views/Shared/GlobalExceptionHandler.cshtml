@@ -5,25 +5,27 @@
 @if (@ViewBag.ExceptionMessage == null)
 {
     <h3>Wystąpił nieoczekiwany błąd!</h3>
-    <h5>@ViewBag.ContactEmail</h5>
+    <h4>@ViewBag.ContactEmail</h4>
     <hr />
     <h3>Szczegóły błędu:</h3>
-    <div class="alert alert-info">
-        <h5>Błąd pod adresem:</h5>
+
+    <div class="alert alert-danger">
+        <h4 class="alert-heading font-weight-bold">Błąd pod adresem:</h4>
         <p>@ViewBag.ExceptionPath</p>
     </div>
 
-    <div class="alert alert-info">
-        <h5>Komunikat z błędem:</h5>
+    <div class="alert alert-danger">
+        <h4 class="alert-heading font-weight-bold">Komunikat z błędem:</h4>
         <p>@ViewBag.ExceptionTitle</p>
         <p>@ViewBag.ExceptionMessage</p>
     </div>
 }
 else
 {
-<div class="alert alert-info">
-    <h5>@ViewBag.ExceptionTitle</h5>
+<div class="alert alert-primary" role="alert">
+    <h4 class="alert-heading font-weight-bold">@ViewBag.ExceptionTitle</h4>
     <p>@ViewBag.ExceptionMessage</p>
+    <hr>
     <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Wróć do strony głównej</a>
 </div>
 }
