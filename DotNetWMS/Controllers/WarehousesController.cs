@@ -118,8 +118,8 @@ namespace DotNetWMS.Controllers
                 _logger.LogDebug($"DEBUG: Magazyn {warehouse} nie istnieje!");
                 return NotFound();
             }
-            GoogleMapsGenerator gmg = new GoogleMapsGenerator();
-            TempData["Adress"] = gmg.PrepareAdressToGeoCode(warehouse);
+            
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCode(warehouse);
             _logger.LogDebug($"DEBUG: Pomyślnie zwrócono widok szczegółów!");
             return View(warehouse);
         }
