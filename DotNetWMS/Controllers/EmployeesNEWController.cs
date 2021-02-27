@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DotNetWMS.Resources;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
@@ -20,16 +21,19 @@ namespace DotNetWMS.Controllers
         private readonly DotNetWMSContext _context;
         private readonly UserManager<WMSIdentityUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<EmployeesNEWController> _logger;
 
-        public EmployeesNEWController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
+        public EmployeesNEWController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor, ILogger<EmployeesNEWController> logger)
         {
             _context = context;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(string order, string search)
         {
+            
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
             ViewData["Search"] = search;
 
@@ -49,7 +53,7 @@ namespace DotNetWMS.Controllers
                     users = users.OrderBy(e => e.Surname).Include(e => e.Department);
                     break;
             }
-
+            _logger.LogInformation("INFO: Użytkownik wyświetlił listę pracowników!");
             return View(await users.AsNoTracking().ToListAsync());
         }
 
@@ -59,6 +63,7 @@ namespace DotNetWMS.Controllers
 
             if (string.IsNullOrEmpty(id))
             {
+                _logger.LogDebug($"DEBUG: Pracownik o podanym id = {id} nie istnieje!");
                 return NotFound();
             }
 
@@ -68,17 +73,18 @@ namespace DotNetWMS.Controllers
 
             if (user == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}!");
                 return NotFound();
             }
 
             ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
-
+            _logger.LogInformation($"INFO: Użytkownik wyświetlił dane pracownika o id = {id}!");
             return View(user);
         }
         
         public IActionResult Create()
         {
-
+            _logger.LogInformation("INFO: Użytkownik wyświetlił kreator dodawania nowego pracownika!");
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
 
             return View();
@@ -101,6 +107,7 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
+                    _logger.LogError($"Pracownik {user.FullName} został już wprowadzony do systemu!");
                     ModelState.AddModelError(string.Empty, $"Pracownik {user.FullName} został już wprowadzony do systemu!");
                 }
 
@@ -120,6 +127,7 @@ namespace DotNetWMS.Controllers
 
             if (user == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}!");
                 return NotFound();
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
@@ -138,6 +146,7 @@ namespace DotNetWMS.Controllers
 
             if (_user == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {user.Id}!");
                 return NotFound();
             }
 
@@ -178,6 +187,7 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
+                    _logger.LogError($"Pracownik {user.FullName} został już wprowadzony do systemu!");
                     ModelState.AddModelError(string.Empty, $"Pracownik {user.FullName} został już wprowadzony do systemu!");
                 }
             }
@@ -193,6 +203,7 @@ namespace DotNetWMS.Controllers
         {
             if (string.IsNullOrEmpty(id))
             {
+                _logger.LogDebug($"DEBUG: Pracownik o podanym id = {id} nie istnieje!");
                 return NotFound();
             }
 
@@ -201,6 +212,7 @@ namespace DotNetWMS.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {user.Id}!");
                 return NotFound();
             }
 
@@ -213,7 +225,7 @@ namespace DotNetWMS.Controllers
         /// <returns>Returns WMSIdentityUser's Index view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await _context.Users.FindAsync(id);
             try
@@ -228,6 +240,7 @@ namespace DotNetWMS.Controllers
                 ViewBag.ErrorMessage = $"Istnieje przedmiot przypisany do tego pracownika.<br>" +
                     $"Przed usunięciem pracownika upewnij się, że zdał wszystkie przedmioty.<br>" +
                     $"Odznacz je w dziale \"Majątek\" i ponów próbę.";
+                _logger.LogError("Podczas usuwania pracownika wystąpił błąd! Istnieje przedmiot przypisany do tego pracownika. Przed usunięciem pracownika upewnij się, że zdał wszystkie przedmioty. Odznacz je w dziale \"Majątek\" i ponów próbę.");
                 return View("DbExceptionHandler");
             }
 

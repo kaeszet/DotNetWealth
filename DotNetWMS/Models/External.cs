@@ -60,6 +60,7 @@ namespace DotNetWMS.Models
         /// List of items which was transferred to the client or external service
         /// </summary>
         public IList<Item> Items { get; set; }
+        public string FullNameForDocumentation => $"{Name}{Environment.NewLine}{TaxId}{Environment.NewLine}{Street}{Environment.NewLine}{ZipCode} {City}";
 
     }
 }

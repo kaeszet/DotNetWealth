@@ -64,6 +64,9 @@
                                     <li class="nav-item">
                                         <a class="nav-link" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Doc_Assignments" asp-action="Index">Dokumenty</a>
+                                    </li>
                                 }
 
                             </ul>
@@ -145,6 +148,7 @@
                         <a asp-controller="Items" asp-action="Index" data-id="Items" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Przegląd majątku</a>
                         @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                         {
+                            <a asp-controller="Doc_Assignments" asp-action="Index" data-id="Doc_Assignments" class="list-group-item list-group-item-action"><i class="far fa-file-alt mr-1"></i>Dokumenty</a>
                             <a asp-controller="Items" asp-action="Assign_to_employee" data-id="Assign_to_employee" class="list-group-item list-group-item-action"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
                             <a asp-controller="Items" asp-action="Assign_to_warehouse" data-id="Assign_to_warehouse" class="list-group-item list-group-item-action"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
                         }

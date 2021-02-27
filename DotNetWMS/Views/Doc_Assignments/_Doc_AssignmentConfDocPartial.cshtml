@@ -1,0 +1,99 @@
+﻿@model List<Doc_ConfigureDocumentViewModel>
+@{
+    ViewData["Title"] = "_StatusViewTable";
+}
+
+@if (Model.Any())
+{
+    <h4>Zaznacz przekazane elementy:</h4>
+    <form method="post">
+        <table class="table table-hover table-responsive-sm">
+            <thead class="thead-light">
+                <tr>
+                    <th>
+                        Dodaj
+                    </th>
+                    <th>
+                        Typ
+                    </th>
+                    <th>
+                        Nazwa
+                    </th>
+                    <th>
+                        Producent
+                    </th>
+                    <th>
+                        Model
+                    </th>
+                    <th>
+                        Kod
+                    </th>
+                    <th>
+                        Ilość
+                    </th>
+                    <th>
+                        Jedn.
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <div class="form-check form-check-inline">
+                                <input asp-for="@Model[i].AddToDocument" class="form-control-input" type="checkbox">
+                                <span asp-validation-for="@Model[i].AddToDocument" class="text-danger small font-weight-bold"></span>
+                            </div>
+                        </td>
+                        <td>
+                            @Model[i].Type
+                            <input type="hidden" asp-for="@Model[i].Type" />
+                        </td>
+                        <td>
+                            @Model[i].Name
+                            <input type="hidden" asp-for="@Model[i].Name" />
+                        </td>
+                        <td>
+                            @Model[i].Producer
+                            <input type="hidden" asp-for="@Model[i].Producer" />
+                        </td>
+                        <td>
+                            @Model[i].Model
+                            <input type="hidden" asp-for="@Model[i].Model" />
+                        </td>
+                        <td>
+                            @Model[i].Code
+                            <input type="hidden" asp-for="@Model[i].Code" />
+                        </td>
+                        <td>
+                            @Model[i].Quantity
+                            <input type="hidden" asp-for="@Model[i].Quantity" />
+                        </td>
+                        <td>
+                            @Model[i].Unit
+                            <input type="hidden" asp-for="@Model[i].Unit" />
+                        </td>
+                        <td>
+                            <input type="hidden" asp-for="@Model[i].From" />
+                            <input type="hidden" asp-for="@Model[i].FromIndex" />
+                            <input type="hidden" asp-for="@Model[i].To" />
+                            <input type="hidden" asp-for="@Model[i].ToIndex" />
+                            <input type="hidden" asp-for="@Model[i].Id" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="form-group mt-3">
+            <button type="submit" asp-action="GenerateDocument" class="btn btn-info btn-sm">Przejdź dalej</button>
+        </div>
+
+    </form>
+}
+else
+{
+    <h4 class="text-danger font-weight-bold">@ViewData["InfoMessage"]</h4>
+}
