@@ -6,8 +6,8 @@
 }
 
 <div>
-    <div class="d-flex justify-content-between align-items-center">
-        <h2 class="my-0">Szczegóły o kliencie</h2>
+    <div class="d-flex justify-content-between flex-sm-row flex-column">
+        <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Szczegóły o kliencie</h2>
         @if (User.IsInAnyRoles("StandardPlus,Moderator"))
         {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success"><i class="fas fa-edit mr-1"></i>Edytuj</a>
@@ -33,9 +33,16 @@
                 <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.TaxId)</li>
                 <li class="list-group-item pl-5">@Html.DisplayFor(model => model.TaxId)</li>
 
-                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
+                <li class="list-group-item font-weight-bold">Adres</li>
                 <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
             </ul>
         </div>
+        <div class="col-12">
+            <input type="hidden" id="address" value="@TempData["Adress"]" />
+            <div id="map" style="height:300px; width:100%"></div>
+        </div>
     </div>
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
+}

@@ -183,6 +183,7 @@ namespace DotNetWMS.Controllers
                 _logger.LogDebug($"DEBUG: Taki magazyn = {warehouse} nie istniej!");
                 return NotFound();
             }
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCode(warehouse);
             return View(warehouse);
         }
         /// <summary>
