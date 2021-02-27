@@ -11,14 +11,6 @@ header {
 	height: 60px;
 }
 
-footer {
-	height: 45px;
-}
-
-.content-body {
-	margin-bottom: 45px;
-}
-
 #cookieConsent {
 	position: absolute;
 	bottom: 0;
@@ -39,7 +31,13 @@ footer {
 .w-fit {
 	width: fit-content;
 }
+.content-body {
+	&.blur {
 
+		filter: blur(2px) !important;
+		pointer-events: none !important;
+	}
+}
 .dropdown-menu {
 	&.show {
 		z-index: 1040;
@@ -204,4 +202,66 @@ header {
 .custom-control-label::after, .custom-control-label::before {
 
 	top: 0.15rem;
+}
+
+// HAMBURGER
+
+.hamburger {
+	display: block;
+	z-index: 1;
+	background-color: transparent;
+	cursor: pointer;
+
+	.hamburger-container {
+		@include flexbox($align: center);
+		@include hamburger(30px, 30px);
+	}
+
+	.hamburger-bars {
+		@include hamburger(30px, 2px);
+		background-color: rgba($white, 0.5);
+		transition: transform 220ms ease-in-out;
+
+		&:before, &:after {
+			display: block;
+			position: absolute;
+			@include hamburger(30px, 2px);
+			background-color: rgba($white, 0.5);
+			content: '';
+		}
+
+		&:before {
+			@include position($top: -8px);
+			transition: top 100ms 250ms ease-in, transform 220ms ease-in-out;
+		}
+
+		&:after {
+			@include position($bottom: -8px);
+			transition: bottom 100ms 250ms ease-in, transform 220ms ease-in-out;
+		}
+	}
+
+	&.active {
+		.hamburger-bars {
+			@include rotate(225);
+			transition: transform 220ms 120ms ease-in-out;
+			background-color: $white;
+
+			&:before {
+				@include position($top: 0);
+				background-color: $white;
+				transition: top 100ms ease-out;
+			}
+
+			&:after {
+				@include position($bottom: 0);
+				@include rotate(-90);
+				background-color: $white;
+				transition: bottom 100ms ease-out, transform 220ms 120ms ease-in-out;
+			}
+		}
+	}
+}
+.bg-navbar {
+	@include pos-fixed(0);
 }

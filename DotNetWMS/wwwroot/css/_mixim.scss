@@ -1,5 +1,13 @@
-﻿@mixin pos-fixed($top: null, $bottom: null, $left: null, $right: null) {
+﻿@mixin pos-fixed($all: null, $top: null, $bottom: null, $left: null, $right: null) {
 	position: fixed;
+
+	@if($all)
+	{
+		top: $all;
+		bottom: $all;
+		left: $all;
+		right: $all;
+	}
 
 	@if($top) {
 		top: $top;
@@ -27,4 +35,37 @@
 
 @mixin rounded($size){
 	border-radius: $size + rem;
+}
+
+@mixin flexbox($align: null, $justify: null) {
+	display: flex;
+	align-items: $align;
+	justify-content: $justify;
+}
+
+@mixin hamburger($width: null, $height: null) {
+	width: $width;
+	height: $height;
+}
+
+@mixin position($left: null, $right: null, $top: null, $bottom: null) {
+	left: $left;
+	right: $right;
+	top: $top;
+	bottom: $bottom;
+}
+
+@mixin rotate($val, $el: null) {
+	@if($el == "y") {
+		transform: rotateY($val + deg);
+	}
+	@else if($el == 'x') {
+		transform: rotateX($val + deg);
+	}
+	@else if($el == "z") {
+		transform: rotateZ($val + deg);
+	}
+	@else {
+		transform: rotate($val + deg);
+	}
 }
