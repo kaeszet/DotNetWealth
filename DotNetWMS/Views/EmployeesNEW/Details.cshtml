@@ -6,36 +6,37 @@
 
 
 <div>
-    <div class="d-flex justify-content-between align-items-center">
-        <h2 class="my-0">Szczegóły</h2>
+    <div class="d-flex justify-content-between flex-sm-row flex-column">
+        <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Szczegóły</h2>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success my-auto"><i class="fas fa-edit mr-1"></i>Edytuj</a>
         @*<a id="buttonForm" asp-controller="QrCodes" asp-action="ShowQRCode" asp-route-url="@Model.Id" class="btn btn-success my-auto">Generuj QR</a>*@
     </div>
 </div>
 <hr />
-<div class="card mb-3">
-    <div class="card-body">
+<div class="mb-3">
         <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name) i @Html.DisplayNameFor(model => model.Surname)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name) @Html.DisplayFor(model => model.Surname)</li>
 
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name) i @Html.DisplayNameFor(model => model.Surname)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name) @Html.DisplayFor(model => model.Surname)</li>
-
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
+                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
 
 
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.EmployeeNumber)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.EmployeeNumber)</li>
+                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.EmployeeNumber)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.EmployeeNumber)</li>
 
-            <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Department)</li>
-            <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
-        </ul>
+                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Department)</li>
+                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
+            </div>
+        </div>
     </div>
-    <div>
-        <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
-    </div>
-</div>
 
 @*<div id="divPartial">
     @await Html.PartialAsync("_QrCodePartial")

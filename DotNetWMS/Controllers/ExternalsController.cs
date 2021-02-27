@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
+using DotNetWMS.Resources;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
@@ -126,7 +127,7 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
-
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeExternal(external);
             return View(external);
         }
         /// <summary>
@@ -174,6 +175,7 @@ namespace DotNetWMS.Controllers
             {
                 return NotFound();
             }
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeExternal(external);
             return View(external);
         }
         /// <summary>
@@ -212,6 +214,7 @@ namespace DotNetWMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeExternal(external);
             return View(external);
         }
         /// <summary>

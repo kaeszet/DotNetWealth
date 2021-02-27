@@ -6,7 +6,7 @@
 
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="my-0">Edycja klienta</h2>
+        <h2 class="my-0 w-100 text-sm-left text-center">Edycja klienta</h2>
     </div>
 </div>
 <hr />
@@ -33,22 +33,34 @@
                 <span asp-validation-for="TaxId" class="text-danger"></span>
             </div>
         </div>
+        <div class="form-group">
+            <label for="address">Adres</label>
+            <input id="address" type="search" value="@TempData["Adress"]" autocomplete="nope" placeholder="Podaj adres magazynu" class="form-control" />
+            <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> magazynu</small>
 
+            <input type="hidden" id="lat" name="lat" />
+            <input type="hidden" id="lng" name="lng" />
+        </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="Street" class="control-label"></label>
-                <input asp-for="Street" class="form-control" />
+                <input asp-for="Street" id="street" readonly class="form-control" />
                 <span asp-validation-for="Street" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
                 <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
+                <input asp-for="City" id="locality" readonly class="form-control" />
                 <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="form-group col-md-2">
                 <label asp-for="ZipCode" class="control-label"></label>
-                <input asp-for="ZipCode" class="form-control" placeholder="Kod Pocztowy" />
+                <input asp-for="ZipCode" id="postal_code" readonly class="form-control" />
                 <span asp-validation-for="ZipCode" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <div id="map" style="height:300px; width:100%"></div>
             </div>
         </div>
 
@@ -61,4 +73,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
 }

@@ -7,46 +7,11 @@
     ViewData["Title"] = "Dashboard";
     <h2>Dashboard</h2>
     <hr />
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <i class="fas fa-flag fa-4x mb-3"></i>
-
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <i class="fas fa-flag fa-4x mb-3"></i>
-
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow text-center">
-                <div class="card-body">
-                    <i class="fas fa-flag fa-4x mb-3"></i>
-
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-        </div>
-    </div>
     @if ((bool)ViewData["isAnyNewMessages"])
     {
         <div class="row mt-3">
             <div class="col-12">
-                <div class="alert alert-primary alert-dismissible fade show rounded-0" role="alert">
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -60,7 +25,41 @@
             </div>
         </div>
     }
+    <div class="row">
+        <div class="col-md-4 mb-md-0 mb-3">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <i class="fas fa-flag fa-4x mb-3"></i>
 
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-md-0 mb-3">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <i class="fas fa-flag fa-4x mb-3"></i>
+
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-md-0 mb-3">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <i class="fas fa-flag fa-4x mb-3"></i>
+
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 }
 else

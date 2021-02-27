@@ -45,14 +45,6 @@ $(document).ready(function ()
         });
     });
 
-    $('.table-responsive').on('show.bs.dropdown', function () {
-        $('.table-responsive').css("overflow-x", "inherit");
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.table-responsive').css("overflow-x", "auto");
-    })
-
     if ($('.sidebar').length > 0) {
 
         $centerNav = $(".sidebar").find('.active').offset().top - (($(window).height() / 2) - ($(".sidebar").find('.active').height() / 2));
@@ -87,14 +79,14 @@ $(document).ready(function ()
 {
 
     //geocoder function
-    $.fn.geocodeAddress = function (type) {
+    $.fn.geocodeAddress = function () {
 
         let _this = $(this);
         $geocoder.geocode({ address: _this.val() }, (results, status) => {
             if (status === "OK") {
                 let place = results[0];
 
-                if (type == 'find') {
+                if (_this.attr('type') == 'search') {
 
                     clearMarker(null);
                     $allMarkers = [];
@@ -105,6 +97,8 @@ $(document).ready(function ()
 
                     $('#lat').val(place.geometry.location.lat())
                     $('#lng').val(place.geometry.location.lng())
+
+                    console.log(place)
 
                     const componentForm = {
                         street_number: "short_name",
@@ -137,7 +131,6 @@ $(document).ready(function ()
                         else $('#street').val(street['route']);
                         
                     }
-                    console.log(street)
                 }
 
                 $props = {
@@ -211,7 +204,7 @@ $(document).ready(function ()
             }
         })
 
-        $(window).unbind('click');
+        $(window).unbind();
         $(window).on('click', function (e) {
 
             if ($('.sidebar').hasClass('show') && $done == true) {
@@ -219,6 +212,18 @@ $(document).ready(function ()
                 if (!$('.sidebar').is(e.target) && $('.sidebar').has(e.target).length === 0) {
                     $('.hamburger').removeClass('active');
                     hide( $('.sidebar') )
+                }
+            }
+        });
+        $(window).on('resize', function (e) {
+
+            if ($(this).width() > 991.98) {
+                $('.content-body').removeClass('blur')
+            }
+            else {
+
+                if ($('.sidebar').hasClass('show')) {
+                    $('.content-body').addClass('blur')
                 }
             }
         });
@@ -231,6 +236,7 @@ $(document).ready(function ()
                 left: - $slideX,
             }, 1000, function () {
                 $(this).removeClass('show');
+                $(this).css('left', '');
                 $done = true;
             });
         }
@@ -241,20 +247,36 @@ $(document).ready(function ()
             $(el).css({
                 'left': - $slideX,
             })
-                .addClass('show')
-                .animate({
-                    left: 0,
-                }, 1000, function () {
-                    $done = true;
-                });
+            .addClass('show')
+            .animate({
+                left: 0,
+            }, 1000, function () {
+                $(this).css('left', '');
+                $done = true;
+            });
         }
     }
+
+    $('.table-responsive').on('shown.bs.dropdown', function (e) {
+    var $table = $(this),
+        $menu = $(e.target).find('.dropdown-menu'),
+        tableOffsetHeight = $table.offset().top + $table.height(),
+        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+
+    if (menuOffsetHeight > tableOffsetHeight)
+      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight);
+  });
+
+  $('.table-responsive').on('hide.bs.dropdown', function () {
+    $(this).css("padding-bottom", 0);
+  })
 
 })(jQuery);
 
 // Google Maps
 function initMap()
 {
+    let a = $('#address');
     // Geocoder
     $geocoder = new google.maps.Geocoder();
 
@@ -263,16 +285,17 @@ function initMap()
         types: ["geocode"],
         componentRestrictions: { country: 'pl' }
     };
+
     //Autocomplete
-    $autocomplete = new google.maps.places.Autocomplete($('#address')[0], option);
+    $autocomplete = new google.maps.places.Autocomplete(a[0], option);
 
     $allMarkers = [];
 
-    if ($('#addressDetails').length > 0 && $('#addressDetails').val()) {
+    if (a.length > 0 && a.val()) {
 
-        $('#addressDetails').geocodeAddress();
+        a.geocodeAddress();
     }
-    else if ($('#address').length > 0 && !$('#address').val()) {
+    else {
 
         // my current location
         if (navigator.geolocation) {
@@ -303,23 +326,20 @@ function initMap()
         }
         else alert("Geolokalizacja nie jest obsługiwana przez twoją przeglądarkę.");
     }
-    else {
-        $('#address').geocodeAddress('find', $(''));
-    }
 
-    if ($('#address').length > 0)
+    if (a.length > 0 && a.attr('type') == 'search')
     {
-        $('#address').on('change autocompletechange', function (ev) {
+        a.on('change autocompletechange', function (ev) {
 
-            $(this).geocodeAddress('find');
+            $(this).geocodeAddress();
         })
 
-        $('#address').on('keypress', function (ev) {
+        a.on('keypress', function (ev) {
 
             if (ev.which == 13) {
 
                 ev.preventDefault();
-                $('#address').blur();
+                a.blur();
             }
         })
     }
