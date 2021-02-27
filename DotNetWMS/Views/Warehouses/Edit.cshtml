@@ -6,7 +6,7 @@
 
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="my-0">Edycja pracowników</h2>
+        <h2 class="my-0 w-100 text-sm-left text-center">Edycja magazynu</h2>
     </div>
 </div>
 <hr />
@@ -23,21 +23,28 @@
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
+        <div class="form-group">
+            <label for="address">Adres</label>
+            <input id="address" type="search" value="@TempData["Adress"]" autocomplete="nope" placeholder="Podaj adres magazynu" class="form-control" />
+            <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> magazynu</small>
 
+            <input type="hidden" id="lat" name="lat"/>
+            <input type="hidden" id="lng" name="lng"/>
+        </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="Street" class="control-label"></label>
-                <input asp-for="Street" id="address" class="form-control" />
+                <input asp-for="Street" id="street" readonly class="form-control" />
                 <span asp-validation-for="Street" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
                 <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" id="locality" class="form-control" />
+                <input asp-for="City" id="locality" readonly class="form-control" />
                 <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="form-group col-md-2">
                 <label asp-for="ZipCode" class="control-label"></label>
-                <input asp-for="ZipCode" id="postal_code" class="form-control" />
+                <input asp-for="ZipCode" id="postal_code" readonly class="form-control" />
                 <span asp-validation-for="ZipCode" class="text-danger"></span>
             </div>
         </div>
@@ -46,7 +53,6 @@
                 <div id="map" style="height:300px; width:100%"></div>
             </div>
         </div>
-
 
         <div class="form-group">
             <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save mr-1"></i>Zapisz</button>
@@ -57,4 +63,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
 }

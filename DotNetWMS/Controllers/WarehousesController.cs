@@ -9,6 +9,7 @@ using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using DotNetWMS.Resources;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
@@ -22,14 +23,16 @@ namespace DotNetWMS.Controllers
         /// A field for handling the delivery of information to the DB associated with the Entity Core framework
         /// </summary>
         private readonly DotNetWMSContext _context;
+        private readonly ILogger _logger;
         /// <summary>
         /// A static field for handling Warehouse's name for properly creation of Stocktaking view
         /// </summary>
         private static string Name;
 
-        public WarehousesController(DotNetWMSContext context)
+        public WarehousesController(DotNetWMSContext context, ILogger<HomeController> logger)
         {
             _context = context;
+            _logger = logger;
         }
         /// <summary>
         /// GET method responsible for returning an Warehouse's Stocktaking view
@@ -78,12 +81,14 @@ namespace DotNetWMS.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
+                _logger.LogDebug($"DEBUG: Zwrócono widok magazynów!");
                 warehouses = warehouses.Where(w => w.Name.Contains(search) || w.Street.Contains(search));
             }
 
             switch (order)
             {
                 case "name_desc":
+                    _logger.LogDebug($"DEBUG: Sortowanie magazynów po nazwie!");
                     warehouses = warehouses.OrderByDescending(w => w.Name);
                     break;
                 default:
@@ -101,6 +106,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Magazyn o podanym id = {id} nie istnieje!");
                 return NotFound();
             }
 
@@ -109,11 +115,12 @@ namespace DotNetWMS.Controllers
 
             if (warehouse == null)
             {
+                _logger.LogDebug($"DEBUG: Magazyn {warehouse} nie istnieje!");
                 return NotFound();
             }
-
             GoogleMapsGenerator gmg = new GoogleMapsGenerator();
             TempData["Adress"] = gmg.PrepareAdressToGeoCode(warehouse);
+            _logger.LogDebug($"DEBUG: Pomyślnie zwrócono widok szczegółów!");
             return View(warehouse);
         }
         /// <summary>
@@ -141,12 +148,15 @@ namespace DotNetWMS.Controllers
             {
                 if (!isWarehouseExists)
                 {
+                    _logger.LogDebug($"DEBUG: Dodano magazyn!");
+
                     _context.Add(warehouse);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
+                    _logger.LogDebug($"DEBUG: Taka nazwa magazynu już istnieje!");
                     ModelState.AddModelError(string.Empty, $"Magazyn {warehouse.Name} został już wprowadzony do systemu! Wybierz inną nazwę.");
                 }
                 
@@ -163,6 +173,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Takie id = {id} nie istniej!");
                 return NotFound();
             }
 
@@ -171,8 +182,10 @@ namespace DotNetWMS.Controllers
 
             if (warehouse == null)
             {
+                _logger.LogDebug($"DEBUG: Taki magazyn = {warehouse} nie istniej!");
                 return NotFound();
             }
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCode(warehouse);
             return View(warehouse);
         }
         /// <summary>
@@ -188,6 +201,7 @@ namespace DotNetWMS.Controllers
         {
             if (id != warehouse.Id)
             {
+                _logger.LogDebug($"DEBUG: Takie id = {id} nie istniej w bazie magazynów!");
                 return NotFound();
             }
             bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name && w.Name != Name);
@@ -204,6 +218,7 @@ namespace DotNetWMS.Controllers
                     {
                         if (!WarehouseExists(warehouse.Id))
                         {
+                            _logger.LogDebug($"DEBUG: Taki magazyn nie istniej w bazie magazynów!");
                             return NotFound();
                         }
                         else
@@ -215,10 +230,12 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
+                    _logger.LogDebug($"DEBUG: Takie nazwa magazynu zostałą jużwprowadzona do systemu!");
                     ModelState.AddModelError(string.Empty, $"Magazyn \"{warehouse.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
                 }
                 
             }
+            _logger.LogDebug($"DEBUG: Pomyślnie zedytowano magazyn!");
             return View(warehouse);
         }
         /// <summary>
@@ -231,6 +248,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Magazyn o podanym id = {id} nie istnieje!");
                 return NotFound();
             }
 
@@ -238,9 +256,11 @@ namespace DotNetWMS.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (warehouse == null)
             {
+                _logger.LogDebug($"DEBUG: Magazyn {warehouse} nie istnieje!");
                 return NotFound();
             }
 
+            _logger.LogDebug($"DEBUG: Znaleziono magazyn {warehouse}!");
             return View(warehouse);
         }
         /// <summary>

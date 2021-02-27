@@ -1,10 +1,9 @@
 ﻿
-<input type="hidden" id="adress" data-value="@TempData["Adress"]" />
+@*<input type="hidden" id="adress" data-value="@TempData["Adress"]" />
 <h2>Lokalizacja magazynu</h2>
 
 <h6>@TempData["Adress"]</h6>
 
-<div id="googleMap" style="height:300px;width:500px;"></div>
+<div id="googleMap" style="height:300px;width:500px;"></div>*@
 
-<script src="~/js/GoogleMapsGenerator.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAtidXOuBUaTkyMaSg_9IaxYNCilM6Q6s&callback=initMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAtidXOuBUaTkyMaSg_9IaxYNCilM6Q6s&libraries=places&callback=initMap"></script>

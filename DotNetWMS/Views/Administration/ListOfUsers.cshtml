@@ -4,12 +4,10 @@
     ViewBag.Title = "All Users";
 }
 
-<div>
-    <div class="d-flex justify-content-between">
-        <h2 class="my-0">Użytkownicy</h2>
+    <div class="d-flex justify-content-between flex-sm-row flex-column">
+        <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Użytkownicy</h2>
         <a asp-action="Register" asp-controller="Account" class="btn btn-success my-auto"><i class="fas fa-user-plus mr-1"></i>Dodaj użytkownika</a>
     </div>
-</div>
 <hr />
 <div class="row">
     <div class="col-12">
@@ -34,7 +32,7 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Nazwa</th>
-                            <th scope="col">ID</th>
+                            @*<th scope="col">ID</th>*@
                             <th scope="col">Imię</th>
                             <th scope="col">Nazwisko</th>
                             <th scope="col">Identyfikator</th>
@@ -50,7 +48,7 @@
                             <tr>
                                 <th scope="row">@index</th>
                                 <td class="font-weight-bold">@user.UserName</td>
-                                <td>@user.Id</td>
+                                @*<td>@user.Id</td>*@
                                 <td>@user.Name</td>
                                 <td>@user.Surname</td>
                                 <td>@user.EmployeeNumber</td>

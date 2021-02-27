@@ -7,7 +7,7 @@
 
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="my-0">Edycja produktu</h2>
+        <h2 class="my-0 w-100 text-sm-left text-center">Edycja produktu</h2>
     </div>
 </div>
 <hr />
@@ -18,26 +18,26 @@
         <input type="hidden" asp-for="Id" />
 
         <div class="form-group">
-            <label asp-for="Producer" class="font-weight-bold small mb-0"></label>
+            <label asp-for="Producer" ></label>
             <input asp-for="Producer" class="form-control" />
             <span asp-validation-for="Producer" class="text-danger"></span>
         </div>
 
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label asp-for="Name" class="font-weight-bold small mb-0"></label>
+                <label asp-for="Name" ></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <div class="form-group col-md-4">
-                <label asp-for="Type" class="font-weight-bold small mb-0"></label>
+                <label asp-for="Type" ></label>
                 <input asp-for="Type" class="form-control" />
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
 
             <div class="form-group col-md-4">
-                <label asp-for="Model" class="font-weight-bold small mb-0"></label>
+                <label asp-for="Model" ></label>
                 <input asp-for="Model" class="form-control" />
                 <span asp-validation-for="Model" class="text-danger"></span>
             </div>
@@ -46,13 +46,13 @@
 
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label asp-for="ItemCode" class="font-weight-bold small mb-0"></label>
+                <label asp-for="ItemCode" ></label>
                 <input asp-for="ItemCode" class="form-control" />
                 <span asp-validation-for="ItemCode" class="text-danger"></span>
             </div>
 
             <div class="form-group col-md-6">
-                <label asp-for="State" class="font-weight-bold small mb-0"></label>
+                <label asp-for="State" ></label>
                 <select asp-for="State" class="form-control" asp-items="Html.GetEnumSelectList<ItemState>()"></select>
                 <span asp-validation-for="State" class="text-danger"></span>
             </div>
@@ -61,18 +61,18 @@
         <div class="form-row">
 
             <div class="form-group col-md-6">
-                <label asp-for="WarrantyDate" class="font-weight-bold small mb-0"></label>
+                <label asp-for="WarrantyDate" ></label>
                 <input asp-for="WarrantyDate" class="form-control" />
                 <span asp-validation-for="WarrantyDate" class="text-danger"></span>
             </div>
 
             <div class="form-group col-md-4">
-                <label asp-for="Quantity" class="font-weight-bold small mb-0"></label>
+                <label asp-for="Quantity" ></label>
                 <input asp-for="Quantity" class="form-control" />
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
             <div class="form-group col-md-2">
-                <label asp-for="Units" class="font-weight-bold small mb-0"></label>
+                <label asp-for="Units" ></label>
                 <select asp-for="Units" class="form-control" asp-items="Html.GetEnumSelectList<ItemUnits>()"></select>
                 <span asp-validation-for="Units" class="text-danger"></span>
             </div>
@@ -81,7 +81,7 @@
         <hr />
         <div class="form-row">
             <div class="form-group col-md-4">
-                <label asp-for="UserId" class="font-weight-bold small mb-0"></label>
+                <label asp-for="UserId" ></label>
                 <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"
                         title="Brak">
                     <option value="" selected>Brak</option>
@@ -89,7 +89,7 @@
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
-                <label asp-for="WarehouseId" class="font-weight-bold small mb-0"></label>
+                <label asp-for="WarehouseId" ></label>
                 <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.WarehouseId"
                         title="Brak">
                     <option value="" selected>Brak</option>
@@ -97,7 +97,7 @@
                 <span asp-validation-for="WarehouseId" class="text-danger"></span>
             </div>
             <div class="form-group col-md-4">
-                <label asp-for="ExternalId" class="font-weight-bold small mb-0"></label>
+                <label asp-for="ExternalId" ></label>
                 <select asp-for="ExternalId" class="form-control" asp-items="ViewBag.ExternalId"
                         title="Brak">
                     <option value="" selected>Brak</option>
