@@ -79,6 +79,8 @@ namespace DotNetWMS.Controllers
 
             ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
             _logger.LogInformation($"INFO: Użytkownik wyświetlił dane pracownika o id = {id}!");
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
+
             return View(user);
         }
         
@@ -131,6 +133,7 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
             return View(user);
         }
         /// <summary>
@@ -192,6 +195,8 @@ namespace DotNetWMS.Controllers
                 }
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
+
             return View(user);
         }
         /// <summary>
