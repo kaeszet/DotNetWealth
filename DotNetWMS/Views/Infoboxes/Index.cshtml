@@ -3,103 +3,127 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div>
+    <h2 class="text-sm-left text-center">Skrzynka wiadomości</h2>
+</div>
+@{
+    var index = 1;
+}
+<hr />
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th>#</th>
+                    <th>@Html.DisplayNameFor(model => model.Title)</th>
+                    <th>@Html.DisplayNameFor(model => model.Message)</th>
+                    <th>@Html.DisplayNameFor(model => model.ReceivedDate)</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
 
-<h1>Skrzynka wiadomości</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Message)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReceivedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            @if (!item.IsChecked)
-            {
-
-        <tr>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Message)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReceivedDate)
-            </td>
-            @if (!item.IsChecked)
-            {
-                if (item.Title == "Nowy dokument")
+                @foreach (var item in Model)
                 {
-                    <td>
-                        <a asp-action="Check" asp-route-id="@item.Id">Potwierdź</a>
-                    </td>
-                    <td>
-                        <a asp-controller="Doc_Assignments" asp-action="ShowDocument" asp-route-id="@item.DocumentId">Sprawdź</a>
-                    </td>
+                    @if (!item.IsChecked)
+                    {
+
+                        <tr class="table-primary">
+                            <td>@index</td>
+                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Message)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ReceivedDate)</td>
+                            @if (!item.IsChecked)
+                            {
+                                if (item.Title == "Nowy dokument")
+                                {
+                                    <td><a asp-action="Check" asp-route-id="@item.Id">Potwierdź</a></td>
+                                    <td><a asp-controller="Doc_Assignments" asp-action="ShowDocument" asp-route-id="@item.DocumentId">Sprawdź</a></td>
+                                }
+                                else
+                                {
+                                    <td><a asp-action="Check" asp-route-id="@item.Id">Przyczytane</a></td>
+                                }
+
+                            }
+                            <td></td>
+                        </tr>
+                        index++;
+                    }
                 }
-                else
+                @foreach (var item in Model)
                 {
-                    <td>
-                        <a asp-action="Check" asp-route-id="@item.Id">Przyczytane</a>
-                    </td>
+                    @if (item.IsChecked)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Message)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ReceivedDate)</td>
+                            @if (item.IsChecked)
+                            {
+                                if (item.Title == "Nowy dokument")
+                                {
+                                    <td>Potwierdzono!</td>
+                                }
+                                else
+                                {
+                                    <td><a asp-action="Check" asp-route-id="@item.Id">Nieprzyczytane</a></td>
+                                }
+                                <td><a asp-action="Delete" asp-route-id="@item.Id">Usuń</a></td>
+                            }
+                        </tr>
+                        index++;
+                    }
+
                 }
+            </tbody>
+        </table>
+    </div>
+        @*<div class="col-12">
+            <table class="table table-hover">
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        @if (item.IsChecked)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Message)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ReceivedDate)
+                                </td>
+                                @if (item.IsChecked)
+                                {
+                                    if (item.Title == "Nowy dokument")
+                                    {
+                                        <td>
+                                            Potwierdzono!
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <a asp-action="Check" asp-route-id="@item.Id">Nieprzyczytane</a>
+                                        </td>
+                                    }
+                                    <td>
+                                        <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
+                                    </td>
+                                }
 
-            }
-        </tr>
+                            </tr>
+                        }
 
-            }
-
-        }
-    </tbody>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            @if (item.IsChecked)
-            {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Message)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReceivedDate)
-            </td>
-            @if (item.IsChecked)
-            {
-                if (item.Title == "Nowy dokument")
-                {
-                    <td>
-                        Potwierdzono!
-                    </td>
-                }
-                else
-                {
-                    <td>
-                        <a asp-action="Check" asp-route-id="@item.Id">Nieprzyczytane</a>
-                    </td>
-                }
-                <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
-                </td>
-            }
-
-        </tr>
-            }
-
-        }
-    </tbody>
-</table>
+                    }
+                </tbody>
+            </table>
+        </div>*@
+    </div>
