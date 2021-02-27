@@ -39,6 +39,9 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 

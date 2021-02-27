@@ -4,37 +4,11 @@
 
 /* ----- Main tags ----- */
 body {
-	font-family: 'Nunito', sans-serif;
+	font-family: $font-primary;
 }
 
 header {
 	height: 60px;
-}
-
-footer {
-	height: 45px;
-}
-
-.content-body {
-	margin-bottom: 45px;
-}
-
-.custom-control-input {
-
-	&:checked ~ .custom-control-label::before {
-		background-color: #28a745;
-		border-color: #28a745;
-	}
-
-	&:focus {
-		:not(:checked) ~ .custom-control-label::before {
-			border-color: #28a745;
-		}
-
-		~ .custom-control-label::before {
-			box-shadow: 0 0 0 0.2rem rgba(72,180,97,.5);
-		}
-	}
 }
 
 #cookieConsent {
@@ -57,7 +31,13 @@ footer {
 .w-fit {
 	width: fit-content;
 }
+.content-body {
+	&.blur {
 
+		filter: blur(2px) !important;
+		pointer-events: none !important;
+	}
+}
 .dropdown-menu {
 	&.show {
 		z-index: 1040;
@@ -81,10 +61,7 @@ footer {
 }
 
 .sidebar {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
+	@include pos-fixed(0,0,0);
 	z-index: 100;
 	margin-top: 60px;
 	padding: 0;
@@ -106,7 +83,7 @@ footer {
 
 		&.active {
 			background-color: $silver !important;
-			border-color: rgba(0,0,0,.125) !important;
+			border-color: rgba($dark, 0.125) !important;
 			color: $primary !important;
 			font-weight: bold;
 		}
@@ -123,34 +100,28 @@ footer {
 }
 
 .shadow-inset {
-	box-shadow: inset 0 0 1rem rgba(0, 0, 0, .1);
+	box-shadow: inset 0 0 1rem rgba($dark, 0.1);
 }
 
 
 /* FORM */
 
 .form-control {
-	/*background-color: #fafafa;*/
 
 	&:focus {
-		border-color: #adb5bd;
+		border-color: $input;
 		box-shadow: 0 0 0 0.2rem #dee2e6;
 	}
 }
 label {
-	font-weight: bold;
-	font-size: 80%;
-	margin-bottom: 0;
+	@include label($weight: bold, $size: 80%, $margin-bottom: 0)
 }
 
 .bootstrap-select {
 	.btn-form {
-		background-color: #fafafa !important;
-		border: 1px solid #ced4da !important;
 
 		&:focus, &:active {
-			background-color: #fff !important;
-			border-color: #adb5bd !important;
+			border-color: $input !important;
 			box-shadow: 0 0 0 0.2rem #dee2e6 !important;
 		}
 	}
@@ -166,8 +137,8 @@ label {
 }
 
 .show > .btn-form.dropdown-toggle {
-	background-color: #fff !important;
-	border-color: #adb5bd !important;
+	background-color: $white !important;
+	border-color: $input !important;
 	box-shadow: 0 0 0 0.2rem #dee2e6 !important;
 }
 
@@ -199,4 +170,98 @@ header {
 			padding-right: 10px;
 		}
 	}
+}
+
+
+//Google autocomplete
+.pac-container {
+	@include rounded(0.25);
+	font-family: $font-primary;
+
+	.pac-item {
+		padding: 5px 10px;
+		cursor: pointer;
+		font-size: 13px;
+
+		.pac-item-query {
+			font-size: 15px;
+		}
+	}
+}
+.pac-logo {
+	&:after {
+		height: 40px;
+		background-size: auto 18px;
+		background-position: center;
+	}
+}
+.pac-matched {
+	color: $blue-700;
+}
+
+.custom-control-label::after, .custom-control-label::before {
+
+	top: 0.15rem;
+}
+
+// HAMBURGER
+
+.hamburger {
+	display: block;
+	z-index: 1;
+	background-color: transparent;
+	cursor: pointer;
+
+	.hamburger-container {
+		@include flexbox($align: center);
+		@include hamburger(30px, 30px);
+	}
+
+	.hamburger-bars {
+		@include hamburger(30px, 2px);
+		background-color: rgba($white, 0.5);
+		transition: transform 220ms ease-in-out;
+
+		&:before, &:after {
+			display: block;
+			position: absolute;
+			@include hamburger(30px, 2px);
+			background-color: rgba($white, 0.5);
+			content: '';
+		}
+
+		&:before {
+			@include position($top: -8px);
+			transition: top 100ms 250ms ease-in, transform 220ms ease-in-out;
+		}
+
+		&:after {
+			@include position($bottom: -8px);
+			transition: bottom 100ms 250ms ease-in, transform 220ms ease-in-out;
+		}
+	}
+
+	&.active {
+		.hamburger-bars {
+			@include rotate(225);
+			transition: transform 220ms 120ms ease-in-out;
+			background-color: $white;
+
+			&:before {
+				@include position($top: 0);
+				background-color: $white;
+				transition: top 100ms ease-out;
+			}
+
+			&:after {
+				@include position($bottom: 0);
+				@include rotate(-90);
+				background-color: $white;
+				transition: bottom 100ms ease-out, transform 220ms 120ms ease-in-out;
+			}
+		}
+	}
+}
+.bg-navbar {
+	@include pos-fixed(0);
 }

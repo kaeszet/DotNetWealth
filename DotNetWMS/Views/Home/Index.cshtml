@@ -7,9 +7,27 @@
     ViewData["Title"] = "Dashboard";
     <h2>Dashboard</h2>
     <hr />
+    @if ((bool)ViewData["isAnyNewMessages"])
+    {
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="alert-heading">Masz nowe wiadomości!</h4>
+                    <p>W Twojej skrzynce znajdują się nowe wiadomości. Aby je przejrzeć kliknij w poniższy link.</p>
+                    <hr>
+                    <p class="mb-0">
+                        <a asp-controller="Infoboxes" asp-action="Index" class="btn btn-primary my-auto">Dziennik</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
     <div class="row">
-        <div class="col-md-4">
-            <div class="card rounded-0 shadow text-center">
+        <div class="col-md-4 mb-md-0 mb-3">
+            <div class="card shadow text-center">
                 <div class="card-body">
                     <i class="fas fa-flag fa-4x mb-3"></i>
 
@@ -19,8 +37,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card rounded-0 shadow text-center">
+        <div class="col-md-4 mb-md-0 mb-3">
+            <div class="card shadow text-center">
                 <div class="card-body">
                     <i class="fas fa-flag fa-4x mb-3"></i>
 
@@ -30,8 +48,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card rounded-0 shadow text-center">
+        <div class="col-md-4 mb-md-0 mb-3">
+            <div class="card shadow text-center">
                 <div class="card-body">
                     <i class="fas fa-flag fa-4x mb-3"></i>
 
@@ -42,25 +60,6 @@
             </div>
         </div>
     </div>
-    @if ((bool)ViewData["isAnyNewMessages"])
-    {
-        <div class="row mt-3">
-            <div class="col-12">
-                <div class="alert alert-primary alert-dismissible fade show rounded-0" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="alert-heading">Masz nowe wiadomości!</h4>
-                    <p>W Twojej skrzynce znajdują się nowe wiadomości. Aby je przejrzeć kliknij w poniższy link.</p>
-                    <hr>
-                    <p class="mb-0">
-                        <a asp-controller="Infoboxes" asp-action="Index" class="btn btn-outline-info my-auto">Dziennik</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    }
-
 
 }
 else
