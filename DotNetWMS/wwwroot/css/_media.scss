@@ -1,16 +1,59 @@
-﻿
-@media screen and (max-width: 992px) 
-{
-	ul.navbar-nav 
-	{
+﻿$breakpoint-xxl: 1024px;
+$breakpoint-xl: 991.98px;
+$breakpoint-lg: 767.98px;
+$breakpoint-md: 575.98px;
+$breakpoint-sm: 425.98px;
+$breakpoint-xs: 375.98px;
+
+// MIN
+@media screen and (min-width: $breakpoint-xl) {
+
+	.hamburger {
+		display: none;
+	}
+	.sidebar {
+
+		.logo {
+			display: none !important;
+		}
+	}
+}
+
+// MAX
+@media screen and (max-width: $breakpoint-xl) {
+	ul.navbar-nav {
 		text-align: right;
 	}
-
-	.logout-form 
+	.navbar-brand {
+		display: none !important;
+	}
+	.left-nav
 	{
+		display: none !important;
+	}
+
+
+	.logout-form {
 		position: relative;
 		width: 200px;
 		margin: 30px 0 0 auto;
 		right: 0;
+	}
+
+	.sidebar {
+		box-shadow: 0 0 1rem rgba(0, 0, 0, .25) !important;
+		display: none;
+
+		&.show {
+			display: block !important;
+		}
+	}
+}
+
+@media screen and (max-width: $breakpoint-lg) {
+
+	.navbar-nav
+	{
+		display: none !important;
 	}
 }

@@ -1,4 +1,5 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-
+// bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
@@ -11,6 +12,9 @@ $(document).ready(function ()
         styleBase: 'form-control',
         size: 10,
     });
+
+    // Hamburger button
+    $('.hamburger').menuCollapse();
 
     //Active nav list
     if ($('.sidebar').length > 0) {
@@ -185,9 +189,68 @@ $(document).ready(function ()
 
         setTimeout(function () { newWin.close(); }, 10);
     }
+    
+    $.fn.menuCollapse = function () {
+        $done = true;
+
+        $(this).on('click', function () {
+            $id = $(this).data('target');
+
+            if ($done == true) {
+
+                $done = false;
+                $(this).toggleClass('active');
+
+                $slideX = $($id).width() + 50;
+
+                if ($(this).hasClass('active')) {
+
+                    show($id, $slideX)
+                }
+                else hide($id, $slideX)
+            }
+        })
+
+        $(window).unbind('click');
+        $(window).on('click', function (e) {
+
+            if ($('.sidebar').hasClass('show') && $done == true) {
+
+                if (!$('.sidebar').is(e.target) && $('.sidebar').has(e.target).length === 0) {
+                    $('.hamburger').removeClass('active');
+                    hide( $('.sidebar') )
+                }
+            }
+        });
+
+        function hide(el) {
+
+            $('.content-body').removeClass('blur')
+
+            $(el).animate({
+                left: - $slideX,
+            }, 1000, function () {
+                $(this).removeClass('show');
+                $done = true;
+            });
+        }
+        function show(el) {
+
+            $('.content-body').addClass('blur')
+
+            $(el).css({
+                'left': - $slideX,
+            })
+                .addClass('show')
+                .animate({
+                    left: 0,
+                }, 1000, function () {
+                    $done = true;
+                });
+        }
+    }
 
 })(jQuery);
-
 
 // Google Maps
 function initMap()
