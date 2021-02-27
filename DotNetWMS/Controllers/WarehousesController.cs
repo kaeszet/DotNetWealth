@@ -112,13 +112,14 @@ namespace DotNetWMS.Controllers
 
             var warehouse = await _context.Warehouses
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (warehouse == null)
             {
                 _logger.LogDebug($"DEBUG: Magazyn {warehouse} nie istnieje!");
                 return NotFound();
             }
+            
             TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCode(warehouse);
-
             _logger.LogDebug($"DEBUG: Pomyślnie zwrócono widok szczegółów!");
             return View(warehouse);
         }
@@ -142,6 +143,7 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> Create([Bind("Id,Name,Street,ZipCode,City")] Warehouse warehouse)
         {
             bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name);
+
             if (ModelState.IsValid)
             {
                 if (!isWarehouseExists)

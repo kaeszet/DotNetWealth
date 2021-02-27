@@ -21,6 +21,7 @@ namespace DotNetWMS.Models
         [StringLength(200)]
         [RegularExpression(@"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-\.\'\s]*", ErrorMessage = "{0} nie może zawierać cyfr i znaków specjalnych")]
         public string Message { get; set; }
+        public string DocumentId { get; set; }
         [Display(Name = "Data otrzymania")]
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd MMMM yyyy HH:mm:ss}")]

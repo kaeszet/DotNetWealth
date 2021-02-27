@@ -4,14 +4,16 @@ using DotNetWMS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DotNetWMS.Migrations
 {
     [DbContext(typeof(DotNetWMSContext))]
-    partial class DotNetWMSContextModelSnapshot : ModelSnapshot
+    [Migration("20210227111504_extend Doc")]
+    partial class extendDoc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,24 +287,6 @@ namespace DotNetWMS.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("DotNetWMS.Models.Location", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Latitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Longitude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Locations");
-                });
-
             modelBuilder.Entity("DotNetWMS.Models.WMSIdentityUser", b =>
                 {
                     b.Property<string>("Id")
@@ -414,9 +398,6 @@ namespace DotNetWMS.Migrations
                         .HasColumnType("nvarchar(30)")
                         .HasMaxLength(30);
 
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(40)")
@@ -431,8 +412,6 @@ namespace DotNetWMS.Migrations
                         .HasMaxLength(6);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
 
                     b.ToTable("Warehouses");
                 });
@@ -612,14 +591,6 @@ namespace DotNetWMS.Migrations
                     b.HasOne("DotNetWMS.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("DotNetWMS.Models.Warehouse", b =>
-                {
-                    b.HasOne("DotNetWMS.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

@@ -1,0 +1,166 @@
+﻿@model DotNetWMS.Models.Doc_Assignment
+
+@{
+    ViewData["Title"] = "ConfigureDocument";
+}
+<div>
+    <div class="d-flex justify-content-between">
+        <h2 class="my-0">Tworzenie dokumentu</h2>
+    </div>
+</div>
+<hr />
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label asp-for="UserFrom"></label>
+            <select id="userFrom" asp-for="UserFrom" class="form-control" asp-items="ViewBag.Users"><option value="" selected>Brak</option></select>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="UserTo"></label>
+            <select id="userTo" asp-for="UserTo" class="form-control" asp-items="ViewBag.Users"><option value="" selected>Brak</option></select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div id="warehouseFromDiv" class="form-group col-md-6">
+            <label asp-for="WarehouseFrom"></label>
+            <select id="warehouseFrom" asp-for="WarehouseFrom" class="form-control" asp-items="ViewBag.Warehouses"><option value="" selected>Brak</option></select>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="WarehouseTo"></label>
+            <select id="warehouseTo" asp-for="WarehouseTo" class="form-control" asp-items="ViewBag.Warehouses"><option value="" selected>Brak</option></select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label asp-for="ExternalFrom"></label>
+            <select id="externalFrom" asp-for="ExternalFrom" class="form-control" asp-items="ViewBag.Externals"><option value="" selected>Brak</option></select>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="ExternalTo"></label>
+            <select id="externalTo" asp-for="ExternalTo" class="form-control" asp-items="ViewBag.Externals"><option value="" selected>Brak</option></select>
+        </div>
+    </div>
+
+    <button id="generate" class="btn btn-info">Rozpocznij</button>
+
+    <div id="divPartial" class="mt-3">
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        var url = '@Url.Action("ConfigureDocument", "Doc_Assignments")';
+        $('#generate').click(function () {
+
+            var from = -1;
+            var fromIndex = -1;
+            var to = -1;
+            var toIndex = -1;
+
+            var userFromVal = $('#userFrom').val();
+            var warehouseFromVal = $('#warehouseFrom').val();
+            var externalFromVal = $('#externalFrom').val();
+
+            var selectlistFromVals = [userFromVal, warehouseFromVal, externalFromVal]
+
+            for (var i = 0; i < selectlistFromVals.length; i++) {
+                if (selectlistFromVals[i] != "") {
+                    from = selectlistFromVals[i];
+                    fromIndex = i;
+                    break;
+                }
+            }
+
+            var userToVal = $('#userTo').val();
+            var warehouseToVal = $('#warehouseTo').val();
+            var externalToVal = $('#externalTo').val();
+
+            var selectlistToVals = [userToVal, warehouseToVal, externalToVal]
+
+            for (var i = 0; i < selectlistToVals.length; i++) {
+                if (selectlistToVals[i] != "") {
+                    to = selectlistToVals[i];
+                    toIndex = i;
+                    break;
+                }
+            }
+
+            $('#divPartial').load(url, { from: from, to: to, fromIndex: fromIndex, toIndex: toIndex });
+        })
+
+        $(function () {
+            $('select').change(function () {
+                //from
+                if ($(this).attr('id') == 'userFrom' && $('#userFrom').val() != 0) {
+                    $('#warehouseFrom').prop('disabled', true)
+                    $('#externalFrom').prop('disabled', true)
+                }
+
+                if ($(this).attr('id') == 'warehouseFrom' && $('#warehouseFrom').val() != 0) {
+                    $('#userFrom').prop('disabled', true)
+                    $('#externalFrom').prop('disabled', true)
+                }
+
+                if ($(this).attr('id') == 'externalFrom' && $('#externalFrom').val() != 0) {
+                    $('#userFrom').prop('disabled', true)
+                    $('#warehouseFrom').prop('disabled', true)
+                }
+
+                if ($(this).attr('id') == 'userFrom' && $('#userFrom').val() == 0) {
+                    $('#warehouseFrom').prop('disabled', false)
+                    $('#externalFrom').prop('disabled', false)
+                }
+
+                if ($(this).attr('id') == 'warehouseFrom' && $('#warehouseFrom').val() == 0) {
+                    $('#userFrom').prop('disabled', false)
+                    $('#externalFrom').prop('disabled', false)
+                }
+
+                if ($(this).attr('id') == 'externalFrom' && $('#externalFrom').val() == 0) {
+                    $('#userFrom').prop('disabled', false)
+                    $('#warehouseFrom').prop('disabled', false)
+                }
+
+                //to
+                if ($(this).attr('id') == 'userTo' && $('#userTo').val() != 0) {
+                    $('#warehouseTo').prop('disabled', true)
+                    $('#externalTo').prop('disabled', true)
+                }
+
+                if ($(this).attr('id') == 'warehouseTo' && $('#warehouseTo').val() != 0) {
+                    $('#userTo').prop('disabled', true)
+                    $('#externalTo').prop('disabled', true)
+                }
+
+                if ($(this).attr('id') == 'externalTo' && $('#externalTo').val() != 0) {
+                    $('#userTo').prop('disabled', true)
+                    $('#warehouseTo').prop('disabled', true)
+                }
+
+                if ($(this).attr('id') == 'userTo' && $('#userTo').val() == 0) {
+                    $('#warehouseTo').prop('disabled', false)
+                    $('#externalTo').prop('disabled', false)
+                }
+
+                if ($(this).attr('id') == 'warehouseTo' && $('#warehouseTo').val() == 0) {
+                    $('#userTo').prop('disabled', false)
+                    $('#externalTo').prop('disabled', false)
+                }
+
+                if ($(this).attr('id') == 'externalTo' && $('#externalTo').val() == 0) {
+                    $('#userTo').prop('disabled', false)
+                    $('#warehouseTo').prop('disabled', false)
+                }
+
+            }) 
+        })
+
+        
+    </script>
+}

@@ -22,7 +22,7 @@ namespace DotNetWMS.Models
         //[Range(0.01, 10000, ErrorMessage = CustomErrorMessages.NumberRange)]
         //public decimal ItemQuantity { get; set; }
         [Display(Name = "Ilość")]
-        [RegularExpression(@"^(?=.*[1-9])[0-9]{0,4}[.,]?[0-9]{1,2}$", ErrorMessage = "Błąd")]
+        [RegularExpression(@"^(?=.*[1-9])[0-9]{0,4}[.,]?[0-9]{1,2}$", ErrorMessage = "Liczba nie może być mniejsza od 0 i większa od 10000")]
         public string ItemQuantity { get; set; }
         [Display(Name = "Jednostka")]
         public ItemUnits ItemUnit { get; set; }
