@@ -27,24 +27,37 @@
             @if (!item.IsChecked)
             {
 
-                <tr>
+        <tr>
 
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Message)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceivedDate)
+            </td>
+            @if (!item.IsChecked)
+            {
+                if (item.Title == "Nowy dokument")
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Title)
+                        <a asp-action="Check" asp-route-id="@item.Id">Potwierdź</a>
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Message)
+                        <a asp-controller="Doc_Assignments" asp-action="ShowDocument" asp-route-id="@item.DocumentId">Sprawdź</a>
                     </td>
+                }
+                else
+                {
                     <td>
-                        @Html.DisplayFor(modelItem => item.ReceivedDate)
+                        <a asp-action="Check" asp-route-id="@item.Id">Przyczytane</a>
                     </td>
-                    @if (!item.IsChecked)
-                    {
-                        <td>
-                            <a asp-action="Check" asp-route-id="@item.Id">Read</a>
-                        </td>
-                    }
-                </tr>
+                }
+
+            }
+        </tr>
 
             }
 
@@ -55,27 +68,36 @@
         {
             @if (item.IsChecked)
             {
-                <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Title)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Message)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ReceivedDate)
-                        </td>
-                        @if (item.IsChecked)
-                        {
-                            <td>
-                                <a asp-action="Check" asp-route-id="@item.Id">Unread</a>
-                            </td>
-                            <td>
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                            </td>
-                        }
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Message)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceivedDate)
+            </td>
+            @if (item.IsChecked)
+            {
+                if (item.Title == "Nowy dokument")
+                {
+                    <td>
+                        Potwierdzono!
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="Check" asp-route-id="@item.Id">Nieprzyczytane</a>
+                    </td>
+                }
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
+                </td>
+            }
 
-                </tr>
+        </tr>
             }
 
         }

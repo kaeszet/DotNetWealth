@@ -42,6 +42,8 @@ namespace DotNetWMS.Models
         [StringLength(30)]
         [Display(Name = "Miasto")]
         public string City { get; set; }
+        public int? LocationId { get; set; }
+        public Location Location { get; set; }
         /// <summary>
         /// A list of items stored in warehouse
         /// </summary>
@@ -50,6 +52,7 @@ namespace DotNetWMS.Models
         /// A property to assign Warehouse to Item DB
         /// </summary>
         public string AssignFullName => $"{Name}, {Street}";
+        public string FullNameForDocumentation => $"{Name}{Environment.NewLine}{Street}{Environment.NewLine}{ZipCode} {City}";
 
     }
 }

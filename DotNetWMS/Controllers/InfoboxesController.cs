@@ -47,11 +47,30 @@ namespace DotNetWMS.Controllers
 
             if (id == null)
             {
-                NotFound();
+                return View("NotFound");
             }
 
             var info = await _context.Infoboxes.FindAsync(id);
-            info.IsChecked = !info.IsChecked;
+
+            if (!string.IsNullOrEmpty(info.DocumentId))
+            {
+                var doc = _context.Doc_Assignments.Find(info.DocumentId);
+
+                if (doc != null)
+                {
+                    doc.IsConfirmed = true;
+                    info.IsChecked = true;
+                    doc.ConfirmationDate = DateTime.Now;
+                    _context.Update(doc);
+                    await _context.SaveChangesAsync();
+                    //return RedirectToAction(nameof(Index));
+                }
+            }
+            else
+            {
+                info.IsChecked = !info.IsChecked;
+            }
+            
             _context.Update(info);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
