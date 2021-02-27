@@ -5,7 +5,7 @@
 }
     <form method="post">
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover stocktaking">
                 <thead class="thead-light">
                     <tr>
                         <th>Typ</th>
@@ -31,29 +31,25 @@
                             <td>@Model[i].ItemCode</td>
                             <td>@Model[i].ItemQuantity</td>
                             <td>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" id="ok_@i" value="1" class="custom-control-input" onchange="checkboxChange(this)">
-                                    <label class="custom-control-label" for="ok_@i"></label>
+                                <div class="form-check">
+                                    <input type="checkbox" id="ok_@i" value="1" class="form-check-input" onchange="checkboxChange(this)">
                                 </div>
                             </td>
                             <td>
-                                <div class="custom-control custom-checkbox">
-                                    <input asp-for="@Model[i].ToCorrect" class="custom-control-input" type="checkbox" onchange="checkboxChange(this)">
-                                    <label asp-for="@Model[i].ToCorrect" class="custom-control-label"></label>
+                                <div class="form-check">
+                                    <input asp-for="@Model[i].ToCorrect" class="form-check-input" type="checkbox" onchange="checkboxChange(this)">
                                     <span asp-validation-for="@Model[i].ToCorrect" class="text-danger small font-weight-bold"></span>
                                 </div>
                             </td>
                             <td>
-                                <div class="custom-control custom-checkbox">
-                                    <input asp-for="@Model[i].ToDelete" class="custom-control-input" type="checkbox" onchange="checkboxChange(this)">
-                                    <label asp-for="@Model[i].ToDelete" class="custom-control-label"></label>
+                                <div class="form-check">
+                                    <input asp-for="@Model[i].ToDelete" class="form-check-input" type="checkbox" onchange="checkboxChange(this)">
                                     <span asp-validation-for="@Model[i].ToDelete" class="text-danger small font-weight-bold"></span>
                                 </div>
                             </td>
                             <td>
-                                <div class="custom-control custom-checkbox">
-                                    <input asp-for="@Model[i].IsDamaged" class="custom-control-input" type="checkbox" onchange="checkboxChange(this)">
-                                    <label asp-for="@Model[i].IsDamaged" class="custom-control-label"></label>
+                                <div class="form-check">
+                                    <input asp-for="@Model[i].IsDamaged" class="form-check-input" type="checkbox" onchange="checkboxChange(this)">
                                     <span asp-validation-for="@Model[i].IsDamaged" class="text-danger small font-weight-bold"></span>
                                 </div>
                             </td>
@@ -72,8 +68,8 @@
         </div>
             @if (Model.Any())
             {
-                <div class="form-group mt-3">
-                    <button type="submit" asp-action="StocktakingBegin" asp-route-id="@ViewBag.warehouseId" class="btn btn-light btn-sm d-print-none">Kontynuuj</button>
+                <div class="form-group mt-3" data-hidden="true">
+                    <button type="submit" asp-action="StocktakingBegin" asp-route-id="@ViewBag.warehouseId" class="btn btn-primary btn-sm">Kontynuuj</button>
                 </div>
             }
             else
@@ -82,17 +78,4 @@
             }
 
     </form>
-@*@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/CustomValidation.js"></script>
-}
-<script>
-    function checkboxChange(obj) {
-        var checkboxes = obj.closest('tr').getElementsByClassName("custom-control-input");
-        for (var i = 0; i < checkboxes.length; i++) {
-            checkboxes[i].checked = false;
-        }
-        obj.checked = true;
-    }
-</script>*@
 

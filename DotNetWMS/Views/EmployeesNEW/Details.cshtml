@@ -14,30 +14,39 @@
 </div>
 <hr />
 <div class="mb-3">
-        <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
-        <div class="row">
-            <div class="col-md-6">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name) i @Html.DisplayNameFor(model => model.Surname)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name) @Html.DisplayFor(model => model.Surname)</li>
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left"></i>Wróć do podglądu</a>
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Name) i @Html.DisplayNameFor(model => model.Surname)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Name) @Html.DisplayFor(model => model.Surname)</li>
 
-                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Street)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
 
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.EmployeeNumber)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.EmployeeNumber)</li>
 
-                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.EmployeeNumber)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.EmployeeNumber)</li>
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Department)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
 
-                    <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Department)</li>
-                    <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
-            </div>
+                @*<li class="list-group-item font-weight-bold">Kod QR</li>
+                <li class="list-group-item pl-5"><img src="@ViewBag.QrCode" style="width:200px;height:200px;" /></li>*@
+            </ul>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+            <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
+        </div>
+        <div class="col-12">
+            <input type="hidden" id="address" value="@TempData["Adress"]" />
+            <div id="map" style="height: 400px;"></div>
         </div>
     </div>
+</div>
 
 @*<div id="divPartial">
-    @await Html.PartialAsync("_QrCodePartial")
-</div>*@
+        @await Html.PartialAsync("_QrCodePartial")
+    </div>*@
+@section Scripts {
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
+}

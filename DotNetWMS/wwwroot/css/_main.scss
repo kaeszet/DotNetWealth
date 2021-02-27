@@ -265,3 +265,11 @@ header {
 .bg-navbar {
 	@include pos-fixed(0);
 }
+table {
+	&.stocktaking {
+
+		input {
+			@include size(15px, 15px);
+		}
+	}
+}

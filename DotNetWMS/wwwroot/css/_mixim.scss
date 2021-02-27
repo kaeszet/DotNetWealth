@@ -69,3 +69,9 @@
 		transform: rotate($val + deg);
 	}
 }
+
+@mixin size($w: null, $h: null) {
+
+	width: $w;
+	height: $h;
+}
