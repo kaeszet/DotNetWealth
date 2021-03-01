@@ -2,26 +2,26 @@
     ViewData["Title"] = "O nas";
 }
 
-<div class="about">
+<div>
+    <h2 class="text-sm-left text-sm-left text-center">@ViewData["Title"]</h2>
+</div>
+<hr />
 <div class="row">
-    <div class="col-md-12 text-center">
-        <h1 class="mt-4 mb-4">@ViewData["Title"]</h1>
-
+    <div class="col-12">
+        <img src="~/images/wsei-logosvg.svg" class="mw-100 mh-100 m-auto d-block" width="400" />
     </div>
-</div>
-
-<div class="row h-75">
-    <div class="col-md-6 d-flex">
-        <img src="~/images/wsei-logosvg.svg" width="100%"/>
+    <div class="col-md-6 d-flex justify-content-center align-items-center">
+        <div>
+            <p>Niniejsza aplikacja została wykonana i opracowana przez studentów <b>Wyższej Szkoły Ekonomii i Informatyki w Krakowie</b></p>
+            <p>Publikowanie, kopiowanie, prezentowanie aplikacji i wykorzystywanie jej kodu źródłowego jest zabronione bez zgody autorów.</p>
+        </div>
     </div>
-    <div class="col-md-6 d-flex flex-wrap align-items-center">
-        <p class="m-0">Niniejsza aplikacja została wykonana przez studentów Wyższej Szkoły Ekonomii i Informatyki w Krakowie:</p>
-        <ul>
-            <li>Kamila Szydłowskiego,</li>
-            <li>Krzysztofa Wcisło,</li>
-            <li>Adama Żura.</li>
+    <div class="col-md-6">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item font-weight-bold">Autorzy:</li>
+            <li class="list-group-item">Kamil Szydłowski</li>
+            <li class="list-group-item">Krzysztof Wcisło</li>
+            <li class="list-group-item">Adam Żur</li>
         </ul>
-        <p class="m-0"><u>Publikowanie, kopiowanie, prezentowanie aplikacji i wykorzystywanie jej kodu źródłowego jest zabronione bez zgody autorów.</u></p>
     </div>
-</div>
 </div>
