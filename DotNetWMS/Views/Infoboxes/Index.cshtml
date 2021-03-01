@@ -6,124 +6,134 @@
 <div>
     <h2 class="text-sm-left text-center">Skrzynka wiadomości</h2>
 </div>
-@{
-    var index = 1;
-}
 <hr />
 <div class="row">
     <div class="col-12">
-        <table class="table">
-            <thead class="thead-light">
-                <tr>
-                    <th>#</th>
-                    <th>@Html.DisplayNameFor(model => model.Title)</th>
-                    <th>@Html.DisplayNameFor(model => model.Message)</th>
-                    <th>@Html.DisplayNameFor(model => model.ReceivedDate)</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-
-                @foreach (var item in Model)
+        <div class="list-group">
+            @foreach (var item in Model)
+            {
+                @if (!item.IsChecked)
                 {
-                    @if (!item.IsChecked)
-                    {
-
-                        <tr class="table-primary">
-                            <td>@index</td>
-                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Message)</td>
-                            <td>@Html.DisplayFor(modelItem => item.ReceivedDate)</td>
-                            @if (!item.IsChecked)
+                    <div class="list-group-item list-group-item-primary flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">@Html.DisplayFor(modelItem => item.Title)</h5>
+                            <small>@Html.DisplayFor(modelItem => item.ReceivedDate)</small>
+                        </div>
+                        <p class="mb-1">@Html.DisplayFor(modelItem => item.Message)</p>
+                        <hr />
+                        <div class="w-100">
+                            @if (item.Title == "Nowy dokument")
                             {
-                                if (item.Title == "Nowy dokument")
-                                {
-                                    <td><a asp-action="Check" asp-route-id="@item.Id">Potwierdź</a></td>
-                                    <td><a asp-controller="Doc_Assignments" asp-action="ShowDocument" asp-route-id="@item.DocumentId">Sprawdź</a></td>
-                                }
-                                else
-                                {
-                                    <td><a asp-action="Check" asp-route-id="@item.Id">Przyczytane</a></td>
-                                }
-
+                                <a asp-action="Check" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Potwierdź</a>
+                                <a asp-controller="Doc_Assignments" asp-action="ShowDocument" asp-route-id="@item.DocumentId" class="btn btn-sm btn-primary">Sprawdź</a>
                             }
-                            <td></td>
-                        </tr>
-                        index++;
-                    }
+                            else
+                            {
+                                <a asp-action="Check" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><i class="fas fa-envelope-open mr-1"></i>Przyczytane</a>
+                            }
+                        </div>
+                    </div>
                 }
-                @foreach (var item in Model)
+
+            }
+            @foreach (var item in Model)
+            {
+                @if (item.IsChecked)
                 {
-                    @if (item.IsChecked)
-                    {
-                        <tr>
-                            <td>@index</td>
-                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Message)</td>
-                            <td>@Html.DisplayFor(modelItem => item.ReceivedDate)</td>
-                            @if (item.IsChecked)
+                    <div class="list-group-item flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">@Html.DisplayFor(modelItem => item.Title)</h5>
+                            <small class="text-muted">@Html.DisplayFor(modelItem => item.ReceivedDate)</small>
+                        </div>
+                        <p class="mb-1">@Html.DisplayFor(modelItem => item.Message)</p>
+                        <hr />
+                        <div class="w-100">
+                            @if (item.Title == "Nowy dokument")
                             {
-                                if (item.Title == "Nowy dokument")
-                                {
-                                    <td>Potwierdzono!</td>
-                                }
-                                else
-                                {
-                                    <td><a asp-action="Check" asp-route-id="@item.Id">Nieprzyczytane</a></td>
-                                }
-                                <td><a asp-action="Delete" asp-route-id="@item.Id">Usuń</a></td>
+                                <b>Potwierdzono!</b>
                             }
-                        </tr>
-                        index++;
-                    }
-
+                            else
+                            {
+                                <a asp-action="Check" asp-route-id="@item.Id" class="btn btn-sm btn-primary"><i class="fas fa-envelope mr-1"></i>Nieprzyczytane</a>
+                            }
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt mr-1"></i>Usuń</a>
+                        </div>
+                    </div>
                 }
-            </tbody>
-        </table>
-    </div>
-        @*<div class="col-12">
-            <table class="table table-hover">
+
+            }
+        </div>
+
+        @*<div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th>#</th>
+                        <th>@Html.DisplayNameFor(model => model.Title)</th>
+                        <th>@Html.DisplayNameFor(model => model.Message)</th>
+                        <th>@Html.DisplayNameFor(model => model.ReceivedDate)</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
                 <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        @if (!item.IsChecked)
+                        {
+
+                            <tr class="table-primary">
+                                <td>@index</td>
+                                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Message)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ReceivedDate)</td>
+                                @if (!item.IsChecked)
+                                {
+                                    if (item.Title == "Nowy dokument")
+                                    {
+                                        <td><a asp-action="Check" asp-route-id="@item.Id">Potwierdź</a></td>
+                                        <td><a asp-controller="Doc_Assignments" asp-action="ShowDocument" asp-route-id="@item.DocumentId">Sprawdź</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td><a asp-action="Check" asp-route-id="@item.Id">Przyczytane</a></td>
+                                    }
+
+                                }
+                                <td></td>
+                            </tr>
+                            index++;
+                        }
+                    }
                     @foreach (var item in Model)
                     {
                         @if (item.IsChecked)
                         {
                             <tr>
                                 <td>@index</td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Title)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Message)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ReceivedDate)
-                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Message)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ReceivedDate)</td>
                                 @if (item.IsChecked)
                                 {
                                     if (item.Title == "Nowy dokument")
                                     {
-                                        <td>
-                                            Potwierdzono!
-                                        </td>
+                                        <td>Potwierdzono!</td>
                                     }
                                     else
                                     {
-                                        <td>
-                                            <a asp-action="Check" asp-route-id="@item.Id">Nieprzyczytane</a>
-                                        </td>
+                                        <td><a asp-action="Check" asp-route-id="@item.Id">Nieprzyczytane</a></td>
                                     }
-                                    <td>
-                                        <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
-                                    </td>
+                                    <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt mr-1"></i>Usuń</a></td>
                                 }
-
                             </tr>
+                            index++;
                         }
 
                     }
                 </tbody>
             </table>
         </div>*@
+    </div>
     </div>
