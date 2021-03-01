@@ -9,14 +9,14 @@
 <hr />
 <div class="row">
     <div class="col-12">
-        <div class="list-group">
+        <div class="list-group info-box">
             @foreach (var item in Model)
             {
                 @if (!item.IsChecked)
                 {
                     <div class="list-group-item list-group-item-primary flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">@Html.DisplayFor(modelItem => item.Title)</h5>
+                        <div class="d-flex w-100 justify-content-between title-wrapper">
+                            <h5 class="mb-1 title">@Html.DisplayFor(modelItem => item.Title)</h5>
                             <small>@Html.DisplayFor(modelItem => item.ReceivedDate)</small>
                         </div>
                         <p class="mb-1">@Html.DisplayFor(modelItem => item.Message)</p>
