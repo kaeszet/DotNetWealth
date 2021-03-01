@@ -57,3 +57,19 @@ $breakpoint-xs: 375.98px;
 		display: none !important;
 	}
 }
+
+@media screen and (max-width: $breakpoint-md) {
+
+	.list-group {
+		&.info-box {
+			.title-wrapper {
+				flex-flow: column-reverse;
+				text-align: center;
+			}
+			.title {
+				margin-top: 0.5rem;
+				margin-bottom: 0.5rem !important;
+			}
+		}
+	}
+}
