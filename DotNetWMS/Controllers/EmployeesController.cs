@@ -1,176 +1,183 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DotNetWMS.Data;
+using DotNetWMS.Models;
+using static DotNetWMS.Resources.UserLoginGenerator;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DotNetWMS.Data;
-using DotNetWMS.Models;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using DotNetWMS.Resources;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
-    /// <summary>
-    /// Controller class to support the CRUD process for the Employee model
-    /// </summary>
-    [Authorize(Roles = "Kadry,Moderator")]
     public class EmployeesController : Controller
     {
-        /// <summary>
-        /// A field for handling the delivery of information to the DB associated with the Entity Core framework
-        /// </summary>
         private readonly DotNetWMSContext _context;
-        /// <summary>
-        /// Universal Electronic System for Registration of the Population number
-        /// </summary>
-        private static string Pesel;
+        private readonly UserManager<WMSIdentityUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<EmployeesController> _logger;
 
-        public EmployeesController(DotNetWMSContext context)
+        public EmployeesController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor, ILogger<EmployeesController> logger)
         {
             _context = context;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
-        /// <summary>
-        /// GET method responsible for returning an Employee's Index view and supports a search engine
-        /// </summary>
-        /// <param name="order">Sort surnames in ascending or descending order</param>
-        /// <param name="search">Search phrase in the search field</param>
-        /// <returns>Returns Employee's Index view with list of employees in the order set by the user</returns>
+
         public async Task<IActionResult> Index(string order, string search)
         {
+            
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
             ViewData["Search"] = search;
-            
-            var employees = _context.Employees.Select(e => e);
+
+            var users = _context.Users.Select(u => u);
 
             if (!string.IsNullOrEmpty(search))
             {
-                employees = employees.Where(e => e.Surname.Contains(search) || e.Name.Contains(search) || e.Pesel.Contains(search));
+                users = users.Where(e => e.Surname.Contains(search) || e.Name.Contains(search) || e.EmployeeNumber.Contains(search));
             }
 
             switch (order)
             {
                 case "name_desc":
-                    employees = employees.OrderByDescending(e => e.Surname).Include(e => e.Department);
+                    users = users.OrderByDescending(e => e.Surname).Include(e => e.Department);
                     break;
                 default:
-                    employees = employees.OrderBy(e => e.Surname).Include(e => e.Department);
+                    users = users.OrderBy(e => e.Surname).Include(e => e.Department);
                     break;
             }
-            return View(await employees.AsNoTracking().ToListAsync());
+            _logger.LogInformation("INFO: Użytkownik wyświetlił listę pracowników!");
+            return View(await users.AsNoTracking().ToListAsync());
         }
-        /// <summary>
-        /// GET method responsible for returning an Employee's Details view
-        /// </summary>
-        /// <param name="id">Employee ID which should be returned</param>
-        /// <returns>Employee's Details view</returns>
-        public async Task<IActionResult> Details(int? id)
+
+        public async Task<IActionResult> Details(string id)
         {
+            var url = _httpContextAccessor.HttpContext?.Request?.GetDisplayUrl();
 
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
+                _logger.LogDebug($"DEBUG: Pracownik o podanym id = {id} nie istnieje!");
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .Include(e => e.Department)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            var user = await _context.Users
+                .Include(u => u.Department)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}!");
                 return NotFound();
             }
 
-            return View(employee);
+            ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
+            _logger.LogInformation($"INFO: Użytkownik wyświetlił dane pracownika o id = {id}!");
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
+
+            return View(user);
         }
-        /// <summary>
-        /// GET method responsible for returning an Employee's Create view
-        /// </summary>
-        /// <returns>Returns Employee's Create view</returns>
+        
         public IActionResult Create()
         {
-            
+            _logger.LogInformation("INFO: Użytkownik wyświetlił kreator dodawania nowego pracownika!");
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
-            
+
             return View();
         }
-        /// <summary>
-        /// POST method responsible for checking and transferring information from the form to DB
-        /// </summary>
-        /// <param name="employee">Employee model class with binding DB attributes</param>
-        /// <returns>If succeed, returns Employee's Index view. Otherwise - show error message</returns>
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
+        public async Task<IActionResult> Create(WMSIdentityUser user)
         {
-            bool isEmployeeExists = _context.Employees.Any(i => i.Pesel == employee.Pesel);
+            bool isEmployeeExists = _context.Users.Any(i => i.EmployeeNumber == user.EmployeeNumber);
+            string autoGenPassword = "Test123!";
+
             if (ModelState.IsValid)
             {
                 if (!isEmployeeExists)
                 {
-                    _context.Add(employee);
-                    await _context.SaveChangesAsync();
+                    user.UserName = GenerateUserLogin(user.Name, user.Surname, user.EmployeeNumber);
+                    await _userManager.CreateAsync(user, autoGenPassword);
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, $"Pracownik {employee.FullName} został już wprowadzony do systemu!");
+                    _logger.LogError($"Pracownik {user.FullName} został już wprowadzony do systemu!");
+                    ModelState.AddModelError(string.Empty, $"Pracownik {user.FullName} został już wprowadzony do systemu!");
                 }
-               
+
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
-            
-            return View(employee);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+
+            return View(user);
         }
-        /// <summary>
-        /// GET method responsible for returning an Employee's Edit view
-        /// </summary>
-        /// <param name="id">Employee ID which should be returned</param>
-        /// <returns>Returns Employee's Edit view</returns>
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            
-            var employee = await _context.Employees.FindAsync(id);
-            
-            if (employee == null)
-            {
-                return NotFound();
-            }
-            Pesel = employee.Pesel;
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
-            return View(employee);
-        }
-        /// <summary>
-        /// POST method responsible for checking and transferring information from the form to DB
-        /// </summary>
-        /// <param name="id">Employee ID to edit</param>
-        /// <param name="employee">Employee model class with binding DB attributes</param>
-        /// <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Pesel,DepartmentId,Street,ZipCode,City")] Employee employee)
-        {
-            if (id != employee.Id || !EmployeeExists(employee.Id))
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            bool isEmployeeExists = _context.Employees.Any(e => e.Pesel == employee.Pesel && e.Pesel != Pesel && !string.IsNullOrEmpty(Pesel));
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}!");
+                return NotFound();
+            }
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
+            return View(user);
+        }
+        /// <summary>
+        /// POST method responsible for checking and transferring information from the form to DB
+        /// </summary>
+        /// <param name="user">WMSIdentityUser model class with binding DB attributes</param>
+        /// <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(WMSIdentityUser user)
+        {
+            var _user = await _userManager.FindByIdAsync(user.Id);
+
+            if (_user == null)
+            {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {user.Id}!");
+                return NotFound();
+            }
+
+            string oldEmployeeNumber = _context.Users.Find(user.Id).EmployeeNumber;
+
+            bool isEmployeeExists = _context.Users.Any(e => e.EmployeeNumber == user.EmployeeNumber
+            && e.EmployeeNumber != oldEmployeeNumber
+            && !string.IsNullOrEmpty(oldEmployeeNumber));
+            
             if (ModelState.IsValid)
             {
                 if (!isEmployeeExists)
                 {
                     try
                     {
-                        _context.Update(employee);
-                        await _context.SaveChangesAsync();
+                        _user.Name = user.Name;
+                        _user.Surname = user.Surname;
+                        _user.EmployeeNumber = user.EmployeeNumber;
+                        _user.DepartmentId = user.DepartmentId;
+                        _user.Street = user.Street;
+                        _user.ZipCode = user.ZipCode;
+                        _user.City = user.City;
+
+                        var result = await _userManager.UpdateAsync(_user);
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!EmployeeExists(employee.Id))
+                        if (!EmployeeExists(user.Id))
                         {
                             return NotFound();
                         }
@@ -183,47 +190,52 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, $"Pracownik {employee.FullName} został już wprowadzony do systemu!");
+                    _logger.LogError($"Pracownik {user.FullName} został już wprowadzony do systemu!");
+                    ModelState.AddModelError(string.Empty, $"Pracownik {user.FullName} został już wprowadzony do systemu!");
                 }
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
-            return View(employee);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
+
+            return View(user);
         }
         /// <summary>
-        /// GET method responsible for returning an Employee's Delete view
+        /// GET method responsible for returning an WMSIdentityUser's Delete view
         /// </summary>
-        /// <param name="id">Employee ID to delete</param>
-        /// <returns>Returns Employee's Delete view if exists</returns>
-        public async Task<IActionResult> Delete(int? id)
+        /// <param name="id">WMSIdentityUser ID to delete</param>
+        /// <returns>Returns WMSIdentityUser's Delete view if exists</returns>
+        public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
+                _logger.LogDebug($"DEBUG: Pracownik o podanym id = {id} nie istnieje!");
                 return NotFound();
             }
 
-            var employee = await _context.Employees
+            var user = await _context.Users
                 .Include(e => e.Department)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            if (user == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {user.Id}!");
                 return NotFound();
             }
 
-            return View(employee);
+            return View(user);
         }
         /// <summary>
-        /// POST method responsible for removing employee from DB if the user confirms this action
+        /// POST method responsible for removing user from DB if the user confirms this action
         /// </summary>
-        /// <param name="id">Employee ID to delete</param>
-        /// <returns>Returns Employee's Index view</returns>
+        /// <param name="id">WMSIdentityUser ID to delete</param>
+        /// <returns>Returns WMSIdentityUser's Index view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
             try
             {
-                _context.Employees.Remove(employee);
+                _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -233,18 +245,19 @@ namespace DotNetWMS.Controllers
                 ViewBag.ErrorMessage = $"Istnieje przedmiot przypisany do tego pracownika.<br>" +
                     $"Przed usunięciem pracownika upewnij się, że zdał wszystkie przedmioty.<br>" +
                     $"Odznacz je w dziale \"Majątek\" i ponów próbę.";
+                _logger.LogError("Podczas usuwania pracownika wystąpił błąd! Istnieje przedmiot przypisany do tego pracownika. Przed usunięciem pracownika upewnij się, że zdał wszystkie przedmioty. Odznacz je w dziale \"Majątek\" i ponów próbę.");
                 return View("DbExceptionHandler");
             }
-            
+
         }
         /// <summary>
-        /// A private method responsible for checking if there is a employee with the given id
+        /// A private method responsible for checking if there is a user with the given id
         /// </summary>
-        /// <param name="id">Employee ID to check</param>
-        /// <returns>Returns true if the employee exists. Otherwise - false.</returns>
-        private bool EmployeeExists(int id)
+        /// <param name="id">WMSIdentityUser ID to check</param>
+        /// <returns>Returns true if the user exists. Otherwise - false.</returns>
+        private bool EmployeeExists(string id)
         {
-            return _context.Employees.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

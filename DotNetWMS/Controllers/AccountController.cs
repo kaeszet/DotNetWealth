@@ -120,12 +120,6 @@ namespace DotNetWMS.Controllers
                     ViewBag.ExceptionMessage = "Przed zalogowaniem musisz aktywować konto klikając na link wysłany mailem";
                     return View("GlobalExceptionHandler");
 
-                    //else
-                    //{
-                    //    await signInManager.SignInAsync(user, isPersistent: false);
-                    //    return RedirectToAction("index", "home");
-                    //}
-
                 }
 
                 foreach (var error in result.Errors)
@@ -170,6 +164,7 @@ namespace DotNetWMS.Controllers
             }
 
             var user = await userManager.FindByIdAsync(userId);
+
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"Identyfikator użytkownika {userId} jest nieprawidłowy";
@@ -177,6 +172,7 @@ namespace DotNetWMS.Controllers
             }
 
             var result = await userManager.ConfirmEmailAsync(user, token);
+
             if (result.Succeeded)
             {
                 return View();
