@@ -3,6 +3,8 @@ using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,12 @@ namespace DotNetWMSTests
 {
     public class DotNetWMSTests_Adam_Warehouses : DotNetWMSTests_Base
     {
+        private Mock<ILogger<WarehousesController>> _logger;
+
         [SetUp]
         public void Setup()
         {
-
+            _logger = new Mock<ILogger<WarehousesController>>();
         }
 
         [Test]
@@ -84,7 +88,7 @@ namespace DotNetWMSTests
         public void WarehouseCreateGet_GetCreateView_ReturnViewObjectWithoutInjectedData()
         {
 
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = controller.Create() as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNull(result.Model);
@@ -103,7 +107,7 @@ namespace DotNetWMSTests
             Initialize(_context);
 
             var emp = new Warehouse() { Id = 01, Name = "Magazyn główny", Street = "ul. Św Filipa 1x", ZipCode = "31-001", City = "Kraków" };
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Create(emp) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));
 
@@ -113,7 +117,7 @@ namespace DotNetWMSTests
         public async Task WarehouseDetails_CheckRecordWithNotExistingKey_ReturnNull()
         {
 
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Details(99) as ViewResult;
             Assert.IsNull(result);
 
@@ -123,7 +127,7 @@ namespace DotNetWMSTests
         public async Task WarehouseDetails_CheckRecordWithNull_ReturnNotFoundResult()
         {
 
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Details(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -133,7 +137,7 @@ namespace DotNetWMSTests
         public async Task WarehouseDetails_IfIdDoesntExist_ReturnNotFoudResult()
         {
 
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Details(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -144,7 +148,7 @@ namespace DotNetWMSTests
         public async Task WarehouseEditGet_CheckRecordWithNull_ReturnNotFoundResult()
         {
 
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Edit(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -154,7 +158,7 @@ namespace DotNetWMSTests
         public async Task WarehouseDeleteGet_CheckRecordWithNotExistingKey_ReturnNull()
         {
 
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Delete(99) as ViewResult;
             Assert.IsNull(result);
 
@@ -164,7 +168,7 @@ namespace DotNetWMSTests
         public async Task WarehouseDeleteGet_CheckRecordWithNull_ReturnNotFoundResult()
         {
 
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Delete(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -174,7 +178,7 @@ namespace DotNetWMSTests
         public async Task WarehouseDeleteGet_IfIdDoesntExist_ReturnNotFoudResult()
         {
 
-            var controller = new WarehousesController(_context);
+            var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Delete(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 

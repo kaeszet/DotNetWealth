@@ -28,7 +28,7 @@ namespace DotNetWMS.Controllers
         /// A static field for handling Warehouse's name for properly creation of Stocktaking view
         /// </summary>
 
-        public WarehousesController(DotNetWMSContext context, ILogger<HomeController> logger)
+        public WarehousesController(DotNetWMSContext context, ILogger<WarehousesController> logger)
         {
             _context = context;
             _logger = logger;
