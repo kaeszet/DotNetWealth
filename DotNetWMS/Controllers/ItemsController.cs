@@ -83,10 +83,6 @@ namespace DotNetWMS.Controllers
             var item = await CreateAssignItemConfirmationView(id, "Assign_to_employee_confirm");
             if (item == null) return NotFound();
 
-            //var doc = DocumentsGenerator.Generate(item);
-            //_context.Doc_Assignments.Add(doc);
-            //await _context.SaveChangesAsync();
-
             return View(item);
         }
         /// <summary>
@@ -124,7 +120,6 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
-            //var oldItem = _context.Items.AsNoTracking().FirstOrDefault(i => i.Id == item.Id);
 
             if (id != item.Id)
             {
@@ -133,20 +128,10 @@ namespace DotNetWMS.Controllers
 
             if (ModelState.IsValid)
             {
-                //var doc = _context.Doc_Assignments.FirstOrDefault(d => d.UserFrom == oldItem.UserId);
-
-                //if (doc != null)
-                //{
-                //    doc = DocumentsGenerator.Generate(item, doc);
-                //}
-
-                //_context.Update(doc);
 
                 return await CreateAssignItemConfirmationView(item, "Assign_to_employee_confirm");
 
             }
-
-           
 
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             return View(item);
@@ -253,6 +238,7 @@ namespace DotNetWMS.Controllers
                 .Include(i => i.External)
                 .Include(i => i.Warehouse)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (item == null)
             {
                 return NotFound();
@@ -509,24 +495,19 @@ namespace DotNetWMS.Controllers
             switch (obj.Name)
             {
                 case "WMSIdentityUser":
-                    //sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.UserId == item.UserId);
                     sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.UserId == item.UserId);
                     break;
                 case "Warehouse":
-                    //sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.WarehouseId == item.WarehouseId);
                     sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.WarehouseId == item.WarehouseId);
                     break;
                 case "External":
-                    //sameItem = _context.Items.FirstOrDefault(i => i.ItemCode == item.ItemCode && i.ExternalId == item.ExternalId);
                     sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.ExternalId == item.ExternalId);
                     break;
 
             }
             
-            
             if (sameItem != null && sameItem.Id != item.Id && sameItem.ExternalId == null && sameItem.WarehouseId == item.WarehouseId)
             {
-                //ItemQuantity = sameItem.Quantity;
                 _context.Remove(sameItem);
                 item.Quantity += sameItem.Quantity;
                 _context.Update(item);

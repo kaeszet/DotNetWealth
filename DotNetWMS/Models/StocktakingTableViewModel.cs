@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
-    public class StocktakingNewViewModel
+    public class StocktakingTableViewModel
     {
         [Display(Name = "Typ")]
         public string ItemType { get; set; }

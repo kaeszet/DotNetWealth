@@ -27,44 +27,11 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// A static field for handling Warehouse's name for properly creation of Stocktaking view
         /// </summary>
-        private static string Name;
 
         public WarehousesController(DotNetWMSContext context, ILogger<HomeController> logger)
         {
             _context = context;
             _logger = logger;
-        }
-        /// <summary>
-        /// GET method responsible for returning an Warehouse's Stocktaking view
-        /// </summary>
-        /// <param name="model">StocktakingViewModel class object to start the inventory procedure</param>
-        /// <returns>Returns Warehouse's Stocktaking view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
-        public IActionResult Stocktaking(StocktakingViewModel model)
-        {
-            model.Items = _context.Items.Select(i => i).ToList();
-            ViewData["WarehouseList"] = new SelectList(_context.Warehouses, "Id", "AssignFullName");
-            return View(model);
-        }
-        /// <summary>
-        /// POST method to display the list of items existing in the previously selected warehouse
-        /// </summary>
-        /// <param name="warehouseFullName">Defined the full name of the warehouse</param>
-        /// <returns>Returns Warehouse's Stocktaking view and items existing in the previously selected warehouse</returns>
-        [HttpPost]
-        [Authorize(Roles = "StandardPlus,Moderator")]
-        public IActionResult Stocktaking(string warehouseFullName)
-        {
-            //var warehouse = _context.Warehouses.FirstOrDefault(w => w.AssignFullName == warehouseFullName);
-            if (string.IsNullOrEmpty(warehouseFullName))
-            {
-                return NotFound();
-            }
-            int warehouseId = Convert.ToInt32(warehouseFullName);
-            var items = _context.Items.Select(i => i).Where(i => i.WarehouseId == warehouseId).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-            ViewData["ItemList"] = items;
-
-            return PartialView("_StocktakingTable", items);
         }
         /// <summary>
         /// GET method responsible for returning an Warehouse's Index view and supports a search engine
@@ -178,7 +145,6 @@ namespace DotNetWMS.Controllers
             }
 
             var warehouse = await _context.Warehouses.FindAsync(id);
-            Name = warehouse.Name;
 
             if (warehouse == null)
             {
@@ -199,12 +165,19 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Street,ZipCode,City")] Warehouse warehouse)
         {
+            
             if (id != warehouse.Id)
             {
                 _logger.LogDebug($"DEBUG: Takie id = {id} nie istniej w bazie magazynów!");
                 return NotFound();
             }
-            bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name && w.Name != Name);
+
+            var oldWarehouseNumber = _context.Warehouses.Find(warehouse.Id).Name;
+
+            bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name 
+            && w.Name != oldWarehouseNumber 
+            && !string.IsNullOrEmpty(oldWarehouseNumber));
+
             if (ModelState.IsValid)
             {
                 if (!isWarehouseExists)
@@ -291,7 +264,7 @@ namespace DotNetWMS.Controllers
             
         }
 
-        public async Task<IActionResult> StocktakingIndex(StocktakingViewModel model)
+        public async Task<IActionResult> StocktakingIndex(StocktakingStartViewModel model)
         {
             var warehouses = await _context.Warehouses.ToListAsync();
             ViewData["WarehouseList"] = new SelectList(warehouses, "Id", "AssignFullName");
@@ -308,10 +281,10 @@ namespace DotNetWMS.Controllers
                 ViewData["InfoMessage"] = "W wybranym magazynie nie ma przedmiotów!";
             }
 
-            var model = new List<StocktakingNewViewModel>();
+            var model = new List<StocktakingTableViewModel>();
             foreach (var item in itemsInWarehouse)
             {
-                var stocktakingViewModel = new StocktakingNewViewModel()
+                var stocktakingViewModel = new StocktakingTableViewModel()
                 {
                     ItemType = item.Type,
                     ItemModel = item.Model,
@@ -327,7 +300,7 @@ namespace DotNetWMS.Controllers
 
             return PartialView("_StocktakingIndexTable", model);
         }
-        public async Task<IActionResult> StocktakingBegin(List<StocktakingNewViewModel> model, int? id)
+        public async Task<IActionResult> StocktakingBegin(List<StocktakingTableViewModel> model, int? id)
         {
             ViewBag.warehouseId = id;
 
@@ -367,8 +340,6 @@ namespace DotNetWMS.Controllers
 
             await _context.SaveChangesAsync();
 
-            //model = model.Where(i => i.ToCorrect == true).ToList();
-
             if (model.Count == 0)
             {
                 ViewBag.ExceptionTitle = "Zakończono inwentaryzację!";
@@ -379,7 +350,7 @@ namespace DotNetWMS.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> StocktakingEnd(List<StocktakingNewViewModel> model)
+        public async Task<IActionResult> StocktakingEnd(List<StocktakingTableViewModel> model)
         {
             
             foreach (var item in model)

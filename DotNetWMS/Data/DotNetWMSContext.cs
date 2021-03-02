@@ -19,7 +19,6 @@ namespace DotNetWMS.Data
         {
 
         }
-        public DbSet<Employee> Employees { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Department> Departments { get; set; }

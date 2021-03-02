@@ -10,12 +10,8 @@ namespace DotNetWMS.Models
     /// <summary>
     /// Viewmodel to handle the view with stocktaking a warehouse
     /// </summary>
-    public class StocktakingViewModel
+    public class StocktakingStartViewModel
     {
-        /// <summary>
-        /// A field to capture list of items
-        /// </summary>
-        public List<Item> Items { get; set; }
         /// <summary>
         /// A field to capture name and adress of warehouse
         /// </summary>
