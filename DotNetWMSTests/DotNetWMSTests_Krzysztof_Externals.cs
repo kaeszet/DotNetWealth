@@ -214,7 +214,7 @@ namespace DotNetWMSTests
 		[Test]
 		public async Task EditGet_Externals_RecordWithTheSameKey_ReturnView()
 		{
-			var controller = new EmployeesController(_context);
+			var controller = new ExternalsController(_context);
 			var result = await controller.Edit(1) as ViewResult;
 			Assert.IsNotNull(result);
 		}
