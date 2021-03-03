@@ -12,10 +12,9 @@ header {
 }
 
 #cookieConsent {
-	position: absolute;
-	bottom: 0;
-	left: 15px;
-	right: 15px;
+	position: fixed;
+	@include position($left: 15px, $right: 15px, $bottom: 0);
+	z-index: 1090;
 }
 
 /* ----- Main ----- */

@@ -54,7 +54,7 @@
         </div>
         <div>
             <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
-            <a asp-controller="QrCodes" asp-action="ShowQRCode" asp-route-url="@ViewData["url"]" class="btn btn-success">Drukuj kod QR</a>
+            <a asp-controller="QrCodes" asp-action="ShowQRCode" asp-route-url="@ViewData["url"]" target="_blank" class="btn btn-success">Drukuj kod QR</a>
         </div>
         
     </div>
