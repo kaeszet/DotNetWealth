@@ -127,6 +127,10 @@
                     <div class="list-group list-group-flush border-top border-bottom">
                         <a href="/" data-id="dashboard" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
                         <a asp-controller="Infoboxes" asp-action="Index" data-id="Infoboxes" class="list-group-item list-group-item-action"><i class="fas fa-book mr-1"></i>Dziennik <span class="badge badge-primary ml-auto">2</span></a>
+                    @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                    {
+                        <a asp-controller="Externals" asp-action="StatusView" data-id="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
+                    }
                     </div>
                     @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
@@ -183,7 +187,6 @@
                         </div>
                         <div class="list-group list-group-flush">
                             <a asp-controller="Externals" asp-action="Index" data-id="Externals" class="list-group-item list-group-item-action"><i class="fas fa-glasses mr-1"></i>Przegląd klientów zewnętrznych</a>
-                            <a asp-controller="Externals" asp-action="StatusView" data-id="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
                         </div>
                     }
                     <div class="text-center pb-2 pt-4">
@@ -194,7 +197,17 @@
                         </small>
                     </div>
                 </div>
-                <div class="col-xl-10 col-lg-9 ml-auto py-3 content-body">
+                <div class="col-xl-10 col-lg-9 ml-auto py-3 content-body position-relative">
+
+                    @*Globalne alerty*@
+
+                    @*<div class="alert alert-warning global-info shadow alert-dismissible fade show" role="alert">
+                        <strong>Pomyślnie zapisano zmiany!</strong> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>*@
+
                     <partial name="_CookieConsentPartial" />
                     @RenderBody()
                 </div>

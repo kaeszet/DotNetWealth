@@ -71,9 +71,6 @@ $(function ()
             $(this).printData();
         })
     }
-    //if ($('#statusSubmit').length > 0) {
-        //$('#statusSubmit').statusForm();
-    //}
 
     $('.table-responsive').on('shown.bs.dropdown', function (e) {
         let $table = $(this),
@@ -277,14 +274,6 @@ $(function ()
             });
         }
     }
-
-    //$.fn.statusForm = function () {
-
-    //    $(this).submit(function (ev) {
-    //        ev.preventDefault();
-    //        console.log($(this).serializeArray())
-    //    })
-    //};
 
 })(jQuery);
 

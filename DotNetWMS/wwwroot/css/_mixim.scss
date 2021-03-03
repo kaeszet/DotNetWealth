@@ -48,11 +48,20 @@
 	height: $height;
 }
 
-@mixin position($left: null, $right: null, $top: null, $bottom: null) {
-	left: $left;
-	right: $right;
-	top: $top;
-	bottom: $bottom;
+@mixin position($all: null, $left: null, $right: null, $top: null, $bottom: null) {
+	
+	@if($all) {
+		left: $all;
+		right: $all;
+		top: $all;
+		bottom: $all;
+	}
+	@else {
+		left: $left;
+		right: $right;
+		top: $top;
+		bottom: $bottom;
+	}
 }
 
 @mixin rotate($val, $el: null) {
