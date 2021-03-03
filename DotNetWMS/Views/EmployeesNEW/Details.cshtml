@@ -9,7 +9,6 @@
     <div class="d-flex justify-content-between flex-sm-row flex-column">
         <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Szczegóły</h2>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success my-auto"><i class="fas fa-edit mr-1"></i>Edytuj</a>
-        @*<a id="buttonForm" asp-controller="QrCodes" asp-action="ShowQRCode" asp-route-url="@Model.Id" class="btn btn-success my-auto">Generuj QR</a>*@
     </div>
 </div>
 <hr />
@@ -29,13 +28,13 @@
 
                 <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Department)</li>
                 <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
-
-                @*<li class="list-group-item font-weight-bold">Kod QR</li>
-                <li class="list-group-item pl-5"><img src="@ViewBag.QrCode" style="width:200px;height:200px;" /></li>*@
             </ul>
         </div>
         <div class="col-md-6 d-flex justify-content-center align-items-center">
-            <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
+            <div>
+                <h3 class="text-center">Kod QR</h3>
+                <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
+            </div>
         </div>
         <div class="col-12">
             <input type="hidden" id="address" value="@TempData["Adress"]" />

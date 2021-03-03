@@ -273,3 +273,12 @@ table {
 		}
 	}
 }
+
+.alert {
+
+	&.global-info {
+		position: absolute;
+		z-index: 1090;
+		@include position($left: 50px, $right: 50px, $top: 50px);
+	}
+}
