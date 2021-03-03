@@ -18,12 +18,21 @@ namespace DotNetWMS.Controllers
             _context = context;
         }
 
-        public async Task AddCoordinates(string longitude, string latitude)
+        public Location GetCoordinates(string id, string adress)
+        {
+
+            var locById = _context.Locations.Find(id);
+            var locByAdress = _context.Locations.FirstOrDefault(l => l.Adress == adress);
+
+            return locById ?? locByAdress;
+        }
+        public async Task AddCoordinates(string adress, string longitude, string latitude)
         {
             if (!string.IsNullOrEmpty(longitude) && !string.IsNullOrEmpty(latitude))
             {
                 Location location = new Location()
                 {
+                    Adress = adress,
                     Longitude = longitude,
                     Latitude = latitude
                 };
@@ -33,11 +42,12 @@ namespace DotNetWMS.Controllers
             }
 
         }
-        public async Task UpdateCoordinates(int? id, string longitude, string latitude)
+        public async Task UpdateCoordinates(string id, string adress, string longitude, string latitude)
         {
-            if (id != null)
+            if (!string.IsNullOrEmpty(id))
             {
                 var location = _context.Locations.Find(id);
+                location.Adress = adress;
                 location.Longitude = longitude;
                 location.Latitude = latitude;
                 _context.Update(location);

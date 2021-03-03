@@ -43,7 +43,6 @@ namespace DotNetWMS.Controllers
         }
         public async Task<IActionResult> Check(int? id)
         {
-            //ViewData["IsChecked"] = !isChecked;
 
             if (id == null)
             {
@@ -63,7 +62,6 @@ namespace DotNetWMS.Controllers
                     doc.ConfirmationDate = DateTime.Now;
                     _context.Update(doc);
                     await _context.SaveChangesAsync();
-                    //return RedirectToAction(nameof(Index));
                 }
             }
             else

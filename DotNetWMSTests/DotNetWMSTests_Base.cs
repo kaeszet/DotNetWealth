@@ -27,7 +27,7 @@ namespace DotNetWMSTests
         }
         public static void Initialize(DotNetWMSContext context)
         {
-            if (context.Departments.Any() || context.Employees.Any() || context.Items.Any() || context.Externals.Any())
+            if (context.Departments.Any() || context.Items.Any() || context.Externals.Any())
             {
                 return;
             }
@@ -45,12 +45,6 @@ namespace DotNetWMSTests
                 new Department { Id = 4, Name = "Księgowy"}
 
             };
-            var employees = new[]
-            {
-                new Employee { Id = 1, Name = "Janusz", Surname = "Testowy", City = "Kraków", DepartmentId = 1, Pesel = "12345678901", Street = "św. Filipa 17", ZipCode = "30-000"},
-                new Employee { Id = 2, Name = "Grażyna", Surname = "Testowa", City = "Kraków", DepartmentId = 4, Pesel = "12345678902", Street = "św. Filipa 17", ZipCode = "30-000"},
-                new Employee { Id = 3, Name = "Brajan", Surname = "Testowy", City = "Kraków", DepartmentId = 3, Pesel = "12345678903", Street = "św. Filipa 17", ZipCode = "30-000"}
-            };
             var items = new[]
             {
                 new Item { Id = 1, Type = "Elektronika", Name = "Komputer", Producer = "CBM", Model = "Commodore 64", ItemCode="C-64", Quantity = 3.0M, Units = ItemUnits.szt, State = ItemState.InEmployee, UserId = "1" },
@@ -66,7 +60,6 @@ namespace DotNetWMSTests
             };
 
             context.Departments.AddRange(departments);
-            context.Employees.AddRange(employees);
             context.Items.AddRange(items);
             context.Externals.AddRange(externals);
             context.SaveChanges();

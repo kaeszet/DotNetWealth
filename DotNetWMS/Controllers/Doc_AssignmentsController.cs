@@ -105,10 +105,10 @@ namespace DotNetWMS.Controllers
             return PartialView("_Doc_AssignmentConfDocPartial", viewModel);
         }
 
-        public async Task<IActionResult> GenerateDocument(List<Doc_ConfigureDocumentViewModel> viewModel)
+        public IActionResult GenerateDocument(List<Doc_ConfigureDocumentViewModel> viewModel)
         {
             DateTime currentDate = DateTime.Now;
-           
+
             List<string> itemIds = new List<string>();
             Doc_Titles title = DocumentTitleGenerator(viewModel[0].FromIndex, viewModel[0].ToIndex);
 
@@ -142,8 +142,6 @@ namespace DotNetWMS.Controllers
                 Items = items
             };
 
-
-            //usunięcie starch metod z itemcont
             ViewData["DocumentTitle"] = title.GetType().GetMember(title.ToString()).First().GetCustomAttribute<DisplayAttribute>().Name;
             return View(doc);
         }
