@@ -17,23 +17,21 @@ $(function ()
     $('.hamburger').menuCollapse();
 
     //Active nav list
-    if ($('.sidebar').length > 0) {
 
-        $('.sidebar .list-group-item').each(function () {
+    $('.sidebar .list-group-item').each(function () {
 
-            if ($(this).attr('href') == location.pathname) {
+        if ($(this).attr('href') == location.pathname) {
 
-                localStorage.setItem('active', $(this).data('id'))
-                $(this).addClass('active');
-            }
+            localStorage.setItem('active', $(this).data('id'))
+            $(this).addClass('active');
+        }
 
-            if ($(this).data('id') == localStorage.getItem('active')) {
+        if ($(this).data('id') == localStorage.getItem('active')) {
 
-                $('.sidebar .list-group-item.active').removeClass('active');
-                $(this).addClass('active');
-            }
-        })
-    }
+            $('.sidebar .list-group-item.active').removeClass('active');
+            $(this).addClass('active');
+        }
+    })
 
     //Input search table
     $(".search-control").on("keyup", function ()
@@ -51,26 +49,19 @@ $(function ()
         $('.sidebar').scrollTop($centerNav)
     }
 
-    if ($('#stocktaking').length > 0) {
+    // Stocktaking
+    $('#stocktaking').click(function () {
+        var keyWord = $('#selectList').val();
+        $('#divPartial').load(url, { warehouseFullName: keyWord });
+    })
 
-        $('#stocktaking').click(function () {
-            var keyWord = $('#selectList').val();
-            $('#divPartial').load(url, { warehouseFullName: keyWord });
-        })
-    }
+    $("#cookieConsent").find('button.close').on("click", function (ev) {
+        document.cookie = $(this).data('cookie-string');
+    });
 
-    if ($("#cookieConsent").length > 0){
-        $("#cookieConsent").find('button.close').on("click", function (ev) {
-            document.cookie = $(this).data('cookie-string');
-        });
-    }
-
-    if ($('#print').length > 0) {
-
-        $('#print').on('click', function () {
-            $(this).printData();
-        })
-    }
+    $('#print').on('click', function () {
+        $(this).printData();
+    })
 
     $('.table-responsive').on('shown.bs.dropdown', function (e) {
         let $table = $(this),
