@@ -42,10 +42,15 @@
                 {
                     <tr>
                         <td>
-                            <div class="form-check form-check-inline">
-                                <input asp-for="@Model[i].AddToDocument" class="form-control-input" type="checkbox">
+                            <div class="custom-control custom-checkbox">
+                                <input asp-for="@Model[i].AddToDocument" type="checkbox" class="custom-control-input">
+                                <label asp-for="@Model[i].AddToDocument" class="custom-control-label">&nbsp;</label>
                                 <span asp-validation-for="@Model[i].AddToDocument" class="text-danger small font-weight-bold"></span>
                             </div>
+                            @*<div class="form-check form-check-inline">
+                                <input asp-for="@Model[i].AddToDocument" class="form-control-input" type="checkbox">
+                                <span asp-validation-for="@Model[i].AddToDocument" class="text-danger small font-weight-bold"></span>
+                            </div>*@
                         </td>
                         <td>
                             @Model[i].Type
@@ -88,7 +93,7 @@
         </table>
 
         <div class="form-group mt-3">
-            <button type="submit" asp-action="GenerateDocument" class="btn btn-info btn-sm">Przejdź dalej</button>
+            <button type="submit" asp-action="GenerateDocument" class="btn btn-primary btn-sm">Przejdź dalej</button>
         </div>
 
     </form>

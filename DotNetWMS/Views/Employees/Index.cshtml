@@ -89,7 +89,7 @@
                                                 <div class="text-muted small font-weight-bold">Adres: @item.Street, @item.ZipCode @item.City</div>
                                             </div>
                                             <div class="modal-footer">
-                                                <form method="post" asp-action="DeleteDocument" asp-route-id="@item.Id">
+                                                <form method="post" asp-action="Delete" asp-route-id="@item.Id">
                                                     <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-window-close mr-1"></i>Nie</button>
                                                     <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check-circle mr-1"></i>Tak</button>
                                                 </form>
