@@ -201,12 +201,7 @@
 
                     @*Globalne alerty*@
 
-                    @*<div class="alert alert-warning global-info shadow alert-dismissible fade show" role="alert">
-                        <strong>Pomyślnie zapisano zmiany!</strong> 
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>*@
+                    <partial name="_GlobalAlertPartial" />
 
                     <partial name="_CookieConsentPartial" />
                     @RenderBody()

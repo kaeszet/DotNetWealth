@@ -153,6 +153,7 @@ namespace DotNetWMS.Controllers
             {
                 _context.Add(external);
                 await _context.SaveChangesAsync();
+                GlobalAlert.SendGlobalAlert($"Kontrahent {external.Name} został dodany do bazy!", "success");
                 return RedirectToAction(nameof(Index));
             }
             return View(external);
@@ -212,6 +213,7 @@ namespace DotNetWMS.Controllers
                         throw;
                     }
                 }
+                GlobalAlert.SendGlobalAlert($"Kontrahent {external.Name} został zmieniony!", "success");
                 return RedirectToAction(nameof(Index));
             }
             TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeExternal(external);
@@ -254,6 +256,7 @@ namespace DotNetWMS.Controllers
             {
                 _context.Externals.Remove(external);
                 await _context.SaveChangesAsync();
+                GlobalAlert.SendGlobalAlert($"Kontrahent {external.Name} został usunięty!", "danger");
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException)

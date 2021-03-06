@@ -42,9 +42,9 @@ namespace DotNetWMS.Controllers
             {
                 ViewData["isAnyNewMessages"] = _context.Infoboxes.Any(m => m.IsChecked == false && m.User.NormalizedUserName == User.Identity.Name);
             }
-
-            await SeedDatabase.InitializeUsers(_context);
             
+            await SeedDatabase.InitializeUsers(_context);
+
             return View();
         }
         /// <summary>

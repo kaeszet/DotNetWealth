@@ -105,6 +105,7 @@ namespace DotNetWMS.Controllers
                 {
                     user.UserName = GenerateUserLogin(user.Name, user.Surname, user.EmployeeNumber);
                     await _userManager.CreateAsync(user, autoGenPassword);
+                    GlobalAlert.SendGlobalAlert($"Pracownik {user.FullName} został dodany do bazy!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -115,6 +116,7 @@ namespace DotNetWMS.Controllers
 
             }
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+            
 
             return View(user);
         }
@@ -186,6 +188,7 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
+                    GlobalAlert.SendGlobalAlert($"Pracownik {user.FullName} został zmieniony!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -237,6 +240,7 @@ namespace DotNetWMS.Controllers
             {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
+                GlobalAlert.SendGlobalAlert($"Pracownik {user.FullName} został usunięty!", "danger");
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException)
