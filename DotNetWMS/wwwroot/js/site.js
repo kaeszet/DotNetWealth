@@ -168,6 +168,7 @@ $(function ()
     $.fn.printData = function () {
 
         let ToPrint = $('#' + $(this).data('content'));
+        let Warehouse = $('#selectList option:selected').text();
         let newWin = window.open('', 'Print-Window');
 
         $('body').append('<div id="contentToPrint" style="display: none;"></div>');
@@ -181,7 +182,9 @@ $(function ()
             <link rel="stylesheet" href="/css/style.css" />
             <link rel="stylesheet" href="/lib/font-awesome/css/all.css" /></head>
             <body onload="window.print()">
-            <h4>Inwentaryzacja</h4>`
+            <h4>Inwentaryzacja</h4>
+            <hr>
+            <h6>`+ Warehouse +`</h6>`
             + newContent.html() + 
             `</body>
             </html>`
