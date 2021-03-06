@@ -8,6 +8,10 @@ using Microsoft.Extensions.Logging;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using DotNetWMS.Data;
+using DotNetWMS.Resources;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DotNetWMS.Controllers
 {
@@ -32,20 +36,24 @@ namespace DotNetWMS.Controllers
         /// GET method responsible for returning a Home's Index view
         /// </summary>
         /// <returns>Returns an Home's Index view</returns>
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (User?.Identity?.Name != null)
             {
                 ViewData["isAnyNewMessages"] = _context.Infoboxes.Any(m => m.IsChecked == false && m.User.NormalizedUserName == User.Identity.Name);
             }
+
+            await SeedDatabase.InitializeUsers(_context);
+            
             return View();
         }
         /// <summary>
         /// GET method responsible for returning a Home's AboutUs view
         /// </summary>
         /// <returns>Returns an Home's AboutUs view</returns>
-        public IActionResult AboutUs()
+        public async Task<IActionResult> AboutUs()
         {
+            await SeedDatabase.InitializeData(_context);
             return View();
         }
         /// <summary>
@@ -57,5 +65,6 @@ namespace DotNetWMS.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }
