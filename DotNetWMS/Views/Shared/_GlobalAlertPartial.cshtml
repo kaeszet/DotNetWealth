@@ -1,0 +1,25 @@
+﻿@using DotNetWMS.Resources;
+
+@{
+    ViewData["ShowInfo"] = GlobalAlert.ShowGlobalAlert();
+    ViewData["AlertType"] = GlobalAlert.SetGlobalAlertType();
+}
+
+@if (ViewData["ShowInfo"] != null && GlobalAlert._old != ViewData["ShowInfo"].ToString())
+{
+    <div class="@ViewData["AlertType"]" role="alert">
+
+        <strong>@ViewData["ShowInfo"]</strong>
+
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+        string old = ViewData["ShowInfo"].ToString();
+        GlobalAlert.SetOld(old);
+
+    
+
+
+}

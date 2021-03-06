@@ -119,6 +119,7 @@ namespace DotNetWMS.Controllers
 
                     _context.Add(warehouse);
                     await _context.SaveChangesAsync();
+                    GlobalAlert.SendGlobalAlert($"Magazyn {warehouse.AssignFullName} został dodany do bazy!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -172,7 +173,7 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var oldWarehouseNumber = _context.Warehouses.Find(warehouse.Id).Name;
+            var oldWarehouseNumber = _context.Warehouses.AsNoTracking().FirstOrDefault(w => w.Id == warehouse.Id)?.Name;
 
             bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name 
             && w.Name != oldWarehouseNumber 
@@ -199,6 +200,7 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
+                    GlobalAlert.SendGlobalAlert($"Magazyn {warehouse.AssignFullName} został zmieniony!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -251,6 +253,7 @@ namespace DotNetWMS.Controllers
             {
                 _context.Warehouses.Remove(warehouse);
                 await _context.SaveChangesAsync();
+                GlobalAlert.SendGlobalAlert($"Magazyn {warehouse.AssignFullName} został usunięty!", "danger");
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException)

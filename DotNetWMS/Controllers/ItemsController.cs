@@ -258,7 +258,7 @@ namespace DotNetWMS.Controllers
         {
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName");
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name");
-            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street");
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName");
             return View();
         }
         /// <summary>
@@ -289,6 +289,7 @@ namespace DotNetWMS.Controllers
                     ItemStatusCheck(item, itemOld?.ExternalId);
                     await _context.SaveChangesAsync();
                     await UpdateItemCode(item);
+                    GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został dodany do bazy!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -299,7 +300,7 @@ namespace DotNetWMS.Controllers
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
-            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
             return View(item);
         }
         /// <summary>
@@ -356,7 +357,7 @@ namespace DotNetWMS.Controllers
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
-            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
             return View(item);
         }
         /// <summary>
@@ -414,6 +415,7 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
+                    GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został zmieniony!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -425,7 +427,7 @@ namespace DotNetWMS.Controllers
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
-            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "Street", item.WarehouseId);
+            ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
             return View(item);
         }
         /// <summary>
@@ -467,6 +469,7 @@ namespace DotNetWMS.Controllers
             var item = await _context.Items.FindAsync(id);
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
+            GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został usunięty!", "danger");
             return RedirectToAction(nameof(Index));
         }
         /// <summary>
@@ -780,6 +783,7 @@ namespace DotNetWMS.Controllers
                         ItemStatusCheck(item, itemOld.ExternalId);
                         await _context.SaveChangesAsync();
                         await UpdateItemCode(item);
+                        GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
                         return RedirectToAction("Assign_to_employee");
 
                     }
@@ -814,6 +818,7 @@ namespace DotNetWMS.Controllers
                         ItemStatusCheck(item, itemOld.ExternalId);
                         await _context.SaveChangesAsync();
                         await UpdateItemCode(item);
+                        GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
                         return RedirectToAction("Assign_to_warehouse");
 
                     }
@@ -848,6 +853,7 @@ namespace DotNetWMS.Controllers
                         ItemStatusCheck(item, itemOld.ExternalId);
                         await _context.SaveChangesAsync();
                         await UpdateItemCode(item);
+                        GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
                         return RedirectToAction("Assign_to_external");
 
                     }
@@ -906,6 +912,7 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
+                    GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
                     return RedirectToAction("Assign_to_employee");
 
                 case "Assign_to_warehouse_confirm":
@@ -934,6 +941,7 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
+                    GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
                     return RedirectToAction("Assign_to_warehouse");
 
                 case "Assign_to_external_confirm":
@@ -962,6 +970,7 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
+                    GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
                     return RedirectToAction("Assign_to_external");
 
                 default:
