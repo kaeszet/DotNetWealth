@@ -23,6 +23,9 @@
                 </div>
             </div>
         </div>
+        @{ 
+			var index = 0;
+        }
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead class="thead-light">
@@ -93,15 +96,15 @@
                                     <h6 class="dropdown-header font-weight-bold">Co chcesz zrobić?</h6>
                                     <a asp-action="ShowDocument" asp-route-id="@item.DocumentId" class="dropdown-item"><i class="fas fa-info-circle mr-1"></i>Podgląd</a>
                                     <div class="dropdown-divider"></div>
-                                    <button type="button" class="dropdown-item danger text-danger" data-toggle="modal" data-target="#remove_@item.DocumentId"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
+                                    <button type="button" class="dropdown-item danger text-danger" data-toggle="modal" data-target="#remove_@index"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
                                 </div>
                             </div>
 
-                            <div class="modal fade" id="remove_@item.DocumentId" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="label_remove_@item.DocumentId" aria-hidden="true">
+                            <div class="modal fade" id="remove_@index" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="label_remove_@index" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title font-weight-bold" id="label_remove_@item.DocumentId">Usuwanie dokumentu</h5>
+                                            <h5 class="modal-title font-weight-bold" id="label_remove_@index">Usuwanie dokumentu</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -120,9 +123,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </td>
+</td>
                     </tr>
-                    }
+						index++;
+					}
                 </tbody>
             </table>
         </div>
