@@ -45,6 +45,11 @@ namespace DotNetWMS.Controllers
             
             await SeedDatabase.InitializeUsers(_context);
 
+            ViewData["ExternalsCount"] = _context.Externals.Count();
+            ViewData["WarehousesCount"] = _context.Warehouses.Count();
+            ViewData["RegisteredUsers"] = _context.Users.Count();
+            ViewData["OutOfWarranty"] = _context.Items.Where(i => i.WarrantyDate < DateTime.Now).Count();
+
             return View();
         }
         /// <summary>

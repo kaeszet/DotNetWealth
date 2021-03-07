@@ -1,5 +1,6 @@
 ﻿using DotNetWMS.Data;
 using DotNetWMS.Models;
+using DotNetWMS.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -205,11 +206,12 @@ namespace DotNetWMS.Controllers
         {
             string decodedId = WebUtility.UrlDecode(id);
 
-            var doc = await _context.Doc_Assignments.FindAsync(id);
+            var doc = await _context.Doc_Assignments.FindAsync(decodedId);
 
             _context.Doc_Assignments.Remove(doc);
 
             await _context.SaveChangesAsync();
+            GlobalAlert.SendGlobalAlert($"Dokument {doc.DocumentId} został usunięty!", "danger");
             return RedirectToAction(nameof(Index));
         }
         private string DocumentIdGenerator(DateTime time, Doc_Titles title)
