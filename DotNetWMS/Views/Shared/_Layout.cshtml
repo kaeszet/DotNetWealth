@@ -1,6 +1,10 @@
 ﻿@using DotNetWMS.Resources
 @inject SignInManager<WMSIdentityUser> signInManager;
 
+@{ 
+    ViewData["NewMessages"] = GlobalAlert.ShowQuantity() != null ? GlobalAlert.ShowQuantity() : 0;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,7 +130,13 @@
                     </a>
                     <div class="list-group list-group-flush border-top border-bottom">
                         <a href="/" data-id="dashboard" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
-                        <a asp-controller="Infoboxes" asp-action="Index" data-id="Infoboxes" class="list-group-item list-group-item-action"><i class="fas fa-book mr-1"></i>Dziennik <span class="badge badge-primary ml-auto">2</span></a>
+                        <a asp-controller="Infoboxes" asp-action="Index" data-id="Infoboxes" class="list-group-item list-group-item-action">
+                            <i class="fas fa-book mr-1"></i>Dziennik
+                            @if ((int)ViewData["NewMessages"] > 0)
+                            {
+                                <span class="badge badge-primary ml-auto">@ViewData["NewMessages"]</span>
+                            }
+                        </a>
                     @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                     {
                         <a asp-controller="Externals" asp-action="StatusView" data-id="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
