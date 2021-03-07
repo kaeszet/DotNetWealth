@@ -32,8 +32,8 @@
             <div class="card-body">
                 <i class="fas fa-flag fa-4x"></i>
                 <hr />
-                <h5 class="card-title font-weight-bold">0</h5>
-                <p class="card-text">Coś</p>
+                <h5 class="card-title font-weight-bold">@ViewData["OutOfWarranty"]</h5>
+                <p class="card-text">Przedmioty po gwarancji</p>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
             <div class="card-body">
                 <i class="fas fa-handshake fa-4x"></i>
                 <hr />
-                <h5 class="card-title font-weight-bold">10</h5>
+                <h5 class="card-title font-weight-bold">@ViewData["ExternalsCount"]</h5>
                 <p class="card-text">Klienci zewnętrzni</p>
             </div>
         </div>
@@ -52,7 +52,7 @@
             <div class="card-body">
                 <i class="fas fa-users fa-4x"></i>
                 <hr />
-                <h5 class="card-title font-weight-bold">15</h5>
+                <h5 class="card-title font-weight-bold">@ViewData["RegisteredUsers"]</h5>
                 <p class="card-text">Pracownicy</p>
             </div>
         </div>
@@ -62,7 +62,7 @@
             <div class="card-body">
                 <i class="fas fa-warehouse fa-4x"></i>
                 <hr />
-                <h5 class="card-title font-weight-bold">4</h5>
+                <h5 class="card-title font-weight-bold">@ViewData["WarehousesCount"]</h5>
                 <p class="card-text">Ilość magazynów</p>
             </div>
         </div>
