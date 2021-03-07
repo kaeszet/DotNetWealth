@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
+using DotNetWMS.Resources;
 
 namespace DotNetWMS.Controllers
 {
@@ -24,6 +25,7 @@ namespace DotNetWMS.Controllers
             ViewData["IsChecked"] = !isChecked;
             
             var infos = _context.Infoboxes.Where(i => i.User.NormalizedUserName == User.Identity.Name).OrderByDescending(i => i.ReceivedDate).Include(u => u.User);
+            GlobalAlert.SendQuantity(infos.Count(i => i.IsChecked == false));
             return View(await infos.AsNoTracking().ToListAsync());
         }
 

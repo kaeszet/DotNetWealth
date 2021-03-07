@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["ModelCount"] = Model.Count(m => m.IsChecked == false);
 }
 <div>
     <h2 class="text-sm-left text-center">Skrzynka wiadomości</h2>

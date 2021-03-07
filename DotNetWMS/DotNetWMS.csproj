@@ -31,13 +31,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Views\UserPanel\Items\" />
-    <Folder Include="Views\UserPanel\Externals\" />
-    <Folder Include="Views\UserPanel\Warehouses\" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <None Include="compilerconfig.json" />
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

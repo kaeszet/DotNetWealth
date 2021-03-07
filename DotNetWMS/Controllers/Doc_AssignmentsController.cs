@@ -204,14 +204,32 @@ namespace DotNetWMS.Controllers
         [HttpPost, ActionName("DeleteDocument")]
         public async Task<IActionResult> DeleteDocumentConfirm(string id)
         {
-            string decodedId = WebUtility.UrlDecode(id);
+            if (!string.IsNullOrEmpty(id))
+            {
+                string decodedId = WebUtility.UrlDecode(id);
+                var doc = await _context.Doc_Assignments.FindAsync(decodedId);
 
-            var doc = await _context.Doc_Assignments.FindAsync(decodedId);
+                if (doc != null)
+                {
+                    _context.Doc_Assignments.Remove(doc);
+                    await _context.SaveChangesAsync();
+                }
 
-            _context.Doc_Assignments.Remove(doc);
+                var info = await _context.Infoboxes.FirstOrDefaultAsync(i => i.DocumentId == decodedId);
 
-            await _context.SaveChangesAsync();
-            GlobalAlert.SendGlobalAlert($"Dokument {doc.DocumentId} został usunięty!", "danger");
+                if (info != null)
+                {
+                    _context.Infoboxes.Remove(info);
+                    await _context.SaveChangesAsync();
+                }
+
+                GlobalAlert.SendGlobalAlert($"Dokument {doc.DocumentId} został usunięty!", "danger");
+            }
+            else
+            {
+                return View("NotFound");
+            }
+            
             return RedirectToAction(nameof(Index));
         }
         private string DocumentIdGenerator(DateTime time, Doc_Titles title)

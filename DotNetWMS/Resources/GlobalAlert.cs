@@ -10,6 +10,7 @@ namespace DotNetWMS.Resources
     public static class GlobalAlert
     {
         private static string _message;
+        private static int? _count;
         private static string _type;
 
         public static string _old;
@@ -18,6 +19,11 @@ namespace DotNetWMS.Resources
         {
             _message = message;
             _type = type;
+        }
+
+        public static void SendQuantity(int count)
+        {
+            _count = count;
         }
 
         public static string SetGlobalAlertType()
@@ -45,42 +51,16 @@ namespace DotNetWMS.Resources
         {
             return _message;
         }
+        public static int? ShowQuantity()
+        {
+            return _count;
+        }
 
         public static void SetOld(string old)
         {
             _old = old;
         }
-        //private static IDictionary<string, string> NotificationKey = new Dictionary<string, string>
-        //{
-        //    { "Info", "App.Notifications.Info" }
-        //};
-        //public static void SendGlobalAlert(this ControllerBase controller, string message, string notificationType) 
-        //{
-        //    string NotificationKey = getNotificationKeyByType(notificationType);
-        //    ICollection<string> messages = controller.TempData[NotificationKey] as ICollection<string>;
-        //    //TempData["SuccessInfo"] = message;
-        //}
-        //public static IEnumerable<string> GetNotifications(this HtmlHelper htmlHelper, string notificationType)
-        //{
-        //    string NotificationKey = getNotificationKeyByType(notificationType);
-        //    return htmlHelper.ViewContext.Controller.TempData[NotificationKey] as ICollection<string> ?? null;
-        //}
-        //private static string getNotificationKeyByType(string notificationType)
-        //{
-        //    try
-        //    {
-        //        return NotificationKey[notificationType];
-        //    }
-        //    catch (IndexOutOfRangeException e)
-        //    {
-        //        ArgumentException exception = new ArgumentException("Key is invalid", "notificationType", e);
-        //        throw exception;
-        //    }
-        //}
+        
     }
 
-    public static class NotificationType
-    {
-        public const string INFO = "Info";
-    }
 }
