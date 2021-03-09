@@ -1,4 +1,4 @@
-﻿@model DotNetWMS.Models.WMSIdentityUser
+﻿@model DotNetWMS.Models.UserAndLocationViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -14,7 +14,9 @@
     <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
     <div asp-validation-summary="ModelOnly" class="text-danger font-weight-bold small mt-3"></div>
     <form asp-action="Edit" class="mt-3">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="LocationId" />
+
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label asp-for="Name"></label>
@@ -38,11 +40,11 @@
         </div>
         <div class="form-group">
             <label for="address">Adres</label>
-            <input id="address" type="search" value="@TempData["Adress"]" autocomplete="nope" placeholder="Podaj adres magazynu" class="form-control" />
-            <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> magazynu</small>
+            <input asp-for="Address" id="address" type="search" autocomplete="nope" placeholder="Podaj adres pracownika" class="form-control" />
+            <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> pracownika</small>
 
-            <input type="hidden" id="lat" name="lat" />
-            <input type="hidden" id="lng" name="lng" />
+            <input asp-for="Latitude" type="hidden" id="lat" />
+            <input asp-for="Longitude" type="hidden" id="lng" />
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -63,7 +65,6 @@
         </div>
         <div class="form-row">
             <div class="form-group col-12">
-                <input type="hidden" id="address" value="@TempData["Adress"]" />
                 <div id="map" style="height:300px; width:100%"></div>
             </div>
         </div>

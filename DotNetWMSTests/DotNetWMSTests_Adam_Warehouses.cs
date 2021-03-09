@@ -106,7 +106,7 @@ namespace DotNetWMSTests
             _context.Database.EnsureCreated();
             Initialize(_context);
 
-            var emp = new Warehouse() { Id = 01, Name = "Magazyn główny", Street = "ul. Św Filipa 1x", ZipCode = "31-001", City = "Kraków" };
+            var emp = new WarehouseAndLocationViewModel() { WarehouseId = 01, Name = "Magazyn główny", Street = "ul. Św Filipa 1x", ZipCode = "31-001", City = "Kraków" };
             var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Create(emp) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));

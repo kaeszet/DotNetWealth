@@ -67,9 +67,8 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .Include(u => u.Department)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _context.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == id);
+            var location = await _context.Locations.FindAsync(user.LocationId);
 
             if (user == null)
             {
@@ -77,11 +76,28 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
-            _logger.LogInformation($"INFO: Użytkownik wyświetlił dane pracownika o id = {id}!");
-            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
+            UserAndLocationViewModel viewModel = new UserAndLocationViewModel()
+            {
+                UserId = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                EmployeeNumber = user.EmployeeNumber,
+                DepartmentId = user.DepartmentId,
+                Street = user.Street,
+                ZipCode = user.ZipCode,
+                City = user.City,
+                LocationId = location?.Id,
+                Address = location?.Address,
+                Latitude = location?.Latitude,
+                Longitude = location?.Longitude
 
-            return View(user);
+            };
+
+            ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
+            ViewBag.DepartmentName = user.Department.Name;
+            _logger.LogInformation($"INFO: Użytkownik wyświetlił dane pracownika o id = {id}!");
+
+            return View(viewModel);
         }
         
         public IActionResult Create()
@@ -94,31 +110,65 @@ namespace DotNetWMS.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(WMSIdentityUser user)
+        public async Task<IActionResult> Create(UserAndLocationViewModel viewModel)
         {
-            bool isEmployeeExists = _context.Users.Any(i => i.EmployeeNumber == user.EmployeeNumber);
+            bool isEmployeeExists = _context.Users.Any(i => i.EmployeeNumber == viewModel.EmployeeNumber);
             string autoGenPassword = "Test123!";
 
             if (ModelState.IsValid)
             {
                 if (!isEmployeeExists)
                 {
-                    user.UserName = GenerateUserLogin(user.Name, user.Surname, user.EmployeeNumber);
+                    WMSIdentityUser user = new WMSIdentityUser()
+                    {
+                        Name = viewModel.Name,
+                        Surname = viewModel.Surname,
+                        EmployeeNumber = viewModel.EmployeeNumber,
+                        DepartmentId = viewModel.DepartmentId,
+                        Street = viewModel.Street,
+                        ZipCode = viewModel.ZipCode,
+                        City = viewModel.City,
+                        UserName = GenerateUserLogin(viewModel.Name, viewModel.Surname, viewModel.EmployeeNumber)
+                    };
+
+                    Location location = new Location()
+                    {
+                        Address = viewModel.Address,
+                        Latitude = viewModel.Latitude,
+                        Longitude = viewModel.Longitude
+                    };
+
+                    var loc = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address);
+
+                    if (loc == null)
+                    {
+                        _context.Add(location);
+                        await _context.SaveChangesAsync();
+
+                        var locId = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address).Id;
+                        user.LocationId = locId;
+
+                    }
+                    else
+                    {
+                        user.LocationId = loc.Id;
+                    }
+
                     await _userManager.CreateAsync(user, autoGenPassword);
                     GlobalAlert.SendGlobalAlert($"Pracownik {user.FullName} został dodany do bazy!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    _logger.LogError($"Pracownik {user.FullName} został już wprowadzony do systemu!");
-                    ModelState.AddModelError(string.Empty, $"Pracownik {user.FullName} został już wprowadzony do systemu!");
+                    _logger.LogError($"Pracownik {viewModel.Name}, {viewModel.Surname} został już wprowadzony do systemu!");
+                    ModelState.AddModelError(string.Empty, $"Pracownik {viewModel.Name}, {viewModel.Surname} został już wprowadzony do systemu!");
                 }
 
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", viewModel.DepartmentId);
             
 
-            return View(user);
+            return View(viewModel);
         }
         public async Task<IActionResult> Edit(string id)
         {
@@ -127,16 +177,34 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            var location = await _context.Locations.FindAsync(user.LocationId);
 
             if (user == null)
             {
                 _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}!");
                 return NotFound();
             }
+
+            UserAndLocationViewModel viewModel = new UserAndLocationViewModel()
+            {
+                UserId = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                EmployeeNumber = user.EmployeeNumber,
+                DepartmentId = user.DepartmentId,
+                Street = user.Street,
+                ZipCode = user.ZipCode,
+                City = user.City,
+                LocationId = location?.Id,
+                Address = location?.Address,
+                Latitude = location?.Latitude,
+                Longitude = location?.Longitude
+
+            };
+
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
-            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
-            return View(user);
+            return View(viewModel);
         }
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
@@ -145,19 +213,19 @@ namespace DotNetWMS.Controllers
         /// <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(WMSIdentityUser user)
+        public async Task<IActionResult> Edit(UserAndLocationViewModel viewModel)
         {
-            var _user = await _userManager.FindByIdAsync(user.Id);
+            var _user = await _userManager.FindByIdAsync(viewModel.UserId);
 
             if (_user == null)
             {
-                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {user.Id}!");
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {viewModel.UserId}!");
                 return NotFound();
             }
 
-            string oldEmployeeNumber = _context.Users.Find(user.Id).EmployeeNumber;
+            string oldEmployeeNumber = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == viewModel.UserId)?.EmployeeNumber;
 
-            bool isEmployeeExists = _context.Users.Any(e => e.EmployeeNumber == user.EmployeeNumber
+            bool isEmployeeExists = _context.Users.Any(e => e.EmployeeNumber == viewModel.EmployeeNumber
             && e.EmployeeNumber != oldEmployeeNumber
             && !string.IsNullOrEmpty(oldEmployeeNumber));
             
@@ -167,19 +235,45 @@ namespace DotNetWMS.Controllers
                 {
                     try
                     {
-                        _user.Name = user.Name;
-                        _user.Surname = user.Surname;
-                        _user.EmployeeNumber = user.EmployeeNumber;
-                        _user.DepartmentId = user.DepartmentId;
-                        _user.Street = user.Street;
-                        _user.ZipCode = user.ZipCode;
-                        _user.City = user.City;
+                        _user.Name = viewModel.Name;
+                        _user.Surname = viewModel.Surname;
+                        _user.EmployeeNumber = viewModel.EmployeeNumber;
+                        _user.DepartmentId = viewModel.DepartmentId;
+                        _user.Street = viewModel.Street;
+                        _user.ZipCode = viewModel.ZipCode;
+                        _user.City = viewModel.City;
+
+                        if (!string.IsNullOrEmpty(viewModel.Address) && !string.IsNullOrEmpty(viewModel.Latitude) && !string.IsNullOrEmpty(viewModel.Longitude))
+                        {
+                            Location location = new Location()
+                            {
+                                Address = viewModel.Address,
+                                Latitude = viewModel.Latitude,
+                                Longitude = viewModel.Longitude
+                            };
+
+                            var loc = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address);
+
+                            if (loc == null)
+                            {
+                                _context.Add(location);
+                                await _context.SaveChangesAsync();
+
+                                var locId = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address).Id;
+                                _user.LocationId = locId;
+
+                            }
+                            else
+                            {
+                                _user.LocationId = loc.Id;
+                            }
+                        }
 
                         var result = await _userManager.UpdateAsync(_user);
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!EmployeeExists(user.Id))
+                        if (!EmployeeExists(viewModel.UserId))
                         {
                             return NotFound();
                         }
@@ -188,19 +282,19 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
-                    GlobalAlert.SendGlobalAlert($"Pracownik {user.FullName} został zmieniony!", "success");
+                    GlobalAlert.SendGlobalAlert($"Pracownik {_user.FullName} został zmieniony!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    _logger.LogError($"Pracownik {user.FullName} został już wprowadzony do systemu!");
-                    ModelState.AddModelError(string.Empty, $"Pracownik {user.FullName} został już wprowadzony do systemu!");
+                    _logger.LogError($"Pracownik {_user.FullName} został już wprowadzony do systemu!");
+                    ModelState.AddModelError(string.Empty, $"Pracownik {_user.FullName} został już wprowadzony do systemu!");
                 }
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", user.DepartmentId);
-            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(user);
 
-            return View(user);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", _user.DepartmentId);
+
+            return View(viewModel);
         }
         /// <summary>
         /// GET method responsible for returning an WMSIdentityUser's Delete view

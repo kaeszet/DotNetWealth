@@ -1,4 +1,4 @@
-﻿@model DotNetWMS.Models.External
+﻿@model DotNetWMS.Models.ExternalAndLocationViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -35,11 +35,11 @@
         </div>
         <div class="form-group">
             <label>Adres</label>
-            <input id="address" type="search" autocomplete="nope" placeholder="Podaj adres magazynu" class="form-control" />
-            <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> magazynu</small>
+            <input asp-for="Address" id="address" type="search" autocomplete="nope" placeholder="Podaj adres kontrahenta" class="form-control" />
+            <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> siedziby kontrahenta</small>
 
-            <input type="hidden" id="lat" name="lat" />
-            <input type="hidden" id="lng" name="lng" />
+            <input asp-for="Latitude" type="hidden" id="lat" />
+            <input asp-for="Longitude" type="hidden" id="lng" />
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">

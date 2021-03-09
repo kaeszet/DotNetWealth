@@ -149,7 +149,7 @@ namespace DotNetWMSTests
 
 			ContractorType typeCT = ContractorType.Podwykonawca;
 
-			var emp = new External() { Id = 4, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var emp = new ExternalAndLocationViewModel() { ExternalId = 4, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			var controller = new ExternalsController(_context);
 			var result = await controller.Create(emp) as RedirectToActionResult;
 			Assert.IsTrue(result.ActionName == nameof(controller.Index));
@@ -160,7 +160,7 @@ namespace DotNetWMSTests
 		{
 			ContractorType typeCT = ContractorType.Podwykonawca;
 
-			var ext = new External() { Id = 2, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var ext = new ExternalAndLocationViewModel() { ExternalId = 2, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			var controller = new ExternalsController(_context);
 			Assert.That(async () => await controller.Create(ext), Throws.InvalidOperationException);
 
@@ -259,8 +259,19 @@ namespace DotNetWMSTests
 			Initialize(_context);
 
 			var ext = _context.Externals.Find(3);
+
+			ExternalAndLocationViewModel extVM = new ExternalAndLocationViewModel()
+			{
+				ExternalId = ext.Id,
+				Name = ext.Name,
+				TaxId = ext.TaxId,
+				Street = ext.Street,
+				ZipCode = ext.ZipCode,
+				City = ext.City
+			};
+
 			var controller = new ExternalsController(_context);
-			var result = await controller.Edit(3, ext) as RedirectToActionResult;
+			var result = await controller.Edit(3, extVM) as RedirectToActionResult;
 			Assert.IsTrue(result.ActionName == nameof(controller.Index));
 		}
 
@@ -268,8 +279,19 @@ namespace DotNetWMSTests
 		public async Task EditPost_Externals_RecordWithNoExistingId_ReturnNotFound()
 		{
 			var ext = _context.Externals.Find(1);
+
+			ExternalAndLocationViewModel extVM = new ExternalAndLocationViewModel()
+			{
+				ExternalId = ext.Id,
+				Name = ext.Name,
+				TaxId = ext.TaxId,
+				Street = ext.Street,
+				ZipCode = ext.ZipCode,
+				City = ext.City
+			};
+
 			var controller = new ExternalsController(_context);
-			var result = await controller.Edit(99, ext);
+			var result = await controller.Edit(99, extVM);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
 
@@ -277,8 +299,19 @@ namespace DotNetWMSTests
 		public async Task EditPost_Externals_RecordWithDifferentId_ReturnNotFound()
 		{	
 			var ext = _context.Externals.Find(2);
+
+			ExternalAndLocationViewModel extVM = new ExternalAndLocationViewModel()
+			{
+				ExternalId = ext.Id,
+				Name = ext.Name,
+				TaxId = ext.TaxId,
+				Street = ext.Street,
+				ZipCode = ext.ZipCode,
+				City = ext.City
+			};
+
 			var controller = new ExternalsController(_context);
-			var result = await controller.Edit(1, ext);
+			var result = await controller.Edit(1, extVM);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
 
@@ -339,7 +372,7 @@ namespace DotNetWMSTests
 
 			ContractorType typeCT = ContractorType.Podwykonawca;
 
-			var ext = new External() { Id = 4, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var ext = new ExternalAndLocationViewModel() { ExternalId = 4, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			var controller = new ExternalsController(_context);
 			await controller.Create(ext);
 			var result = await controller.DeleteConfirmed(4) as RedirectToActionResult;
