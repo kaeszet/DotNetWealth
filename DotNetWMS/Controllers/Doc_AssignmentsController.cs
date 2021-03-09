@@ -62,20 +62,42 @@ namespace DotNetWMS.Controllers
         public IActionResult ConfigureDocument(string from, string to, int fromIndex, int toIndex)
         {
             IQueryable<Item> items;
+            string infoMessage = "";
 
             switch (toIndex)
             {
                 case 0:
                     items = _context.Items.Where(i => i.UserId == to);
+
+                    if (!items.Any())
+                    {
+                        infoMessage = "Użytkownik nie ma przypisanych przedmiotów";
+                    }
+
                     break;
                 case 1:
                     items = _context.Items.Where(i => i.WarehouseId == Convert.ToInt32(to));
+
+                    if (!items.Any())
+                    {
+                        infoMessage = "W wybranym magazynie nie ma przedmiotów!";
+                    }
                     break;
                 case 2:
                     items = _context.Items.Where(i => i.ExternalId == Convert.ToInt32(to));
+
+                    if (!items.Any())
+                    {
+                        infoMessage = "Kontrahent nie ma przypisanych przedmiotów";
+                    }
                     break;
                 default:
                     items = _context.Items.Where(i => i.User.NormalizedUserName == User.Identity.Name);
+
+                    if (!items.Any())
+                    {
+                        infoMessage = "Użytkownik nie ma przypisanych przedmiotów";
+                    }
                     break;
             }
 
@@ -103,6 +125,7 @@ namespace DotNetWMS.Controllers
                 viewModel.Add(position);
             }
 
+            ViewData["InfoMessage"] = infoMessage;
             return PartialView("_Doc_AssignmentConfDocPartial", viewModel);
         }
 
@@ -324,6 +347,8 @@ namespace DotNetWMS.Controllers
                 info.ReceivedDate = doc.CreationDate;
                 info.UserId = loggedUserId;
                 info.DocumentId = doc.DocumentId;
+
+                _context.Infoboxes.Add(info);
             }
         }
 

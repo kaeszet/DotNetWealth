@@ -1,4 +1,4 @@
-﻿@model DotNetWMS.Models.WMSIdentityUser
+﻿@model DotNetWMS.Models.UserAndLocationViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -8,7 +8,7 @@
 <div>
     <div class="d-flex justify-content-between flex-sm-row flex-column">
         <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Szczegóły</h2>
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success my-auto"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+        <a asp-action="Edit" asp-route-id="@Model.UserId" class="btn btn-success my-auto"><i class="fas fa-edit mr-1"></i>Edytuj</a>
         @*<a id="buttonForm" asp-controller="QrCodes" asp-action="ShowQRCode" asp-route-url="@Model.Id" class="btn btn-success my-auto">Generuj QR</a>*@
     </div>
 </div>
@@ -27,8 +27,8 @@
                 <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.EmployeeNumber)</li>
                 <li class="list-group-item pl-5">@Html.DisplayFor(model => model.EmployeeNumber)</li>
 
-                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Department)</li>
-                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Department.Name)</li>
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.DepartmentId)</li>
+                <li class="list-group-item pl-5">@ViewBag.DepartmentName</li>
 
                 @*<li class="list-group-item font-weight-bold">Kod QR</li>
                 <li class="list-group-item pl-5"><img src="@ViewBag.QrCode" style="width:200px;height:200px;" /></li>*@
@@ -38,7 +38,9 @@
             <img src="@ViewBag.QrCode" style="width:200px;height:200px;" />
         </div>
         <div class="col-12">
-            <input type="hidden" id="address" value="@TempData["Adress"]" />
+            <input type="hidden" asp-for="Address" id="address" />
+            <input type="hidden" asp-for="Latitude" id="lat" />
+            <input type="hidden" asp-for="Longitude" id="lng" />
             <div id="map" style="height: 400px;"></div>
         </div>
     </div>

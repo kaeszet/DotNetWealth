@@ -1,5 +1,5 @@
 ﻿@using DotNetWMS.Resources
-@model DotNetWMS.Models.External
+@model DotNetWMS.Models.ExternalAndLocationViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -10,7 +10,7 @@
         <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Szczegóły o kliencie</h2>
         @if (User.IsInAnyRoles("StandardPlus,Moderator"))
         {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+            <a asp-action="Edit" asp-route-id="@Model.ExternalId" class="btn btn-success"><i class="fas fa-edit mr-1"></i>Edytuj</a>
         }
     </div>
 </div>
@@ -35,10 +35,13 @@
 
                 <li class="list-group-item font-weight-bold">Adres</li>
                 <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Street), @Html.DisplayFor(model => model.ZipCode) @Html.DisplayFor(model => model.City)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Address), @Html.DisplayFor(model => model.Latitude) @Html.DisplayFor(model => model.Longitude)</li>
             </ul>
         </div>
         <div class="col-12">
-            <input type="hidden" id="address" value="@TempData["Adress"]" />
+            <input type="hidden" asp-for="Address" id="address" />
+            <input type="hidden" asp-for="Latitude" id="lat" />
+            <input type="hidden" asp-for="Longitude" id="lng" />
             <div id="map" style="height:300px; width:100%"></div>
         </div>
     </div>

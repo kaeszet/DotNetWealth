@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DotNetWMS.Migrations
 {
     [DbContext(typeof(DotNetWMSContext))]
-    [Migration("20210302225147_adressInLocation")]
-    partial class adressInLocation
+    [Migration("20210307203927_AddressInLocation")]
+    partial class AddressInLocation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -242,7 +242,7 @@ namespace DotNetWMS.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Latitude")

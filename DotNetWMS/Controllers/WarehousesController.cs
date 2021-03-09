@@ -77,18 +77,29 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var warehouse = await _context.Warehouses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var warehouse = await _context.Warehouses.FirstOrDefaultAsync(m => m.Id == id);
+            var location = await _context.Locations.FindAsync(warehouse.LocationId);
 
             if (warehouse == null)
             {
                 _logger.LogDebug($"DEBUG: Magazyn {warehouse} nie istnieje!");
                 return NotFound();
             }
-            
-            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCode(warehouse);
-            _logger.LogDebug($"DEBUG: Pomyślnie zwrócono widok szczegółów!");
-            return View(warehouse);
+
+            WarehouseAndLocationViewModel viewModel = new WarehouseAndLocationViewModel()
+            {
+                Name = warehouse.Name,
+                Street = warehouse.Street,
+                ZipCode = warehouse.ZipCode,
+                City = warehouse.City,
+                LocationId = location?.Id,
+                Address = location?.Address,
+                Latitude = location?.Latitude,
+                Longitude = location?.Longitude
+
+            };
+
+            return View(viewModel);
         }
         /// <summary>
         /// GET method responsible for returning an Warehouse's Create view
@@ -107,29 +118,59 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Street,ZipCode,City")] Warehouse warehouse)
+        public async Task<IActionResult> Create(WarehouseAndLocationViewModel viewModel)
         {
-            bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name);
+            bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == viewModel.Name);
 
             if (ModelState.IsValid)
             {
                 if (!isWarehouseExists)
                 {
-                    _logger.LogDebug($"DEBUG: Dodano magazyn!");
+                    Warehouse warehouse = new Warehouse()
+                    {
+                        Name = viewModel.Name,
+                        Street = viewModel.Street,
+                        ZipCode = viewModel.ZipCode,
+                        City = viewModel.City
+                    };
+
+                    Location location = new Location()
+                    {
+                        Address = viewModel.Address,
+                        Latitude = viewModel.Latitude,
+                        Longitude = viewModel.Longitude
+                    };
+
+                    var loc = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address);
+
+                    if (loc == null)
+                    {
+                        _context.Add(location);
+                        await _context.SaveChangesAsync();
+
+                        var locId = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address).Id;
+                        warehouse.LocationId = locId;
+
+                    }
+                    else
+                    {
+                        warehouse.LocationId = loc.Id;
+                    }
 
                     _context.Add(warehouse);
                     await _context.SaveChangesAsync();
+
                     GlobalAlert.SendGlobalAlert($"Magazyn {warehouse.AssignFullName} został dodany do bazy!", "success");
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
                     _logger.LogDebug($"DEBUG: Taka nazwa magazynu już istnieje!");
-                    ModelState.AddModelError(string.Empty, $"Magazyn {warehouse.Name} został już wprowadzony do systemu! Wybierz inną nazwę.");
+                    ModelState.AddModelError(string.Empty, $"Magazyn {viewModel.Name} został już wprowadzony do systemu! Wybierz inną nazwę.");
                 }
                 
             }
-            return View(warehouse);
+            return View(viewModel);
         }
         /// <summary>
         /// GET method responsible for returning an Warehouse's Edit view
@@ -141,19 +182,35 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
-                _logger.LogDebug($"DEBUG: Takie id = {id} nie istniej!");
+                _logger.LogDebug($"DEBUG: Takie id = {id} nie istnieje!");
                 return NotFound();
             }
 
             var warehouse = await _context.Warehouses.FindAsync(id);
+            var location = await _context.Locations.FindAsync(warehouse.LocationId);
 
             if (warehouse == null)
             {
-                _logger.LogDebug($"DEBUG: Taki magazyn = {warehouse} nie istniej!");
+                _logger.LogDebug($"DEBUG: Taki magazyn = {warehouse} nie istnieje!");
                 return NotFound();
             }
-            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCode(warehouse);
-            return View(warehouse);
+
+            WarehouseAndLocationViewModel viewModel = new WarehouseAndLocationViewModel()
+            {
+                WarehouseId = (int)id,
+                Name = warehouse.Name,
+                Street = warehouse.Street,
+                ZipCode = warehouse.ZipCode,
+                City = warehouse.City,
+                LocationId = location?.Id,
+                Address = location?.Address,
+                Latitude = location?.Latitude,
+                Longitude = location?.Longitude
+
+            };
+
+
+            return View(viewModel);
         }
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
@@ -164,18 +221,18 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Street,ZipCode,City")] Warehouse warehouse)
+        public async Task<IActionResult> Edit(int id, WarehouseAndLocationViewModel viewModel)
         {
             
-            if (id != warehouse.Id)
+            if (id != viewModel.WarehouseId)
             {
                 _logger.LogDebug($"DEBUG: Takie id = {id} nie istniej w bazie magazynów!");
                 return NotFound();
             }
 
-            var oldWarehouseNumber = _context.Warehouses.AsNoTracking().FirstOrDefault(w => w.Id == warehouse.Id)?.Name;
+            var oldWarehouseNumber = _context.Warehouses.AsNoTracking().FirstOrDefault(w => w.Id == viewModel.WarehouseId)?.Name;
 
-            bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == warehouse.Name 
+            bool isWarehouseExists = _context.Warehouses.Any(w => w.Name == viewModel.Name 
             && w.Name != oldWarehouseNumber 
             && !string.IsNullOrEmpty(oldWarehouseNumber));
 
@@ -185,12 +242,48 @@ namespace DotNetWMS.Controllers
                 {
                     try
                     {
+                        Warehouse warehouse = new Warehouse()
+                        {
+                            Id = viewModel.WarehouseId,
+                            Name = viewModel.Name,
+                            Street = viewModel.Street,
+                            ZipCode = viewModel.ZipCode,
+                            City = viewModel.City
+                        };
+
+                        if (!string.IsNullOrEmpty(viewModel.Address) && !string.IsNullOrEmpty(viewModel.Latitude) && !string.IsNullOrEmpty(viewModel.Longitude))
+                        {
+                            Location location = new Location()
+                            {
+                                Address = viewModel.Address,
+                                Latitude = viewModel.Latitude,
+                                Longitude = viewModel.Longitude
+                            };
+
+                            var loc = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address);
+
+                            if (loc == null)
+                            {
+                                _context.Add(location);
+                                await _context.SaveChangesAsync();
+
+                                var locId = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address).Id;
+                                warehouse.LocationId = locId;
+
+                            }
+                            else
+                            {
+                                warehouse.LocationId = loc.Id;
+                            }
+                        }
+                        
                         _context.Update(warehouse);
                         await _context.SaveChangesAsync();
+                        GlobalAlert.SendGlobalAlert($"Magazyn {warehouse.AssignFullName} został zmieniony!", "success");
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!WarehouseExists(warehouse.Id))
+                        if (!WarehouseExists(viewModel.WarehouseId))
                         {
                             _logger.LogDebug($"DEBUG: Taki magazyn nie istniej w bazie magazynów!");
                             return NotFound();
@@ -200,18 +293,18 @@ namespace DotNetWMS.Controllers
                             throw;
                         }
                     }
-                    GlobalAlert.SendGlobalAlert($"Magazyn {warehouse.AssignFullName} został zmieniony!", "success");
+                    
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
                     _logger.LogDebug($"DEBUG: Takie nazwa magazynu zostałą jużwprowadzona do systemu!");
-                    ModelState.AddModelError(string.Empty, $"Magazyn \"{warehouse.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
+                    ModelState.AddModelError(string.Empty, $"Magazyn \"{viewModel.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
                 }
                 
             }
             _logger.LogDebug($"DEBUG: Pomyślnie zedytowano magazyn!");
-            return View(warehouse);
+            return View(viewModel);
         }
         /// <summary>
         /// GET method responsible for returning an Warehouse's Delete view

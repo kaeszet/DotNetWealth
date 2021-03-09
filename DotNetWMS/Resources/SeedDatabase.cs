@@ -56,11 +56,11 @@ namespace DotNetWMS.Resources
 
             var locations = new[]
             {
-                new Location { Adress = "Myśliwska 61, 30-718 Kraków", Latitude = "50.046782", Longitude = "19.997600" },
-                new Location { Adress = "Cystersów 19, 31-553 Kraków", Latitude = "50.064216", Longitude = "19.969936" },
-                new Location { Adress = "Półłanki 30, 30-721 Kraków", Latitude = "50.029647", Longitude = "20.039791" },
-                new Location { Adress = "Lwowska 17, 35-301 Rzeszów", Latitude = "50.037976", Longitude = "22.026178" },
-                new Location { Adress = "Przewóz 34, 30-721 Kraków", Latitude = "50.042612", Longitude = "19.993209" },
+                new Location { Address = "Myśliwska 61, 30-718 Kraków", Latitude = "50.046782", Longitude = "19.997600" },
+                new Location { Address = "Cystersów 19, 31-553 Kraków", Latitude = "50.064216", Longitude = "19.969936" },
+                new Location { Address = "Półłanki 30, 30-721 Kraków", Latitude = "50.029647", Longitude = "20.039791" },
+                new Location { Address = "Lwowska 17, 35-301 Rzeszów", Latitude = "50.037976", Longitude = "22.026178" },
+                new Location { Address = "Przewóz 34, 30-721 Kraków", Latitude = "50.042612", Longitude = "19.993209" },
 
             };
 

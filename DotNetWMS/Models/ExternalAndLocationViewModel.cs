@@ -1,21 +1,15 @@
-﻿using System;
+﻿using DotNetWMS.Resources;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using DotNetWMS.Resources;
 
 namespace DotNetWMS.Models
 {
-    /// <summary>
-    /// External class model used for creating DB with EFC and collecting info about external clients or services
-    /// </summary>
-    public class External
+    public class ExternalAndLocationViewModel
     {
-        /// <summary>
-        /// External database PK
-        /// </summary>
-        public int Id { get; set; }
+        public int ExternalId { get; set; }
         /// <summary>
         /// Enum used to catalog and select the type of client 
         /// </summary>
@@ -57,13 +51,9 @@ namespace DotNetWMS.Models
         [Display(Name = "Miasto")]
         public string City { get; set; }
         public int? LocationId { get; set; }
-        public Location Location { get; set; }
-        /// <summary>
-        /// List of items which was transferred to the client or external service
-        /// </summary>
-        public IList<Item> Items { get; set; }
-        public string FullName => $"{Name}, {TaxId}";
-        public string FullNameForDocumentation => $"{Name}{Environment.NewLine}{TaxId}{Environment.NewLine}{Street}{Environment.NewLine}{ZipCode} {City}";
-
+        public string Address { get; set; }
+        public string Longitude { get; set; }
+        public string Latitude { get; set; }
+       
     }
 }

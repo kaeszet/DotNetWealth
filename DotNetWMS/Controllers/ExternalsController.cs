@@ -46,21 +46,14 @@ namespace DotNetWMS.Controllers
                 externals = externals.Where(e => e.Name.Contains(search) || e.TaxId.Contains(search));
             }
 
-            switch (order)
+            externals = order switch
             {
-                case "name_desc":
-                    externals = externals.OrderByDescending(w => w.Name);
-                    break;
-                case "type_desc":
-                    externals = externals.OrderByDescending(e => e.Type);
-                    break;
-                case "Type":
-                    externals = externals.OrderBy(e => e.Type);
-                    break;
-                default:
-                    externals = externals.OrderBy(e => e.Name);
-                    break;
-            }
+                "name_desc" => externals.OrderByDescending(w => w.Name),
+                "type_desc" => externals.OrderByDescending(e => e.Type),
+                "Type" => externals.OrderBy(e => e.Type),
+                _ => externals.OrderBy(e => e.Name),
+            };
+
             return View(await externals.AsNoTracking().ToListAsync());
         }
         /// <summary>
@@ -121,14 +114,30 @@ namespace DotNetWMS.Controllers
                 return NotFound();
             }
 
-            var external = await _context.Externals
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var external = await _context.Externals.FirstOrDefaultAsync(m => m.Id == id);
+            var location = await _context.Locations.FindAsync(external.LocationId);
+
             if (external == null)
             {
                 return NotFound();
             }
-            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeExternal(external);
-            return View(external);
+
+            ExternalAndLocationViewModel viewModel = new ExternalAndLocationViewModel()
+            {
+                Type = external.Type,
+                Name = external.Name,
+                TaxId = external.TaxId,
+                Street = external.Street,
+                ZipCode = external.ZipCode,
+                City = external.City,
+                LocationId = location?.Id,
+                Address = location?.Address,
+                Latitude = location?.Latitude,
+                Longitude = location?.Longitude
+
+            };
+
+            return View(viewModel);
         }
         /// <summary>
         /// GET method responsible for returning an External's Create view
@@ -147,16 +156,59 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Type,Name,TaxId,Street,ZipCode,City")] External external)
+        public async Task<IActionResult> Create(ExternalAndLocationViewModel viewModel)
         {
+            bool isExternalExists = _context.Warehouses.Any(w => w.Name == viewModel.Name);
+
             if (ModelState.IsValid)
             {
-                _context.Add(external);
-                await _context.SaveChangesAsync();
-                GlobalAlert.SendGlobalAlert($"Kontrahent {external.Name} został dodany do bazy!", "success");
-                return RedirectToAction(nameof(Index));
+                if (!isExternalExists)
+                {
+                    External external = new External()
+                    {
+                        Type = viewModel.Type,
+                        Name = viewModel.Name,
+                        TaxId = viewModel.TaxId,
+                        Street = viewModel.Street,
+                        ZipCode = viewModel.ZipCode,
+                        City = viewModel.City
+                    };
+
+                    Location location = new Location()
+                    {
+                        Address = viewModel.Address,
+                        Latitude = viewModel.Latitude,
+                        Longitude = viewModel.Longitude
+                    };
+
+                    var loc = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address);
+
+                    if (loc == null)
+                    {
+                        _context.Add(location);
+                        await _context.SaveChangesAsync();
+
+                        var locId = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address).Id;
+                        external.LocationId = locId;
+
+                    }
+                    else
+                    {
+                        external.LocationId = loc.Id;
+                    }
+
+                    _context.Add(external);
+                    await _context.SaveChangesAsync();
+
+                    GlobalAlert.SendGlobalAlert($"Kontrahent {external.FullName} został dodany do bazy!", "success");
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, $"Podana nazwa kontrahenta: {viewModel.Name} jest już w systemie! Wybierz inną nazwę.");
+                }
             }
-            return View(external);
+            return View(viewModel);
         }
         /// <summary>
         /// GET method responsible for returning an External's Edit view
@@ -172,12 +224,31 @@ namespace DotNetWMS.Controllers
             }
 
             var external = await _context.Externals.FindAsync(id);
+            var location = await _context.Locations.FindAsync(external.LocationId);
+
             if (external == null)
             {
                 return NotFound();
             }
-            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeExternal(external);
-            return View(external);
+
+            ExternalAndLocationViewModel viewModel = new ExternalAndLocationViewModel()
+            {
+                ExternalId = (int)id,
+                Type = external.Type,
+                Name = external.Name,
+                TaxId = external.TaxId,
+                Street = external.Street,
+                ZipCode = external.ZipCode,
+                City = external.City,
+                LocationId = location?.Id,
+                Address = location?.Address,
+                Latitude = location?.Latitude,
+                Longitude = location?.Longitude
+
+            };
+
+
+            return View(viewModel);
         }
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
@@ -188,36 +259,87 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Type,Name,TaxId,Street,ZipCode,City")] External external)
+        public async Task<IActionResult> Edit(int id, ExternalAndLocationViewModel viewModel)
         {
-            if (id != external.Id)
+            if (id != viewModel.ExternalId)
             {
                 return NotFound();
             }
 
+            var oldExternalName = _context.Externals.AsNoTracking().FirstOrDefault(w => w.Id == viewModel.ExternalId)?.Name;
+
+            bool isExternalExists = _context.Externals.Any(w => w.Name == viewModel.Name
+            && w.Name != oldExternalName
+            && !string.IsNullOrEmpty(oldExternalName));
+
             if (ModelState.IsValid)
             {
-                try
+                if (!isExternalExists)
                 {
-                    _context.Update(external);
-                    await _context.SaveChangesAsync();
+                    try
+                    {
+                        External external = new External()
+                        {
+                            Id = viewModel.ExternalId,
+                            Type = viewModel.Type,
+                            Name = viewModel.Name,
+                            TaxId = viewModel.TaxId,
+                            Street = viewModel.Street,
+                            ZipCode = viewModel.ZipCode,
+                            City = viewModel.City
+                        };
+
+                        if (!string.IsNullOrEmpty(viewModel.Address) && !string.IsNullOrEmpty(viewModel.Latitude) && !string.IsNullOrEmpty(viewModel.Longitude))
+                        {
+                            Location location = new Location()
+                            {
+                                Address = viewModel.Address,
+                                Latitude = viewModel.Latitude,
+                                Longitude = viewModel.Longitude
+                            };
+
+                            var loc = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address);
+
+                            if (loc == null)
+                            {
+                                _context.Add(location);
+                                await _context.SaveChangesAsync();
+
+                                var locId = _context.Locations.FirstOrDefault(l => l.Address == viewModel.Address).Id;
+                                external.LocationId = locId;
+
+                            }
+                            else
+                            {
+                                external.LocationId = loc.Id;
+                            }
+                        }
+
+                        _context.Update(external);
+                        await _context.SaveChangesAsync();
+                        GlobalAlert.SendGlobalAlert($"Magazyn {external.FullName} został zmieniony!", "success");
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ExternalExists(viewModel.ExternalId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ExternalExists(external.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, $"Magazyn \"{viewModel.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
                 }
-                GlobalAlert.SendGlobalAlert($"Kontrahent {external.Name} został zmieniony!", "success");
-                return RedirectToAction(nameof(Index));
+
             }
-            TempData["Adress"] = GoogleMapsGenerator.PrepareAdressToGeoCodeExternal(external);
-            return View(external);
+            return View(viewModel);
         }
         /// <summary>
         /// GET method responsible for returning an External's Delete view

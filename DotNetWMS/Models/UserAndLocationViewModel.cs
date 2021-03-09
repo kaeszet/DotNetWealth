@@ -1,5 +1,4 @@
 ﻿using DotNetWMS.Resources;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
-    /// <summary>
-    /// Class inheriting from IdentityUser extending its properties with data needed in the application
-    /// </summary>
-    public class WMSIdentityUser : IdentityUser
+    public class UserAndLocationViewModel
     {
+        public string UserId { get; set; }
         /// <summary>
         /// Employee's name
         /// </summary>
@@ -39,8 +36,6 @@ namespace DotNetWMS.Models
         public string EmployeeNumber { get; set; }
         [Display(Name = "Stanowisko")]
         public int? DepartmentId { get; set; }
-        [Display(Name = "Stanowisko")]
-        public Department Department { get; set; }
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(40)]
         [Display(Name = "Adres")]
@@ -58,10 +53,8 @@ namespace DotNetWMS.Models
         [Display(Name = "Miasto")]
         public string City { get; set; }
         public int? LocationId { get; set; }
-        public Location Location { get; set; }
-        public IList<Item> Items { get; set; }
-        public IList<Infobox> Messages { get; set; }
-        public string FullName => $"{Surname} {Name}";
-        public string FullNameForDocumentation => $"{Surname} {Name}{Environment.NewLine}{EmployeeNumber}{Environment.NewLine}{Street}{Environment.NewLine}{ZipCode} {City}";
+        public string Address { get; set; }
+        public string Longitude { get; set; }
+        public string Latitude { get; set; }
     }
 }
