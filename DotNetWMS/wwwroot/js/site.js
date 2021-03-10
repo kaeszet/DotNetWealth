@@ -33,6 +33,14 @@ $(function ()
         }
     })
 
+    // Global alert info
+    if ($('.alert.global-info').length > 0) {
+
+        setTimeout(function () {
+            $('.alert.global-info').alert('close');
+        }, 5000);
+    }
+
     //Input search table
     $(".search-control").on("keyup", function ()
     {
@@ -82,87 +90,36 @@ $(function ()
 {
 
     //geocoder function
-    $.fn.geocodeAddress = function () {
+    $.fn.geocodeAddress = function (options) {
+
+        let settings = $.extend({
+            lat: null,
+            lng: null,
+            search: false,
+        }, options);
 
         let _this = $(this);
-        $geocoder.geocode({ address: _this.val() }, (results, status) => {
+        let LatLng;
+
+        if (settings.lat && settings.lng) {
+            LatLng = new google.maps.LatLng(settings.lat, settings.lng);
+        }
+        else LatLng = null;
+
+        $geocoder.geocode({ location: LatLng, address: _this.val() }, (results, status) => {
             if (status === "OK") {
+           
                 let place = results[0];
 
-                if (_this.attr('type') == 'search') {
+                if (settings.search == true) {
 
-                    clearMarker(null);
-                    $allMarkers = [];
-
-                    let street = [];
-
-                    _this.val(place.formatted_address);
-
-                    $('#lat').val(place.geometry.location.lat())
-                    $('#lng').val(place.geometry.location.lng())
-
-                    console.log(place)
-
-                    const componentForm = {
-                        street_number: "short_name",
-                        route: "long_name",
-                        locality: "long_name",
-                        administrative_area_level_1: "short_name",
-                        country: "long_name",
-                        postal_code: "short_name",
-                        premise: "short_name",
-                    };
-                    for (const component of place.address_components) {
-                        const addressType = component.types[0];
-
-                        if (componentForm[addressType]) {
-                            const val = component[componentForm[addressType]];
-                            
-                            if ($('#' + addressType).length > 0) $('#' + addressType).val(val);
-
-                            if (addressType == 'street_number' ||
-                                addressType == 'route' ||
-                                addressType == 'premise' ||
-                                addressType == 'locality') street[addressType] = val;
-                        }
-                    }
-                    if (Number.isInteger( Number(street['premise']) )) {
-                        $('#street').val(street['locality'] + ' ' + street['premise']);
-
-                    } else {
-                        if (typeof street['street_number'] != "undefined") $('#street').val(street['route'] + ' ' + street['street_number']);
-                        else $('#street').val(street['route']);
-                        
-                    }
+                    getGoogleData(place)
                 }
 
-                $props = {
-                    center: place.geometry.location,
-                    zoom: 14,
-                    gestureHandling: 'cooperative'
-                };
-
-                $map = new google.maps.Map($('#map')[0], $props);
-
-                $map.setCenter(place.geometry.location);
-
-                let marker = new google.maps.Marker({
-                    map: $map,
-                    position: place.geometry.location,
-                });
-
-                $allMarkers.push(marker);
+                newMarker(place);
 
             } else alert("Wystąpił błąd usługi Geocode z powodu: " + status);
         });
-
-
-        function clearMarker(val)
-        {
-            for (let i = 0; i < $allMarkers.length; i++) {
-                $allMarkers[i].setMap(val);
-            }
-        }
     };
 
     $.fn.printData = function () {
@@ -288,7 +245,11 @@ function checkboxChange(obj) {
 
 // Google Maps
 function initMap() {
-    let a = $('#address');
+
+    let a = $('#address'),
+        lat = $('#lat'),
+        lng = $('#lng');
+
     // Geocoder
     $geocoder = new google.maps.Geocoder();
 
@@ -301,11 +262,26 @@ function initMap() {
     //Autocomplete
     $autocomplete = new google.maps.places.Autocomplete(a[0], option);
 
+    $autocomplete.addListener("place_changed", () => {
+        const place = $autocomplete.getPlace();
+
+        getGoogleData(place)
+    });
+
     $allMarkers = [];
 
-    if (a.length > 0 && a.val()) {
+    if (a.length > 0 && (lat.val() && lng.val())) {
 
-        a.geocodeAddress();
+        $props = {
+            zoom: 14,
+            gestureHandling: 'cooperative'
+        };
+        $map = new google.maps.Map($('#map')[0], $props);
+
+        a.geocodeAddress({
+            lat: lat.val(),
+            lng: lng.val(),
+        });
     }
     else {
 
@@ -323,6 +299,7 @@ function initMap() {
                 };
 
                 $map = new google.maps.Map($('#map')[0], $props);
+
                 let marker = new google.maps.Marker({
                     map: $map,
                     position: $myLocation
@@ -340,10 +317,6 @@ function initMap() {
     }
 
     if (a.length > 0 && a.attr('type') == 'search') {
-        a.on('change autocompletechange', function (ev) {
-
-            $(this).geocodeAddress();
-        })
 
         a.on('keypress', function (ev) {
 
@@ -353,5 +326,76 @@ function initMap() {
                 a.blur();
             }
         })
+    }
+}
+
+function clearMarker(val) {
+    for (let i = 0; i < $allMarkers.length; i++) {
+        $allMarkers[i].setMap(val);
+    }
+}
+
+function newMarker(place) {
+
+    $map.setCenter(place.geometry.location);
+
+    let marker = new google.maps.Marker({
+        map: $map,
+        position: place.geometry.location,
+    });
+
+    $allMarkers.push(marker);
+}
+
+function getGoogleData(place) {
+
+    if (place.geometry) {
+
+        clearMarker(null);
+        $allMarkers = [];
+
+        let street = [];
+
+        $('#address').val(place.formatted_address);
+
+        $('#lat').val(place.geometry.location.lat())
+        $('#lng').val(place.geometry.location.lng())
+
+        const componentForm = {
+            street_number: "short_name",
+            route: "long_name",
+            locality: "long_name",
+            administrative_area_level_1: "short_name",
+            country: "long_name",
+            postal_code: "short_name",
+            premise: "short_name",
+        };
+        for (const component of place.address_components) {
+            const addressType = component.types[0];
+
+            if (componentForm[addressType]) {
+                const val = component[componentForm[addressType]];
+
+                if ($('#' + addressType).length > 0) $('#' + addressType).val(val);
+
+                if (addressType == 'street_number' ||
+                    addressType == 'route' ||
+                    addressType == 'premise' ||
+                    addressType == 'locality') street[addressType] = val;
+            }
+        }
+        if (Number.isInteger(Number(street['premise']))) {
+            $('#street').val(street['locality'] + ' ' + street['premise']);
+
+        } else {
+            if (typeof street['street_number'] != "undefined") $('#street').val(street['route'] + ' ' + street['street_number']);
+            else $('#street').val(street['route']);
+
+        }
+
+        newMarker(place);
+    }
+    else {
+        $('#address').geocodeAddress({ search: true });
     }
 }
