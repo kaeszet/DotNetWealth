@@ -1,0 +1,39 @@
+﻿@using DotNetWMS.Resources
+@model DotNetWMS.Models.Location
+
+@{
+    ViewData["Title"] = "ShowMap";
+}
+
+<div>
+    <div class="d-flex justify-content-between flex-sm-row flex-column">
+        <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Mapa</h2>
+        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success"><i class="fas fa-edit mr-1"></i>Edytuj</a>
+        }
+    </div>
+</div>
+<hr />
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
+
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush mt-2">
+                <li class="list-group-item font-weight-bold">@Html.DisplayNameFor(model => model.Address)</li>
+                <li class="list-group-item pl-5">@Html.DisplayFor(model => model.Address), @Html.DisplayFor(model => model.Latitude) @Html.DisplayFor(model => model.Longitude)</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <input type="hidden" asp-for="Address" id="address" />
+            <input type="hidden" asp-for="Latitude" id="lat" />
+            <input type="hidden" asp-for="Longitude" id="lng" />
+            <div id="map" style="height: 400px;"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
+}
