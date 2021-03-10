@@ -12,13 +12,13 @@
 <hr />
 <div class="mb-3" id="docToPrint">
     <a asp-action="Index" class="btn btn-outline-dark btn-sm d-print-none"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
-    <form method="post">
+    <form method="post" class="mt-3">
         <div class="form-row">
             @if (!String.IsNullOrEmpty(Model.UserFrom))
             {
                 <div class="form-group col-md-6">
                     <label asp-for="UserFrom"></label>
-                    <h6>@Model.UserFromName</h6>
+                    <h6 style="white-space: pre-line">@Model.UserFromName</h6>
                     <input type="hidden" asp-for="@Model.UserFrom" />
                     <input type="hidden" asp-for="@Model.UserFromName" />
                 </div>
@@ -28,7 +28,7 @@
             {
                 <div class="form-group col-md-6">
                     <label asp-for="WarehouseFrom"></label>
-                    <h6>@Model.WarehouseFromName</h6>
+                    <h6 style="white-space: pre-line">@Model.WarehouseFromName</h6>
                     <input type="hidden" asp-for="@Model.WarehouseFrom" />
                     <input type="hidden" asp-for="@Model.WarehouseFromName" />
                 </div>
@@ -38,7 +38,7 @@
             {
                 <div class="form-group col-md-6">
                     <label asp-for="ExternalFrom"></label>
-                    <h6>@Model.ExternalFromName</h6>
+                    <h6 style="white-space: pre-line">@Model.ExternalFromName</h6>
                     <input type="hidden" asp-for="@Model.ExternalFrom" />
                     <input type="hidden" asp-for="@Model.ExternalFromName" />
                 </div>
@@ -48,7 +48,7 @@
             {
                 <div class="form-group col-md-6">
                     <label asp-for="UserTo"></label>
-                    <h6>@Model.UserToName</h6>
+                    <h6 style="white-space: pre-line">@Model.UserToName</h6>
                     <input type="hidden" asp-for="@Model.UserTo" />
                     <input type="hidden" asp-for="@Model.UserToName" />
                 </div>
@@ -58,7 +58,7 @@
             {
                 <div class="form-group col-md-6">
                     <label asp-for="WarehouseTo"></label>
-                    <h6>@Model.WarehouseToName</h6>
+                    <h6 style="white-space: pre-line">@Model.WarehouseToName</h6>
                     <input type="hidden" asp-for="@Model.WarehouseTo" />
                     <input type="hidden" asp-for="@Model.WarehouseToName" />
                 </div>
@@ -68,7 +68,7 @@
             {
                 <div class="form-group col-md-6">
                     <label asp-for="ExternalTo"></label>
-                    <h6>@Model.ExternalToName</h6>
+                    <h6 style="white-space: pre-line">@Model.ExternalToName</h6>
                     <input type="hidden" asp-for="@Model.ExternalTo" />
                     <input type="hidden" asp-for="@Model.ExternalToName" />
                 </div>
@@ -154,7 +154,7 @@
     </form>
 
     <div class="mt-3">
-        <button class="btn btn-info btn-sm d-print-none" onclick="printDocument('docToPrint')">Drukuj</button>
+        <button class="btn btn-outline-primary btn-sm d-print-none" onclick="printDocument('docToPrint')">Drukuj</button>
     </div>
 
     <div class="form-row d-none d-print-block">
