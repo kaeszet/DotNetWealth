@@ -12,7 +12,6 @@ namespace DotNetWMS.Controllers
 {
     public class LocationsController : Controller
     {
-
         private readonly DotNetWMSContext _context;
 
         public LocationsController(DotNetWMSContext context)
@@ -20,27 +19,61 @@ namespace DotNetWMS.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string order, string search)
+        public IActionResult Index(string order, string search)
         {
             ViewData["SortByAddress"] = string.IsNullOrEmpty(order) ? "address_desc" : "";
             ViewData["Search"] = search;
 
             var locations = _context.Locations.Select(e => e);
 
-            if (!string.IsNullOrEmpty(search))
+            List<LocationListViewModel> locationList = new List<LocationListViewModel>();
+
+            foreach (var item in locations)
             {
-                locations = locations.Where(e => e.Address.Contains(search));
+                List<string> listOfOccurences = IsLocationInUse(item.Id);
+
+                LocationListViewModel location = new LocationListViewModel()
+                {
+                    Id = item.Id,
+                    Address = item.Address,
+                    Latitude = item.Latitude,
+                    Longitude = item.Longitude,
+                    IsInUse = listOfOccurences.Any(),
+                    Records = listOfOccurences
+                };
+
+                locationList.Add(location);
             }
 
-            locations = order switch
+            if (!string.IsNullOrEmpty(search))
             {
-                "name_desc" => locations.OrderByDescending(w => w.Address),
-                _ => locations.OrderBy(e => e.Address),
+                locationList = locationList.Where(e => e.Address.Contains(search)).ToList();
+            }
+
+            locationList = order switch
+            {
+                "address_desc" => locationList.OrderByDescending(x => x.Address).ToList(),
+                _ => locationList.OrderBy(x => x.Address).ToList(),
             };
 
-            return View(await locations.AsNoTracking().ToListAsync());
+            return View(locationList);
         }
+        public async Task<IActionResult> ShowMap(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var location = await _context.Locations.FindAsync(id);
+
+            if (location == null)
+            {
+                return NotFound();
+            }
+
+            return View(location);
+        }
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -100,7 +133,7 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, $"Lokalizacja \"{location.Address}\" jest już w systemie! Wybierz inną nazwę.");
+                    ModelState.AddModelError(string.Empty, $"Lokalizacja \"{location.Address}\" jest już w systemie!");
                 }
 
             }
@@ -151,6 +184,34 @@ namespace DotNetWMS.Controllers
         private bool LocationExists(int id)
         {
             return _context.Locations.Any(e => e.Id == id);
+        }
+
+        private List<string> IsLocationInUse(int id)
+        {
+            List<string> listOfOccurrences = new List<string>();
+
+            var findInWarehouses = _context.Warehouses.Where(x => x.LocationId == id)?.Select(x => x.AssignFullName);
+
+            if (findInWarehouses.Any())
+            {
+                listOfOccurrences.AddRange(findInWarehouses.ToList());
+            }
+
+            var findInExternals = _context.Externals.Where(x => x.LocationId == id)?.Select(x => x.FullName);
+
+            if (findInWarehouses.Any())
+            {
+                listOfOccurrences.AddRange(findInExternals.ToList());
+            }
+
+            var findInEmployees = _context.Users.Where(x => x.LocationId == id)?.Select(x => x.FullName);
+
+            if (findInWarehouses.Any())
+            {
+                listOfOccurrences.AddRange(findInEmployees.ToList());
+            }
+
+            return listOfOccurrences;
         }
 
     }
