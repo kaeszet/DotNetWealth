@@ -9,6 +9,7 @@ using DotNetWMS.Data;
 using DotNetWMS.Models;
 using DotNetWMS.Resources;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
@@ -22,10 +23,12 @@ namespace DotNetWMS.Controllers
         /// A field for handling the delivery of information to the DB associated with the Entity Core framework
         /// </summary>
         private readonly DotNetWMSContext _context;
+        private readonly ILogger<ExternalsController> _logger;
 
-        public ExternalsController(DotNetWMSContext context)
+        public ExternalsController(DotNetWMSContext context, ILogger<ExternalsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
         /// <summary>
         /// GET method responsible for returning an External's Index view and supports a search engine
@@ -111,6 +114,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -119,6 +123,7 @@ namespace DotNetWMS.Controllers
 
             if (external == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie kontrahenta o podanym id = {id}");
                 return NotFound();
             }
 
@@ -201,11 +206,13 @@ namespace DotNetWMS.Controllers
                     await _context.SaveChangesAsync();
 
                     GlobalAlert.SendGlobalAlert($"Kontrahent {external.FullName} został dodany do bazy!", "success");
+                   
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, $"Podana nazwa kontrahenta: {viewModel.Name} jest już w systemie! Wybierz inną nazwę.");
+                    _logger.LogDebug($"Podana nazwa kontrahenta: {viewModel.Name} jest już w systemie! Wybierz inną nazwę.");
                 }
             }
             return View(viewModel);
@@ -220,6 +227,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -228,6 +236,7 @@ namespace DotNetWMS.Controllers
 
             if (external == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie kontrahenta o podanym id = {id}");
                 return NotFound();
             }
 
@@ -263,6 +272,7 @@ namespace DotNetWMS.Controllers
         {
             if (id != viewModel.ExternalId)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie kontrahenta o podanym id = {id}");
                 return NotFound();
             }
 
@@ -317,12 +327,13 @@ namespace DotNetWMS.Controllers
 
                         _context.Update(external);
                         await _context.SaveChangesAsync();
-                        GlobalAlert.SendGlobalAlert($"Magazyn {external.FullName} został zmieniony!", "success");
+                        GlobalAlert.SendGlobalAlert($"Kontrahent {external.FullName} został zmieniony!", "success");
                     }
                     catch (DbUpdateConcurrencyException)
                     {
                         if (!ExternalExists(viewModel.ExternalId))
                         {
+                            _logger.LogError($"Kontrahent {viewModel.Name}, {viewModel.TaxId} został zmieniony przez innego użytkownika");
                             return NotFound();
                         }
                         else
@@ -335,7 +346,9 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, $"Magazyn \"{viewModel.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
+                    _logger.LogDebug($"Kontrahent \"{viewModel.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
+                    ModelState.AddModelError(string.Empty, $"Kontrahent \"{viewModel.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
+                    
                 }
 
             }
@@ -351,6 +364,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -358,6 +372,7 @@ namespace DotNetWMS.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (external == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie kontrahenta o podanym id = {id}");
                 return NotFound();
             }
 
@@ -387,6 +402,7 @@ namespace DotNetWMS.Controllers
                 ViewBag.ErrorMessage = $"Istnieje przedmiot przypisany do tego klienta.<br>" +
                     $"Przed usunięciem klienta upewnij się, że wszystkie przedmioty zostały zwrócone.<br>" +
                     $"Odznacz je w dziale \"Majątek\" i ponów próbę.";
+                _logger.LogError("Podczas usuwania klienta wystąpił błąd! Istnieje przedmiot przypisany do tego klienta.");
                 return View("DbExceptionHandler");
             }
             

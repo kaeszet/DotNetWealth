@@ -9,16 +9,19 @@ using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using DotNetWMS.Resources;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
     public class InfoboxesController : Controller
     {
         private readonly DotNetWMSContext _context;
+        private readonly ILogger<InfoboxesController> _logger;
 
-        public InfoboxesController(DotNetWMSContext context)
+        public InfoboxesController(DotNetWMSContext context, ILogger<InfoboxesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
         public async Task<IActionResult> Index(bool isChecked)
         {
@@ -33,6 +36,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 NotFound();
             }
 
@@ -48,6 +52,7 @@ namespace DotNetWMS.Controllers
 
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return View("NotFound");
             }
 

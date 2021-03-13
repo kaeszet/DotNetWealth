@@ -13,11 +13,11 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// Controller class to support displaying error messages
         /// </summary>
-        private readonly ILogger logger;
+        private readonly ILogger _logger;
 
         public ErrorController(ILogger<ErrorController> logger)
         {
-            this.logger = logger;
+            _logger = logger;
         }
         /// <summary>
         /// The method responsible for displaying the error message depending on the error number
@@ -35,7 +35,7 @@ namespace DotNetWMS.Controllers
                     ViewBag.ErrorMessage = "Strona pod podanym adresem nie istnieje!";
                     ViewBag.Path = statusCodeResult.OriginalPath;
                     ViewBag.QS = statusCodeResult.OriginalQueryString;
-                    logger.LogWarning($"404 error occured. Path = {statusCodeResult.OriginalPath} and QueryString = {statusCodeResult.OriginalQueryString}");
+                    _logger.LogWarning($"Błąd 404. Ścieżka = {statusCodeResult.OriginalPath}, QueryString = {statusCodeResult.OriginalQueryString}");
                     break;
             }
 
@@ -49,7 +49,7 @@ namespace DotNetWMS.Controllers
         public IActionResult GlobalExceptionHandler()
         {
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            logger.LogError($"The path {exceptionHandlerPathFeature.Path} threw an exception {exceptionHandlerPathFeature.Error}");
+            _logger.LogError($"Ścieżka {exceptionHandlerPathFeature.Path} zwróciła błąd {exceptionHandlerPathFeature.Error}");
 
             ViewBag.ExceptionPath = exceptionHandlerPathFeature.Path;
             ViewBag.ExceptionMessage = exceptionHandlerPathFeature.Error.Message;

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http;
 using DotNetWMS.Resources;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
@@ -28,12 +29,14 @@ namespace DotNetWMS.Controllers
         private readonly DotNetWMSContext _context;
         private readonly UserManager<WMSIdentityUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<ItemsController> _logger;
 
-        public ItemsController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor)
+        public ItemsController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor, ILogger<ItemsController> logger)
         {
             _context = context;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
         /// <summary>
         /// GET method responsible for returning an Item's Assign_to_employee view and supports a search engine
@@ -123,6 +126,7 @@ namespace DotNetWMS.Controllers
 
             if (id != item.Id)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
                 return NotFound();
             }
 
@@ -151,6 +155,7 @@ namespace DotNetWMS.Controllers
 
             if (id != item.Id)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
                 return NotFound();
             }
 
@@ -175,6 +180,7 @@ namespace DotNetWMS.Controllers
 
             if (id != item.Id)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
                 return NotFound();
             }
 
@@ -230,6 +236,7 @@ namespace DotNetWMS.Controllers
 
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -241,6 +248,7 @@ namespace DotNetWMS.Controllers
 
             if (item == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
                 return NotFound();
             }
 
@@ -294,6 +302,7 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
+                    _logger.LogDebug($"Przedmiot o numerze seryjnym {item.ItemCode} został już wprowadzony do systemu!");
                     ModelState.AddModelError(string.Empty, $"Przedmiot o numerze seryjnym {item.ItemCode} został już wprowadzony do systemu!");
                 }
                 
@@ -319,6 +328,7 @@ namespace DotNetWMS.Controllers
             }
             else
             {
+                _logger.LogDebug($"Przedmiot o kodzie ({itemCode}) został już wprowadzony!");
                 return Json($"Przedmiot o kodzie ({itemCode}) został już wprowadzony!");
             }
         }
@@ -333,6 +343,7 @@ namespace DotNetWMS.Controllers
             }
             else
             {
+                _logger.LogDebug($"Przedmiot został już wprowadzony do systemu!");
                 return Json($"Przedmiot został już wprowadzony do systemu!");
             }
         }
@@ -346,6 +357,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -353,6 +365,7 @@ namespace DotNetWMS.Controllers
 
             if (item == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
                 return NotFound();
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
@@ -373,6 +386,7 @@ namespace DotNetWMS.Controllers
         {
             if (id != item.Id)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
                 return NotFound();
             }
 
@@ -408,6 +422,7 @@ namespace DotNetWMS.Controllers
                     {
                         if (!ItemExists(item.Id))
                         {
+                            _logger.LogError($"Przedmiot {item.Assign} został zmieniony przez innego użytkownika");
                             return NotFound();
                         }
                         else
@@ -421,6 +436,7 @@ namespace DotNetWMS.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, $"Przedmiot o numerze seryjnym {item.ItemCode} został już wprowadzony do systemu!");
+                    _logger.LogDebug($"Przedmiot o numerze seryjnym {item.ItemCode} został już wprowadzony do systemu!");
                 }
                 
                 
@@ -440,6 +456,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -451,6 +468,7 @@ namespace DotNetWMS.Controllers
 
             if (item == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
                 return NotFound();
             }
 
@@ -670,6 +688,7 @@ namespace DotNetWMS.Controllers
                 
                 if (item == null)
                 {
+                    _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
                     return null;
                 }
 
@@ -688,7 +707,7 @@ namespace DotNetWMS.Controllers
 
                 return item;
             }
-
+            _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
             return null;
 
         }
@@ -704,12 +723,14 @@ namespace DotNetWMS.Controllers
 
             if (item.Quantity <= 0)
             {
+                _logger.LogDebug($"DEBUG: Nie można przekazać {item.Quantity} sztuk");
                 ModelState.AddModelError(string.Empty, $"Nie można przekazać {item.Quantity} sztuk");
             }
 
             else if (method == "Assign_to_employee_confirm" && item.ExternalId != null)
             {
                 var ext = await _context.Externals.FindAsync(item.ExternalId);
+                _logger.LogDebug($"DEBUG: Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
                 ModelState.AddModelError(string.Empty, $"Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
             }
 
@@ -720,6 +741,7 @@ namespace DotNetWMS.Controllers
 
             else if (item.Quantity > itemOld.Quantity)
             {
+                _logger.LogDebug($"DEBUG: Ilość przekazanego przedmiotu nie może być wyższa, niż stan w magazynie");
                 ModelState.AddModelError(string.Empty, $"Ilość przekazanego przedmiotu nie może być wyższa, niż stan w magazynie");
             }
 
@@ -789,6 +811,7 @@ namespace DotNetWMS.Controllers
                     }
                     else
                     {
+                        _logger.LogDebug($"DEBUG: Nie można przekazać przedmiotu temu samemu pracownikowi!");
                         ModelState.AddModelError(string.Empty, $"Nie można przekazać przedmiotu temu samemu pracownikowi!");
                         ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
                         return View(item);
@@ -824,6 +847,7 @@ namespace DotNetWMS.Controllers
                     }
                     else
                     {
+                        _logger.LogDebug($"DEBUG: Nie można przekazać przedmiotu do tego samego magazynu!");
                         ModelState.AddModelError(string.Empty, $"Nie można przekazać przedmiotu do tego samego magazynu!");
                         ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
                         return View(item);
@@ -859,6 +883,7 @@ namespace DotNetWMS.Controllers
                     }
                     else
                     {
+                        _logger.LogDebug($"DEBUG: Nie można ponownie przekazać przedmiotu temu samemu podmiotowi!");
                         ModelState.AddModelError(string.Empty, $"Nie można ponownie przekazać przedmiotu temu samemu podmiotowi!");
                         ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
                         return View(item);

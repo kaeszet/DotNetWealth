@@ -3,6 +3,8 @@ using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,12 @@ namespace DotNetWMSTests
 {
 	public class DotNetWMSTests_Krzysztof_Externals : DotNetWMSTests_Base
 	{
+		private ILogger<ExternalsController> _logger;
+
 		[SetUp]
 		public void Setup()
 		{
-		
+			_logger = new Mock<ILogger<ExternalsController>>().Object;
 		}
 
 		[Test]
@@ -68,7 +72,7 @@ namespace DotNetWMSTests
 		[Test]
 		public async Task Model_External_CheckIsModelAssignedtoViewData_ReturnTrue()
 		{
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			await controller.Index(string.Empty, string.Empty);
 			var extCollection = (ICollection<External>)controller.ViewData.Model;
 			Assert.That(extCollection, Is.InstanceOf(typeof(ICollection<External>)));
@@ -80,7 +84,7 @@ namespace DotNetWMSTests
 		[Test]
 		public async Task Index_Externals_ListOfExternals_ReturnCorrectType()
 		{
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Index(string.Empty, string.Empty) as ViewResult;
 
 			Assert.IsAssignableFrom<List<External>>(result.Model);
@@ -109,7 +113,7 @@ namespace DotNetWMSTests
 		public async Task Index_Externals_CheckAreResultAndModelNotNull_ReturnTrue()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Index(string.Empty, string.Empty) as ViewResult;
 			Assert.IsNotNull(result);
 			Assert.IsNotNull(result.Model);
@@ -119,7 +123,7 @@ namespace DotNetWMSTests
 		public async Task Index_Externals_ReturnEmptyStringNameOfView_ReturnTrue()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Index(string.Empty, string.Empty) as ViewResult;
 			Assert.IsTrue(string.IsNullOrEmpty(result.ViewName));
 
@@ -130,7 +134,7 @@ namespace DotNetWMSTests
 		public void Externals_CreateGet_ReturnViewWithoutInjectedData()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = controller.Create() as ViewResult;
 			Assert.IsNotNull(result);
 			Assert.IsNull(result.Model);
@@ -150,7 +154,7 @@ namespace DotNetWMSTests
 			ContractorType typeCT = ContractorType.Podwykonawca;
 
 			var emp = new ExternalAndLocationViewModel() { ExternalId = 4, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Create(emp) as RedirectToActionResult;
 			Assert.IsTrue(result.ActionName == nameof(controller.Index));
 		}
@@ -161,7 +165,7 @@ namespace DotNetWMSTests
 			ContractorType typeCT = ContractorType.Podwykonawca;
 
 			var ext = new ExternalAndLocationViewModel() { ExternalId = 2, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			Assert.That(async () => await controller.Create(ext), Throws.InvalidOperationException);
 
 		}
@@ -169,7 +173,7 @@ namespace DotNetWMSTests
 		[Test]
 		public async Task Details_Externals_RecordWithTheSameKey_ReturnViewResult()
 		{
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Details(1) as ViewResult;
 			Assert.IsNotNull(result);
 		}
@@ -178,7 +182,7 @@ namespace DotNetWMSTests
 		public async Task Details_Externals_RecordWithNotExistingKey_ReturnNull()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Details(99) as ViewResult;
 			Assert.IsNull(result);
 		}
@@ -187,7 +191,7 @@ namespace DotNetWMSTests
 		public async Task Details_Externals_RecordWithNull_ReturnNotFound()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Details(null);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
@@ -196,7 +200,7 @@ namespace DotNetWMSTests
 		public async Task Details_Externals_IdDoesntExist_ReturnNotFound()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Details(99);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
@@ -205,7 +209,7 @@ namespace DotNetWMSTests
 		public async Task Details_Externals_ModelHasTheSameValues_ReturnTrue()
 		{
 			var ext = _context.Externals.Find(1);
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var vr = await controller.Details(1) as ViewResult;
 			var result = vr.ViewData.Model as External;
 			Assert.IsTrue(result.Id == ext.Id && result.Name == ext.Name);
@@ -214,7 +218,7 @@ namespace DotNetWMSTests
 		[Test]
 		public async Task EditGet_Externals_RecordWithTheSameKey_ReturnView()
 		{
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Edit(1) as ViewResult;
 			Assert.IsNotNull(result);
 		}
@@ -223,7 +227,7 @@ namespace DotNetWMSTests
 		public async Task EditGet_Externals_RecordWithNotExistingKey_ReturnNull()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Edit(99) as ViewResult;
 			Assert.IsNull(result);
 		}
@@ -232,7 +236,7 @@ namespace DotNetWMSTests
 		public async Task EditGet_Externals_RecordWithNull_ReturnNotFound()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Edit(null);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
@@ -241,7 +245,7 @@ namespace DotNetWMSTests
 		public async Task EditGet_Externals_IdDoesntExist_ReturnNotFound()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Edit(99);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
@@ -270,7 +274,7 @@ namespace DotNetWMSTests
 				City = ext.City
 			};
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Edit(3, extVM) as RedirectToActionResult;
 			Assert.IsTrue(result.ActionName == nameof(controller.Index));
 		}
@@ -290,7 +294,7 @@ namespace DotNetWMSTests
 				City = ext.City
 			};
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Edit(99, extVM);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
@@ -310,7 +314,7 @@ namespace DotNetWMSTests
 				City = ext.City
 			};
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Edit(1, extVM);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
@@ -319,7 +323,7 @@ namespace DotNetWMSTests
 		[Test]
 		public async Task DeleteGet_Externals_RecordWithTheSameKey_ReturnView()
 		{
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Delete(1) as ViewResult;
 			Assert.IsNotNull(result);
 
@@ -330,7 +334,7 @@ namespace DotNetWMSTests
 		public async Task DeleteGet_Externals_RecordWithNotExistingKey_ReturnNull()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Delete(99) as ViewResult;
 			Assert.IsNull(result);
 
@@ -341,7 +345,7 @@ namespace DotNetWMSTests
 		public async Task DeleteGet_Externals_RecordWithNull_ReturnNotFound()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Delete(null);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -352,7 +356,7 @@ namespace DotNetWMSTests
 		public async Task DeleteGet_Externals_IdDoesntExist_ReturnNotFoud()
 		{
 
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Delete(99);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -373,7 +377,7 @@ namespace DotNetWMSTests
 			ContractorType typeCT = ContractorType.Podwykonawca;
 
 			var ext = new ExternalAndLocationViewModel() { ExternalId = 4, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
-			var controller = new ExternalsController(_context);
+			var controller = new ExternalsController(_context, _logger);
 			await controller.Create(ext);
 			var result = await controller.DeleteConfirmed(4) as RedirectToActionResult;
 			Assert.IsTrue(result.ActionName == nameof(controller.Index));

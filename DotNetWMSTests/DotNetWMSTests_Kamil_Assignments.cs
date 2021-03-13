@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -19,10 +20,12 @@ namespace DotNetWMSTests
 {
     class DotNetWMSTests_Kamil_Assignments : DotNetWMSTests_Base
     {
+        private ILogger<ItemsController> _logger;
+
         [SetUp]
         public void Setup()
         {
-
+            _logger = new Mock<ILogger<ItemsController>>().Object;
         }
         [Test]
         public async Task Assign_WhenCalled_GetCollectionOfItems()
@@ -37,7 +40,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             await controller.Assign_to_employee(string.Empty, string.Empty);
             var itemsCollection = (ICollection<Item>)controller.ViewData.Model;
             Assert.That(itemsCollection, Is.InstanceOf(typeof(ICollection<Item>)));
@@ -56,7 +59,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Assign_to_employee(string.Empty, string.Empty) as ViewResult;
             Assert.IsAssignableFrom<List<Item>>(result.Model);
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -75,7 +78,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Assign_to_employee_confirm(1) as ViewResult;
             Assert.IsNotNull(result.Model);
 
@@ -93,7 +96,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Assign_to_employee_confirm(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
             result = result as ViewResult;
@@ -112,7 +115,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Assign_to_employee_confirm(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
     
@@ -129,7 +132,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
 
             var item = _context.Items.Find(1);
             var result = await controller.Assign_to_employee_confirm(1, item);
@@ -148,7 +151,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var item = _context.Items.Find(1);
             item.Quantity = -1.0M;
             var result = await controller.Assign_to_employee_confirm(1, item) as ViewResult;
@@ -174,7 +177,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             
             var item = _context.Items.Find(1);
             item.Quantity = 2.0M;
@@ -201,7 +204,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             
             var item = _context.Items.Find(1);
             item.Quantity = 4.0M;
@@ -228,7 +231,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
 
             var item = _context.Items.Find(1);
             item.Quantity = 2.0M;

@@ -3,6 +3,8 @@ using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,12 @@ namespace DotNetWMSTests
 {
     public class DotNetWMSTests_Kamil_Departments : DotNetWMSTests_Base
     {
+        private ILogger<DepartmentsController> _logger;
+
         [SetUp]
         public void Setup()
-        {  
-            
+        {
+            _logger = new Mock<ILogger<DepartmentsController>>().Object;
         }
         
        
@@ -42,7 +46,7 @@ namespace DotNetWMSTests
         [Test]
         public async Task Model_CheckIsCorrectModelAssignedtoViewData_ReturnTrue()
         {
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             await controller.Index();
             var deptCollection = (ICollection<Department>)controller.ViewData.Model;
             Assert.That(deptCollection, Is.InstanceOf(typeof(ICollection<Department>)));
@@ -53,7 +57,7 @@ namespace DotNetWMSTests
         [Test]
         public async Task Index_GetListOfDepartments_ReturnCorrectType()
         {
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Index();
             var objectResult = result as ViewResult;
             Assert.IsAssignableFrom<List<Department>>(objectResult.Model);
@@ -77,7 +81,7 @@ namespace DotNetWMSTests
         public async Task Index_CheckAreViewResultAndModelObjectNotNull_ReturnTrue()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Index() as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Model);
@@ -87,7 +91,7 @@ namespace DotNetWMSTests
         public async Task Index_IsViewNameReturnEmptyString_ReturnTrue()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Index() as ViewResult;
             Assert.IsTrue(string.IsNullOrEmpty(result.ViewName));
 
@@ -97,7 +101,7 @@ namespace DotNetWMSTests
         public void Create_GetCreateView_ReturnViewObjectWithoutInjectedData()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = controller.Create() as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNull(result.Model);
@@ -108,7 +112,7 @@ namespace DotNetWMSTests
         public async Task Create_AddNewRecordToDb_RecordAdded()
         {
             var dept = new Department() { Id = 5, Name = "Kierowca" };
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Create(dept) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));
 
@@ -118,7 +122,7 @@ namespace DotNetWMSTests
         public void Create_TryToAddRecordWithExistingId_ThrowsException()
         {
             var dept = new Department() { Id = 1, Name = "Kierowca" };
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             Assert.That(async () => await controller.Create(dept), Throws.InvalidOperationException);
 
         }
@@ -126,7 +130,7 @@ namespace DotNetWMSTests
         [Test]
         public async Task Details_CheckRecordWithExistingKey_ReturnViewResult()
         {
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Details(1) as ViewResult;
             Assert.IsNotNull(result);
 
@@ -136,7 +140,7 @@ namespace DotNetWMSTests
         public async Task Details_CheckRecordWithNotExistingKey_ReturnNull()
         {
             
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Details(99) as ViewResult;
             Assert.IsNull(result);
 
@@ -146,7 +150,7 @@ namespace DotNetWMSTests
         public async Task Details_CheckRecordWithNull_ReturnNotFoundResult()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Details(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -156,7 +160,7 @@ namespace DotNetWMSTests
         public async Task Details_IfIdDoesntExist_ReturnNotFoudResult()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Details(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -166,7 +170,7 @@ namespace DotNetWMSTests
         public async Task Details_IsReturnedModelHasSameValues_ReturnTrue()
         {
             var dept = new Department() { Id = 1, Name = "Sprzedawca" };
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var vr = await controller.Details(1) as ViewResult;
             var result = vr.ViewData.Model as Department;
             Assert.IsTrue(result.Id == dept.Id && result.Name == dept.Name);
@@ -177,7 +181,7 @@ namespace DotNetWMSTests
         [Test]
         public async Task EditGet_CheckRecordWithExistingKey_ReturnViewResult()
         {
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Edit(1) as ViewResult;
             Assert.IsNotNull(result);
 
@@ -187,7 +191,7 @@ namespace DotNetWMSTests
         public async Task EditGet_CheckRecordWithNotExistingKey_ReturnNull()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Edit(99) as ViewResult;
             Assert.IsNull(result);
 
@@ -197,7 +201,7 @@ namespace DotNetWMSTests
         public async Task EditGet_CheckRecordWithNull_ReturnNotFoundResult()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Edit(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -207,7 +211,7 @@ namespace DotNetWMSTests
         public async Task EditGet_IfIdDoesntExist_ReturnNotFoudResult()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Edit(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -226,7 +230,7 @@ namespace DotNetWMSTests
             Initialize(_context);
 
             var dept = _context.Departments.Find(3);
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Edit(3, dept) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));
 
@@ -236,7 +240,7 @@ namespace DotNetWMSTests
         public async Task EditPost_EditRecordWithNoExistingId_ReturnNotFoundResult()
         {
             var dept = _context.Departments.Find(1);
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Edit(99, dept);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -246,7 +250,7 @@ namespace DotNetWMSTests
         public async Task EditPost_EditRecordWithDifferentId_ReturnNotFoundResult()
         {
             var dept = _context.Departments.Find(2);
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Edit(1, dept);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -263,7 +267,7 @@ namespace DotNetWMSTests
         [Test]
         public async Task DeleteGet_CheckRecordWithExistingKey_ReturnViewResult()
         {
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Delete(1) as ViewResult;
             Assert.IsNotNull(result);
 
@@ -273,7 +277,7 @@ namespace DotNetWMSTests
         public async Task DeleteGet_CheckRecordWithNotExistingKey_ReturnNull()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Delete(99) as ViewResult;
             Assert.IsNull(result);
 
@@ -283,7 +287,7 @@ namespace DotNetWMSTests
         public async Task DeleteGet_CheckRecordWithNull_ReturnNotFoundResult()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Delete(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -293,7 +297,7 @@ namespace DotNetWMSTests
         public async Task DeleteGet_IfIdDoesntExist_ReturnNotFoudResult()
         {
 
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             var result = await controller.Delete(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -311,7 +315,7 @@ namespace DotNetWMSTests
             Initialize(_context);
 
             var dept = new Department() { Id = 5, Name = "Przestawiciel" };
-            var controller = new DepartmentsController(_context);
+            var controller = new DepartmentsController(_context, _logger);
             await controller.Create(dept);
             var result = await controller.DeleteConfirmed(5) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -17,10 +18,12 @@ namespace DotNetWMSTests
 {
     public class DotNetWMSTests_Adam_Items : DotNetWMSTests_Base
     {
+        private ILogger<ItemsController> _logger;
+
         [SetUp]
         public void Setup()
         {
-            
+            _logger = new Mock<ILogger<ItemsController>>().Object;
         }
 
         [Test]
@@ -65,7 +68,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = controller.Create() as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNull(result.Model);
@@ -93,7 +96,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Create(emp) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));
 
@@ -112,7 +115,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
             fakeContextAccessor.Setup(s => s.HttpContext.Request.Path).Returns("/test");
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Details(1) as ViewResult;
             Assert.IsNotNull(result);
 
@@ -131,7 +134,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Details(99) as ViewResult;
             Assert.IsNull(result);
 
@@ -151,7 +154,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
             fakeContextAccessor.Setup(s => s.HttpContext.Request.Path).Returns("/test");
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Details(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -170,7 +173,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Details(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -190,7 +193,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
             fakeContextAccessor.Setup(s => s.HttpContext.Request.Path).Returns("/test");
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var vr = await controller.Details(1) as ViewResult;
             var result = vr.ViewData.Model as Item;
             Assert.IsTrue(result.Id == emp.Id && result.Name == emp.Name);
@@ -210,7 +213,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Edit(1) as ViewResult;
             Assert.IsNotNull(result);
 
@@ -229,7 +232,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Edit(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -248,7 +251,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Edit(99, emp);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -267,7 +270,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Edit(1, emp);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -285,7 +288,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Delete(1) as ViewResult;
             Assert.IsNotNull(result);
 
@@ -304,7 +307,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Delete(99) as ViewResult;
             Assert.IsNull(result);
 
@@ -323,7 +326,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Delete(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -342,7 +345,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var result = await controller.Delete(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 
@@ -369,7 +372,7 @@ namespace DotNetWMSTests
 
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
-            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object);
+            var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             await controller.Create(emp);
             var result = await controller.DeleteConfirmed(4) as RedirectToActionResult;
             Assert.IsTrue(result.ActionName == nameof(controller.Index));

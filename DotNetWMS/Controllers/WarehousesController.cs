@@ -23,10 +23,10 @@ namespace DotNetWMS.Controllers
         /// A field for handling the delivery of information to the DB associated with the Entity Core framework
         /// </summary>
         private readonly DotNetWMSContext _context;
-        private readonly ILogger _logger;
         /// <summary>
-        /// A static field for handling Warehouse's name for properly creation of Stocktaking view
+        /// Log4net library field
         /// </summary>
+        private readonly ILogger<WarehousesController> _logger;
 
         public WarehousesController(DotNetWMSContext context, ILogger<WarehousesController> logger)
         {
@@ -73,7 +73,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
-                _logger.LogDebug($"DEBUG: Magazyn o podanym id = {id} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -82,7 +82,7 @@ namespace DotNetWMS.Controllers
 
             if (warehouse == null)
             {
-                _logger.LogDebug($"DEBUG: Magazyn {warehouse} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Magazyn {warehouse.Name} nie istnieje!");
                 return NotFound();
             }
 
@@ -113,7 +113,7 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
         /// </summary>
-        /// <param name="warehouse">Warehouse model class with binding DB attributes</param>
+        /// <param name="viewModel">Warehouse model class with binding DB attributes</param>
         /// <returns>If succeed, returns Warehouse's Index view. Otherwise - show error message</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
@@ -165,7 +165,7 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
-                    _logger.LogDebug($"DEBUG: Taka nazwa magazynu już istnieje!");
+                    _logger.LogDebug($"DEBUG: Magazyn {viewModel.Name} został już wprowadzony do systemu! Wybierz inną nazwę.");
                     ModelState.AddModelError(string.Empty, $"Magazyn {viewModel.Name} został już wprowadzony do systemu! Wybierz inną nazwę.");
                 }
                 
@@ -182,7 +182,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
-                _logger.LogDebug($"DEBUG: Takie id = {id} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -191,7 +191,7 @@ namespace DotNetWMS.Controllers
 
             if (warehouse == null)
             {
-                _logger.LogDebug($"DEBUG: Taki magazyn = {warehouse} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Taki magazyn = {warehouse.Name} nie istnieje!");
                 return NotFound();
             }
 
@@ -226,7 +226,7 @@ namespace DotNetWMS.Controllers
             
             if (id != viewModel.WarehouseId)
             {
-                _logger.LogDebug($"DEBUG: Takie id = {id} nie istniej w bazie magazynów!");
+                _logger.LogDebug($"DEBUG: Takie id = {id} nie istnieje w bazie magazynów!");
                 return NotFound();
             }
 
@@ -285,7 +285,7 @@ namespace DotNetWMS.Controllers
                     {
                         if (!WarehouseExists(viewModel.WarehouseId))
                         {
-                            _logger.LogDebug($"DEBUG: Taki magazyn nie istniej w bazie magazynów!");
+                            _logger.LogError($"Magazyn {viewModel.Name} została zmieniona przez innego użytkownika");
                             return NotFound();
                         }
                         else
@@ -298,7 +298,7 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
-                    _logger.LogDebug($"DEBUG: Takie nazwa magazynu zostałą jużwprowadzona do systemu!");
+                    _logger.LogDebug($"DEBUG: Magazyn \"{viewModel.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
                     ModelState.AddModelError(string.Empty, $"Magazyn \"{viewModel.Name}\" został już wprowadzony do systemu! Wybierz inną nazwę.");
                 }
                 
@@ -316,7 +316,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
-                _logger.LogDebug($"DEBUG: Magazyn o podanym id = {id} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -324,11 +324,11 @@ namespace DotNetWMS.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (warehouse == null)
             {
-                _logger.LogDebug($"DEBUG: Magazyn {warehouse} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Magazyn {warehouse.Name} nie istnieje!");
                 return NotFound();
             }
 
-            _logger.LogDebug($"DEBUG: Znaleziono magazyn {warehouse}!");
+            _logger.LogDebug($"DEBUG: Znaleziono magazyn {warehouse.Name}!");
             return View(warehouse);
         }
         /// <summary>
@@ -355,6 +355,7 @@ namespace DotNetWMS.Controllers
                 ViewBag.ErrorMessage = $"Istnieje przedmiot przypisany do tego magazynu.<br>" +
                     $"Przed usunięciem magazynu upewnij się, że wszystkie przedmioty zostały usunięte.<br>" +
                     $"Odznacz je w dziale \"Majątek\" i ponów próbę.";
+                _logger.LogError($"Podczas usuwania magazynu wystąpił błąd! Istnieje przedmiot przypisany do tego magazynu.");
                 return View("DbExceptionHandler");
             }
             

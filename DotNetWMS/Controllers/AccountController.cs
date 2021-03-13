@@ -20,29 +20,29 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
         /// </summary>
-        private readonly UserManager<WMSIdentityUser> userManager;
+        private readonly UserManager<WMSIdentityUser> _userManager;
         /// <summary>
         /// Implementation of the WMSIdentityUser class in the SignInManager class to handle the user's login to the application (also external)
         /// </summary>
-        private readonly SignInManager<WMSIdentityUser> signInManager;
+        private readonly SignInManager<WMSIdentityUser> _signInManager;
         /// <summary>
         /// Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
         /// </summary>
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         /// <summary>
         /// AccountController's logger implementation
         /// </summary>
-        private readonly ILogger<AccountController> logger;
+        private readonly ILogger<AccountController> _logger;
 
         public AccountController(UserManager<WMSIdentityUser> userManager,
             SignInManager<WMSIdentityUser> signInManager,
             RoleManager<IdentityRole> roleManager,
             ILogger<AccountController> logger)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.roleManager = roleManager;
-            this.logger = logger;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
+            _logger = logger;
         }
         /// <summary>
         /// GET method to handle the registration view
@@ -93,25 +93,25 @@ namespace DotNetWMS.Controllers
                     user.UserName = $"{model.Surname.Substring(0, 5)}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - 4)}";   
                 }
                 
-                var result = await userManager.CreateAsync(user, model.Password);
+                var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                     var confirmationLink = Url.Action("ConfirmEmail", "Account",
                         new { userId = user.Id, token = token }, Request.Scheme);
 
-                    logger.Log(LogLevel.Warning, confirmationLink);
+                    _logger.LogInformation(confirmationLink);
 
-                    if (userManager.Users.Count() == 1)
+                    if (_userManager.Users.Count() == 1)
                     {
                         await IsDefaultRolesExists();
-                        await userManager.AddToRoleAsync(user, "Admin");
+                        await _userManager.AddToRoleAsync(user, "Admin");
                     }
                     
                     
-                    if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
                         return RedirectToAction("ListOfUsers", "Administration");
                     }
@@ -124,6 +124,7 @@ namespace DotNetWMS.Controllers
 
                 foreach (var error in result.Errors)
                 {
+                    _logger.LogDebug(error.Description);
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -138,7 +139,7 @@ namespace DotNetWMS.Controllers
         [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> IsEmailInUse(string email)
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
@@ -163,15 +164,16 @@ namespace DotNetWMS.Controllers
                 return RedirectToAction("index", "home");
             }
 
-            var user = await userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"Identyfikator użytkownika {userId} jest nieprawidłowy";
+                _logger.LogError($"Identyfikator użytkownika {userId} jest nieprawidłowy");
                 return View("NotFound");
             }
 
-            var result = await userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (result.Succeeded)
             {
@@ -179,6 +181,7 @@ namespace DotNetWMS.Controllers
             }
 
             ViewBag.ExceptionTitle = "Nie można potwierdzić adresu email!";
+            _logger.LogError($"Nie można potwierdzić adresu email!");
             return View("GlobalExceptionHandler");
         }
         /// <summary>
@@ -202,28 +205,29 @@ namespace DotNetWMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByNameAsync(model.Login);
+                var user = await _userManager.FindByNameAsync(model.Login);
 
                 //If the user exists, but the account has not been activated - return an error. Otherwise, try to log in.
                 if (user != null && !user.EmailConfirmed &&
-                    (await userManager.CheckPasswordAsync(user, model.Password)))
+                    (await _userManager.CheckPasswordAsync(user, model.Password)))
                 {
                     ModelState.AddModelError(string.Empty, "Konto nie zostało jeszcze aktywowane!");
+                    _logger.LogDebug($"Konto nie zostało jeszcze aktywowane");
                     return View(model);
                 }
 
-                var result = await signInManager.PasswordSignInAsync(
+                var result = await _signInManager.PasswordSignInAsync(
                     model.Login, model.Password, model.RememberMe, false);
 
                 //If there are no other accounts in the DB, the user is assigned the administrator role
                 if (result.Succeeded)
                 {
-                    if (userManager.Users.Count() == 1)
+                    if (_userManager.Users.Count() == 1)
                     {
                         await IsDefaultRolesExists();
-                        if (await userManager.IsInRoleAsync(user, "Admin") == false)
+                        if (await _userManager.IsInRoleAsync(user, "Admin") == false)
                         {
-                            await userManager.AddToRoleAsync(user, "Admin");
+                            await _userManager.AddToRoleAsync(user, "Admin");
                         }
                         
                     }
@@ -237,7 +241,7 @@ namespace DotNetWMS.Controllers
                     }
                     
                 }
-
+                _logger.LogError($"Nieprawidłowy login lub hasło");
                 ModelState.AddModelError(string.Empty, "Nieprawidłowy login lub hasło");
             }
 
@@ -251,7 +255,7 @@ namespace DotNetWMS.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync();
             return RedirectToAction("index", "home");
         }
         /// <summary>
@@ -275,16 +279,16 @@ namespace DotNetWMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
                 
-                if (user != null && await userManager.IsEmailConfirmedAsync(user))
+                if (user != null && await _userManager.IsEmailConfirmedAsync(user))
                 {
                    
-                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var passwordResetLink = Url.Action("ResetPassword", "Account",
                             new { email = model.Email, token }, Request.Scheme);
 
-                    logger.Log(LogLevel.Warning, passwordResetLink);
+                    _logger.LogInformation(passwordResetLink);
 
                     return View("ForgotPasswordConfirmation");
                 }
@@ -308,6 +312,7 @@ namespace DotNetWMS.Controllers
             
             if (token == null || email == null)
             {
+                _logger.LogError($"Nieprawidłowy token: {token}");
                 ModelState.AddModelError(string.Empty, "Nieprawidłowy token!");
             }
             return View();
@@ -323,17 +328,18 @@ namespace DotNetWMS.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
                 if (user != null)
                 {
-                    var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
                     if (result.Succeeded)
                     {
                         return View("ResetPasswordConfirmation");
                     }
                     foreach (var error in result.Errors)
                     {
+                        _logger.LogDebug(error.Description);
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                     return View(model);
@@ -349,25 +355,25 @@ namespace DotNetWMS.Controllers
         /// <returns>Returns a new IdentityRole instance if it did not exist before</returns>
         private async Task IsDefaultRolesExists()
         {
-            if (!roleManager.Roles.Any(r => r.Name == "Admin"))
+            if (!_roleManager.Roles.Any(r => r.Name == "Admin"))
             {
-                await roleManager.CreateAsync(new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" });
+                await _roleManager.CreateAsync(new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" });
             }
-            if (!roleManager.Roles.Any(r => r.Name == "Moderator"))
+            if (!_roleManager.Roles.Any(r => r.Name == "Moderator"))
             {
-                await roleManager.CreateAsync(new IdentityRole { Name = "Moderator", NormalizedName = "MODERATOR" });
+                await _roleManager.CreateAsync(new IdentityRole { Name = "Moderator", NormalizedName = "MODERATOR" });
             }
-            if (!roleManager.Roles.Any(r => r.Name == "StandardPlus"))
+            if (!_roleManager.Roles.Any(r => r.Name == "StandardPlus"))
             {
-                await roleManager.CreateAsync(new IdentityRole { Name = "StandardPlus", NormalizedName = "STANDARDPLUS" });
+                await _roleManager.CreateAsync(new IdentityRole { Name = "StandardPlus", NormalizedName = "STANDARDPLUS" });
             }
-            if (!roleManager.Roles.Any(r => r.Name == "Standard"))
+            if (!_roleManager.Roles.Any(r => r.Name == "Standard"))
             {
-                await roleManager.CreateAsync(new IdentityRole { Name = "Standard", NormalizedName = "STANDARD" });
+                await _roleManager.CreateAsync(new IdentityRole { Name = "Standard", NormalizedName = "STANDARD" });
             }
-            if (!roleManager.Roles.Any(r => r.Name == "Kadry"))
+            if (!_roleManager.Roles.Any(r => r.Name == "Kadry"))
             {
-                await roleManager.CreateAsync(new IdentityRole { Name = "Kadry", NormalizedName = "KADRY" });
+                await _roleManager.CreateAsync(new IdentityRole { Name = "Kadry", NormalizedName = "KADRY" });
             }
         }
     }
