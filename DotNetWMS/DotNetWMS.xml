@@ -9,22 +9,22 @@
             Controller class for handling the account creation process and logging into the application. This class includes all the procedures necessary for the correct verification of data entered by the user.
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.AccountController.userManager">
+        <member name="F:DotNetWMS.Controllers.AccountController._userManager">
             <summary>
             Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.AccountController.signInManager">
+        <member name="F:DotNetWMS.Controllers.AccountController._signInManager">
             <summary>
             Implementation of the WMSIdentityUser class in the SignInManager class to handle the user's login to the application (also external)
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.AccountController.roleManager">
+        <member name="F:DotNetWMS.Controllers.AccountController._roleManager">
             <summary>
             Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.AccountController.logger">
+        <member name="F:DotNetWMS.Controllers.AccountController._logger">
             <summary>
             AccountController's logger implementation
             </summary>
@@ -116,14 +116,19 @@
             Controller class to operate the administration panel
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.AdministrationController.roleManager">
+        <member name="F:DotNetWMS.Controllers.AdministrationController._roleManager">
             <summary>
             Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.AdministrationController.userManager">
+        <member name="F:DotNetWMS.Controllers.AdministrationController._userManager">
             <summary>
             Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.AdministrationController._logger">
+            <summary>
+            Log4net library field
             </summary>
         </member>
         <member name="M:DotNetWMS.Controllers.AdministrationController.AccessDenied">
@@ -224,6 +229,11 @@
             A field for handling the delivery of information to the DB associated with the Entity Core framework
             </summary>
         </member>
+        <member name="F:DotNetWMS.Controllers.DepartmentsController._logger">
+            <summary>
+            Log4net library field
+            </summary>
+        </member>
         <member name="M:DotNetWMS.Controllers.DepartmentsController.Index">
             <summary>
             GET method responsible for returning an Department's Index view
@@ -293,88 +303,168 @@
             <param name="id">Department ID to check</param>
             <returns>Returns true if the department exists. Otherwise - false.</returns>
         </member>
-        <member name="T:DotNetWMS.Controllers.EmployeesController">
+        <member name="T:DotNetWMS.Controllers.Doc_AssignmentsController">
             <summary>
-            Controller class to support the CRUD process for the Employee model
+            Controller class responsible for <c>Doc_Assignments</c> functionality
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.EmployeesController._context">
+        <member name="F:DotNetWMS.Controllers.Doc_AssignmentsController._context">
             <summary>
             A field for handling the delivery of information to the DB associated with the Entity Core framework
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.EmployeesController.Pesel">
+        <member name="F:DotNetWMS.Controllers.Doc_AssignmentsController._logger">
             <summary>
-            Universal Electronic System for Registration of the Population number
+            Log4net library field
             </summary>
         </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.Index(System.String,System.String)">
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.Index(System.String,System.String)">
             <summary>
-            GET method responsible for returning an Employee's Index view and supports a search engine
+            GET method responsible for returning Doc_Assignment's Index view and supports a search engine
             </summary>
-            <param name="order">Sort surnames in ascending or descending order</param>
+            <param name="order">Sort names in ascending or descending order</param>
             <param name="search">Search phrase in the search field</param>
-            <returns>Returns Employee's Index view with list of employees in the order set by the user</returns>
+            <returns>Returns Doc_Assignment's Index view with list of documents in the order set by the user</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.Details(System.Nullable{System.Int32})">
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.ConfigureDocument">
             <summary>
-            GET method responsible for returning an Employee's Details view
+            GET method responsible for returning Doc_Assignment's ConfigureDocument view, contains selectlists of users, externals and warehouses
             </summary>
-            <param name="id">Employee ID which should be returned</param>
-            <returns>Employee's Details view</returns>
+            <returns>Returns Doc_Assignment's ConfigureDocument view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.Create">
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.ConfigureDocument(System.String,System.String,System.Int32,System.Int32)">
             <summary>
-            GET method responsible for returning an Employee's Create view
+            POST method connected with jquery method. It uses chosen data from selectlists to configure _Doc_AssignmentConfDocPartial view
             </summary>
-            <returns>Returns Employee's Create view</returns>
+            <param name="from">User, Warehouse or External FROM whom the item is transferred</param>
+            <param name="to">User, Warehouse or External TO whom the item is transferred</param>
+            <param name="fromIndex">Index connected with FROM side of contracting party</param>
+            <list type="bullet">
+            <item>
+            <term>0</term>
+            <description>User</description>
+            </item>
+            <item>
+            <term>1</term>
+            <description>Warehouse</description>
+            </item>
+            <item>
+            <term>2</term>
+            <description>External (contractor)</description>
+            </item>
+            </list>
+            <param name="toIndex">Index connected with TO side of contracting party</param>
+            <list type="bullet">
+            <item>
+            <term>0</term>
+            <description>User</description>
+            </item>
+            <item>
+            <term>1</term>
+            <description>Warehouse</description>
+            </item>
+            <item>
+            <term>2</term>
+            <description>External (contractor)</description>
+            </item>
+            </list>
+            <returns>Returns _Doc_AssignmentConfDocPartial view contains list of <c>Doc_ConfigureDocumentViewModel</c> objects</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.Create(DotNetWMS.Models.Employee)">
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.GenerateDocument(System.Collections.Generic.List{DotNetWMS.Models.Doc_ConfigureDocumentViewModel})">
+            <summary>
+            POST method for generating document summary with print and save document in DB options
+            </summary>
+            <param name="viewModel">List of <c>Doc_ConfigureDocumentViewModel</c> objects</param>
+            <returns>Returns GenerateDocument view contains <c>Doc_Assignment</c> object</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.SaveDocument(DotNetWMS.Models.Doc_Assignment)">
+            <summary>
+            Save document in dbo.Doc_Assignments
+            </summary>
+            <param name="doc"><c>Doc_Assignment</c> object</param>
+            <returns>Returns confirmation view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.ShowDocument(System.String)">
+            <summary>
+            Get and show document from dbo.Doc_Assignments
+            </summary>
+            <param name="id">ID of searched document</param>
+            <returns>ShowDocument view with document data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.DeleteDocument(System.String)">
+            <summary>
+            Get and delete document from dbo.Doc_Assignments
+            </summary>
+            <param name="id">Document ID to delete</param>
+            <returns>DeleteDocument view with document data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.DeleteDocumentConfirm(System.String)">
+            <summary>
+            POST method to delete document from DB after user confirmation
+            </summary>
+            <param name="id">Document ID to delete</param>
+            <returns>If succeeded returns Doc_Assignment's Index, otherwise - NotFound view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.DocumentIdGenerator(System.DateTime,DotNetWMS.Models.Doc_Titles)">
+            <summary>
+            Method with logic for generating DocumentId which is necessary to save new record in DB
+            </summary>
+            <param name="time">Time of generating the document</param>
+            <param name="title">Document title received from enum list</param>
+            <returns>Returns documentID as a string</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.DocumentTitleGenerator(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Method with logic for checking correct document title which is necessary to generate documentId
+            </summary>
+            <param name="from">ID of User, Warehouse or External FROM whom the item is transferred</param>
+            <param name="to">ID of User, Warehouse or External TO whom the item is transferred</param>
+            <returns>Returns correct title from enum two dimensional array</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.MillisOfDay(System.DateTime)">
+            <summary>
+            Method for calculating millisecond after today 0:00:00
+            </summary>
+            <param name="date">Time of generating the document</param>
+            <returns>Amount of milliseconds</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.Doc_AssignmentsController.AddToInfobox(DotNetWMS.Models.Doc_Assignment)">
+            <summary>
+            Method for adding info about new document to infobox
+            </summary>
+            <param name="doc"><c>Doc_Assignment</c> object</param>
+        </member>
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Edit(DotNetWMS.Models.UserAndLocationViewModel)">
             <summary>
             POST method responsible for checking and transferring information from the form to DB
             </summary>
-            <param name="employee">Employee model class with binding DB attributes</param>
-            <returns>If succeed, returns Employee's Index view. Otherwise - show error message</returns>
-        </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.Edit(System.Nullable{System.Int32})">
-            <summary>
-            GET method responsible for returning an Employee's Edit view
-            </summary>
-            <param name="id">Employee ID which should be returned</param>
-            <returns>Returns Employee's Edit view</returns>
-        </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.Edit(System.Int32,DotNetWMS.Models.Employee)">
-            <summary>
-            POST method responsible for checking and transferring information from the form to DB
-            </summary>
-            <param name="id">Employee ID to edit</param>
-            <param name="employee">Employee model class with binding DB attributes</param>
+            <param name="viewModel"><c>UserAndLocationViewModel</c> object contains <c>WMSIdentityUser</c> and <c>Location</c> model classes</param>
             <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.Delete(System.Nullable{System.Int32})">
+        <member name="M:DotNetWMS.Controllers.EmployeesController.Delete(System.String)">
             <summary>
-            GET method responsible for returning an Employee's Delete view
+            GET method responsible for returning an WMSIdentityUser's Delete view
             </summary>
-            <param name="id">Employee ID to delete</param>
-            <returns>Returns Employee's Delete view if exists</returns>
+            <param name="id">WMSIdentityUser ID to delete</param>
+            <returns>Returns WMSIdentityUser's Delete view if exists</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.DeleteConfirmed(System.Int32)">
+        <member name="M:DotNetWMS.Controllers.EmployeesController.DeleteConfirmed(System.String)">
             <summary>
-            POST method responsible for removing employee from DB if the user confirms this action
+            POST method responsible for removing user from DB if the user confirms this action
             </summary>
-            <param name="id">Employee ID to delete</param>
-            <returns>Returns Employee's Index view</returns>
+            <param name="id">WMSIdentityUser ID to delete</param>
+            <returns>Returns WMSIdentityUser's Index view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.EmployeesController.EmployeeExists(System.Int32)">
+        <member name="M:DotNetWMS.Controllers.EmployeesController.EmployeeExists(System.String)">
             <summary>
-            A private method responsible for checking if there is a employee with the given id
+            A private method responsible for checking if there is a user with the given id
             </summary>
-            <param name="id">Employee ID to check</param>
-            <returns>Returns true if the employee exists. Otherwise - false.</returns>
+            <param name="id">WMSIdentityUser ID to check</param>
+            <returns>Returns true if the user exists. Otherwise - false.</returns>
         </member>
-        <member name="F:DotNetWMS.Controllers.ErrorController.logger">
+        <member name="F:DotNetWMS.Controllers.ErrorController._logger">
             <summary>
-            Controller class to support displaying error messages
+            Log4net library field
             </summary>
         </member>
         <member name="M:DotNetWMS.Controllers.ErrorController.HttpStatusCodeHandler(System.Int32)">
@@ -415,13 +505,6 @@
             <param name="model">StatusViewViewModel class object used to check all items with the selected status</param>
             <returns>Returns External's StatusView</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ExternalsController.StatusView(DotNetWMS.Models.ItemState)">
-            <summary>
-            POST method to display the list of items with the previously selected status
-            </summary>
-            <param name="state">Parameter to pass the selection from the dropdown list</param>
-            <returns>Returns External's StatusView and items with the selected status</returns>
-        </member>
         <member name="M:DotNetWMS.Controllers.ExternalsController.Details(System.Nullable{System.Int32})">
             <summary>
             GET method responsible for returning an External's Details view
@@ -435,11 +518,11 @@
             </summary>
             <returns>Returns External's Create view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ExternalsController.Create(DotNetWMS.Models.External)">
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Create(DotNetWMS.Models.ExternalAndLocationViewModel)">
             <summary>
             POST method responsible for checking and transferring information from the form to DB
             </summary>
-            <param name="external">External model class with binding DB attributes</param>
+            <param name="viewModel"><c>ExternalAndLocationViewModel</c> object contains <c>External</c> and <c>Location</c> model classes</param>
             <returns>If succeed, returns External's Index view. Otherwise - show error message</returns>
         </member>
         <member name="M:DotNetWMS.Controllers.ExternalsController.Edit(System.Nullable{System.Int32})">
@@ -449,12 +532,12 @@
             <param name="id">External ID which should be returned</param>
             <returns>Returns External's Edit view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ExternalsController.Edit(System.Int32,DotNetWMS.Models.External)">
+        <member name="M:DotNetWMS.Controllers.ExternalsController.Edit(System.Int32,DotNetWMS.Models.ExternalAndLocationViewModel)">
             <summary>
             POST method responsible for checking and transferring information from the form to DB
             </summary>
             <param name="id">External ID to edit</param>
-            <param name="external">External model class with binding DB attributes</param>
+            <param name="viewModel"><c>ExternalAndLocationViewModel</c> object contains <c>External</c> and <c>Location</c> model classes</param>
             <returns>If succeed, returns External's Index view, data validation on the model side</returns>
         </member>
         <member name="M:DotNetWMS.Controllers.ExternalsController.Delete(System.Nullable{System.Int32})">
@@ -488,6 +571,11 @@
             The field responsible for communication with Nlog
             </summary>
         </member>
+        <member name="F:DotNetWMS.Controllers.HomeController._context">
+            <summary>
+            Log4net library field
+            </summary>
+        </member>
         <member name="M:DotNetWMS.Controllers.HomeController.Index">
             <summary>
             GET method responsible for returning a Home's Index view
@@ -506,6 +594,42 @@
             </summary>
             <returns>Returns a Error view</returns>
         </member>
+        <member name="T:DotNetWMS.Controllers.InfoboxesController">
+            <summary>
+            Controller class responsible for <c>Infobox</c> functionality
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.InfoboxesController._context">
+            <summary>
+            A field for handling the delivery of information to the DB associated with the Entity Core framework
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.InfoboxesController._logger">
+            <summary>
+            Log4net library field
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.InfoboxesController.Index(System.Boolean)">
+            <summary>
+            GET method responsible for returning an Infobox's Index view
+            </summary>
+            <param name="isChecked">Sort names in ascending or descending order</param>
+            <returns>Returns Warehouse's Index view with list of warehouses in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.InfoboxesController.Delete(System.Nullable{System.Int32})">
+            <summary>
+            Remove message from infobox
+            </summary>
+            <param name="id">ID of infobox to delete</param>
+            <returns>Infobox's Index View</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.InfoboxesController.Check(System.Nullable{System.Int32})">
+            <summary>
+            Method to mark messages as checked or documents as accepted
+            </summary>
+            <param name="id">ID of infobox to mark</param>
+            <returns>Infobox's Index View</returns>
+        </member>
         <member name="T:DotNetWMS.Controllers.ItemsController">
             <summary>
             Controller class to support the CRUD process for the Item model
@@ -516,29 +640,19 @@
             A field for handling the delivery of information to the DB associated with the Entity Core framework
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.ItemsController.ItemCode">
+        <member name="F:DotNetWMS.Controllers.ItemsController._userManager">
             <summary>
-            A static field for handling Item's ItemCode for properly creation of Assign-type views
+            Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.ItemsController.ItemQuantity">
+        <member name="F:DotNetWMS.Controllers.ItemsController._httpContextAccessor">
             <summary>
-            A static field for handling Item's ItemQuantity for properly creation of Assign-type views
+            Field of object which implements interface <c>IHttpContextAccessor</c> to get displayed url whoch is necessary to generate QR Code
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.ItemsController.ItemEmployeeId">
+        <member name="F:DotNetWMS.Controllers.ItemsController._logger">
             <summary>
-            A static field for handling EmployeeId for properly creation of Assign_to_employee view
-            </summary>
-        </member>
-        <member name="F:DotNetWMS.Controllers.ItemsController.ItemWarehouseId">
-            <summary>
-            A static field for handling WarehouseId for properly creation of Assign_to_warehouse view
-            </summary>
-        </member>
-        <member name="F:DotNetWMS.Controllers.ItemsController.ItemExternalId">
-            <summary>
-            A static field for handling ExternalId for properly creation of Assign_to_external view
+            Log4net library field
             </summary>
         </member>
         <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_employee(System.String,System.String)">
@@ -645,6 +759,13 @@
             <param name="itemCode">Item code to be checked</param>
             <returns>If the item does not exist, it returns true (in JSON format). Otherwise - returns an error message</returns>
         </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.IsItemExists(DotNetWMS.Models.Item)">
+            <summary>
+            GET/POST method to responsible for checking whether the item has already been entered into the database 
+            </summary>
+            <param name="item">Item to be checked</param>
+            <returns>If the item does not exist, it returns true (in JSON format). Otherwise - returns an error message</returns>
+        </member>
         <member name="M:DotNetWMS.Controllers.ItemsController.Edit(System.Nullable{System.Int32})">
             <summary>
             GET method responsible for returning an Item's Edit view
@@ -735,6 +856,93 @@
             <param name="method">Name of the method which determines the behavior of the task</param>
             <returns>If succeed, redirects to AssignTo type view. Otherwise - show 404 error view</returns>
         </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.SendInfo(DotNetWMS.Models.Item,System.String)">
+            <summary>
+            Method for adding new message to infobox about status changes
+            </summary>
+            <param name="item"><c>Item</c> object which properties are necessary to create infos</param>
+            <param name="externalOldName">Name of <c>External</c> object before change</param>
+        </member>
+        <member name="M:DotNetWMS.Controllers.ItemsController.UpdateItemCode(DotNetWMS.Models.Item)">
+            <summary>
+            Method responsible for updating ItemCode in case of changes in DB
+            </summary>
+            <param name="item"><c>Item</c> object which ItemCode parametrer will be changed</param>
+            <returns></returns>
+        </member>
+        <member name="T:DotNetWMS.Controllers.LocationsController">
+            <summary>
+            Controller class responsible for <c>Location</c> functionality
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.LocationsController._context">
+            <summary>
+            A field for handling the delivery of information to the DB associated with the Entity Core framework
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Controllers.LocationsController._logger">
+            <summary>
+            Log4net library field
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Controllers.LocationsController.Index(System.String,System.String)">
+            <summary>
+            GET method responsible for returning Location's Index view and supports a search engine
+            </summary>
+            <param name="order">Sort names in ascending or descending order</param>
+            <param name="search">Search phrase in the search field</param>
+            <returns>Returns Location's Index view with list of locations in the order set by the user</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.LocationsController.ShowMap(System.Nullable{System.Int32})">
+            <summary>
+            GET method to show Google map and markup with given coordinates
+            </summary>
+            <param name="id">ID of location in DB</param>
+            <returns>ShowMap view with <c>Location</c> data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.LocationsController.Edit(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Location's Edit view
+            </summary>
+            <param name="id">Location ID</param>
+            <returns>Edit view with <c>Location</c> data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.LocationsController.Edit(System.Int32,DotNetWMS.Models.Location)">
+            <summary>
+            POST method to accept changes in Edit View and save them in DB
+            </summary>
+            <param name="id">Location ID</param>
+            <param name="location"><c>Location</c> model class object</param>
+            <returns>If succeded redirect user to Location's Index view, otherwise - show error message</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.LocationsController.Delete(System.Nullable{System.Int32})">
+            <summary>
+            GET method responsible for returning an Location's Delete view
+            </summary>
+            <param name="id">ID of <c>Location</c> to delete</param>
+            <returns>DeleteConfirmation View with <c>Location</c> data</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.LocationsController.DeleteConfirmed(System.Int32)">
+            <summary>
+            POST method responsible for removing <c>Location</c> from DB if the user confirms this action
+            </summary>
+            <param name="id">ID of <c>Location</c> to delete</param>
+            <returns>If succeeded returns Location's Index view, otherwise - return DbUpdateException view</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.LocationsController.LocationExists(System.Int32)">
+            <summary>
+            Method to check is <c>Location</c> with given ID exists in DB
+            </summary>
+            <param name="id"><c>Location</c> ID to search</param>
+            <returns>True if any location has been found, otherwise - false</returns>
+        </member>
+        <member name="M:DotNetWMS.Controllers.LocationsController.IsLocationInUse(System.Int32)">
+            <summary>
+            Method to check is <c>Location</c> with given ID connected by FK with other DB tables and give back list of occurences
+            </summary>
+            <param name="id"><c>Location</c> ID to check</param>
+            <returns>List of records where <c>Location</c> is connected by FK</returns>
+        </member>
         <member name="T:DotNetWMS.Controllers.WarehousesController">
             <summary>
             Controller class to support the CRUD process for the Warehouse model
@@ -745,29 +953,10 @@
             A field for handling the delivery of information to the DB associated with the Entity Core framework
             </summary>
         </member>
-        <member name="F:DotNetWMS.Controllers.WarehousesController.Name">
+        <member name="F:DotNetWMS.Controllers.WarehousesController._logger">
             <summary>
-            A static field for handling Warehouse's name for properly creation of Stocktaking view
+            Log4net library field
             </summary>
-        </member>
-        <member name="F:DotNetWMS.Controllers.WarehousesController.wrhId">
-            <summary>
-            A static field for handling Warehouse's ID for properly creation of Stocktaking view
-            </summary>
-        </member>
-        <member name="M:DotNetWMS.Controllers.WarehousesController.Stocktaking(DotNetWMS.Models.StocktakingViewModel)">
-            <summary>
-            GET method responsible for returning an Warehouse's Stocktaking view
-            </summary>
-            <param name="model">StocktakingViewModel class object to start the inventory procedure</param>
-            <returns>Returns Warehouse's Stocktaking view</returns>
-        </member>
-        <member name="M:DotNetWMS.Controllers.WarehousesController.Stocktaking(System.String)">
-            <summary>
-            POST method to display the list of items existing in the previously selected warehouse
-            </summary>
-            <param name="warehouseFullName">Defined the full name of the warehouse</param>
-            <returns>Returns Warehouse's Stocktaking view and items existing in the previously selected warehouse</returns>
         </member>
         <member name="M:DotNetWMS.Controllers.WarehousesController.Index(System.String,System.String)">
             <summary>
@@ -790,11 +979,11 @@
             </summary>
             <returns>Returns Warehouse's Create view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.WarehousesController.Create(DotNetWMS.Models.Warehouse)">
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Create(DotNetWMS.Models.WarehouseAndLocationViewModel)">
             <summary>
             POST method responsible for checking and transferring information from the form to DB
             </summary>
-            <param name="warehouse">Warehouse model class with binding DB attributes</param>
+            <param name="viewModel"><c>WarehouseAndLocationViewModel</c> object contains <c>Warehouse</c> and <c>Location</c> model classes</param>
             <returns>If succeed, returns Warehouse's Index view. Otherwise - show error message</returns>
         </member>
         <member name="M:DotNetWMS.Controllers.WarehousesController.Edit(System.Nullable{System.Int32})">
@@ -804,12 +993,12 @@
             <param name="id">Warehouse ID which should be returned</param>
             <returns>Returns Warehouse's Edit view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.WarehousesController.Edit(System.Int32,DotNetWMS.Models.Warehouse)">
+        <member name="M:DotNetWMS.Controllers.WarehousesController.Edit(System.Int32,DotNetWMS.Models.WarehouseAndLocationViewModel)">
             <summary>
             POST method responsible for checking and transferring information from the form to DB
             </summary>
             <param name="id">Warehouse ID to edit</param>
-            <param name="warehouse">Warehouse model class with binding DB attributes</param>
+            <param name="viewModel"><c>WarehouseAndLocationViewModel</c> object contains <c>Warehouse</c> and <c>Location</c> model classes</param>
             <returns>If succeed, returns Warehouse's Index view, data validation on the model side</returns>
         </member>
         <member name="M:DotNetWMS.Controllers.WarehousesController.Delete(System.Nullable{System.Int32})">
@@ -821,7 +1010,7 @@
         </member>
         <member name="M:DotNetWMS.Controllers.WarehousesController.DeleteConfirmed(System.Int32)">
             <summary>
-            POST method responsible for removing employee from DB if the user confirms this action
+            POST method responsible for removing warehouse from DB if the user confirms this action
             </summary>
             <param name="id">Warehouse ID to delete</param>
             <returns>Returns Warehouse's Index view</returns>
@@ -967,76 +1156,6 @@
             True, if a checkbox was selected, otherwise - false
             </summary>
         </member>
-        <member name="T:DotNetWMS.Models.AssignItemToEmployee">
-            <summary>
-            Viewmodel to handle a view where an user assigns items to an employee
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToEmployee.EmployeeId">
-            <summary>
-            Stores the employee ID in DB
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToEmployee.Employee">
-            <summary>
-            Employee DB data
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToEmployee.ItemId">
-            <summary>
-            Stores the item ID in DB
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToEmployee.ItemQuantity">
-            <summary>
-            Number of items
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToEmployee.ItemState">
-            <summary>
-            Enum to choose the condition of the item. Correlated with the foreign keys of the Employee, Warehouse and External classes for reporting purposes
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToEmployee.Item">
-            <summary>
-            Item DB data
-            </summary>
-        </member>
-        <member name="T:DotNetWMS.Models.AssignItemToWarehouse">
-            <summary>
-            Viewmodel to handle a view where an user assigns items to an warehouse
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.WarehouseId">
-            <summary>
-            Stores the warehouse ID in DB
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.Warehouse">
-            <summary>
-            Warehouse DB data
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.ItemId">
-            <summary>
-            Stores the item ID in DB
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.ItemQuantity">
-            <summary>
-            Number of items
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.ItemState">
-            <summary>
-            Enum to choose the condition of the item. Correlated with the foreign keys of the Employee, Warehouse and External classes for reporting purposes
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.AssignItemToWarehouse.Item">
-            <summary>
-            Item DB data
-            </summary>
-        </member>
         <member name="T:DotNetWMS.Models.ContractorType">
             <summary>
             Enum that stores types of contractor
@@ -1062,69 +1181,194 @@
             Department's name
             </summary>
         </member>
-        <member name="T:DotNetWMS.Models.Employee">
+        <member name="T:DotNetWMS.Models.Doc_Assignment">
             <summary>
-            Employee class model used for creating DB with EFC and collecting info about employees
+            Doc_Assignment model class used for creating DB with EFC and collecting infos about documents
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.Id">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.DocumentId">
             <summary>
-            Employee database PK
+            Doc_Assignment database PK
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.Name">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.Title">
             <summary>
-            Employee's Name
+            Doc_Assignment's name
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.Surname">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.CreationDate">
             <summary>
-            Employee's Surname
+            Doc_Assignment's date of creation
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.Pesel">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.UserFrom">
             <summary>
-            Universal Electronic System for Registration of the Population number
+            Doc_Assignment's id of first side of document user 
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.DepartmentId">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.UserFromName">
             <summary>
-            Department's FK. Can be null.
+            Doc_Assignment's name of first side of document user 
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.Department">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.UserTo">
             <summary>
-            Department's Name
+            Doc_Assignment's id of second side of document user 
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.Street">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.UserToName">
             <summary>
-            Employee's address
+            Doc_Assignment's name of second side of document user 
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.ZipCode">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.WarehouseFrom">
             <summary>
-            Postal Code
+            Doc_Assignment's id of first side of document warehouse 
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.City">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.WarehouseFromName">
             <summary>
-            City of residence
+            Doc_Assignment's name of first side of document warehouse 
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.Items">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.WarehouseTo">
             <summary>
-            Employee's item list
+            Doc_Assignment's id of second side of document warehouse 
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Employee.FullName">
+        <member name="P:DotNetWMS.Models.Doc_Assignment.WarehouseToName">
             <summary>
-            Employee's full name 
+            Doc_Assignment's name of second side of document warehouse 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment.ExternalFrom">
+            <summary>
+            Doc_Assignment's id of first side of document external 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment.ExternalFromName">
+            <summary>
+            Doc_Assignment's name of first side of document external 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment.ExternalTo">
+            <summary>
+            Doc_Assignment's id of second side of document external 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment.ExternalToName">
+            <summary>
+            Doc_Assignment's name of second side of document external 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment.IsConfirmed">
+            <summary>
+            Doc_Assignment's information whether the message has been confirmed by the user or not
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment.ConfirmationDate">
+            <summary>
+            Doc_Assignment's date of confirmation
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment._items">
+            <summary>
+            List of items (not exists in DB)
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment.Items">
+            <summary>
+            List of items (not exists in DB)
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_Assignment.ItemsToString">
+            <summary>
+            List of items converted to JSON format string
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.From">
+            <summary>
+            Doc_Assignment's id of first side of document 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.To">
+            <summary>
+            Doc_Assignment's id of second side of document 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.FromIndex">
+            <summary>
+            Type of first side of document
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.ToIndex">
+            <summary>
+            Type of second side of document
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.Id">
+            <summary>
+            Item's ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.Type">
+            <summary>
+            Item's type e.g. tools, electronics, clothes etc.
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.Name">
+            <summary>
+            Item's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.Model">
+            <summary>
+            Item's model name or code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.Producer">
+            <summary>
+            Item's manufacturer
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.Code">
+            <summary>
+            Item's model name or code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.Quantity">
+            <summary>
+            Number of items
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.Unit">
+            <summary>
+            Enum used to select units of measure
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Doc_ConfigureDocumentViewModel.AddToDocument">
+            <summary>
+            Contains information if user check corresponding checkbox and mark item add to document
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Doc_Titles">
+            <summary>
+            Enum that stores document titles
             </summary>
         </member>
         <member name="T:DotNetWMS.Models.ErrorViewModel">
             <summary>
             Viewmodel to handle the view describing the application error
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ErrorViewModel.RequestId">
+            <summary>
+            Property that stores the query ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ErrorViewModel.ShowRequestId">
+            <summary>
+            Method to display the query ID
             </summary>
         </member>
         <member name="T:DotNetWMS.Models.External">
@@ -1167,14 +1411,139 @@
             External's headquarters city
             </summary>
         </member>
+        <member name="P:DotNetWMS.Models.External.LocationId">
+            <summary>
+            <c>Location</c> FK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.Location">
+            <summary>
+            <c>Location</c> property to create FK with CF method
+            </summary>
+        </member>
         <member name="P:DotNetWMS.Models.External.Items">
             <summary>
             List of items which was transferred to the client or external service
             </summary>
         </member>
+        <member name="P:DotNetWMS.Models.External.FullName">
+            <summary>
+            Method to display values in view
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.External.FullNameForDocumentation">
+            <summary>
+            Method to display values in documentation view
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.ExternalAndLocationViewModel">
+            <summary>
+            Viewmodel contains <c>WMSIdentityUser</c> and <c>External</c> properties
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.Type">
+            <summary>
+            Enum used to catalog and select the type of client 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.Name">
+            <summary>
+            External's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.TaxId">
+            <summary>
+            External's tax identification number
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.Street">
+            <summary>
+            External's address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.ZipCode">
+            <summary>
+            External's postal code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.City">
+            <summary>
+            External's headquarters city
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.LocationId">
+            <summary>
+            Location's ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.Address">
+            <summary>
+            Location's Adress
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.Longitude">
+            <summary>
+            Location's longitude
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ExternalAndLocationViewModel.Latitude">
+            <summary>
+            Location's latitude
+            </summary>
+        </member>
         <member name="T:DotNetWMS.Models.ForgotPasswordViewModel">
             <summary>
             Viewmodel to handle the view with the application password recovery form
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.ForgotPasswordViewModel.Email">
+            <summary>
+            Email adress connected with user account
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Infobox">
+            <summary>
+            Infobox model class used for creating DB with EFC and collecting infos about messages
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Infobox.Id">
+            <summary>
+            Infobox database PK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Infobox.Title">
+            <summary>
+            Infobox message title
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Infobox.Message">
+            <summary>
+            Infobox message body
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Infobox.DocumentId">
+            <summary>
+            Infobox corresponding document ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Infobox.ReceivedDate">
+            <summary>
+            Infobox message date of creation
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Infobox.IsChecked">
+            <summary>
+            Contains information if user check message as read
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Infobox.UserId">
+            <summary>
+            WMSIdentityUser FK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Infobox.User">
+            <summary>
+            WMSIdentityUser property to create FK with CF method
             </summary>
         </member>
         <member name="T:DotNetWMS.Models.Item">
@@ -1232,12 +1601,12 @@
             Enum to choose the condition of the item. Correlated with the foreign keys of the Employee, Warehouse and External classes for reporting purposes
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Item.EmployeeId">
+        <member name="P:DotNetWMS.Models.Item.UserId">
             <summary>
             Employee's FK. Can be null.
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.Item.Employee">
+        <member name="P:DotNetWMS.Models.Item.User">
             <summary>
             Employee DB data
             </summary>
@@ -1275,6 +1644,66 @@
         <member name="T:DotNetWMS.Models.ItemUnits">
             <summary>
             Enum that stores item units
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.Location">
+            <summary>
+            Location model class used for creating DB with EFC and collecting infos about messages
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Location.Id">
+            <summary>
+            Location database PK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Location.Address">
+            <summary>
+            Location's address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Location.Longitude">
+            <summary>
+            Location's longitude gets from Google Geolocation
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Location.Latitude">
+            <summary>
+            Location's latitude gets from Google Geolocation
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.LocationListViewModel">
+            <summary>
+            Viewmodel contains Location properties, info whether location is in use by other data or not and list of those data
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LocationListViewModel.Id">
+            <summary>
+            Location ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LocationListViewModel.Address">
+            <summary>
+            Location's address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LocationListViewModel.Longitude">
+            <summary>
+            Location's longitude gets from Google Geolocation
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LocationListViewModel.Latitude">
+            <summary>
+            Location's latitude gets from Google Geolocation
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LocationListViewModel.IsInUse">
+            <summary>
+            Refer if <c>Location</c> is in use or not
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.LocationListViewModel.Records">
+            <summary>
+            List of objects names which using location
             </summary>
         </member>
         <member name="T:DotNetWMS.Models.LoginViewModel">
@@ -1315,6 +1744,16 @@
         <member name="P:DotNetWMS.Models.RegisterViewModel.EmployeeNumber">
             <summary>
             A field to capture new user's employee number
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.Street">
+            <summary>
+            A field to capture new user's employee address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.RegisterViewModel.ZipCode">
+            <summary>
+            A field to capture new user's employee zip-code
             </summary>
         </member>
         <member name="P:DotNetWMS.Models.RegisterViewModel.City">
@@ -1372,24 +1811,149 @@
             A field to capture state of an item
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.StatusViewViewModel.Items">
+        <member name="P:DotNetWMS.Models.StatusViewViewModel.UserId">
             <summary>
-            A field to capture list of items
+            <c>WMSIdentityUser</c> ID
             </summary>
         </member>
-        <member name="T:DotNetWMS.Models.StocktakingViewModel">
+        <member name="P:DotNetWMS.Models.StatusViewViewModel.UserFullName">
+            <summary>
+            Fullname of <c>WMSIdentityUser</c>
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StatusViewViewModel.WarehouseId">
+            <summary>
+            <c>Warehouse</c> ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StatusViewViewModel.WarehouseFullName">
+            <summary>
+            Fullname of <c>Warehouse</c>
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.StocktakingStartViewModel">
             <summary>
             Viewmodel to handle the view with stocktaking a warehouse
             </summary>
         </member>
-        <member name="P:DotNetWMS.Models.StocktakingViewModel.Items">
-            <summary>
-            A field to capture list of items
-            </summary>
-        </member>
-        <member name="P:DotNetWMS.Models.StocktakingViewModel.WarehouseFullName">
+        <member name="P:DotNetWMS.Models.StocktakingStartViewModel.WarehouseFullName">
             <summary>
             A field to capture name and adress of warehouse
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.StocktakingTableViewModel">
+            <summary>
+            Viewmodel cointains <c>Item</c>'s properties and other corresponding with checkboxes in StocktakingTable partial view
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.ItemType">
+            <summary>
+            <c>Item</c> type
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.ItemName">
+            <summary>
+            <c>Item</c> name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.ItemModel">
+            <summary>
+            <c>Item</c> model
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.ItemCode">
+            <summary>
+            <c>Item</c> code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.ItemQuantity">
+            <summary>
+            <c>Item</c> quantity
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.ItemUnit">
+            <summary>
+            <c>Item</c> units
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.ToCorrect">
+            <summary>
+            True if item details need to be corrected, otherwise - false 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.ToDelete">
+            <summary>
+            True if item details need to be deleted, otherwise - false 
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.StocktakingTableViewModel.IsDamaged">
+            <summary>
+            True if item is damaged, otherwise - false 
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.UserAndLocationViewModel">
+            <summary>
+            Viewmodel contains <c>WMSIdentityUser</c> and <c>Location</c> properties
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.UserId">
+            <summary>
+            <c>WMSIdentityUser</c>'s ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.Name">
+            <summary>
+            <c>WMSIdentityUser</c>'s name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.Surname">
+            <summary>
+            <c>WMSIdentityUser</c>'s surname
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.EmployeeNumber">
+            <summary>
+            <c>WMSIdentityUser</c>'s registration number
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.DepartmentId">
+            <summary>
+            <c>Department</c>'s ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.Street">
+            <summary>
+            <c>WMSIdentityUser</c>'s street
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.ZipCode">
+            <summary>
+            <c>WMSIdentityUser</c>'s zipcode
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.City">
+            <summary>
+            <c>WMSIdentityUser</c>'s headquarters city
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.LocationId">
+            <summary>
+            <c>Location</c>'s ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.Address">
+            <summary>
+            <c>Location</c>'s address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.Longitude">
+            <summary>
+            <c>Location</c>'s longitude
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.UserAndLocationViewModel.Latitude">
+            <summary>
+            <c>Location</c>'s latitude
             </summary>
         </member>
         <member name="T:DotNetWMS.Models.Warehouse">
@@ -1422,6 +1986,16 @@
             The city where the warehouse was built
             </summary>
         </member>
+        <member name="P:DotNetWMS.Models.Warehouse.LocationId">
+            <summary>
+            <c>Location</c> FK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.Location">
+            <summary>
+            <c>Location</c> property to create FK with CF method
+            </summary>
+        </member>
         <member name="P:DotNetWMS.Models.Warehouse.Items">
             <summary>
             A list of items stored in warehouse
@@ -1429,7 +2003,57 @@
         </member>
         <member name="P:DotNetWMS.Models.Warehouse.AssignFullName">
             <summary>
-            A property to assign Warehouse to Item DB
+            Method to display values in view
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.Warehouse.FullNameForDocumentation">
+            <summary>
+            Method to display values in documentation view
+            </summary>
+        </member>
+        <member name="T:DotNetWMS.Models.WarehouseAndLocationViewModel">
+            <summary>
+            Viewmodel contains <c>Warehouse</c> and <c>Location</c> properties
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WarehouseAndLocationViewModel.Name">
+            <summary>
+            Warehouse's name
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WarehouseAndLocationViewModel.Street">
+            <summary>
+            Warehouse's address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WarehouseAndLocationViewModel.ZipCode">
+            <summary>
+            Warehouse's postal code
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WarehouseAndLocationViewModel.City">
+            <summary>
+            The city where the warehouse was built
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WarehouseAndLocationViewModel.LocationId">
+            <summary>
+            <c>Location</c>'s ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WarehouseAndLocationViewModel.Address">
+            <summary>
+            <c>Location</c>'s address
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WarehouseAndLocationViewModel.Longitude">
+            <summary>
+            <c>Location</c>'s longitude
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WarehouseAndLocationViewModel.Latitude">
+            <summary>
+            <c>Location</c>'s latitude
             </summary>
         </member>
         <member name="T:DotNetWMS.Models.WMSIdentityUser">
@@ -1439,17 +2063,37 @@
         </member>
         <member name="P:DotNetWMS.Models.WMSIdentityUser.Name">
             <summary>
-            Employee's name
+            <c>WMSIdentityUser</c>'s name
             </summary>
         </member>
         <member name="P:DotNetWMS.Models.WMSIdentityUser.Surname">
             <summary>
-            Employee's surname
+            <c>WMSIdentityUser</c>'s surname
             </summary>
         </member>
         <member name="P:DotNetWMS.Models.WMSIdentityUser.EmployeeNumber">
             <summary>
-            Employee's registration number
+            <c>WMSIdentityUser</c>'s registration number
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.DepartmentId">
+            <summary>
+            <c>Department</c>'s ID
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.Department">
+            <summary>
+            <c>Department</c> property to create FK with CF method
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.Street">
+            <summary>
+            <c>WMSIdentityUser</c>'s street
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.ZipCode">
+            <summary>
+            <c>WMSIdentityUser</c>'s zip code
             </summary>
         </member>
         <member name="P:DotNetWMS.Models.WMSIdentityUser.City">
@@ -1457,16 +2101,52 @@
             Employee's headquarters city
             </summary>
         </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.LocationId">
+            <summary>
+            <c>Location</c> FK
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.Location">
+            <summary>
+            <c>Location</c> property to create FK with CF method
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.Items">
+            <summary>
+            Property to create one-to-many relationship with Items
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.Messages">
+            <summary>
+            Property to create one-to-many relationship with Infobox
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.FullName">
+            <summary>
+            Method to display values in view
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Models.WMSIdentityUser.FullNameForDocumentation">
+            <summary>
+            Method to display values in documentation view
+            </summary>
+        </member>
         <member name="T:DotNetWMS.Program">
             <summary>
             Main class responsible for starting the application
             </summary>
         </member>
+        <member name="M:DotNetWMS.Program.Main(System.String[])">
+            <summary>
+            Main point of application
+            </summary>
+            <param name="args">Command-line arguments</param>
+        </member>
         <member name="M:DotNetWMS.Program.CreateHostBuilder(System.String[])">
             <summary>
             Static method responsible for the host start configuration
             </summary>
-            <param name="args"></param>
+            <param name="args">Command-line arguments</param>
             <returns>Returns the configured object of the Host class</returns>
         </member>
         <member name="T:DotNetWMS.Resources.CustomErrorMessages">
@@ -1494,6 +2174,120 @@
             The method is responsible for injecting data about roles in the application
             </summary>
         </member>
+        <member name="T:DotNetWMS.Resources.GlobalAlert">
+            <summary>
+            Static class for creating global alerts
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Resources.GlobalAlert._type">
+            <summary>
+            Type of message which is used to colorize alerts
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Resources.GlobalAlert._message">
+            <summary>
+            Message to display in alert
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Resources.GlobalAlert._count">
+            <summary>
+            Quantity to display on dashboard
+            </summary>
+        </member>
+        <member name="F:DotNetWMS.Resources.GlobalAlert._old">
+            <summary>
+            Static field to check is message changes
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Resources.GlobalAlert.SendGlobalAlert(System.String,System.String)">
+            <summary>
+            Method to receive info from controller
+            </summary>
+            <param name="message">Message to display in alert</param>
+            <param name="type">Type of message which is used to colorize alerts</param>
+        </member>
+        <member name="M:DotNetWMS.Resources.GlobalAlert.SendQuantity(System.Int32)">
+            <summary>
+            Method to receive quantity from controller
+            </summary>
+            <param name="count">Quantity to display on dashboard</param>
+        </member>
+        <member name="M:DotNetWMS.Resources.GlobalAlert.SetGlobalAlertType">
+            <summary>
+            Method to set bootstrap class in global-info according to chosen type
+            </summary>
+            <returns>String with bootstrap class</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.GlobalAlert.ShowGlobalAlert">
+            <summary>
+            Method to show alert in view
+            </summary>
+            <returns>Message to display in alert</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.GlobalAlert.ShowQuantity">
+            <summary>
+            Method to show quantity in dashboard
+            </summary>
+            <returns>Quantity to display on dashboard</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.GlobalAlert.SetOld(System.String)">
+            <summary>
+            Method to set old value until later cheking
+            </summary>
+            <param name="old">Old value from view</param>
+        </member>
+        <member name="T:DotNetWMS.Resources.GoogleMapsGenerator">
+            <summary>
+            A class contains methods used in Geolocation and Google Maps
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Resources.GoogleMapsGenerator.PrepareAdressToGeoCode(DotNetWMS.Models.Warehouse)">
+            <summary>
+            Method prepares <c>Warehouse</c>'s data to make it usable by Geolocation process
+            </summary>
+            <param name="warehouse"><c>Warehouse</c> object</param>
+            <returns>Interpolated string with the necessary data</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.GoogleMapsGenerator.PrepareAdressToGeoCodeExternal(DotNetWMS.Models.External)">
+            <summary>
+            Method prepares <c>External</c>'s data to make it usable by Geolocation process
+            </summary>
+            <param name="external"><c>External</c> object</param>
+            <returns>Interpolated string with the necessary data</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.GoogleMapsGenerator.PrepareAdressToGeoCodeEmployee(DotNetWMS.Models.WMSIdentityUser)">
+            <summary>
+            Method prepares <c>WMSIdentityUser</c>'s data to make it usable by Geolocation process
+            </summary>
+            <param name="user"><c>WMSIdentityUser</c> object</param>
+            <returns>Interpolated string with the necessary data</returns>
+        </member>
+        <member name="T:DotNetWMS.Resources.ItemCodeGenerator">
+            <summary>
+            A class to generate <c>Item</c>'s ItemCode
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Resources.ItemCodeGenerator.Generate(DotNetWMS.Models.Item,System.String)">
+            <summary>
+            Method which can be used in controllers to invoke code generation 
+            </summary>
+            <param name="item"><c>Item</c> object</param>
+            <param name="user">Name of logged in user or user from DB</param>
+            <returns>Invoke private method which returns string with code</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:DotNetWMS.Resources.ItemCodeGenerator.GenerateItemCode(DotNetWMS.Models.Item,System.String)" -->
+        <member name="T:DotNetWMS.Resources.QRCodeCreator">
+            <summary>
+            A class to create and show QRCodes in views
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Resources.QRCodeCreator.ShowQRCode(System.String)">
+            <summary>
+            A method to create and show QRCodes in views
+            </summary>
+            <param name="url">URL address to encode</param>
+            <returns>String with code which is necessary to present it in views</returns>
+        </member>
         <member name="T:DotNetWMS.Resources.RoleAssignExtension">
             <summary>
             Static class used in views which access requires authorization, to check whether the user has been assigned to the role authorizing him to run a given view
@@ -1515,9 +2309,49 @@
             <param name="roles">User-assigned roles in the application</param>
             <returns>Returns true if the user is assigned to any role. Otherwise - returns false</returns>
         </member>
+        <member name="T:DotNetWMS.Resources.UserLoginGenerator">
+            <summary>
+            A class to generate login for <c>WMSIdentityUser</c> class
+            </summary>
+        </member>
+        <member name="M:DotNetWMS.Resources.UserLoginGenerator.PrepareAndNormalize(System.String)">
+            <summary>
+            A method that normalizes sent string and invoke normalize
+            </summary>
+            <param name="word">String to normalize</param>
+            <returns>Invoke method which send back normalized string</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.UserLoginGenerator.Normalize(System.String)">
+            <summary>
+            A method contains logic to normalize sent string
+            </summary>
+            <param name="word">String to normalize</param>
+            <returns>Normalized string</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.UserLoginGenerator.NormalizeChar(System.Char)">
+            <summary>
+            A method to normalize polish characters
+            </summary>
+            <param name="c">Polish char to normalize</param>
+            <returns>Normalized polish char</returns>
+        </member>
+        <member name="M:DotNetWMS.Resources.UserLoginGenerator.GenerateUserLogin(System.String,System.String,System.String)">
+            <summary>
+            A method which uses derived arguments to generate login for <c>WMSIdentityUser</c> class
+            </summary>
+            <param name="name"><c>WMSIdentityUser</c>'s name</param>
+            <param name="surname"><c>WMSIdentityUser</c>'s surname</param>
+            <param name="employeeNumber"><c>WMSIdentityUser</c>'s employee number</param>
+            <returns></returns>
+        </member>
         <member name="T:DotNetWMS.Startup">
             <summary>
             Class responsible for application configuration
+            </summary>
+        </member>
+        <member name="P:DotNetWMS.Startup.Configuration">
+            <summary>
+            IConfiguration field used to get a configuration contained in connection string
             </summary>
         </member>
         <member name="M:DotNetWMS.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
@@ -1526,12 +2360,13 @@
             </summary>
             <param name="services">Parameter that enables adding and configuring services</param>
         </member>
-        <member name="M:DotNetWMS.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+        <member name="M:DotNetWMS.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Microsoft.Extensions.Logging.ILoggerFactory)">
             <summary>
             This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
             </summary>
             <param name="app">Parameter for configuring application elements</param>
             <param name="env">Parameter for configuring WebHost environment elements</param>
+            <param name="loggerFactory"></param>
         </member>
     </members>
 </doc>

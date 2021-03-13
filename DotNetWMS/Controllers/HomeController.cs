@@ -25,6 +25,9 @@ namespace DotNetWMS.Controllers
         /// The field responsible for communication with Nlog
         /// </summary>
         private readonly ILogger<HomeController> _logger;
+        /// <summary>
+        /// Log4net library field
+        /// </summary>
         private readonly DotNetWMSContext _context;
 
         public HomeController(ILogger<HomeController> logger, DotNetWMSContext context)

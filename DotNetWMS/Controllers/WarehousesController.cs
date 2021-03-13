@@ -113,7 +113,7 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
         /// </summary>
-        /// <param name="viewModel">Warehouse model class with binding DB attributes</param>
+        /// <param name="viewModel"><c>WarehouseAndLocationViewModel</c> object contains <c>Warehouse</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns Warehouse's Index view. Otherwise - show error message</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
@@ -216,7 +216,7 @@ namespace DotNetWMS.Controllers
         /// POST method responsible for checking and transferring information from the form to DB
         /// </summary>
         /// <param name="id">Warehouse ID to edit</param>
-        /// <param name="warehouse">Warehouse model class with binding DB attributes</param>
+        /// <param name="viewModel"><c>WarehouseAndLocationViewModel</c> object contains <c>Warehouse</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns Warehouse's Index view, data validation on the model side</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
@@ -332,7 +332,7 @@ namespace DotNetWMS.Controllers
             return View(warehouse);
         }
         /// <summary>
-        /// POST method responsible for removing employee from DB if the user confirms this action
+        /// POST method responsible for removing warehouse from DB if the user confirms this action
         /// </summary>
         /// <param name="id">Warehouse ID to delete</param>
         /// <returns>Returns Warehouse's Index view</returns>

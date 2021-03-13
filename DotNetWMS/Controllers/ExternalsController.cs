@@ -156,7 +156,7 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
         /// </summary>
-        /// <param name="external">External model class with binding DB attributes</param>
+        /// <param name="viewModel"><c>ExternalAndLocationViewModel</c> object contains <c>External</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns External's Index view. Otherwise - show error message</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]
@@ -263,7 +263,7 @@ namespace DotNetWMS.Controllers
         /// POST method responsible for checking and transferring information from the form to DB
         /// </summary>
         /// <param name="id">External ID to edit</param>
-        /// <param name="external">External model class with binding DB attributes</param>
+        /// <param name="viewModel"><c>ExternalAndLocationViewModel</c> object contains <c>External</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns External's Index view, data validation on the model side</returns>
         [Authorize(Roles = "StandardPlus,Moderator")]
         [HttpPost]

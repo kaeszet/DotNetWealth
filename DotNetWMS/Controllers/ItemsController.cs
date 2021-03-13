@@ -27,8 +27,17 @@ namespace DotNetWMS.Controllers
         /// A field for handling the delivery of information to the DB associated with the Entity Core framework
         /// </summary>
         private readonly DotNetWMSContext _context;
+        /// <summary>
+        /// Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
+        /// </summary>
         private readonly UserManager<WMSIdentityUser> _userManager;
+        /// <summary>
+        /// Field of object which implements interface <c>IHttpContextAccessor</c> to get displayed url whoch is necessary to generate QR Code
+        /// </summary>
         private readonly IHttpContextAccessor _httpContextAccessor;
+        /// <summary>
+        /// Log4net library field
+        /// </summary>
         private readonly ILogger<ItemsController> _logger;
 
         public ItemsController(DotNetWMSContext context, UserManager<WMSIdentityUser> userManager, IHttpContextAccessor httpContextAccessor, ILogger<ItemsController> logger)
@@ -332,6 +341,11 @@ namespace DotNetWMS.Controllers
                 return Json($"Przedmiot o kodzie ({itemCode}) został już wprowadzony!");
             }
         }
+        /// <summary>
+        /// GET/POST method to responsible for checking whether the item has already been entered into the database 
+        /// </summary>
+        /// <param name="item">Item to be checked</param>
+        /// <returns>If the item does not exist, it returns true (in JSON format). Otherwise - returns an error message</returns>
         [AcceptVerbs("Get", "Post")]
         public IActionResult IsItemExists(Item item)
         {
@@ -1003,6 +1017,11 @@ namespace DotNetWMS.Controllers
             }
             return NotFound();
         }
+        /// <summary>
+        /// Method for adding new message to infobox about status changes
+        /// </summary>
+        /// <param name="item"><c>Item</c> object which properties are necessary to create infos</param>
+        /// <param name="externalOldName">Name of <c>External</c> object before change</param>
         private void SendInfo(Item item, string externalOldName = "")
         {
             string UserIdentityName = !string.IsNullOrEmpty(User?.Identity?.Name) ? User.Identity.Name : "";
@@ -1057,8 +1076,7 @@ namespace DotNetWMS.Controllers
 
                 case ItemState.InWarehouse:
 
-                    //TODO: zabezp przed null
-                    var warehouseFullName = _context.Warehouses.Find(item.WarehouseId).Name;
+                    var warehouseFullName = _context.Warehouses.Find(item.WarehouseId)?.Name;
 
                     info.Title = "Przedmiot w magazynie";
                     info.Message = $"Przedmiot \"{item.Name}\" w ilości {item.Quantity} {item.Units} został wysłany do magazynu {warehouseFullName}";
@@ -1114,6 +1132,11 @@ namespace DotNetWMS.Controllers
             }
 
         }
+        /// <summary>
+        /// Method responsible for updating ItemCode in case of changes in DB
+        /// </summary>
+        /// <param name="item"><c>Item</c> object which ItemCode parametrer will be changed</param>
+        /// <returns></returns>
         private async Task UpdateItemCode(Item item)
         {
             item.ItemCode = ItemCodeGenerator.Generate(item, User?.Identity?.Name);

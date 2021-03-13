@@ -42,16 +42,25 @@ namespace DotNetWMS.Models
         [StringLength(30)]
         [Display(Name = "Miasto")]
         public string City { get; set; }
+        /// <summary>
+        /// <c>Location</c> FK
+        /// </summary>
         public int? LocationId { get; set; }
+        /// <summary>
+        /// <c>Location</c> property to create FK with CF method
+        /// </summary>
         public Location Location { get; set; }
         /// <summary>
         /// A list of items stored in warehouse
         /// </summary>
         public IList<Item> Items { get; set; }
         /// <summary>
-        /// A property to assign Warehouse to Item DB
+        /// Method to display values in view
         /// </summary>
         public string AssignFullName => $"{Name}, {Street}";
+        /// <summary>
+        /// Method to display values in documentation view
+        /// </summary>
         public string FullNameForDocumentation => $"{Name}{Environment.NewLine}{Street}{Environment.NewLine}{ZipCode} {City}";
 
     }

@@ -17,13 +17,21 @@ namespace DotNetWMS.Models
         [Display(Name = "Status")]
         public ItemState State { get; set; }
         /// <summary>
-        /// A field to capture list of items
+        /// <c>WMSIdentityUser</c> ID
         /// </summary>
-        //public List<Item> Items { get; set; }
         public string UserId { get; set; }
+        /// <summary>
+        /// Fullname of <c>WMSIdentityUser</c>
+        /// </summary>
         [Display(Name = "Użytkownik")]
         public string UserFullName { get; set; }
+        /// <summary>
+        /// <c>Warehouse</c> ID
+        /// </summary>
         public int? WarehouseId { get; set; }
+        /// <summary>
+        /// Fullname of <c>Warehouse</c>
+        /// </summary>
         [Display(Name = "Magazyn")]
         public string WarehouseFullName { get; set; }
 

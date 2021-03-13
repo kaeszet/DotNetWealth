@@ -11,9 +11,18 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Controllers
 {
+    /// <summary>
+    /// Controller class responsible for <c>Location</c> functionality
+    /// </summary>
     public class LocationsController : Controller
     {
+        /// <summary>
+        /// A field for handling the delivery of information to the DB associated with the Entity Core framework
+        /// </summary>
         private readonly DotNetWMSContext _context;
+        /// <summary>
+        /// Log4net library field
+        /// </summary>
         private readonly ILogger<LocationsController> _logger;
 
         public LocationsController(DotNetWMSContext context, ILogger<LocationsController> logger)
@@ -21,7 +30,12 @@ namespace DotNetWMS.Controllers
             _context = context;
             _logger = logger;
         }
-
+        /// <summary>
+        /// GET method responsible for returning Location's Index view and supports a search engine
+        /// </summary>
+        /// <param name="order">Sort names in ascending or descending order</param>
+        /// <param name="search">Search phrase in the search field</param>
+        /// <returns>Returns Location's Index view with list of locations in the order set by the user</returns>
         public IActionResult Index(string order, string search)
         {
             ViewData["SortByAddress"] = string.IsNullOrEmpty(order) ? "address_desc" : "";
@@ -61,6 +75,11 @@ namespace DotNetWMS.Controllers
 
             return View(locationList);
         }
+        /// <summary>
+        /// GET method to show Google map and markup with given coordinates
+        /// </summary>
+        /// <param name="id">ID of location in DB</param>
+        /// <returns>ShowMap view with <c>Location</c> data</returns>
         public async Task<IActionResult> ShowMap(int? id)
         {
             if (id == null)
@@ -79,6 +98,11 @@ namespace DotNetWMS.Controllers
 
             return View(location);
         }
+        /// <summary>
+        /// GET method responsible for returning an Location's Edit view
+        /// </summary>
+        /// <param name="id">Location ID</param>
+        /// <returns>Edit view with <c>Location</c> data</returns>
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -98,7 +122,12 @@ namespace DotNetWMS.Controllers
 
             return View(location);
         }
-
+        /// <summary>
+        /// POST method to accept changes in Edit View and save them in DB
+        /// </summary>
+        /// <param name="id">Location ID</param>
+        /// <param name="location"><c>Location</c> model class object</param>
+        /// <returns>If succeded redirect user to Location's Index view, otherwise - show error message</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Location location)
@@ -149,7 +178,11 @@ namespace DotNetWMS.Controllers
             }
             return View(location);
         }
-
+        /// <summary>
+        /// GET method responsible for returning an Location's Delete view
+        /// </summary>
+        /// <param name="id">ID of <c>Location</c> to delete</param>
+        /// <returns>DeleteConfirmation View with <c>Location</c> data</returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -168,7 +201,11 @@ namespace DotNetWMS.Controllers
 
             return View(location);
         }
-        
+        /// <summary>
+        /// POST method responsible for removing <c>Location</c> from DB if the user confirms this action
+        /// </summary>
+        /// <param name="id">ID of <c>Location</c> to delete</param>
+        /// <returns>If succeeded returns Location's Index view, otherwise - return DbUpdateException view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -193,12 +230,20 @@ namespace DotNetWMS.Controllers
             }
 
         }
-
+        /// <summary>
+        /// Method to check is <c>Location</c> with given ID exists in DB
+        /// </summary>
+        /// <param name="id"><c>Location</c> ID to search</param>
+        /// <returns>True if any location has been found, otherwise - false</returns>
         private bool LocationExists(int id)
         {
             return _context.Locations.Any(e => e.Id == id);
         }
-
+        /// <summary>
+        /// Method to check is <c>Location</c> with given ID connected by FK with other DB tables and give back list of occurences
+        /// </summary>
+        /// <param name="id"><c>Location</c> ID to check</param>
+        /// <returns>List of records where <c>Location</c> is connected by FK</returns>
         private List<string> IsLocationInUse(int id)
         {
             List<string> listOfOccurrences = new List<string>();

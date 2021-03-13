@@ -22,6 +22,9 @@ namespace DotNetWMS.Controllers
         /// A field for handling the delivery of information to the DB associated with the Entity Core framework
         /// </summary>
         private readonly DotNetWMSContext _context;
+        /// <summary>
+        /// Log4net library field
+        /// </summary>
         private readonly ILogger<DepartmentsController> _logger;
 
         public DepartmentsController(DotNetWMSContext context, ILogger<DepartmentsController> logger)

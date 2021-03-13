@@ -36,10 +36,16 @@ namespace DotNetWMS.Models
         [StringLength(11)]
         [RegularExpression(@"[0-9]{11}", ErrorMessage = "Nieprawidłowy identyfikator!")]
         public string EmployeeNumber { get; set; }
+        /// <summary>
+        /// A field to capture new user's employee address
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(40)]
         [Display(Name = "Adres")]
         public string Street { get; set; }
+        /// <summary>
+        /// A field to capture new user's employee zip-code
+        /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(6)]
         [Display(Name = "Kod pocztowy")]

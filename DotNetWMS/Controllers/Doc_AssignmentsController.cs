@@ -18,9 +18,18 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Controllers
 {
+    /// <summary>
+    /// Controller class responsible for <c>Doc_Assignments</c> functionality
+    /// </summary>
     public class Doc_AssignmentsController : Controller
     {
+        /// <summary>
+        /// A field for handling the delivery of information to the DB associated with the Entity Core framework
+        /// </summary>
         private readonly DotNetWMSContext _context;
+        /// <summary>
+        /// Log4net library field
+        /// </summary>
         private readonly ILogger<Doc_AssignmentsController> _logger;
 
         public Doc_AssignmentsController(DotNetWMSContext context, ILogger<Doc_AssignmentsController> logger)
@@ -28,7 +37,12 @@ namespace DotNetWMS.Controllers
             _context = context;
             _logger = logger;
         }
-
+        /// <summary>
+        /// GET method responsible for returning Doc_Assignment's Index view and supports a search engine
+        /// </summary>
+        /// <param name="order">Sort names in ascending or descending order</param>
+        /// <param name="search">Search phrase in the search field</param>
+        /// <returns>Returns Doc_Assignment's Index view with list of documents in the order set by the user</returns>
         public async Task<IActionResult> Index(string search, string order)
         {
             ViewData["SortById"] = string.IsNullOrEmpty(order) ? "id_desc" : "";
@@ -53,6 +67,10 @@ namespace DotNetWMS.Controllers
 
             return View(await docs.AsNoTracking().ToListAsync());
         }
+        /// <summary>
+        /// GET method responsible for returning Doc_Assignment's ConfigureDocument view, contains selectlists of users, externals and warehouses
+        /// </summary>
+        /// <returns>Returns Doc_Assignment's ConfigureDocument view</returns>
         [HttpGet]
         public IActionResult ConfigureDocument()
         {
@@ -61,6 +79,42 @@ namespace DotNetWMS.Controllers
             ViewData["Warehouses"] = new SelectList(_context.Warehouses, "Id", "AssignFullName");
             return View();
         }
+        /// <summary>
+        /// POST method connected with jquery method. It uses chosen data from selectlists to configure _Doc_AssignmentConfDocPartial view
+        /// </summary>
+        /// <param name="from">User, Warehouse or External FROM whom the item is transferred</param>
+        /// <param name="to">User, Warehouse or External TO whom the item is transferred</param>
+        /// <param name="fromIndex">Index connected with FROM side of contracting party</param>
+        /// <list type="bullet">
+        /// <item>
+        /// <term>0</term>
+        /// <description>User</description>
+        /// </item>
+        /// <item>
+        /// <term>1</term>
+        /// <description>Warehouse</description>
+        /// </item>
+        /// <item>
+        /// <term>2</term>
+        /// <description>External (contractor)</description>
+        /// </item>
+        /// </list>
+        /// <param name="toIndex">Index connected with TO side of contracting party</param>
+        /// <list type="bullet">
+        /// <item>
+        /// <term>0</term>
+        /// <description>User</description>
+        /// </item>
+        /// <item>
+        /// <term>1</term>
+        /// <description>Warehouse</description>
+        /// </item>
+        /// <item>
+        /// <term>2</term>
+        /// <description>External (contractor)</description>
+        /// </item>
+        /// </list>
+        /// <returns>Returns _Doc_AssignmentConfDocPartial view contains list of <c>Doc_ConfigureDocumentViewModel</c> objects</returns>
         [HttpPost]
         public IActionResult ConfigureDocument(string from, string to, int fromIndex, int toIndex)
         {
@@ -131,7 +185,11 @@ namespace DotNetWMS.Controllers
             ViewData["InfoMessage"] = infoMessage;
             return PartialView("_Doc_AssignmentConfDocPartial", viewModel);
         }
-
+        /// <summary>
+        /// POST method for generating document summary with print and save document in DB options
+        /// </summary>
+        /// <param name="viewModel">List of <c>Doc_ConfigureDocumentViewModel</c> objects</param>
+        /// <returns>Returns GenerateDocument view contains <c>Doc_Assignment</c> object</returns>
         public IActionResult GenerateDocument(List<Doc_ConfigureDocumentViewModel> viewModel)
         {
             DateTime currentDate = DateTime.Now;
@@ -172,7 +230,11 @@ namespace DotNetWMS.Controllers
             ViewData["DocumentTitle"] = title.GetType().GetMember(title.ToString()).First().GetCustomAttribute<DisplayAttribute>().Name;
             return View(doc);
         }
-
+        /// <summary>
+        /// Save document in dbo.Doc_Assignments
+        /// </summary>
+        /// <param name="doc"><c>Doc_Assignment</c> object</param>
+        /// <returns>Returns confirmation view</returns>
         public async Task<IActionResult> SaveDocument(Doc_Assignment doc)
         {
             if (ModelState.IsValid)
@@ -180,14 +242,19 @@ namespace DotNetWMS.Controllers
                 AddToInfobox(doc);
                 _context.Add(doc);
                 await _context.SaveChangesAsync();
+
                 ViewBag.ExceptionTitle = "Dodano dokument do bazy!";
                 ViewBag.ExceptionMessage = $"{doc.DocumentId}";
                 return View("GlobalExceptionHandler");
             }
-
+            _logger.LogDebug($"Nie odnaleziono dokumentu {doc.DocumentId}");
             return NotFound();
         }
-
+        /// <summary>
+        /// Get and show document from dbo.Doc_Assignments
+        /// </summary>
+        /// <param name="id">ID of searched document</param>
+        /// <returns>ShowDocument view with document data</returns>
         public async Task<IActionResult> ShowDocument(string id)
         {
             string decodedId = WebUtility.UrlDecode(id);
@@ -207,7 +274,11 @@ namespace DotNetWMS.Controllers
             ViewData["DocumentTitle"] = title.GetType().GetMember(title.ToString()).First().GetCustomAttribute<DisplayAttribute>().Name;
             return View(doc);
         }
-
+        /// <summary>
+        /// Get and delete document from dbo.Doc_Assignments
+        /// </summary>
+        /// <param name="id">Document ID to delete</param>
+        /// <returns>DeleteDocument view with document data</returns>
         public async Task<IActionResult> DeleteDocument(string id)
         {
             string decodedId = WebUtility.UrlDecode(id);
@@ -227,6 +298,11 @@ namespace DotNetWMS.Controllers
             return View(doc);
 
         }
+        /// <summary>
+        /// POST method to delete document from DB after user confirmation
+        /// </summary>
+        /// <param name="id">Document ID to delete</param>
+        /// <returns>If succeeded returns Doc_Assignment's Index, otherwise - NotFound view</returns>
         [HttpPost, ActionName("DeleteDocument")]
         public async Task<IActionResult> DeleteDocumentConfirm(string id)
         {
@@ -258,6 +334,12 @@ namespace DotNetWMS.Controllers
             
             return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// Method with logic for generating DocumentId which is necessary to save new record in DB
+        /// </summary>
+        /// <param name="time">Time of generating the document</param>
+        /// <param name="title">Document title received from enum list</param>
+        /// <returns>Returns documentID as a string</returns>
         private string DocumentIdGenerator(DateTime time, Doc_Titles title)
         {
             string docCount = (_context.Doc_Assignments.Count() + 1).ToString();
@@ -301,7 +383,12 @@ namespace DotNetWMS.Controllers
 
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Method with logic for checking correct document title which is necessary to generate documentId
+        /// </summary>
+        /// <param name="from">ID of User, Warehouse or External FROM whom the item is transferred</param>
+        /// <param name="to">ID of User, Warehouse or External TO whom the item is transferred</param>
+        /// <returns>Returns correct title from enum two dimensional array</returns>
         private Doc_Titles DocumentTitleGenerator(int? from, int? to)
         {
 
@@ -315,13 +402,20 @@ namespace DotNetWMS.Controllers
 
             return docTitlesArray[(int)from+1,(int)to+1];
         }
-
+        /// <summary>
+        /// Method for calculating millisecond after today 0:00:00
+        /// </summary>
+        /// <param name="date">Time of generating the document</param>
+        /// <returns>Amount of milliseconds</returns>
         private long MillisOfDay(DateTime date)
         {
             DateTime today = new DateTime(date.Year, date.Month, date.Day);
             return (long)(DateTime.Now - today).TotalMilliseconds;
         }
-
+        /// <summary>
+        /// Method for adding info about new document to infobox
+        /// </summary>
+        /// <param name="doc"><c>Doc_Assignment</c> object</param>
         private void AddToInfobox(Doc_Assignment doc)
         {
             Infobox info = new Infobox();
