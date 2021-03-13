@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,10 +21,12 @@ namespace DotNetWMS.Controllers
     public class Doc_AssignmentsController : Controller
     {
         private readonly DotNetWMSContext _context;
+        private readonly ILogger<Doc_AssignmentsController> _logger;
 
-        public Doc_AssignmentsController(DotNetWMSContext context)
+        public Doc_AssignmentsController(DotNetWMSContext context, ILogger<Doc_AssignmentsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(string search, string order)

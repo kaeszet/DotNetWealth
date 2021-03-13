@@ -53,7 +53,7 @@ namespace DotNetWMS.Controllers
                     users = users.OrderBy(e => e.Surname).Include(e => e.Department);
                     break;
             }
-            _logger.LogInformation("INFO: Użytkownik wyświetlił listę pracowników!");
+            _logger.LogInformation("INFO: Użytkownik wyświetlił listę pracowników");
             return View(await users.AsNoTracking().ToListAsync());
         }
 
@@ -63,7 +63,7 @@ namespace DotNetWMS.Controllers
 
             if (string.IsNullOrEmpty(id))
             {
-                _logger.LogDebug($"DEBUG: Pracownik o podanym id = {id} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -72,7 +72,7 @@ namespace DotNetWMS.Controllers
 
             if (user == null)
             {
-                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}!");
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}");
                 return NotFound();
             }
 
@@ -95,14 +95,14 @@ namespace DotNetWMS.Controllers
 
             ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
             ViewBag.DepartmentName = user.Department.Name;
-            _logger.LogInformation($"INFO: Użytkownik wyświetlił dane pracownika o id = {id}!");
+            _logger.LogInformation($"INFO: Użytkownik wyświetlił dane pracownika o id = {id}");
 
             return View(viewModel);
         }
         
         public IActionResult Create()
         {
-            _logger.LogInformation("INFO: Użytkownik wyświetlił kreator dodawania nowego pracownika!");
+            _logger.LogInformation("INFO: Użytkownik wyświetlił kreator dodawania nowego pracownika");
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
 
             return View();
@@ -156,6 +156,7 @@ namespace DotNetWMS.Controllers
 
                     await _userManager.CreateAsync(user, autoGenPassword);
                     GlobalAlert.SendGlobalAlert($"Pracownik {user.FullName} został dodany do bazy!", "success");
+                    _logger.LogInformation($"Pracownik {user.FullName} został dodany do bazy!");
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -174,6 +175,7 @@ namespace DotNetWMS.Controllers
         {
             if (string.IsNullOrEmpty(id))
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -182,7 +184,7 @@ namespace DotNetWMS.Controllers
 
             if (user == null)
             {
-                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}!");
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}");
                 return NotFound();
             }
 
@@ -275,6 +277,7 @@ namespace DotNetWMS.Controllers
                     {
                         if (!EmployeeExists(viewModel.UserId))
                         {
+                            _logger.LogError($"Pracownik {_user.FullName} został zmieniony przez innego użytkownika");
                             return NotFound();
                         }
                         else
@@ -287,9 +290,13 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
-                    _logger.LogError($"Pracownik {_user.FullName} został już wprowadzony do systemu!");
+                    _logger.LogDebug($"Pracownik {_user.FullName} został już wprowadzony do systemu!");
                     ModelState.AddModelError(string.Empty, $"Pracownik {_user.FullName} został już wprowadzony do systemu!");
                 }
+            }
+            else
+            {
+                _logger.LogError($"Walidacja modelu nie powiodła się");
             }
 
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", _user.DepartmentId);
@@ -305,13 +312,14 @@ namespace DotNetWMS.Controllers
         {
             if (string.IsNullOrEmpty(id))
             {
-                _logger.LogDebug($"DEBUG: Pracownik o podanym id = {id} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
             var user = await _context.Users
                 .Include(e => e.Department)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (user == null)
             {
                 _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {user.Id}!");

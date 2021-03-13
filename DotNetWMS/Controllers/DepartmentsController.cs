@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetWMS.Data;
 using DotNetWMS.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
@@ -21,10 +22,12 @@ namespace DotNetWMS.Controllers
         /// A field for handling the delivery of information to the DB associated with the Entity Core framework
         /// </summary>
         private readonly DotNetWMSContext _context;
+        private readonly ILogger<DepartmentsController> _logger;
 
-        public DepartmentsController(DotNetWMSContext context)
+        public DepartmentsController(DotNetWMSContext context, ILogger<DepartmentsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
         /// <summary>
         /// GET method responsible for returning an Department's Index view
@@ -40,13 +43,15 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null");
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var department = await _context.Departments.FirstOrDefaultAsync(m => m.Id == id);
+
             if (department == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie stanowiska o podanym id = {id}");
                 return NotFound();
             }
 
@@ -94,6 +99,7 @@ namespace DotNetWMS.Controllers
             }
             else
             {
+                _logger.LogDebug($"DEBUG: Stanowisko {name} jest już w bazie danych");
                 return Json($"Podane stanowisko ({name}) już istnieje!");
             }
         }
@@ -106,12 +112,15 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug("DEBUG: Wprowadzony idetyfikator ma wartość null");
                 return NotFound();
             }
 
             var department = await _context.Departments.FindAsync(id);
+
             if (department == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie stanowiska o podanym id = {id}");
                 return NotFound();
             }
             return View(department);
@@ -128,6 +137,7 @@ namespace DotNetWMS.Controllers
         {
             if (id != department.Id)
             {
+                _logger.LogDebug("DEBUG: Wprowadzony idetyfikator ma wartość null");
                 return NotFound();
             }
 
@@ -142,6 +152,7 @@ namespace DotNetWMS.Controllers
                 {
                     if (!DepartmentExists(department.Id))
                     {
+                        _logger.LogError($"Stanowisko {department.Name} zostało zmienione przez innego użytkownika");
                         return NotFound();
                     }
                     else
@@ -162,13 +173,15 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug("DEBUG: Wprowadzony idetyfikator ma wartość null");
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var department = await _context.Departments.FirstOrDefaultAsync(m => m.Id == id);
+
             if (department == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie stanowiska o podanym id = {id}");
                 return NotFound();
             }
 

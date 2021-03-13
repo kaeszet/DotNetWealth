@@ -3,6 +3,7 @@ using DotNetWMS.Models;
 using DotNetWMS.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace DotNetWMS.Controllers
     public class LocationsController : Controller
     {
         private readonly DotNetWMSContext _context;
+        private readonly ILogger<LocationsController> _logger;
 
-        public LocationsController(DotNetWMSContext context)
+        public LocationsController(DotNetWMSContext context, ILogger<LocationsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult Index(string order, string search)
@@ -62,6 +65,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -69,6 +73,7 @@ namespace DotNetWMS.Controllers
 
             if (location == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie lokalizacji o podanym id = {id}");
                 return NotFound();
             }
 
@@ -79,6 +84,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -86,6 +92,7 @@ namespace DotNetWMS.Controllers
 
             if (location == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie lokalizacji o podanym id = {id}");
                 return NotFound();
             }
 
@@ -98,6 +105,7 @@ namespace DotNetWMS.Controllers
         {
             if (id != location.Id)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie lokalizacji o podanym id = {id}");
                 return NotFound();
             }
 
@@ -121,6 +129,7 @@ namespace DotNetWMS.Controllers
                     {
                         if (!LocationExists(location.Id))
                         {
+                            _logger.LogError($"Lokalizacja {location.Address} została zmieniona przez innego użytkownika");
                             return NotFound();
                         }
                         else
@@ -133,6 +142,7 @@ namespace DotNetWMS.Controllers
                 }
                 else
                 {
+                    _logger.LogDebug($"Lokalizacja \"{location.Address}\" jest już w systemie!");
                     ModelState.AddModelError(string.Empty, $"Lokalizacja \"{location.Address}\" jest już w systemie!");
                 }
 
@@ -144,6 +154,7 @@ namespace DotNetWMS.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
                 return NotFound();
             }
 
@@ -151,6 +162,7 @@ namespace DotNetWMS.Controllers
 
             if (location == null)
             {
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie lokalizacji o podanym id = {id}");
                 return NotFound();
             }
 
@@ -176,6 +188,7 @@ namespace DotNetWMS.Controllers
                 ViewBag.ErrorMessage = $"Ta lokalizacja została przypisana do jednego z obiektów.<br>" +
                     $"Przed usunięciem upewnij się, że nie jest ona wykorzystywana<br>" +
                     $"Sprawdź działy \"Magazyny\", \"Kontrahenci\", \"Pracownicy\" itp. i ponów próbę.";
+                _logger.LogError($"Podczas usuwania wystąpił błąd! Ta lokalizacja została przypisana do jednego z obiektów.");
                 return View("DbExceptionHandler");
             }
 

@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
 
 namespace DotNetWMS
 {
@@ -32,7 +31,6 @@ namespace DotNetWMS
                      logging.AddConsole();
                      logging.AddDebug();
                      logging.AddEventSourceLogger();
-                     logging.AddNLog();
                  })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

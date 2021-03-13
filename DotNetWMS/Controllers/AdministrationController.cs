@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,16 +20,18 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// Implementation of the WMSIdentityUser class in the RoleManager class to support assigning and editing user-assigned roles
         /// </summary>
-        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         /// <summary>
         /// Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
         /// </summary>
-        private readonly UserManager<WMSIdentityUser> userManager;
+        private readonly UserManager<WMSIdentityUser> _userManager;
+        private readonly ILogger<AdministrationController> _logger;
 
-        public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<WMSIdentityUser> userManager)
+        public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<WMSIdentityUser> userManager, ILogger<AdministrationController> logger)
         {
-            this.roleManager = roleManager;
-            this.userManager = userManager;
+            _roleManager = roleManager;
+            _userManager = userManager;
+            _logger = logger;
         }
         /// <summary>
         /// GET method returning a view with access denied information
@@ -38,6 +41,7 @@ namespace DotNetWMS.Controllers
         [AllowAnonymous]
         public IActionResult AccessDenied()
         {
+            _logger.LogDebug("Dostęp został wzbroniony");
             return View();
         }
         /// <summary>
@@ -47,7 +51,7 @@ namespace DotNetWMS.Controllers
         [HttpGet]
         public IActionResult ListOfRoles()
         {
-            var roles = roleManager.Roles;
+            var roles = _roleManager.Roles;
             return View(roles);
         }
         /// <summary>
@@ -57,7 +61,7 @@ namespace DotNetWMS.Controllers
         [HttpGet]
         public IActionResult ListOfUsers()
         {
-            var users = userManager.Users;
+            var users = _userManager.Users;
 
             return View(users);
         }
@@ -85,7 +89,7 @@ namespace DotNetWMS.Controllers
                     Name = model.RoleName
                 };
 
-                IdentityResult result = await roleManager.CreateAsync(identityRole);
+                IdentityResult result = await _roleManager.CreateAsync(identityRole);
 
                 if (result.Succeeded)
                 {
@@ -94,6 +98,7 @@ namespace DotNetWMS.Controllers
 
                 foreach (IdentityError error in result.Errors)
                 {
+                    _logger.LogDebug(error.Description);
                     ModelState.AddModelError("", error.Description);
                 }
             }
@@ -108,11 +113,12 @@ namespace DotNetWMS.Controllers
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
         {
-            var role = await roleManager.FindByIdAsync(id);
+            var role = await _roleManager.FindByIdAsync(id);
 
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Rola o numerze ID: {id} nie została odnaleziona!";
+                _logger.LogError($"Rola o numerze ID: {id} nie została odnaleziona!");
                 return View("NotFound");
             }
 
@@ -122,9 +128,9 @@ namespace DotNetWMS.Controllers
                 RoleName = role.Name
             };
 
-            foreach (var user in userManager.Users.ToList())
+            foreach (var user in _userManager.Users.ToList())
             {
-                if (await userManager.IsInRoleAsync(user, role.Name))
+                if (await _userManager.IsInRoleAsync(user, role.Name))
                 {
                     model.Users.Add(user.UserName);
                 }
@@ -140,24 +146,26 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRole(Admin_EditRoleViewModel model)
         {
-            var role = await roleManager.FindByIdAsync(model.Id);
+            var role = await _roleManager.FindByIdAsync(model.Id);
 
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Rola o numerze ID: {model.Id} nie została odnaleziona!";
+                _logger.LogError($"Rola o numerze ID: {model.Id} nie została odnaleziona!");
                 return View("NotFound");
             }
             if (Admin_DefaultRoles.IsDefaultRole(model.RoleName))
             {
                 ViewBag.ErrorTitle = "Podczas edycji roli wystąpił błąd!";
                 ViewBag.ErrorMessage = "Nie można edytować domyślnej roli.";
+                _logger.LogError($"Nie można edytować domyślnej roli: {model.RoleName}");
                 return View("DbExceptionHandler");
             }
             else
             {
                 role.Name = model.RoleName;
 
-                var result = await roleManager.UpdateAsync(role);
+                var result = await _roleManager.UpdateAsync(role);
 
                 if (result.Succeeded)
                 {
@@ -166,6 +174,7 @@ namespace DotNetWMS.Controllers
 
                 foreach (var error in result.Errors)
                 {
+                    _logger.LogDebug(error.Description);
                     ModelState.AddModelError("", error.Description);
                 }
 
@@ -180,24 +189,26 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteRole(string id)
         {
-            var role = await roleManager.FindByIdAsync(id);
+            var role = await _roleManager.FindByIdAsync(id);
 
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Rola o numerze ID: {id} nie została odnaleziona!";
+                _logger.LogError($"Rola o numerze ID: {id} nie została odnaleziona!");
                 return View("NotFound");
             }
             else if (Admin_DefaultRoles.IsDefaultRole(role.Name))
             {
                 ViewBag.ErrorTitle = "Podczas usuwania roli wystąpił błąd!";
                 ViewBag.ErrorMessage = "Nie można usunąć domyślnej roli.";
+                _logger.LogError($"Nie można usunąć domyślnej roli: {role.Name}");
                 return View("DbExceptionHandler");
             }
             else
             {
                 try
                 {
-                    var result = await roleManager.DeleteAsync(role);
+                    var result = await _roleManager.DeleteAsync(role);
                     if (result.Succeeded)
                     {
                         return RedirectToAction("ListOfRoles");
@@ -205,6 +216,7 @@ namespace DotNetWMS.Controllers
 
                     foreach (var error in result.Errors)
                     {
+                        _logger.LogDebug(error.Description);
                         ModelState.AddModelError("", error.Description);
                     }
 
@@ -217,6 +229,7 @@ namespace DotNetWMS.Controllers
                     ViewBag.ErrorMessage = $"Istnieje użytkownik przypisany do tej roli.<br>" +
                         $"Przed usunięciem roli usuń wszystkich pracowników przypisanych do roli.<br>" +
                         $"Po wykonaniu tych czynności ponów próbę.";
+                    _logger.LogError("Podczas usuwania roli wystąpił błąd! Istnieje użytkownik przypisany do tej roli.");
                     return View("DbExceptionHandler");
                 }
                 
@@ -232,17 +245,18 @@ namespace DotNetWMS.Controllers
         {
             ViewBag.roleId = roleId;
 
-            var role = await roleManager.FindByIdAsync(roleId);
+            var role = await _roleManager.FindByIdAsync(roleId);
 
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Rola o numerze ID: {roleId} nie została odnaleziona!";
+                _logger.LogError($"Rola o numerze ID: {roleId} nie została odnaleziona!");
                 return View("NotFound");
             }
 
             var model = new List<Admin_UsersInRoleViewModel>();
 
-            foreach (var user in userManager.Users.ToList())
+            foreach (var user in _userManager.Users.ToList())
             {
                 var userRoleViewModel = new Admin_UsersInRoleViewModel
                 {
@@ -250,7 +264,7 @@ namespace DotNetWMS.Controllers
                     UserName = user.UserName
                 };
 
-                if (await userManager.IsInRoleAsync(user, role.Name))
+                if (await _userManager.IsInRoleAsync(user, role.Name))
                 {
                     userRoleViewModel.IsSelected = true;
                 }
@@ -273,25 +287,26 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUsersInRole(List<Admin_UsersInRoleViewModel> model, string roleId)
         {
-            var role = await roleManager.FindByIdAsync(roleId);
+            var role = await _roleManager.FindByIdAsync(roleId);
 
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Rola o numerze ID: {roleId} nie została odnaleziona!";
+                _logger.LogError($"Rola o numerze ID: {roleId} nie została odnaleziona!");
                 return View("NotFound");
             }
 
             for (int i = 0; i < model.Count; i++)
             {
-                var user = await userManager.FindByIdAsync(model[i].UserId);
+                var user = await _userManager.FindByIdAsync(model[i].UserId);
 
                 IdentityResult result;
                 
-                if (model[i].IsSelected && !(await userManager.IsInRoleAsync(user, role.Name)))
+                if (model[i].IsSelected && !(await _userManager.IsInRoleAsync(user, role.Name)))
                 {
-                    result = await userManager.AddToRoleAsync(user, role.Name);
+                    result = await _userManager.AddToRoleAsync(user, role.Name);
                 }
-                else if (!model[i].IsSelected && await userManager.IsInRoleAsync(user, role.Name))
+                else if (!model[i].IsSelected && await _userManager.IsInRoleAsync(user, role.Name))
                 {
                     if (role.Name == "Admin")
                     {
@@ -300,11 +315,12 @@ namespace DotNetWMS.Controllers
                         {
                             ViewBag.ErrorTitle = "Podczas usuwania użytkownika z roli wystąpił błąd!";
                             ViewBag.ErrorMessage = "Co najmniej jeden użytkownik musi mieć uprawnienia administratora.";
+                            _logger.LogError($"Podczas usuwania użytkownika z roli wystąpił błąd! Co najmniej jeden użytkownik musi mieć uprawnienia administratora.");
                             return View("DbExceptionHandler");
                         }
                         
                     }
-                    result = await userManager.RemoveFromRoleAsync(user, role.Name);
+                    result = await _userManager.RemoveFromRoleAsync(user, role.Name);
                 }
                 else
                 {
@@ -330,15 +346,16 @@ namespace DotNetWMS.Controllers
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"Użytkownik o numerze ID: {id} nie został odnaleziony!";
+                _logger.LogError($"Użytkownik o numerze ID: {id} nie został odnaleziony!");
                 return View("NotFound");
             }
 
-            var userRoles = await userManager.GetRolesAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
 
             var model = new Admin_EditUserViewModel
             {
@@ -361,11 +378,12 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUser(Admin_EditUserViewModel model)
         {
-            var user = await userManager.FindByIdAsync(model.Id);
+            var user = await _userManager.FindByIdAsync(model.Id);
 
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"Użytkownik o numerze ID: {model.Id} nie został odnaleziony!";
+                _logger.LogError($"Użytkownik o numerze ID: {model.Id} nie został odnaleziony!");
                 return View("NotFound");
             }
             else
@@ -377,7 +395,7 @@ namespace DotNetWMS.Controllers
                 user.City = model.City;
                 user.Email = model.Email;
                 
-                var result = await userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user);
 
                 if (result.Succeeded)
                 {
@@ -386,6 +404,7 @@ namespace DotNetWMS.Controllers
 
                 foreach (var error in result.Errors)
                 {
+                    _logger.LogDebug(error.Description);
                     ModelState.AddModelError("", error.Description);
                 }
 
@@ -400,18 +419,19 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"Użytkownik o numerze ID: {id} nie został odnaleziony!";
+                _logger.LogError($"Użytkownik o numerze ID: {id} nie został odnaleziony!");
                 return View("NotFound");
             }
             else
             {
                 try
                 {
-                    var result = await userManager.DeleteAsync(user);
+                    var result = await _userManager.DeleteAsync(user);
 
                     if (result.Succeeded)
                     {
@@ -420,6 +440,7 @@ namespace DotNetWMS.Controllers
 
                     foreach (var error in result.Errors)
                     {
+                        _logger.LogDebug(error.Description);
                         ModelState.AddModelError("", error.Description);
                     }
 
@@ -431,6 +452,7 @@ namespace DotNetWMS.Controllers
                     ViewBag.ErrorMessage = $"Istnieje rola przypisana do tego użytkownika.<br>" +
                         $"Przed usunięciem użytkownika usuń wszystkie role, które zostały mu przypisane.<br>" +
                         $"Po wykonaniu tych czynności ponów próbę.";
+                    _logger.LogError($"Podczas usuwania użytkownika wystąpił błąd! Istnieje rola przypisana do tego użytkownika.");
                     return View("DbExceptionHandler");
                 }
                 
