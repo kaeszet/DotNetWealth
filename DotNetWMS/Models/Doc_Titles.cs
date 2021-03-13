@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// Enum that stores document titles
+    /// </summary>
     public enum Doc_Titles
     {
         [Display(Name = "P - Potwierdzenie")]

@@ -11,7 +11,7 @@ namespace DotNetWMS.Controllers
     public class ErrorController : Controller
     {
         /// <summary>
-        /// Controller class to support displaying error messages
+        /// Log4net library field
         /// </summary>
         private readonly ILogger _logger;
 

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// Viewmodel contains <c>WMSIdentityUser</c> and <c>External</c> properties
+    /// </summary>
     public class ExternalAndLocationViewModel
     {
         public int ExternalId { get; set; }
@@ -50,9 +53,21 @@ namespace DotNetWMS.Models
         [StringLength(30)]
         [Display(Name = "Miasto")]
         public string City { get; set; }
+        /// <summary>
+        /// Location's ID
+        /// </summary>
         public int? LocationId { get; set; }
+        /// <summary>
+        /// Location's Adress
+        /// </summary>
         public string Address { get; set; }
+        /// <summary>
+        /// Location's longitude
+        /// </summary>
         public string Longitude { get; set; }
+        /// <summary>
+        /// Location's latitude
+        /// </summary>
         public string Latitude { get; set; }
        
     }

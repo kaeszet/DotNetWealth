@@ -33,7 +33,9 @@ namespace DotNetWMS
         {
             Configuration = configuration;
         }
-
+        /// <summary>
+        /// IConfiguration field used to get a configuration contained in connection string
+        /// </summary>
         public IConfiguration Configuration { get; }
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.

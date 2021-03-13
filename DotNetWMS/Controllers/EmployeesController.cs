@@ -211,7 +211,7 @@ namespace DotNetWMS.Controllers
         /// <summary>
         /// POST method responsible for checking and transferring information from the form to DB
         /// </summary>
-        /// <param name="user">WMSIdentityUser model class with binding DB attributes</param>
+        /// <param name="viewModel"><c>UserAndLocationViewModel</c> object contains <c>WMSIdentityUser</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns Department's Index view, data validation on the model side</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]

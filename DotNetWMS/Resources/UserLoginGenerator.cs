@@ -5,16 +5,28 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Resources
 {
+    /// <summary>
+    /// A class to generate login for <c>WMSIdentityUser</c> class
+    /// </summary>
     public class UserLoginGenerator
     {
+        /// <summary>
+        /// A method that normalizes sent string and invoke normalize
+        /// </summary>
+        /// <param name="word">String to normalize</param>
+        /// <returns>Invoke method which send back normalized string</returns>
         private static string PrepareAndNormalize(string word)
         {
             
             word = word.Trim().ToLower();
             return Normalize(word);
-            
 
         }
+        /// <summary>
+        /// A method contains logic to normalize sent string
+        /// </summary>
+        /// <param name="word">String to normalize</param>
+        /// <returns>Normalized string</returns>
         private static string Normalize(string word)
         {
             if (word == null || "".Equals(word))
@@ -25,36 +37,38 @@ namespace DotNetWMS.Resources
             char[] normalizedArray = new char[charArray.Length];
             for (int i = 0; i < normalizedArray.Length; i++)
             {
-                normalizedArray[i] = normalizeChar(charArray[i]);
+                normalizedArray[i] = NormalizeChar(charArray[i]);
             }
             return new string(normalizedArray);
         }
-        private static char normalizeChar(char c)
+        /// <summary>
+        /// A method to normalize polish characters
+        /// </summary>
+        /// <param name="c">Polish char to normalize</param>
+        /// <returns>Normalized polish char</returns>
+        private static char NormalizeChar(char c)
         {
-            switch (c)
+            return c switch
             {
-                case 'ą':
-                    return 'a';
-                case 'ć':
-                    return 'c';
-                case 'ę':
-                    return 'e';
-                case 'ł':
-                    return 'l';
-                case 'ń':
-                    return 'n';
-                case 'ó':
-                    return 'o';
-                case 'ś':
-                    return 's';
-                case 'ż':
-                    return 'z';
-                case 'ź':
-                    return 'z';
-            }
-            return c;
+                'ą' => 'a',
+                'ć' => 'c',
+                'ę' => 'e',
+                'ł' => 'l',
+                'ń' => 'n',
+                'ó' => 'o',
+                'ś' => 's',
+                'ż' => 'z',
+                'ź' => 'z',
+                _ => c,
+            };
         }
-
+        /// <summary>
+        /// A method which uses derived arguments to generate login for <c>WMSIdentityUser</c> class
+        /// </summary>
+        /// <param name="name"><c>WMSIdentityUser</c>'s name</param>
+        /// <param name="surname"><c>WMSIdentityUser</c>'s surname</param>
+        /// <param name="employeeNumber"><c>WMSIdentityUser</c>'s employee number</param>
+        /// <returns></returns>
         public static string GenerateUserLogin(string name, string surname, string employeeNumber)
         {
             bool isSufficientNameLength = name.Length >= 3;

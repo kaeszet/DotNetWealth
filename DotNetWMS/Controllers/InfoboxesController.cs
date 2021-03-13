@@ -13,9 +13,18 @@ using Microsoft.Extensions.Logging;
 
 namespace DotNetWMS.Controllers
 {
+    /// <summary>
+    /// Controller class responsible for <c>Infobox</c> functionality
+    /// </summary>
     public class InfoboxesController : Controller
     {
+        /// <summary>
+        /// A field for handling the delivery of information to the DB associated with the Entity Core framework
+        /// </summary>
         private readonly DotNetWMSContext _context;
+        /// <summary>
+        /// Log4net library field
+        /// </summary>
         private readonly ILogger<InfoboxesController> _logger;
 
         public InfoboxesController(DotNetWMSContext context, ILogger<InfoboxesController> logger)
@@ -23,6 +32,11 @@ namespace DotNetWMS.Controllers
             _context = context;
             _logger = logger;
         }
+        /// <summary>
+        /// GET method responsible for returning an Infobox's Index view
+        /// </summary>
+        /// <param name="isChecked">Sort names in ascending or descending order</param>
+        /// <returns>Returns Warehouse's Index view with list of warehouses in the order set by the user</returns>
         public async Task<IActionResult> Index(bool isChecked)
         {
             ViewData["IsChecked"] = !isChecked;
@@ -31,7 +45,11 @@ namespace DotNetWMS.Controllers
             GlobalAlert.SendQuantity(infos.Count(i => i.IsChecked == false));
             return View(await infos.AsNoTracking().ToListAsync());
         }
-
+        /// <summary>
+        /// Remove message from infobox
+        /// </summary>
+        /// <param name="id">ID of infobox to delete</param>
+        /// <returns>Infobox's Index View</returns>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -47,6 +65,11 @@ namespace DotNetWMS.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+        /// <summary>
+        /// Method to mark messages as checked or documents as accepted
+        /// </summary>
+        /// <param name="id">ID of infobox to mark</param>
+        /// <returns>Infobox's Index View</returns>
         public async Task<IActionResult> Check(int? id)
         {
 

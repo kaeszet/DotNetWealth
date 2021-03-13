@@ -11,6 +11,9 @@ namespace DotNetWMS.Models
     /// </summary>
     public class ForgotPasswordViewModel
     {
+        /// <summary>
+        /// Email adress connected with user account
+        /// </summary>
         [Required]
         [EmailAddress]
         public string Email { get; set; }

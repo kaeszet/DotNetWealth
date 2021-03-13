@@ -25,6 +25,9 @@ namespace DotNetWMS.Controllers
         /// Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
         /// </summary>
         private readonly UserManager<WMSIdentityUser> _userManager;
+        /// <summary>
+        /// Log4net library field
+        /// </summary>
         private readonly ILogger<AdministrationController> _logger;
 
         public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<WMSIdentityUser> userManager, ILogger<AdministrationController> logger)

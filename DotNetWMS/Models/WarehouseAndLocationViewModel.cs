@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
 {
+    /// <summary>
+    /// Viewmodel contains <c>Warehouse</c> and <c>Location</c> properties
+    /// </summary>
     public class WarehouseAndLocationViewModel
     {
         public int WarehouseId { get; set; }
@@ -18,7 +21,7 @@ namespace DotNetWMS.Models
         [Display(Name = "Nazwa")]
         public string Name { get; set; }
         /// <summary>
-        /// Warehouse address
+        /// Warehouse's address
         /// </summary>
         [StringLength(40)]
         [Display(Name = "Ulica")]
@@ -36,9 +39,21 @@ namespace DotNetWMS.Models
         [StringLength(30)]
         [Display(Name = "Miasto")]
         public string City { get; set; }
+        /// <summary>
+        /// <c>Location</c>'s ID
+        /// </summary>
         public int? LocationId { get; set; }
+        /// <summary>
+        /// <c>Location</c>'s address
+        /// </summary>
         public string Address { get; set; }
+        /// <summary>
+        /// <c>Location</c>'s longitude
+        /// </summary>
         public string Longitude { get; set; }
+        /// <summary>
+        /// <c>Location</c>'s latitude
+        /// </summary>
         public string Latitude { get; set; }
     }
 }
