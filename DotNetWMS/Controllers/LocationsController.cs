@@ -1,6 +1,7 @@
 ﻿using DotNetWMS.Data;
 using DotNetWMS.Models;
 using DotNetWMS.Resources;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,8 @@ namespace DotNetWMS.Controllers
     /// <summary>
     /// Controller class responsible for <c>Location</c> functionality
     /// </summary>
+    
+    [Authorize(Roles = "Moderator,Admin")]
     public class LocationsController : Controller
     {
         /// <summary>

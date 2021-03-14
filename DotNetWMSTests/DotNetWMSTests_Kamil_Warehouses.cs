@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace DotNetWMSTests
 {
-    public class DotNetWMSTests_Adam_Warehouses : DotNetWMSTests_Base
+    public class DotNetWMSTests_Kamil_Warehouses : DotNetWMSTests_Base
     {
         private Mock<ILogger<WarehousesController>> _logger;
 

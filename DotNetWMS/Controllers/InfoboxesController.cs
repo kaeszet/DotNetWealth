@@ -16,6 +16,7 @@ namespace DotNetWMS.Controllers
     /// <summary>
     /// Controller class responsible for <c>Infobox</c> functionality
     /// </summary>
+    [Authorize(Roles = "Standard,StandardPlus,Moderator")]
     public class InfoboxesController : Controller
     {
         /// <summary>

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace DotNetWMSTests
 {
-    public class DotNetWMSTests_Adam_Items : DotNetWMSTests_Base
+    public class DotNetWMSTests_Kamil_Items : DotNetWMSTests_Base
     {
         private ILogger<ItemsController> _logger;
 
