@@ -13,9 +13,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using DotNetWMS.Resources;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
+    [Authorize(Roles = "Kadry,Moderator")]
     public class EmployeesController : Controller
     {
         private readonly DotNetWMSContext _context;

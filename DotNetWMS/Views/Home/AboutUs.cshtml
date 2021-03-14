@@ -1,4 +1,6 @@
-﻿@{
+﻿@using DotNetWMS.Resources
+@inject SignInManager<WMSIdentityUser> signInManager;
+@{
     ViewData["Title"] = "O nas";
 }
 
@@ -9,6 +11,8 @@
 <div class="row">
     <div class="col-12">
         <img src="~/images/wsei-logosvg.svg" class="mw-100 mh-100 m-auto d-block" width="400" />
+
+
     </div>
     <div class="col-md-6 d-flex justify-content-center align-items-center">
         <div>
@@ -21,7 +25,16 @@
             <li class="list-group-item font-weight-bold">Autorzy:</li>
             <li class="list-group-item">Kamil Szydłowski</li>
             <li class="list-group-item">Krzysztof Wcisło</li>
-            <li class="list-group-item">Adam Żur</li>
         </ul>
     </div>
+    <div class="col-md-6">
+        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Admin"))
+        {
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a asp-controller="Home" asp-action="TMP_DeleteCurrectData" class="btn btn-outline-danger btn-sm">Usuń zawartość bazy danych</a></li>
+                <li class="list-group-item"><a asp-controller="Home" asp-action="TMP_SeedDataForPresentation" class="btn btn-outline-info btn-sm">Załaduj dane testowe</a></li>
+            </ul>
+        }
+    </div>
+    
 </div>
