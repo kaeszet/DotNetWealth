@@ -27,6 +27,23 @@
             <input asp-for="Longitude" type="hidden" id="lng" />
         </div>
         <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="street" class="control-label">Ulica</label>
+                <input id="street" readonly class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="locality" class="control-label">Miasto</label>
+                <input id="locality" readonly class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label for="postal_code" class="control-label">Kod pocztowy</label>
+                <input id="postal_code" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-row">
             <div class="form-group col-12">
                 <div id="map" style="height:300px; width:100%"></div>
             </div>
