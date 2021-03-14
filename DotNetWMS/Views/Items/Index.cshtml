@@ -42,15 +42,15 @@
                         </th>
                         <th>@Html.DisplayNameFor(model => model.Producer)</th>
                         <th>@Html.DisplayNameFor(model => model.Model)</th>
-                        <th>@Html.DisplayNameFor(model => model.ItemCode)</th>
-                        @*<th>@Html.DisplayNameFor(model => model.Quantity)</th>*@
-                        @*<th>@Html.DisplayNameFor(model => model.Units)</th>*@
+                        @*<th>@Html.DisplayNameFor(model => model.ItemCode)</th>*@
+                        <th>@Html.DisplayNameFor(model => model.Quantity)</th>
+                        <th>@Html.DisplayNameFor(model => model.Units)</th>
                         <th>
                             <a asp-action="Index" asp-route-order="@ViewData["SortByWarrantyDate"]">@Html.DisplayNameFor(model => model.WarrantyDate)</a>
                         </th>
                         <th>@Html.DisplayNameFor(model => model.State)</th>
                         <th>@Html.DisplayNameFor(model => model.User)</th>
-                        @*<th>@Html.DisplayNameFor(model => model.Warehouse)</th>*@
+                        <th>@Html.DisplayNameFor(model => model.Warehouse)</th>
                         <th>@Html.DisplayNameFor(model => model.External)</th>
                         <th></th>
                     </tr>
@@ -64,13 +64,13 @@
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                             <td>@Html.DisplayFor(modelItem => item.Producer)</td>
                             <td>@Html.DisplayFor(modelItem => item.Model)</td>
-                            <td>@Html.DisplayFor(modelItem => item.ItemCode)</td>
-                            @*<td>@Html.DisplayFor(modelItem => item.Quantity)</td>*@
-                            @*<td>@Html.DisplayFor(modelItem => item.Units)</td>*@
+                            @*<td>@Html.DisplayFor(modelItem => item.ItemCode)</td>*@
+                            <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Units)</td>
                             <td>@Html.DisplayFor(modelItem => item.WarrantyDate)</td>
                             <td>@Html.DisplayFor(modelItem => item.State)</td>
                             <td>@Html.DisplayFor(modelItem => item.User.FullName)</td>
-                            @*<td>@Html.DisplayFor(modelItem => item.Warehouse.Street)</td>*@
+                            <td>@Html.DisplayFor(modelItem => item.Warehouse.Street)</td>
                             <td>@Html.DisplayFor(modelItem => item.External.Name)</td>
                             <td class="button-col">
                                 <div class="btn-group dropleft">

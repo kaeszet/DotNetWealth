@@ -36,7 +36,7 @@
                         </a>
                     </div>
 
-                    <div class="col-xl-10 col navbar navbar-expand-md navbar-dark bg-dark">
+                    <div class="col-xl-10 col navbar navbar-expand-md navbar-dark bg-dark pl-2">
                         <div class="d-flex w-100" id="navbarText">
                             <button class="hamburger border-0 position-relative" data-target="#sidebar" type="button">
                                 <span class="hamburger-container position-relative" tabindex="-1">
@@ -70,17 +70,16 @@
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Externals" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
                                     </li>
-                                    <li class="nav-item">
+                                    @*<li class="nav-item">
                                         <a class="nav-link" data-id="Doc_Assignments" asp-controller="Doc_Assignments" asp-action="Index">Dokumenty</a>
-                                    </li>
+                                    </li>*@
                                 }
-                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator"))
+                                @*@if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Locations" asp-controller="Locations" asp-action="Index">Lokalizacje</a>
-                                    </li>
-                                   
-                                }
+                                    </li>    
+                                }*@
 
                             </ul>
 
@@ -91,20 +90,16 @@
 
                                 <form method="post" asp-controller="Account" asp-action="Logout">
                                     <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="dropdownMenuLink">
-                                        @*<h6 class="dropdown-header">Panel administracyjny</h6>*@
-                                        @*admin*@
-                                        @*@if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                    {
-                        <a asp-controller="Administration" asp-action="ListOfRoles" class="dropdown-item">Lista ról</a>
-                        <a asp-controller="Administration" asp-action="ListOfUsers" class="dropdown-item">Użytkownicy</a>
-                        <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
-                        <div class="dropdown-divider"></div>
-                    }
-                    else
-                    {
-                        <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
-                        <div class="dropdown-divider"></div>
-                    }*@
+                                        <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
+                                        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                                        {
+                                            <a asp-controller="Doc_Assignments" asp-action="Index" class="dropdown-item">Dokumenty</a>
+										}
+                                        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator"))
+                                        {
+                                            <a asp-controller="Locations" asp-action="Index" class="dropdown-item">Lokalizacje</a>
+                                        }
+                                        <div class="dropdown-divider"></div>
                                         <button type="submit" class="dropdown-item danger text-danger">Wyloguj się</button>
                                     </div>
                                 </form>
