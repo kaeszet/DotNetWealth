@@ -67,18 +67,27 @@
                     </td>
                         @if (item.IsInUse)
                         {
-                            <td>TAK</td>
+                            <td class="text-success">TAK</td>
                         }
                         else
                         {
-                            <td>NIE</td>
+                            <td class="text-danger">NIE</td>
                         }
-                    <td>
+                <td>
+                    @if (item.IsInUse)
+					{
+                        <ul class="pl-0" style="list-style:inside; list-style-type: decimal;">
                         @foreach (var occurrence in item.Records)
-                        {
-                            @occurrence <br />
-                        }
-                    </td>
+						{
+                            <li>@occurrence</li>
+						}
+                        </ul>
+					}
+					else
+					{
+                        <span>Brak</span>
+					}
+                </td>
                     <td class="button-col">
 
                         <div class="btn-group dropleft">
