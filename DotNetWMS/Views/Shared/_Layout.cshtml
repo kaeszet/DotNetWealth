@@ -46,7 +46,7 @@
 
                             <ul class="navbar-nav mr-auto">
 
-                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
+                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator,Admin"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Employees" asp-controller="Employees" asp-action="Index">Pracownicy</a>
@@ -63,13 +63,13 @@
                                     </li>
                                 }
 
-                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Externals" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
                                     </li>
                                 }
-                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator"))
+                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator,Admin"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Locations" asp-controller="Locations" asp-action="Index">Lokalizacje</a>
@@ -86,7 +86,7 @@
                                 <form method="post" asp-controller="Account" asp-action="Logout">
                                     <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="dropdownMenuLink">
                                         <a href="/" data-id="dashboard" class="dropdown-item">Dashboard</a>
-                                        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                                        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
                                         {
                                             <a asp-controller="Doc_Assignments" asp-action="Index" class="dropdown-item">
                                                 Dokumenty
@@ -149,7 +149,7 @@
                             <a asp-controller="Administration" asp-action="ListOfUsers" data-id="ListOfUsers" class="list-group-item list-group-item-action"><i class="fas fa-user mr-1"></i>Użytkownicy</a>
                         </div>
                     }
-                    @if (User.IsInAnyRoles("Kadry,Moderator"))
+                    @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator,Admin"))
                     {
                         <div class="title mt-3">
                             <small class="text-muted font-weight-bold text-uppercase m-0">Pracownicy</small>
@@ -164,7 +164,7 @@
                     </div>
                     <div class="list-group list-group-flush">
                         <a asp-controller="Items" asp-action="Index" data-id="Items" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Zarządzaj</a>
-                        @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
                         {
                             <a asp-controller="Doc_Assignments" asp-action="Index" data-id="Doc_Assignments" class="list-group-item list-group-item-action"><i class="far fa-file-alt mr-1"></i>Dokumenty</a>
                             <a asp-controller="Externals" asp-action="StatusView" data-id="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
@@ -177,13 +177,13 @@
                     </div>
                     <div class="list-group list-group-flush">
                         <a asp-controller="Warehouses" asp-action="Index" data-id="Warehouses" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Lista magazynów</a>
-                        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
+                        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("StandardPlus,Moderator,Admin"))
                         {
                             <a asp-controller="Warehouses" asp-action="StocktakingIndex" data-id="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
                         }
                     </div>
 
-                    @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                    @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
                     {
                         <div class="title mt-3">
                             <small class="text-muted font-weight-bold text-uppercase m-0">Klienci zewnętrzni</small>

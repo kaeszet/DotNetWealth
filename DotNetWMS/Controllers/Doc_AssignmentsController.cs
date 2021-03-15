@@ -23,7 +23,7 @@ namespace DotNetWMS.Controllers
     /// Controller class responsible for <c>Doc_Assignments</c> functionality
     /// </summary>
     /// 
-    [Authorize(Roles = "Standard,StandardPlus,Moderator")]
+    [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
     public class Doc_AssignmentsController : Controller
     {
         /// <summary>
@@ -293,7 +293,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Document ID to delete</param>
         /// <returns>DeleteDocument view with document data</returns>
-        [Authorize(Roles = "Moderator")]
+        [Authorize(Roles = "Moderator,Admin")]
         public async Task<IActionResult> DeleteDocument(string id)
         {
             string decodedId = WebUtility.UrlDecode(id);
@@ -318,7 +318,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Document ID to delete</param>
         /// <returns>If succeeded returns Doc_Assignment's Index, otherwise - NotFound view</returns>
-        [Authorize(Roles = "Moderator")]
+        [Authorize(Roles = "Moderator,Admin")]
         [HttpPost, ActionName("DeleteDocument")]
         public async Task<IActionResult> DeleteDocumentConfirm(string id)
         {

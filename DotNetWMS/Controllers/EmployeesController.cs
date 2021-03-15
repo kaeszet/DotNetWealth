@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetWMS.Controllers
 {
-    [Authorize(Roles = "Kadry,Moderator")]
+    [Authorize(Roles = "Kadry,Moderator,Admin")]
     public class EmployeesController : Controller
     {
         private readonly DotNetWMSContext _context;
@@ -101,7 +101,7 @@ namespace DotNetWMS.Controllers
 
             return View(viewModel);
         }
-        
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             _logger.LogInformation("INFO: Użytkownik wyświetlił kreator dodawania nowego pracownika");
@@ -109,7 +109,7 @@ namespace DotNetWMS.Controllers
 
             return View();
         }
-        
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UserAndLocationViewModel viewModel)

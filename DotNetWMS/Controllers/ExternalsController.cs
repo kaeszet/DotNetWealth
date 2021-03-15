@@ -16,7 +16,7 @@ namespace DotNetWMS.Controllers
     /// <summary>
     /// Controller class to support the CRUD process for the External model
     /// </summary>
-    [Authorize(Roles = "Standard,StandardPlus,Moderator")]
+    [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
     public class ExternalsController : Controller
     {
         /// <summary>
@@ -148,7 +148,7 @@ namespace DotNetWMS.Controllers
         /// GET method responsible for returning an External's Create view
         /// </summary>
         /// <returns>Returns External's Create view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public IActionResult Create()
         {
             return View();
@@ -158,7 +158,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="viewModel"><c>ExternalAndLocationViewModel</c> object contains <c>External</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns External's Index view. Otherwise - show error message</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ExternalAndLocationViewModel viewModel)
@@ -222,7 +222,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">External ID which should be returned</param>
         /// <returns>Returns External's Edit view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -265,7 +265,7 @@ namespace DotNetWMS.Controllers
         /// <param name="id">External ID to edit</param>
         /// <param name="viewModel"><c>ExternalAndLocationViewModel</c> object contains <c>External</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns External's Index view, data validation on the model side</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ExternalAndLocationViewModel viewModel)
@@ -359,7 +359,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">External ID to delete</param>
         /// <returns>Returns External's Delete view if exists</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -383,7 +383,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">External ID to delete</param>
         /// <returns>Returns External's Index view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
