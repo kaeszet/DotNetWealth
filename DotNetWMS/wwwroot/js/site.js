@@ -19,7 +19,8 @@ $(function ()
     //Active nav list
 
     $('.sidebar .list-group-item').each(function () {
-
+        //var current = location.pathname.split('/')[1];
+        //console.log(current)
         if ($(this).attr('href') == location.pathname) {
 
             localStorage.setItem('active', $(this).data('id'))
