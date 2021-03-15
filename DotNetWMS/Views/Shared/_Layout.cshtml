@@ -46,7 +46,6 @@
 
                             <ul class="navbar-nav mr-auto">
 
-                                <!--Kadry-->
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
                                 {
                                     <li class="nav-item">
@@ -54,7 +53,6 @@
                                     </li>
                                 }
 
-                                <!--Standard-->
                                 @if (signInManager.IsSignedIn(User))
                                 {
                                     <li class="nav-item">
@@ -119,7 +117,7 @@
             <div class="row">
                 <div class="col-xl-2 col-lg-3 col-md-5 col-sm-7 col-10 sidebar overflow-auto bg-light border-right" id="sidebar">
                     <a class="logo my-3 d-block text-center" asp-controller="Home" asp-action="Index">
-                        <img src="~/images/logo.png" style="width: 160px" alt="">
+                        <img src="~/images/logo.png" style="width: 160px">
                     </a>
                     <div class="list-group list-group-flush border-top border-bottom">
                         <a href="/" data-id="dashboard" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
