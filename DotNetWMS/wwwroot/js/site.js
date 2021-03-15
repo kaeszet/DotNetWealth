@@ -85,6 +85,10 @@ $(function ()
     $('.table-responsive').on('hide.bs.dropdown', function () {
         $(this).css("padding-bottom", 0);
     })
+
+    $('.role-manage').on('change', function () {
+        checkboxRoleChange($(this))
+    })
 });
 
 (function ($)
@@ -252,8 +256,33 @@ function checkboxChange(obj) {
             $(this).prop('checked', false);
             $(this).attr('checked', false);
         }
-        else {
+        else
+        {
             $(this).attr('checked', true);
+        }
+    })
+}
+
+// Change custom role checkbox
+function checkboxRoleChange(data) {
+
+    let active = data.data('type');
+
+    $('.role-manage').each(function () {
+        if ($(this).attr('id') != data.attr('id')) {
+
+            if (active == 'Admin' || active == 'Moderator') {
+
+                $(this).prop('checked', false);
+                $(this).attr('checked', false);
+            }
+            else if (active == 'Standard' || active == 'StandardPlus') {   
+
+                if ($(this).data('type') != 'Kadry') {
+                    $(this).prop('checked', false);
+                    $(this).attr('checked', false);
+                }
+            }
         }
     })
 }
