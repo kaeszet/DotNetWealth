@@ -46,7 +46,6 @@
 
                             <ul class="navbar-nav mr-auto">
 
-                                <!--kadry-->
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator"))
                                 {
                                     <li class="nav-item">
@@ -54,14 +53,13 @@
                                     </li>
                                 }
 
-                                <!--standard-->
                                 @if (signInManager.IsSignedIn(User))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Items" asp-controller="Items" asp-action="Index">Majątek</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-id="Warehouses" asp-controller="Warehouses" asp-action="Index">Magazyny</a>
+                                        <a class="nav-link" data-id="Warehouses" asp-controller="Warehouses" asp-action="Index">Magazyn</a>
                                     </li>
                                 }
 
@@ -70,16 +68,14 @@
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Externals" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
                                     </li>
-                                    @*<li class="nav-item">
-                                        <a class="nav-link" data-id="Doc_Assignments" asp-controller="Doc_Assignments" asp-action="Index">Dokumenty</a>
-                                    </li>*@
                                 }
-                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator,Admin"))
+                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Locations" asp-controller="Locations" asp-action="Index">Lokalizacje</a>
-                                    </li>    
+                                    </li>
                                 }
+
                             </ul>
 
                             <div class="ml-auto dropdown">
@@ -89,15 +85,20 @@
 
                                 <form method="post" asp-controller="Account" asp-action="Logout">
                                     <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="dropdownMenuLink">
-                                        <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
+                                        <a href="/" data-id="dashboard" class="dropdown-item">Dashboard</a>
                                         @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                                         {
-                                            <a asp-controller="Doc_Assignments" asp-action="Index" class="dropdown-item">Dokumenty</a>
-										}
-                                        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator"))
-                                        {
-                                            <a asp-controller="Locations" asp-action="Index" class="dropdown-item">Lokalizacje</a>
+                                            <a asp-controller="Doc_Assignments" asp-action="Index" class="dropdown-item">
+                                                Dokumenty
+                                            </a>
                                         }
+                                        <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">
+                                            Dziennik
+                                            @if ((int)ViewData["NewMessages"] > 0)
+                                            {
+                                                <span class="badge badge-primary ml-auto">@ViewData["NewMessages"]</span>
+                                            }
+                                        </a>
                                         <div class="dropdown-divider"></div>
                                         <button type="submit" class="dropdown-item danger text-danger">Wyloguj się</button>
                                     </div>
@@ -125,29 +126,23 @@
         <div class="container-fluid">
             <div class="bg-navbar"></div>
             <div class="row">
-                <div class="col-xl-2 col-lg-3 col-md-5 col-sm-7 col-10 sidebar overflow-auto bg-light border-right" id="sidebar">
+                <div class="col-xl-2 col-lg-3 col-md-5 col-sm-7 col-10 sidebar overflow-auto bg-light border-right d-flex flex-column" id="sidebar">
                     <a class="logo my-3 d-block text-center" asp-controller="Home" asp-action="Index">
-                        <img src="~/images/logo.png" style="width: 160px" alt="">
+                        <img src="~/images/logo.png" style="width: 160px">
                     </a>
                     <div class="list-group list-group-flush border-top border-bottom">
-                        <a href="/" data-id="dashboard" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
-
-                        @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
-                        {
-                            <a asp-controller="Infoboxes" asp-action="Index" data-id="Infoboxes" class="list-group-item list-group-item-action">
-                                <i class="fas fa-book mr-1"></i>Dziennik
-                                @if ((int)ViewData["NewMessages"] > 0)
-                                {
-                                    <span class="badge badge-primary ml-auto">@ViewData["NewMessages"]</span>
-                                }
-                            </a>
-                            <a asp-controller="Externals" asp-action="StatusView" data-id="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
-                        }
+                        <a asp-controller="Infoboxes" asp-action="Index" data-id="Infoboxes" class="list-group-item list-group-item-action">
+                            <i class="fas fa-book mr-1"></i>Dziennik
+                            @if ((int)ViewData["NewMessages"] > 0)
+                            {
+                                <span class="badge badge-primary ml-auto">@ViewData["NewMessages"]</span>
+                            }
+                        </a>
                     </div>
                     @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
                         <div class="title mt-3">
-                            <small class="text-muted font-weight-bold text-uppercase m-0">Panel administracyjny</small>
+                            <small class="text-muted font-weight-bold text-uppercase m-0">Administrator</small>
                         </div>
                         <div class="list-group list-group-flush">
                             <a asp-controller="Administration" asp-action="ListOfRoles" data-id="ListOfRoles" class="list-group-item list-group-item-action"><i class="fas fa-user-tag mr-1"></i>Lista ról</a>
@@ -160,24 +155,20 @@
                             <small class="text-muted font-weight-bold text-uppercase m-0">Pracownicy</small>
                         </div>
                         <div class="list-group list-group-flush">
-                            <a asp-controller="Employees" asp-action="Index" data-id="Employees" class="list-group-item list-group-item-action"><i class="far fa-id-card mr-1"></i>Przegląd pracowników</a>
-                            <a asp-controller="Departments" asp-action="Index" data-id="Departments" class="list-group-item list-group-item-action"><i class="fas fa-briefcase mr-1"></i> Przegląd stanowisk</a>
+                            <a asp-controller="Employees" asp-action="Index" data-id="Employees" class="list-group-item list-group-item-action"><i class="far fa-id-card mr-1"></i>Lista pracowników</a>
+                            <a asp-controller="Departments" asp-action="Index" data-id="Departments" class="list-group-item list-group-item-action"><i class="fas fa-briefcase mr-1"></i>Lista stanowisk</a>
                         </div>
                     }
                     <div class="title mt-3">
                         <small class="text-muted font-weight-bold text-uppercase m-0">Majątek</small>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a asp-controller="Items" asp-action="Index" data-id="Items" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Przegląd majątku</a>
+                        <a asp-controller="Items" asp-action="Index" data-id="Items" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Zarządzaj</a>
                         @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                         {
                             <a asp-controller="Doc_Assignments" asp-action="Index" data-id="Doc_Assignments" class="list-group-item list-group-item-action"><i class="far fa-file-alt mr-1"></i>Dokumenty</a>
-                            <a asp-controller="Items" asp-action="Assign_to_employee" data-id="Assign_to_employee" class="list-group-item list-group-item-action"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
-                            <a asp-controller="Items" asp-action="Assign_to_warehouse" data-id="Assign_to_warehouse" class="list-group-item list-group-item-action"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
-                        }
-                        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
-                        {
-                            <a asp-controller="Items" asp-action="Assign_to_external" data-id="Assign_to_external" class="list-group-item list-group-item-action"><i class="fas fa-truck-loading mr-1"></i>Przekaż na zewnątrz</a>
+                            <a asp-controller="Externals" asp-action="StatusView" data-id="StatusView" class="list-group-item list-group-item-action"><i class="fas fa-search-dollar mr-1"></i>Podgląd stanu</a>
+                            
                         }
                     </div>
 
@@ -185,7 +176,7 @@
                         <small class="text-muted font-weight-bold text-uppercase m-0">Magazyn</small>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a asp-controller="Warehouses" asp-action="Index" data-id="Warehouses" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Przegląd magazynów</a>
+                        <a asp-controller="Warehouses" asp-action="Index" data-id="Warehouses" class="list-group-item list-group-item-action"><i class="fas fa-boxes mr-1"></i>Lista magazynów</a>
                         @if (User.IsInAnyRoles("StandardPlus,Moderator"))
                         {
                             <a asp-controller="Warehouses" asp-action="StocktakingIndex" data-id="Stocktaking" class="list-group-item list-group-item-action"><i class="fas fa-calculator mr-1"></i>Inwentaryzacja</a>
@@ -198,10 +189,10 @@
                             <small class="text-muted font-weight-bold text-uppercase m-0">Klienci zewnętrzni</small>
                         </div>
                         <div class="list-group list-group-flush">
-                            <a asp-controller="Externals" asp-action="Index" data-id="Externals" class="list-group-item list-group-item-action"><i class="fas fa-glasses mr-1"></i>Przegląd klientów zewnętrznych</a>
+                            <a asp-controller="Externals" asp-action="Index" data-id="Externals" class="list-group-item list-group-item-action"><i class="fas fa-glasses mr-1"></i>Lista klientów</a>
                         </div>
                     }
-                    <div class="text-center pb-2 pt-4">
+                    <div class="text-center pb-2 pt-4 mt-auto">
                         <small class="w-100 text-center">
                             &copy; 2019-2020 - DotNetFortune
                             <br />
@@ -210,8 +201,6 @@
                     </div>
                 </div>
                 <div class="col-xl-10 col-lg-9 ml-auto py-3 content-body position-relative">
-
-                    @*Globalne alerty*@
 
                     <partial name="_GlobalAlertPartial" />
 

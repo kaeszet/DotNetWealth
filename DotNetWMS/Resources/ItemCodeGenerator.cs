@@ -25,7 +25,7 @@ namespace DotNetWMS.Resources
         /// <summary>
         /// Private method to generate item code
         /// </summary>
-        /// <param name="item"><c>Item</c> object<</param>
+        /// <param name="item"><c>Item</c> object</param>
         /// <param name="user">Name of logged in user or user from DB</param>
         /// <returns>Returns string with code</returns>
         private static string GenerateItemCode(Item item, string user)
