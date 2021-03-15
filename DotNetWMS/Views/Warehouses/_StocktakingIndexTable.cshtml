@@ -32,24 +32,24 @@
                             <td>@Model[i].ItemQuantity</td>
                             <td>
                                 <div class="form-check">
-                                    <input type="checkbox" id="ok_@i" value="1" class="form-check-input" onchange="checkboxChange(this)">
+                                    <input type="checkbox" id="ok_@i" value="1" class="form-check-input" onchange="checkboxChangeInTableRow(this)">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check">
-                                    <input asp-for="@Model[i].ToCorrect" class="form-check-input" type="checkbox" onchange="checkboxChange(this)">
+                                    <input asp-for="@Model[i].ToCorrect" class="form-check-input" type="checkbox" onchange="checkboxChangeInTableRow(this)">
                                     <span asp-validation-for="@Model[i].ToCorrect" class="text-danger small font-weight-bold"></span>
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check">
-                                    <input asp-for="@Model[i].ToDelete" class="form-check-input" type="checkbox" onchange="checkboxChange(this)">
+                                    <input asp-for="@Model[i].ToDelete" class="form-check-input" type="checkbox" onchange="checkboxChangeInTableRow(this)">
                                     <span asp-validation-for="@Model[i].ToDelete" class="text-danger small font-weight-bold"></span>
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check">
-                                    <input asp-for="@Model[i].IsDamaged" class="form-check-input" type="checkbox" onchange="checkboxChange(this)">
+                                    <input asp-for="@Model[i].IsDamaged" class="form-check-input" type="checkbox" onchange="checkboxChangeInTableRow(this)">
                                     <span asp-validation-for="@Model[i].IsDamaged" class="text-danger small font-weight-bold"></span>
                                 </div>
                             </td>
