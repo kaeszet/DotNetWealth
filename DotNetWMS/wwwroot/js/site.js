@@ -229,9 +229,23 @@ $(function ()
 })(jQuery);
 
 //Stocktasking table
-function checkboxChange(obj) {
+function checkboxChangeInTableRow(obj) {
 
     var checkboxes = $(obj).closest('tr').find("input:checkbox");
+    checkboxes.each(function () {
+        if ($(this).attr('id') != $(obj).attr('id')) {
+            $(this).prop('checked', false);
+            $(this).attr('checked', false);
+        }
+        else {
+            $(this).attr('checked', true);
+        }
+    })
+}
+//Manage User Roles
+function checkboxChange(obj) {
+
+    var checkboxes = $("input:checkbox");
     checkboxes.each(function () {
         if ($(this).attr('id') != $(obj).attr('id')) {
             $(this).prop('checked', false);
