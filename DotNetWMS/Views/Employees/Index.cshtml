@@ -41,10 +41,7 @@
                             @Html.DisplayNameFor(model => model.Street)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.ZipCode)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.City)
+                            @Html.DisplayNameFor(model => model.Email)
                         </th>
                         <th></th>
                     </tr>
@@ -57,9 +54,8 @@
                             <td>@Html.DisplayFor(modelItem => item.Surname)</td>
                             <td>@Html.DisplayFor(modelItem => item.EmployeeNumber)</td>
                             <td>@Html.DisplayFor(modelItem => item.Department.Name)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Street)</td>
-                            <td>@Html.DisplayFor(modelItem => item.ZipCode)</td>
-                            <td>@Html.DisplayFor(modelItem => item.City)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Street), @Html.DisplayFor(modelItem => item.ZipCode) @Html.DisplayFor(modelItem => item.City)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
                             <td>
                                 <div class="btn-group dropleft">
                                     <button type="button" class="btn btn-sm my-1 border btn-light dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">

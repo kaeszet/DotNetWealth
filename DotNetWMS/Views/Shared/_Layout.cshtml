@@ -68,7 +68,13 @@
                                     <li class="nav-item">
                                         <a class="nav-link" data-id="Externals" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
                                     </li>
-								}
+                                }
+                                @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator"))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-id="Locations" asp-controller="Locations" asp-action="Index">Lokalizacje</a>
+                                    </li>
+                                }
 
                             </ul>
 
@@ -79,17 +85,20 @@
 
                                 <form method="post" asp-controller="Account" asp-action="Logout">
                                     <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="dropdownMenuLink">
-                                        <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">Dziennik</a>
+                                        <a href="/" data-id="dashboard" class="dropdown-item">Dashboard</a>
                                         @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
                                         {
                                             <a asp-controller="Doc_Assignments" asp-action="Index" class="dropdown-item">
                                                 Dokumenty
                                             </a>
-										}
-                                        @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator"))
-                                        {
-                                            <a asp-controller="Locations" asp-action="Index" class="dropdown-item">Lokalizacje</a>
                                         }
+                                        <a asp-controller="Infoboxes" asp-action="Index" class="dropdown-item">
+                                            Dziennik
+                                            @if ((int)ViewData["NewMessages"] > 0)
+                                            {
+                                                <span class="badge badge-primary ml-auto">@ViewData["NewMessages"]</span>
+                                            }
+                                        </a>
                                         <div class="dropdown-divider"></div>
                                         <button type="submit" class="dropdown-item danger text-danger">Wyloguj się</button>
                                     </div>
@@ -122,7 +131,6 @@
                         <img src="~/images/logo.png" style="width: 160px">
                     </a>
                     <div class="list-group list-group-flush border-top border-bottom">
-                        <a href="/" data-id="dashboard" class="list-group-item list-group-item-action"><i class="fas fa-chart-line mr-1"></i>Dashboard</a>
                         <a asp-controller="Infoboxes" asp-action="Index" data-id="Infoboxes" class="list-group-item list-group-item-action">
                             <i class="fas fa-book mr-1"></i>Dziennik
                             @if ((int)ViewData["NewMessages"] > 0)
