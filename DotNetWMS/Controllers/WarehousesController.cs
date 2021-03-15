@@ -105,7 +105,7 @@ namespace DotNetWMS.Controllers
         /// GET method responsible for returning an Warehouse's Create view
         /// </summary>
         /// <returns>Returns Warehouse's Create view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public IActionResult Create()
         {
             return View();
@@ -115,7 +115,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="viewModel"><c>WarehouseAndLocationViewModel</c> object contains <c>Warehouse</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns Warehouse's Index view. Otherwise - show error message</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(WarehouseAndLocationViewModel viewModel)
@@ -177,7 +177,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Warehouse ID which should be returned</param>
         /// <returns>Returns Warehouse's Edit view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -218,7 +218,7 @@ namespace DotNetWMS.Controllers
         /// <param name="id">Warehouse ID to edit</param>
         /// <param name="viewModel"><c>WarehouseAndLocationViewModel</c> object contains <c>Warehouse</c> and <c>Location</c> model classes</param>
         /// <returns>If succeed, returns Warehouse's Index view, data validation on the model side</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, WarehouseAndLocationViewModel viewModel)
@@ -311,7 +311,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Warehouse ID to delete</param>
         /// <returns>Returns Warehouse's Delete view if exists</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -336,7 +336,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Warehouse ID to delete</param>
         /// <returns>Returns Warehouse's Index view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
