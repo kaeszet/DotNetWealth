@@ -12,6 +12,7 @@ using DotNetWMS.Resources;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Text;
 
 namespace DotNetWMS.Controllers
 {
@@ -45,8 +46,6 @@ namespace DotNetWMS.Controllers
             {
                 ViewData["isAnyNewMessages"] = _context.Infoboxes.Any(m => m.IsChecked == false && m.User.NormalizedUserName == User.Identity.Name);
             }
-            
-            await SeedDatabase.InitializeUsers(_context);
 
             ViewData["ExternalsCount"] = _context.Externals.Count();
             ViewData["WarehousesCount"] = _context.Warehouses.Count();
@@ -63,7 +62,6 @@ namespace DotNetWMS.Controllers
         /// <returns>Returns an Home's AboutUs view</returns>
         public async Task<IActionResult> AboutUs()
         {
-            await SeedDatabase.InitializeData(_context);
             return View();
         }
         /// <summary>
@@ -74,6 +72,30 @@ namespace DotNetWMS.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public async Task<IActionResult> TMP_DeleteCurrectData()
+        {
+            bool deleteCurrentDataResult = await SeedDatabase.DeleteData(_context, User?.Identity?.Name);
+            string message = deleteCurrentDataResult ? "Pomyślnie usunięto aktualną zawartość bazy danych" : "Nie udało się usunąć zawartości bazy danych";
+
+            ViewBag.ExceptionTitle = "Informacja";
+            ViewBag.ExceptionMessage = message;
+            return View("GlobalExceptionHandler");
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> TMP_SeedDataForPresentation()
+        {
+            StringBuilder sb = new StringBuilder();
+            bool seedUsersResult = await SeedDatabase.InitializeUsers(_context);
+            bool seedDataResult = await SeedDatabase.InitializeData(_context);
+
+            sb.Append(seedUsersResult ? "Pomyślnie załadowano nową listę użytkowników. " : "Nie udało się załadować listy użytkowników. ");
+            sb.Append(seedDataResult ? "Pomyślnie dodano zawartość do bazy danych." : "Nie udało się dodać zawartości do bazy danych.");
+
+            ViewBag.ExceptionTitle = "Informacja";
+            ViewBag.ExceptionMessage = sb.ToString();
+
+            return View("GlobalExceptionHandler");
         }
 
     }

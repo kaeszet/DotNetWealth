@@ -1,6 +1,7 @@
 ﻿using DotNetWMS.Data;
 using DotNetWMS.Models;
 using DotNetWMS.Resources;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,6 +22,8 @@ namespace DotNetWMS.Controllers
     /// <summary>
     /// Controller class responsible for <c>Doc_Assignments</c> functionality
     /// </summary>
+    /// 
+    [Authorize(Roles = "Standard,StandardPlus,Moderator")]
     public class Doc_AssignmentsController : Controller
     {
         /// <summary>
@@ -48,7 +51,18 @@ namespace DotNetWMS.Controllers
             ViewData["SortById"] = string.IsNullOrEmpty(order) ? "id_desc" : "";
             ViewData["Search"] = search;
 
-            var docs = _context.Doc_Assignments.Select(d => d);
+            //var docs = _context.Doc_Assignments.Select(d => d);
+            IQueryable<Doc_Assignment> docs;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == User.Identity.Name);
+
+            if (User.IsInRole("Moderator"))
+            {
+                docs = _context.Doc_Assignments.Select(d => d);
+            }
+            else
+            {
+                docs = _context.Doc_Assignments.Where(d => d.UserTo == user.Id);
+            }
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -279,6 +293,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Document ID to delete</param>
         /// <returns>DeleteDocument view with document data</returns>
+        [Authorize(Roles = "Moderator")]
         public async Task<IActionResult> DeleteDocument(string id)
         {
             string decodedId = WebUtility.UrlDecode(id);
@@ -303,6 +318,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Document ID to delete</param>
         /// <returns>If succeeded returns Doc_Assignment's Index, otherwise - NotFound view</returns>
+        [Authorize(Roles = "Moderator")]
         [HttpPost, ActionName("DeleteDocument")]
         public async Task<IActionResult> DeleteDocumentConfirm(string id)
         {
