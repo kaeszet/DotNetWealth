@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<DotNetWMS.Models.WMSIdentityUser>
+@inject SignInManager<WMSIdentityUser> signInManager;
 
 @{
     ViewData["Title"] = "Index";
@@ -6,7 +7,11 @@
 
 <div class="d-flex justify-content-between flex-sm-row flex-column">
     <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Podgląd pracowników</h2>
-    <a asp-action="Create" class="btn btn-success my-auto"><i class="fas fa-plus mr-1"></i>Dodaj pracownika</a>
+    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-success my-auto"><i class="fas fa-plus mr-1"></i>Dodaj pracownika</a>
+    }
+
 </div>
 <hr />
 <div class="row">

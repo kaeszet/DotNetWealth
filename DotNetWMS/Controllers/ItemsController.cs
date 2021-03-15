@@ -53,7 +53,7 @@ namespace DotNetWMS.Controllers
         /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
         /// <param name="search">Search phrase in the search field</param>
         /// <returns>Returns Item's Assign_to_employee view with list of items in the order set by the user</returns>
-        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Assign_to_employee(string search, string order)
         {
             var items = CreateAssignItemView(search, order);
@@ -65,7 +65,7 @@ namespace DotNetWMS.Controllers
         /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
         /// <param name="search">Search phrase in the search field</param>
         /// <returns>Returns Item's Assign_to_warehouse view with list of items in the order set by the user</returns>
-        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Assign_to_warehouse(string search, string order)
         {
             var items = CreateAssignItemView(search, order);
@@ -77,7 +77,7 @@ namespace DotNetWMS.Controllers
         /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
         /// <param name="search">Search phrase in the search field</param>
         /// <returns>Returns Item's Assign_to_external view with list of items in the order set by the user</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Assign_to_external(string search, string order)
         {
             var items = CreateAssignItemView(search, order);
@@ -88,7 +88,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Item ID which should be returned</param>
         /// <returns>Returns Item's Assign_to_employee_confirm view</returns>
-        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_employee_confirm(int? id)
         {
@@ -102,7 +102,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Item ID which should be returned</param>
         /// <returns>Returns Item's Assign_to_warehouse_confirm view</returns>
-        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_warehouse_confirm(int? id)
         {
@@ -114,7 +114,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Item ID which should be returned</param>
         /// <returns>Returns Item's Assign_to_external_confirm view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpGet]
         public async Task<IActionResult> Assign_to_external_confirm(int? id)
         {
@@ -127,7 +127,7 @@ namespace DotNetWMS.Controllers
         /// <param name="id">Item ID which assignment was edited</param>
         /// <param name="item">Item model class with binding DB attributes</param>
         /// <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
-        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
@@ -156,7 +156,7 @@ namespace DotNetWMS.Controllers
         /// <param name="id">Item ID which assignment was edited</param>
         /// <param name="item">Item model class with binding DB attributes</param>
         /// <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
-        [Authorize(Roles = "Standard,StandardPlus,Moderator")]
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_warehouse_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
@@ -181,7 +181,7 @@ namespace DotNetWMS.Controllers
         /// <param name="id">Item ID which assignment was edited</param>
         /// <param name="item">Item model class with binding DB attributes</param>
         /// <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_external_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
@@ -270,7 +270,7 @@ namespace DotNetWMS.Controllers
         /// GET method responsible for returning an Item's Create view
         /// </summary>
         /// <returns>Returns Item's Create view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName");
@@ -283,7 +283,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="item">Item model class with binding DB attributes</param>
         /// <returns>If succeed, returns Item's Index view. Otherwise - show error message</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
@@ -366,7 +366,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Item ID which should be returned</param>
         /// <returns>Returns Item's Edit view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -393,7 +393,7 @@ namespace DotNetWMS.Controllers
         /// <param name="id">Item ID to edit</param>
         /// <param name="item">Item model class with binding DB attributes</param>
         /// <returns>If succeed, returns Item's Index view, data validation on the model side</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
@@ -465,7 +465,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Item ID to delete</param>
         /// <returns>Returns Item's Delete view if exists</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -493,7 +493,7 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="id">Item ID to delete</param>
         /// <returns>Returns Item's Index view</returns>
-        [Authorize(Roles = "StandardPlus,Moderator")]
+        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

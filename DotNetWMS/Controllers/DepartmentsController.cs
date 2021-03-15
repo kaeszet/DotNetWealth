@@ -15,7 +15,7 @@ namespace DotNetWMS.Controllers
     /// <summary>
     /// Controller class to support the CRUD process for the Department model
     /// </summary>
-    [Authorize(Roles = "Kadry,Moderator")]
+    [Authorize(Roles = "Kadry,Moderator,Admin")]
     public class DepartmentsController : Controller
     {
         /// <summary>
