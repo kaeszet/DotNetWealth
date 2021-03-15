@@ -11,7 +11,8 @@
 </div>
 <hr />
 <div class="mb-3">
-    <a asp-action="Assign_to_warehouse" class="btn btn-sm btn-outline-dark"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
+    @*<a asp-action="Assign_to_warehouse" class="btn btn-sm btn-outline-dark"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>*@
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
     <div asp-validation-summary="ModelOnly" class="text-danger mt-3"></div>
 
     <form asp-action="Assign_to_warehouse_confirm" class="mt-3">
