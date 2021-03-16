@@ -1,4 +1,5 @@
 ﻿@model DotNetWMS.Models.UserAndLocationViewModel
+@inject SignInManager<WMSIdentityUser> signInManager;
 
 @{
     ViewData["Title"] = "Edit";
@@ -29,50 +30,55 @@
                 <span asp-validation-for="Surname" class="text-danger"></span>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="EmployeeNumber"></label>
-            <input asp-for="EmployeeNumber" class="form-control" placeholder="Numer identyfikacyjny" />
-            <span asp-validation-for="EmployeeNumber" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DepartmentId"></label>
-            <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId"></select>
-        </div>
-        <div class="form-group">
-            <label for="address">Adres</label>
-            <input asp-for="Address" id="address" type="search" autocomplete="nope" placeholder="Podaj adres pracownika" class="form-control" />
-            <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> pracownika</small>
+            <div class="form-group">
+                <label asp-for="EmployeeNumber"></label>
+                <input asp-for="EmployeeNumber" class="form-control" placeholder="Numer identyfikacyjny" />
+                <span asp-validation-for="EmployeeNumber" class="text-danger"></span>
+            </div>
+            @*<div class="form-group col-md-6">
+                <label>E-mail</label>
+                <input class="form-control" placeholder="E-mail" />
+                <span  class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="DepartmentId"></label>
+                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId"></select>
+            </div>
+            <div class="form-group">
+                <label for="address">Adres</label>
+                <input asp-for="Address" id="address" type="search" autocomplete="nope" placeholder="Podaj adres pracownika" class="form-control" />
+                <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> pracownika</small>
 
-            <input asp-for="Latitude" type="hidden" id="lat" />
-            <input asp-for="Longitude" type="hidden" id="lng" />
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label asp-for="Street" class="control-label"></label>
-                <input asp-for="Street" id="street" readonly class="form-control" />
-                <span asp-validation-for="Street" class="text-danger"></span>
+                <input asp-for="Latitude" type="hidden" id="lat" />
+                <input asp-for="Longitude" type="hidden" id="lng" />
             </div>
-            <div class="form-group col-md-4">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" id="locality" readonly class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Street" class="control-label"></label>
+                    <input asp-for="Street" id="street" readonly class="form-control" />
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="City" class="control-label"></label>
+                    <input asp-for="City" id="locality" readonly class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-2">
+                    <label asp-for="ZipCode" class="control-label"></label>
+                    <input asp-for="ZipCode" id="postal_code" class="form-control" />
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group col-md-2">
-                <label asp-for="ZipCode" class="control-label"></label>
-                <input asp-for="ZipCode" id="postal_code" class="form-control" />
-                <span asp-validation-for="ZipCode" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-12">
+            <div class="form-row">
+                <div class="form-group col-12">
 
-                <div id="map" style="height:300px; width:100%"></div>
+                    <div id="map" style="height:300px; width:100%"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Zapisz</button>
-        </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Zapisz</button>
+            </div>
     </form>
 </div>
 

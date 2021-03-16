@@ -146,7 +146,7 @@
                         </div>
                         <div class="list-group list-group-flush">
                             <a asp-controller="Administration" asp-action="ListOfRoles" data-id="ListOfRoles" class="list-group-item list-group-item-action"><i class="fas fa-user-tag mr-1"></i>Lista ról</a>
-                            <a asp-controller="Administration" asp-action="ListOfUsers" data-id="ListOfUsers" class="list-group-item list-group-item-action"><i class="fas fa-user mr-1"></i>Użytkownicy</a>
+                            @*<a asp-controller="Administration" asp-action="ListOfUsers" data-id="ListOfUsers" class="list-group-item list-group-item-action"><i class="fas fa-user mr-1"></i>Użytkownicy</a>*@
                         </div>
                     }
                     @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator,Admin"))
@@ -163,7 +163,7 @@
                         <small class="text-muted font-weight-bold text-uppercase m-0">Majątek</small>
                     </div>
                     <div class="list-group list-group-flush">
-                        <a asp-controller="Items" asp-action="Index" data-id="Items" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Zarządzaj</a>
+                        <a asp-controller="Items" asp-action="Index" data-id="Items" class="list-group-item list-group-item-action"><i class="fas fa-coins mr-1"></i>Przegląd</a>
                         @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
                         {
                             <a asp-controller="Doc_Assignments" asp-action="Index" data-id="Doc_Assignments" class="list-group-item list-group-item-action"><i class="far fa-file-alt mr-1"></i>Dokumenty</a>
