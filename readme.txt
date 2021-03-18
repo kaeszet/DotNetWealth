@@ -1,6 +1,5 @@
 --- 1. Instrukcja uruchomienia aplikacji ---
 
-- Zainstaluj Visual Studio 2019
 - Uruchom plik rozwiązania (DotNetWMS.sln)
 - Zainstaluj poniższe biblioteki:
  - Microsoft.EntityFrameworkCore
@@ -9,41 +8,23 @@
  - Microsoft.VisualStudio.Web.CodeGeneration.Design
  - Microsoft.AspNetCore.Identity.EntityFrameworkCore
  - jQuery.Validation.Globalize
- - NLog.Web.AspNetCore
+ - Microsoft.Extensions.Logging.Log4Net.AspNetCore
 - W konsoli PMC wpisz 'Update-Database' w celu utworzenia bazy danych na podstawie wprowadzonych migracji
 - Po uruchomieniu aplikacji wybierz „Zarejestruj się” (identyfikator składa się z 12 dowolnych cyfr)
-- Pod poniższą ścieżką otwórz plik nlog-all-(shortdate) -> DotNetWMS\bin\Debug\netcoreapp3.0\nlog_logs
+- Pod poniższą ścieżką otwórz plik "dotnetwealth" -> DotNetWMS\bin\Debug\netcoreapp3.1
 - Na dole będzie dostępny link aktywacyjny, należy go skopiować i uruchomić w przeglądarce internetowej
 - Konto zostało aktywowane. Kliknij na przycisk „Zaloguj się”
-- Wprowadź login – jest to 5 pierwszych liter nazwiska, 3 litery imienia i 4 cyfry identyfikatora
-- Kliknij na „Listę ról” w sekcji „Panel Administracyjny”
-- W roli „Moderator” wybierz „Przypisz użytkownika”
-- Kliknij na checkbox obok nazwy użytkownika i kliknij „Zaktualizuj”
-- Wyloguj się z aplikacji i zaloguj się ponownie
-- Po zalogowaniu zostaną wyświetlone wszystkie opcje dostępne w aplikacji
+- Wprowadź login – jest to 5 pierwszych liter nazwiska, 3 litery imienia i 4 cyfry identyfikatora (w przypadku krótszych imion i nazwisk dodawane są kolejne cyfry identyfikatora)
+- Po zalogowaniu zostaną wyświetlone wszystkie opcje dostępne w aplikacji (na potrzeby prezentacji pierwsze konto otrzymuje uprawnienia administratora)
+- Bazę danych można załadować danymi testowymi za pomocą opcji dostępnej w zakładce "o nas"
 
 --- 2. Karta Projektu ---
 
 Zespół projektowy:
 
 Kamil Szydłowski - .NetCore 3.0, C#, Backend
-Zakres odpowiedzialności:
-- model bazy danych
-- zwracanie danych do widoków
-- obsługa błędów
-- podstawowa struktura wizualna aplikacji
-- autoryzacja i autentykacja
-
 Krzysztof Wcisło - HTML/CSS/jQuery, Frontend
-Zakres odpowiedzialności:
-- prezentacja danych wizualizacja w widokach
-- utworzenie docelowego layoutu
 
-Adam Żur - .NetCore 3.0, C#, Backend
-Zakres odpowiedzialności:
-- refaktoryzacja kodu
-- testy
-- obsługa zapytań z frontendu
 
 Cele:
 Stworzenie prostej i intuicyjnej aplikacji webowej, umożliwiającej cyfrowe zarządzanie majątkiem firmy.
