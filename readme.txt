@@ -27,23 +27,8 @@
 Zespół projektowy:
 
 Kamil Szydłowski - .NetCore 3.0, C#, Backend
-Zakres odpowiedzialności:
-- model bazy danych
-- zwracanie danych do widoków
-- obsługa błędów
-- podstawowa struktura wizualna aplikacji
-- autoryzacja i autentykacja
-
 Krzysztof Wcisło - HTML/CSS/jQuery, Frontend
-Zakres odpowiedzialności:
-- prezentacja danych wizualizacja w widokach
-- utworzenie docelowego layoutu
 
-Adam Żur - .NetCore 3.0, C#, Backend
-Zakres odpowiedzialności:
-- refaktoryzacja kodu
-- testy
-- obsługa zapytań z frontendu
 
 Cele:
 Stworzenie prostej i intuicyjnej aplikacji webowej, umożliwiającej cyfrowe zarządzanie majątkiem firmy.
