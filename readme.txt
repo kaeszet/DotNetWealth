@@ -1,6 +1,5 @@
 --- 1. Instrukcja uruchomienia aplikacji ---
 
-- Zainstaluj Visual Studio 2019
 - Uruchom plik rozwiązania (DotNetWMS.sln)
 - Zainstaluj poniższe biblioteki:
  - Microsoft.EntityFrameworkCore
@@ -9,7 +8,7 @@
  - Microsoft.VisualStudio.Web.CodeGeneration.Design
  - Microsoft.AspNetCore.Identity.EntityFrameworkCore
  - jQuery.Validation.Globalize
- - NLog.Web.AspNetCore
+ - Microsoft.Extensions.Logging.Log4Net.AspNetCore
 - W konsoli PMC wpisz 'Update-Database' w celu utworzenia bazy danych na podstawie wprowadzonych migracji
 - Po uruchomieniu aplikacji wybierz „Zarejestruj się” (identyfikator składa się z 12 dowolnych cyfr)
 - Pod poniższą ścieżką otwórz plik "dotnetwealth" -> DotNetWMS\bin\Debug\netcoreapp3.1
