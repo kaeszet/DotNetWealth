@@ -13,23 +13,30 @@
             <a asp-action="ListOfRoles" class="btn btn-outline-dark btn-sm my-2"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy ról</a>
         </div>
         <form method="post" class="form-edit-role">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item font-weight-bold">Użytkownicy</li>
+            <h4 class="mt-3">Użytkownicy</h4>
+            <div class="row m-0 border-top border-left">
+
+                @*<li class="list-group-item font-weight-bold">Uzytkownicy</li>*@
                 @for (int i = 0; i < Model.Count; i++)
                 {
-                    <li class="list-group-item">
-                        <div class="custom-control custom-checkbox">
-                            <input type="hidden" asp-for="@Model[i].UserId" />
-                            <input type="hidden" asp-for="@Model[i].UserName" />
-                            <input type="hidden" asp-for="@Model[i].FullName" />
-                            <input type="hidden" asp-for="@Model[i].EmployeeNumber" />
-                            <input class="custom-control-input" asp-for="@Model[i].IsSelected">
-                            <label class="custom-control-label" asp-for="@Model[i].IsSelected">@Model[i].UserName (@Model[i].FullName, @Model[i].EmployeeNumber)</label>
-                            <span asp-validation-for="@Model[i].IsSelected" class="text-danger small font-weight-bold"></span>
-                        </div>
-                    </li>
+                    <div class="col-md-4 border-bottom border-right">
+                        @*<ul class="list-group list-group-flush">
+                            <li class="list-group-item py-2">*@
+                                <div class="custom-control custom-checkbox py-2">
+                                    <input type="hidden" asp-for="@Model[i].UserId" />
+                                    <input type="hidden" asp-for="@Model[i].UserName" />
+                                    <input type="hidden" asp-for="@Model[i].FullName" />
+                                    <input type="hidden" asp-for="@Model[i].EmployeeNumber" />
+                                    <input class="custom-control-input" asp-for="@Model[i].IsSelected">
+                                    <label class="custom-control-label" asp-for="@Model[i].IsSelected">@Model[i].UserName (@Model[i].FullName, @Model[i].EmployeeNumber)</label>
+                                    <span asp-validation-for="@Model[i].IsSelected" class="text-danger small font-weight-bold"></span>
+                                </div>
+                            @*</li>
+                        </ul>*@
+                    </div>
                 }
-                </ul>
+
+            </div>
             <div class="form-group mt-3">
                 <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Zapisz</button>
             </div>
