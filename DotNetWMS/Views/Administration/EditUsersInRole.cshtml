@@ -4,7 +4,7 @@
     var roleId = ViewBag.roleId;
 }
 <div>
-    <h2 class="text-sm-left text-center">Przypisz użytkowników do ról</h2>
+    <h2 class="text-sm-left text-center">Przypisz użytkowników do roli</h2>
 </div>
 <hr />
 <div class="mb-3">
@@ -14,15 +14,17 @@
         </div>
         <form method="post" class="form-edit-role">
             <ul class="list-group list-group-flush">
-                <li class="list-group-item font-weight-bold">Uzytkownicy</li>
+                <li class="list-group-item font-weight-bold">Użytkownicy</li>
                 @for (int i = 0; i < Model.Count; i++)
                 {
                     <li class="list-group-item">
                         <div class="custom-control custom-checkbox">
                             <input type="hidden" asp-for="@Model[i].UserId" />
                             <input type="hidden" asp-for="@Model[i].UserName" />
+                            <input type="hidden" asp-for="@Model[i].FullName" />
+                            <input type="hidden" asp-for="@Model[i].EmployeeNumber" />
                             <input class="custom-control-input" asp-for="@Model[i].IsSelected">
-                            <label class="custom-control-label" asp-for="@Model[i].IsSelected">@Model[i].UserName</label>
+                            <label class="custom-control-label" asp-for="@Model[i].IsSelected">@Model[i].UserName (@Model[i].FullName, @Model[i].EmployeeNumber)</label>
                             <span asp-validation-for="@Model[i].IsSelected" class="text-danger small font-weight-bold"></span>
                         </div>
                     </li>

@@ -15,6 +15,14 @@ namespace DotNetWMS.Models
         /// </summary>
         public string UserId { get; set; }
         /// <summary>
+        /// Stores name and surname of user
+        /// </summary>
+        public string FullName { get; set; }
+        /// <summary>
+        /// Stores employee number
+        /// </summary>
+        public string EmployeeNumber { get; set; }
+        /// <summary>
         /// A field to capture the user's login
         /// </summary>
         public string UserName { get; set; }
