@@ -68,46 +68,46 @@ namespace DotNetWMS.Controllers
 
             return View(users);
         }
-        /// <summary>
-        /// GET method to handle the role creation view
-        /// </summary>
-        /// <returns>Returns the role creation form view</returns>
-        [HttpGet]
-        public IActionResult CreateRole()
-        {
-            return View();
-        }
-        /// <summary>
-        /// POST method to handle the completed role creation form
-        /// </summary>
-        /// <param name="model">Admin_CreateRoleViewModel class object which will be processed by an instance of the Identity framework classes</param>
-        /// <returns>Returns the view resulting from the processing of user-entered data</returns>
-        [HttpPost]
-        public async Task<IActionResult> CreateRole(Admin_CreateRoleViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                IdentityRole identityRole = new IdentityRole
-                {
-                    Name = model.RoleName
-                };
+        ///// <summary>
+        ///// GET method to handle the role creation view
+        ///// </summary>
+        ///// <returns>Returns the role creation form view</returns>
+        //[HttpGet]
+        //public IActionResult CreateRole()
+        //{
+        //    return View();
+        //}
+        ///// <summary>
+        ///// POST method to handle the completed role creation form
+        ///// </summary>
+        ///// <param name="model">Admin_CreateRoleViewModel class object which will be processed by an instance of the Identity framework classes</param>
+        ///// <returns>Returns the view resulting from the processing of user-entered data</returns>
+        //[HttpPost]
+        //public async Task<IActionResult> CreateRole(Admin_CreateRoleViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        IdentityRole identityRole = new IdentityRole
+        //        {
+        //            Name = model.RoleName
+        //        };
 
-                IdentityResult result = await _roleManager.CreateAsync(identityRole);
+        //        IdentityResult result = await _roleManager.CreateAsync(identityRole);
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("ListOfRoles", "Administration");
-                }
+        //        if (result.Succeeded)
+        //        {
+        //            return RedirectToAction("ListOfRoles", "Administration");
+        //        }
 
-                foreach (IdentityError error in result.Errors)
-                {
-                    _logger.LogDebug(error.Description);
-                    ModelState.AddModelError("", error.Description);
-                }
-            }
+        //        foreach (IdentityError error in result.Errors)
+        //        {
+        //            _logger.LogDebug(error.Description);
+        //            ModelState.AddModelError("", error.Description);
+        //        }
+        //    }
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
         /// <summary>
         /// GET method to handle the role edition view
         /// </summary>
@@ -264,6 +264,8 @@ namespace DotNetWMS.Controllers
                 var userRoleViewModel = new Admin_UsersInRoleViewModel
                 {
                     UserId = user.Id,
+                    FullName = user.FullName,
+                    EmployeeNumber = user.EmployeeNumber,
                     UserName = user.UserName
                 };
 
@@ -290,6 +292,8 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUsersInRole(List<Admin_UsersInRoleViewModel> model, string roleId)
         {
+            Admin_DefaultRoles defaultRoles = new Admin_DefaultRoles();
+
             var role = await _roleManager.FindByIdAsync(roleId);
 
             if (role == null)
@@ -303,17 +307,69 @@ namespace DotNetWMS.Controllers
             {
                 var user = await _userManager.FindByIdAsync(model[i].UserId);
 
-                IdentityResult result;
+                IdentityResult result = null;
                 
-                if (model[i].IsSelected && !(await _userManager.IsInRoleAsync(user, role.Name)))
+                if (model[i].IsSelected && !await _userManager.IsInRoleAsync(user, role.Name))
                 {
-                    result = await _userManager.AddToRoleAsync(user, role.Name);
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        foreach (var x in _userManager.Users.ToList())
+                        {
+                            if (await _userManager.IsInRoleAsync(x, "Admin") && x.EmployeeNumber != user.EmployeeNumber)
+                            {
+                                result = await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+                                result = await _userManager.AddToRoleAsync(user, role.Name);
+                                break;
+                            }
+                        }
+
+                        if (result == null)
+                        {
+                            ViewBag.ErrorTitle = "Podczas zmiany roli użytkownika wystąpił błąd!";
+                            ViewBag.ErrorMessage = "Co najmniej jeden użytkownik musi mieć uprawnienia administratora.";
+                            _logger.LogError($"Podczas zmiany roli użytkownika wystąpił błąd! Co najmniej jeden użytkownik musi mieć uprawnienia administratora.");
+                            return View("DbExceptionHandler");
+                        }
+                    }
+                    else if (await _userManager.IsInRoleAsync(user, "Kadry") && (role.Name == "Standard" || role.Name == "StandardPlus"))
+                    {
+                        if (!await _userManager.IsInRoleAsync(user, "Standard") && !await _userManager.IsInRoleAsync(user, "StandardPlus"))
+                        {
+                            result = await _userManager.AddToRoleAsync(user, role.Name);
+                        }
+
+                        if (await _userManager.IsInRoleAsync(user, "Standard") && !await _userManager.IsInRoleAsync(user, "StandardPlus"))
+                        {
+                            result = await _userManager.RemoveFromRoleAsync(user, "Standard");
+                            result = await _userManager.AddToRoleAsync(user, role.Name);
+                        }
+
+                        if (await _userManager.IsInRoleAsync(user, "StandardPlus") && !await _userManager.IsInRoleAsync(user, "Standard"))
+                        {
+                            result = await _userManager.RemoveFromRoleAsync(user, "StandardPlus");
+                            result = await _userManager.AddToRoleAsync(user, role.Name);
+                        }
+
+                       
+                        
+                    }
+                    else if ((await _userManager.IsInRoleAsync(user, "Standard") || await _userManager.IsInRoleAsync(user, "StandardPlus")) && role.Name == "Kadry")
+                    {
+                        result = await _userManager.AddToRoleAsync(user, role.Name);
+                    }
+                    else
+                    {
+                        result = await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+                        result = await _userManager.AddToRoleAsync(user, role.Name);
+                    }
+                   
                 }
                 else if (!model[i].IsSelected && await _userManager.IsInRoleAsync(user, role.Name))
                 {
                     if (role.Name == "Admin")
                     {
                         var findUser = model.FirstOrDefault(m => m.IsSelected == true);
+
                         if (findUser == null)
                         {
                             ViewBag.ErrorTitle = "Podczas usuwania użytkownika z roli wystąpił błąd!";

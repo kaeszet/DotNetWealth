@@ -81,17 +81,17 @@
                                         <h6 class="dropdown-header font-weight-bold">Co chcesz zrobić?</h6>
 
                                         <a asp-action="Details" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-info-circle mr-1"></i>Szczegóły</a>
-                                        @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                                        @if (User.IsInAnyRoles("StandardPlus, Moderator, Admin"))
                                         {
                                             <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-edit mr-1"></i>Edytuj</a>
                                         }
-                                        @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator"))
+                                        @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator, Admin"))
                                         {
                                             <div class="dropdown-divider"></div>
                                             <a asp-action="Assign_to_employee_confirm" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
                                             <a asp-action="Assign_to_warehouse_confirm" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
                                         }
-                                        @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                                        @if (User.IsInAnyRoles("StandardPlus, Moderator, Admin"))
                                         {
                                             <a asp-action="Assign_to_external_confirm" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-truck-loading mr-1"></i>Przekaż na zewnątrz</a>
                                             <div class="dropdown-divider"></div>
