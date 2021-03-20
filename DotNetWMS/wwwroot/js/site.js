@@ -22,7 +22,7 @@ $(function ()
         $('#chartDiagram').createChart();
     }
 
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 
     //Active nav list
 
