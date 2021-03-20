@@ -94,7 +94,7 @@ $(function ()
 (function ($)
 {
 
-    //geocoder function
+    //geocoder plugin
     $.fn.geocodeAddress = function (options) {
 
         let settings = $.extend({
@@ -111,7 +111,9 @@ $(function ()
         }
         else LatLng = null;
 
-        $geocoder.geocode({ location: LatLng, address: _this.val() }, (results, status) => {
+        let search = settings.search ? { address: _this.val() } : { location: LatLng }
+
+        $geocoder.geocode(search, (results, status) => {
             if (status === "OK") {
            
                 let place = results[0];
@@ -162,7 +164,6 @@ $(function ()
 
         $(this).on('click', function () {
             $id = $(this).data('target');
-
             if ($done == true) {
 
                 $done = false;
@@ -207,7 +208,7 @@ $(function ()
             $('.content-body').removeClass('blur')
 
             $(el).animate({
-                left: - $slideX,
+                left: - ($(el).width() + 50),
             }, 1000, function () {
                 $(this).removeClass('show');
                 $(this).css('left', '');
@@ -217,11 +218,10 @@ $(function ()
         function show(el) {
 
             $('.content-body').addClass('blur')
-
-            $(el).css({
-                'left': - $slideX,
+            $(el).addClass('show')
+            .css({
+                left: - ($(el).width() + 50),
             })
-            .addClass('show')
             .animate({
                 left: 0,
             }, 1000, function () {
@@ -331,7 +331,7 @@ function initMap() {
 
         // my current location
         if (navigator.geolocation) {
-            // my coordinates on the map
+
             navigator.geolocation.getCurrentPosition(function (pos) {
 
                 $myLocation = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
@@ -342,6 +342,7 @@ function initMap() {
                     gestureHandling: 'cooperative'
                 };
 
+                // Create map
                 $map = new google.maps.Map($('#map')[0], $props);
 
                 let marker = new google.maps.Marker({
@@ -349,6 +350,7 @@ function initMap() {
                     position: $myLocation
                 });
 
+                // Update marker
                 $allMarkers.push(marker);
 
             }, function (error) {
