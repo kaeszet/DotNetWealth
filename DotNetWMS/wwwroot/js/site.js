@@ -16,6 +16,13 @@ $(function ()
     // Hamburger button
     $('.hamburger').menuCollapse();
 
+    if ($('#chartDiagram').length > 0) {
+
+        //Chart diagram
+        $('#chartDiagram').createChart();
+    }
+
+
     //Active nav list
 
     $('.sidebar .list-group-item').each(function () {
@@ -89,10 +96,35 @@ $(function ()
     $('.role-manage').on('change', function () {
         checkboxRoleChange($(this))
     })
+
 });
 
 (function ($)
 {
+    $.fn.createChart = function () {
+
+        let chart = new Chart($(this), {
+            type: 'bar',
+
+            data: {
+                labels: ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'],
+                datasets: [{
+                    label: 'Dane',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [0, 10, 5, 15, 20, 5, 20]
+                },
+                {
+                    label: 'Dane 2',
+                    backgroundColor: 'rgb(0, 89, 220)',
+                    borderColor: 'rgb(0, 89, 220)',
+                    data: [8, 10, 11, 5, 13, 14, 10]
+                }]
+            },
+
+            options: {}
+        });
+    },
 
     //geocoder plugin
     $.fn.geocodeAddress = function (options) {
@@ -271,7 +303,14 @@ function checkboxRoleChange(data) {
     $('.role-manage').each(function () {
         if ($(this).attr('id') != data.attr('id')) {
 
-            if (active == 'Admin' || active == 'Moderator') {
+            if (active == 'Kadry') {
+
+                if ($(this).data('type') != 'Standard' && $(this).data('type') != 'StandardPlus') {
+                    $(this).prop('checked', false);
+                    $(this).attr('checked', false);
+                }
+            }
+            else if (active == 'Admin' || active == 'Moderator') {
 
                 $(this).prop('checked', false);
                 $(this).attr('checked', false);
