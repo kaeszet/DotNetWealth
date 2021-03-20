@@ -22,6 +22,7 @@ $(function ()
         $('#chartDiagram').createChart();
     }
 
+    $('[data-toggle="tooltip"]').tooltip()
 
     //Active nav list
 
@@ -68,7 +69,13 @@ $(function ()
     // Stocktaking
     $('#stocktaking').click(function () {
         var keyWord = $('#selectList').val();
-        $('#divPartial').load(url, { warehouseFullName: keyWord });
+        $('#divPartial').load(url, { warehouseFullName: keyWord }, function () {
+
+            $('#print').on('click', function () {
+                $(this).printData();
+            })
+        });
+
     })
 
     $("#cookieConsent").find('button.close').on("click", function (ev) {
@@ -165,6 +172,8 @@ $(function ()
 
         let ToPrint = $('#' + $(this).data('content'));
         let Warehouse = $('#selectList option:selected').text();
+        let title = $(this).data('title');
+
         let newWin = window.open('', 'Print-Window');
 
         $('body').append('<div id="contentToPrint" style="display: none;"></div>');
@@ -178,7 +187,7 @@ $(function ()
             <link rel="stylesheet" href="/css/style.css" />
             <link rel="stylesheet" href="/lib/font-awesome/css/all.css" /></head>
             <body onload="window.print()">
-            <h4>Inwentaryzacja</h4>
+            <h4>`+ title +`</h4>
             <hr>
             <h6>`+ Warehouse +`</h6>`
             + newContent.html() + 

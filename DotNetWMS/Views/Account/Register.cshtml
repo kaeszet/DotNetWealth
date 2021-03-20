@@ -10,7 +10,7 @@
 {
     <div class="card shadow m-auto">
         <div class="card-body">
-            <img src="~/images/logo.png" class="mw-100 mh-100" alt="">
+            <img src="~/images/logo3.png" class="mw-100 mh-100" alt="">
             <h3 class="text-center font-weight-bold my-4">Rejestracja</h3>
 
             <div asp-validation-summary="All" class="text-danger font-weight-bold small mb-3"></div>
@@ -89,82 +89,92 @@ else
 {
     <div>
         <div class="d-flex justify-content-between">
-            <h2 class="my-0 text-sm-left text-center w-100">Dodaj nowego użytkownika</h2>
+            <h2 class="my-0 text-sm-left text-center w-100">Dodaj nowego pracownika</h2>
         </div>
     </div>
     <hr />
     <div class="mb-3">
-            <a asp-controller="Administration" asp-action="ListOfUsers" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy użytkowników</a>
-            <div asp-validation-summary="All" class="text-danger font-weight-bold small mb-3"></div>
-            <form method="post">
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Name"></label>
-                        <input asp-for="Name" class="form-control" placeholder="Imię" />
-                        <small class="font-weight-bold text-danger"><span asp-validation-for="Name"></span></small>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label asp-for="Surname"></label>
-                        <input asp-for="Surname" class="form-control" placeholder="Nazwisko" />
-                        <small class="font-weight-bold text-danger"><span asp-validation-for="Surname" class="text-danger"></span></small>
-                    </div>
+        <a asp-controller="Administration" asp-action="ListOfUsers" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy użytkowników</a>
+        <div asp-validation-summary="All" class="text-danger font-weight-bold small mb-3"></div>
+        <form method="post">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Imię" />
+                    <small class="font-weight-bold text-danger"><span asp-validation-for="Name"></span></small>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="EmployeeNumber"></label>
-                        <input asp-for="EmployeeNumber" class="form-control" placeholder="Identyfikator" />
-                        <small class="font-weight-bold text-danger"><span asp-validation-for="EmployeeNumber" class="text-danger"></span></small>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label asp-for="Street"></label>
-                        <input asp-for="Street" class="form-control" placeholder="Adres" />
-                        <small class="font-weight-bold text-danger"><span asp-validation-for="Street" class="text-danger"></span></small>
-                    </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Surname"></label>
+                    <input asp-for="Surname" class="form-control" placeholder="Nazwisko" />
+                    <small class="font-weight-bold text-danger"><span asp-validation-for="Surname" class="text-danger"></span></small>
                 </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="ZipCode"></label>
-                        <input asp-for="ZipCode" class="form-control" placeholder="Kod pocztowy" />
-                        <small class="font-weight-bold text-danger"><span asp-validation-for="ZipCode" class="text-danger"></span></small>
-                    </div>
-
-                    <div class="form-group col-md-6">
-
-                        <label asp-for="City"></label>
-                        <input asp-for="City" class="form-control" placeholder="Oddział" />
-                        <small class="font-weight-bold text-danger"><span asp-validation-for="City" class="text-danger"></span></small>
-                    </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="EmployeeNumber"></label>
+                    <input asp-for="EmployeeNumber" class="form-control" placeholder="Identyfikator" />
+                    <small class="font-weight-bold text-danger"><span asp-validation-for="EmployeeNumber" class="text-danger"></span></small>
                 </div>
-
-                <div class="form-group">
+                <div class="form-group col-md-6">
                     <label asp-for="Email"></label>
-                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <input asp-for="Email" class="form-control" autocomplete="email" placeholder="Email" />
                     <small class="font-weight-bold text-danger"><span asp-validation-for="Email" class="text-danger"></span></small>
                 </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Password"></label>
-                        <input asp-for="Password" class="form-control" placeholder="Hasło" />
-                        <small class="font-weight-bold text-danger"><span asp-validation-for="Password" class="text-danger"></span></small>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="ConfirmPassword"></label>
-                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Potwierdz hasło" />
-                        <small class="font-weight-bold text-danger"><span asp-validation-for="ConfirmPassword" class="text-danger"></span></small>
-                    </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" placeholder="Hasło" />
+                    <small class="font-weight-bold text-danger"><span asp-validation-for="Password" class="text-danger"></span></small>
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Zarejestruj</button>
+                <div class="form-group col-md-6">
+                    <label asp-for="ConfirmPassword"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Potwierdz hasło" />
+                    <small class="font-weight-bold text-danger"><span asp-validation-for="ConfirmPassword" class="text-danger"></span></small>
                 </div>
-            </form>
+            </div>
+            <hr />
+            <div class="form-group">
+                <label>Adres</label>
+                <input id="address" type="search" autocomplete="nope" placeholder="Podaj adres pracownika" class="form-control" />
+                <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> pracownika</small>
+
+                <input type="hidden" id="lat" />
+                <input type="hidden" id="lng" />
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Street" class="control-label"></label>
+                    <input asp-for="Street" id="street" readonly class="form-control" />
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="City" class="control-label"></label>
+                    <input asp-for="City" id="locality" readonly class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-2">
+                    <label asp-for="ZipCode" class="control-label"></label>
+                    <input asp-for="ZipCode" id="postal_code" class="form-control" />
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <div id="map" style="height:300px; width:100%"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Dodaj</button>
+            </div>
+        </form>
     </div>
 }
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_GoogleMapsPartial");}
 }
