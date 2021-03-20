@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between flex-sm-row flex-column">
     <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Przegląd magazynów</h2>
 
-        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
+        @if (User.IsInAnyRoles("StandardPlus, Moderator, Admin"))
         {
             <a asp-action="Create" class="btn btn-success"><i class="fas fa-user-plus mr-1"></i>Dodaj nowy magazyn</a>
         }
