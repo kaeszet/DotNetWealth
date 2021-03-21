@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Text;
+using System.Text.Json;
 
 namespace DotNetWMS.Controllers
 {
@@ -63,6 +64,12 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> AboutUs()
         {
             return View();
+        }
+        public IActionResult Diagrams()
+        {
+            var items = _context.Items.Where(i => i.UserId != null).Select(i => i.User.FullName).ToList().GroupBy(i => i).Select(x => new { Name = x.Key, Counter = x.Count() });
+            
+            return Json(items);
         }
         /// <summary>
         /// GET method responsible for returning an Error view
