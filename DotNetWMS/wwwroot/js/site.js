@@ -16,6 +16,14 @@ $(function ()
     // Hamburger button
     $('.hamburger').menuCollapse();
 
+    if ($('#chartDiagram').length > 0) {
+
+        //Chart diagram
+        $('#chartDiagram').createChart();
+    }
+
+    $('[data-toggle="tooltip"]').tooltip();
+
     //Active nav list
 
     $('.sidebar .list-group-item').each(function () {
@@ -61,7 +69,13 @@ $(function ()
     // Stocktaking
     $('#stocktaking').click(function () {
         var keyWord = $('#selectList').val();
-        $('#divPartial').load(url, { warehouseFullName: keyWord });
+        $('#divPartial').load(url, { warehouseFullName: keyWord }, function () {
+
+            $('#print').on('click', function () {
+                $(this).printData();
+            })
+        });
+
     })
 
     $("#cookieConsent").find('button.close').on("click", function (ev) {
@@ -89,12 +103,37 @@ $(function ()
     $('.role-manage').on('change', function () {
         checkboxRoleChange($(this))
     })
+
 });
 
 (function ($)
 {
+    $.fn.createChart = function () {
 
-    //geocoder function
+        let chart = new Chart($(this), {
+            type: 'bar',
+
+            data: {
+                labels: ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'],
+                datasets: [{
+                    label: 'Dane',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [0, 10, 5, 15, 20, 5, 20]
+                },
+                {
+                    label: 'Dane 2',
+                    backgroundColor: 'rgb(0, 89, 220)',
+                    borderColor: 'rgb(0, 89, 220)',
+                    data: [8, 10, 11, 5, 13, 14, 10]
+                }]
+            },
+
+            options: {}
+        });
+    },
+
+    //geocoder plugin
     $.fn.geocodeAddress = function (options) {
 
         let settings = $.extend({
@@ -111,7 +150,9 @@ $(function ()
         }
         else LatLng = null;
 
-        $geocoder.geocode({ location: LatLng, address: _this.val() }, (results, status) => {
+        let search = settings.search ? { address: _this.val() } : { location: LatLng }
+
+        $geocoder.geocode(search, (results, status) => {
             if (status === "OK") {
            
                 let place = results[0];
@@ -131,6 +172,8 @@ $(function ()
 
         let ToPrint = $('#' + $(this).data('content'));
         let Warehouse = $('#selectList option:selected').text();
+        let title = $(this).data('title');
+
         let newWin = window.open('', 'Print-Window');
 
         $('body').append('<div id="contentToPrint" style="display: none;"></div>');
@@ -144,7 +187,7 @@ $(function ()
             <link rel="stylesheet" href="/css/style.css" />
             <link rel="stylesheet" href="/lib/font-awesome/css/all.css" /></head>
             <body onload="window.print()">
-            <h4>Inwentaryzacja</h4>
+            <h4>`+ title +`</h4>
             <hr>
             <h6>`+ Warehouse +`</h6>`
             + newContent.html() + 
@@ -162,7 +205,6 @@ $(function ()
 
         $(this).on('click', function () {
             $id = $(this).data('target');
-
             if ($done == true) {
 
                 $done = false;
@@ -207,7 +249,7 @@ $(function ()
             $('.content-body').removeClass('blur')
 
             $(el).animate({
-                left: - $slideX,
+                left: - ($(el).width() + 50),
             }, 1000, function () {
                 $(this).removeClass('show');
                 $(this).css('left', '');
@@ -217,11 +259,10 @@ $(function ()
         function show(el) {
 
             $('.content-body').addClass('blur')
-
-            $(el).css({
-                'left': - $slideX,
+            $(el).addClass('show')
+            .css({
+                left: - ($(el).width() + 50),
             })
-            .addClass('show')
             .animate({
                 left: 0,
             }, 1000, function () {
@@ -271,7 +312,14 @@ function checkboxRoleChange(data) {
     $('.role-manage').each(function () {
         if ($(this).attr('id') != data.attr('id')) {
 
-            if (active == 'Admin' || active == 'Moderator') {
+            if (active == 'Kadry') {
+
+                if ($(this).data('type') != 'Standard' && $(this).data('type') != 'StandardPlus') {
+                    $(this).prop('checked', false);
+                    $(this).attr('checked', false);
+                }
+            }
+            else if (active == 'Admin' || active == 'Moderator') {
 
                 $(this).prop('checked', false);
                 $(this).attr('checked', false);
@@ -331,7 +379,7 @@ function initMap() {
 
         // my current location
         if (navigator.geolocation) {
-            // my coordinates on the map
+
             navigator.geolocation.getCurrentPosition(function (pos) {
 
                 $myLocation = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
@@ -342,6 +390,7 @@ function initMap() {
                     gestureHandling: 'cooperative'
                 };
 
+                // Create map
                 $map = new google.maps.Map($('#map')[0], $props);
 
                 let marker = new google.maps.Marker({
@@ -349,6 +398,7 @@ function initMap() {
                     position: $myLocation
                 });
 
+                // Update marker
                 $allMarkers.push(marker);
 
             }, function (error) {

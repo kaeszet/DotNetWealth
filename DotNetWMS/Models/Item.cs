@@ -22,20 +22,20 @@ namespace DotNetWMS.Models
         /// Item's type e.g. tools, electronics, clothes etc.
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
-        [StringLength(30)]
+        [StringLength(30, ErrorMessage = CustomErrorMessages.MaxLength)]
         [Display(Name = "Rodzaj")]
         public string Type { get; set; }
         /// <summary>
         /// Item's name
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
-        [StringLength(30)]
+        [StringLength(30, ErrorMessage = CustomErrorMessages.MaxLength)]
         [Display(Name = "Nazwa")]
         public string Name { get; set; }
         /// <summary>
         /// Item's manufacturer
         /// </summary>
-        [StringLength(30)]
+        [StringLength(30, ErrorMessage = CustomErrorMessages.MaxLength)]
         [Display(Name = "Producent")]
         public string Producer { get; set; }
         /// <summary>
@@ -48,7 +48,7 @@ namespace DotNetWMS.Models
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Kod przedmiotu")]
-        [StringLength(30)]
+        [StringLength(30, ErrorMessage = CustomErrorMessages.MaxLength)]
         public string ItemCode { get; set; }
         /// <summary>
         /// Number of items
