@@ -233,6 +233,215 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
+        [HttpGet]
+        public IActionResult ItemAssignment(string order, string search)
+        {
+            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["SortByType"] = order == "type" ? "type_desc" : "type";
+            ViewData["Search"] = search;
+
+            var items = _context.Items.ToList();
+            List<ItemsAssignmentViewModel> viewModelList = new List<ItemsAssignmentViewModel>();
+
+            foreach (var item in items)
+            {
+                ItemsAssignmentViewModel viewModel = new ItemsAssignmentViewModel()
+                {
+                    Id = item.Id,
+                    IsChecked = false,
+                    ItemCode = item.ItemCode,
+                    Model = item.Model,
+                    Name = item.Name,
+                    Producer = item.Producer,
+                    Quantity = item.Quantity,
+                    Type = item.Type,
+                    Units = item.Units
+
+                };
+
+                viewModelList.Add(viewModel);
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                viewModelList = viewModelList.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search)).ToList();
+            }
+
+            switch (order)
+            {
+                case "name_desc":
+                    viewModelList = viewModelList.OrderByDescending(i => i.Name).ToList();
+                    break;
+                case "type_desc":
+                    viewModelList = viewModelList.OrderByDescending(i => i.Type).ToList();
+                    break;
+                case "type":
+                    viewModelList = viewModelList.OrderBy(i => i.Type).ToList();
+                    break;
+                default:
+                    viewModelList = viewModelList.OrderBy(i => i.Name).ToList();
+                    break;
+            }
+
+            return View(viewModelList);
+        }
+
+        public IActionResult ItemAssignmentConfirmation(string option, List<ItemsAssignmentViewModel> model)
+        {
+            var itemsChecked = model.Where(m => m.IsChecked == true).ToList();
+
+            for (int i = 0; i < itemsChecked.Count; i++)
+            {
+                var itemToValidate = _context.Items.FirstOrDefault(v => v.Id == itemsChecked[i].Id);
+
+                if (itemsChecked[i].Quantity > itemToValidate.Quantity)
+                {
+                    ModelState.AddModelError(string.Empty, $"Nie można przekazać więcej sztuk niż jest na stanie. Wprowadzono: {itemsChecked[i].Quantity}, stan: {itemToValidate.Quantity}{itemToValidate.Units}, {itemToValidate.Assign}");
+                    return View("ItemAssignment", model);
+                }
+
+                if (itemsChecked[i].Quantity <= 0)
+                {
+                    ModelState.AddModelError(string.Empty, $"Nie można przekazać 0 sztuk. Wprowadzono: {itemsChecked[i].Quantity}, {itemToValidate.Assign}");
+                    return View("ItemAssignment", model);
+                }
+            }
+            
+            if (ModelState.IsValid)
+            {
+                if (!model.Any())
+                {
+                    ModelState.AddModelError(string.Empty, "Nie wybrano żadnego przedmiotu do przekazania");
+                    return View("ItemAssignment", model);
+                }
+
+                var users = option == "ToUser" ? _context.Users.ToList() : null;
+                var warehouses = option == "ToWarehouse" ? _context.Warehouses.ToList() : null;
+                var externals = option == "ToExternal" ? _context.Externals.ToList() : null;
+
+                ViewData["Option"] = option;
+
+                ItemAssignmentConfirmationViewModel viewModel = new ItemAssignmentConfirmationViewModel()
+                {
+                    Items = itemsChecked
+                };
+
+                if (users != null)
+                {
+                    ViewData["Users"] = new SelectList(_context.Users, "Id", "FullName");
+                    return View("ItemAssignmentConfirmation", viewModel);
+                }
+
+                if (warehouses != null)
+                {
+                    ViewData["Warehouses"] = new SelectList(_context.Warehouses, "Id", "AssignFullName");
+                    return View("ItemAssignmentConfirmation", viewModel);
+                }
+
+                if (externals != null)
+                {
+                    ViewData["Externals"] = new SelectList(_context.Externals, "Id", "FullName");
+                    return View("ItemAssignmentConfirmation", viewModel);
+                }
+            }
+
+            return View("ItemAssignment", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ItemAssignmentSaveInDb(string option, ItemAssignmentConfirmationViewModel model)
+        {
+            for (int i = 0; i < model.Items.Count; i++)
+            {
+                var item = _context.Items.Find(model.Items[i].Id);
+                int? externalId = item.ExternalId;
+
+                if (item != null)
+                {
+                    if (item.Quantity == model.Items[i].Quantity)
+                    {
+                        switch (option)
+                        {
+                            case "ToUser":
+                                item.UserId = model.UserId;
+                                MergeSameItems(item, typeof(WMSIdentityUser));
+                                break;
+                            case "ToWarehouse":
+                                item.WarehouseId = model.WarehouseId;
+                                MergeSameItems(item, typeof(Warehouse));
+                                break;
+                            case "ToExternal":
+                                item.ExternalId = model.ExternalId;
+                                MergeSameItems(item, typeof(External));
+                                break;
+                            default:
+                                break;
+                        }
+
+                        ItemStatusCheck(item, externalId);
+                        await _context.SaveChangesAsync();
+                        await UpdateItemCode(item);
+                    }
+                    
+                    if (item.Quantity > model.Items[i].Quantity)
+                    {
+                        item.Quantity -= model.Items[i].Quantity;
+
+                        string dt = DateTime.Now.ToString("yyyyMMddHHmmss");
+
+                        Item newItem = new Item()
+                        {
+                            Type = item.Type,
+                            Name = item.Name,
+                            Producer = item.Producer,
+                            Model = item.Model,
+                            ItemCode = dt,
+                            Quantity = model.Items[i].Quantity,
+                            Units = model.Items[i].Units,
+                            WarrantyDate = item.WarrantyDate,
+                            State = ItemState.Unknown,
+                            UserId = !string.IsNullOrEmpty(model.UserId) ? model.UserId : item.UserId,
+                            WarehouseId = model.WarehouseId != 0 ? model.WarehouseId : item.WarehouseId,
+                            ExternalId = model.ExternalId != 0 ? model.ExternalId : item.ExternalId
+
+                        };
+
+                        _context.Add(newItem);
+                        var result = await _context.SaveChangesAsync();
+
+                        if (result > 0)
+                        {
+                            var newItemWithId = _context.Items.FirstOrDefault(i => i.ItemCode == dt);
+
+                            switch (option)
+                            {
+                                case "ToUser":
+                                    MergeSameItems(newItemWithId, typeof(WMSIdentityUser));
+                                    break;
+                                case "ToWarehouse":
+                                    MergeSameItems(newItemWithId, typeof(Warehouse));
+                                    break;
+                                case "ToExternal":
+                                    MergeSameItems(newItemWithId, typeof(External));
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            ItemStatusCheck(newItemWithId, externalId);
+                            await _context.SaveChangesAsync();
+                            await UpdateItemCode(newItemWithId);
+                        }
+                        
+
+                    }
+
+                   
+                }
+            }
+            GlobalAlert.SendGlobalAlert($"Przedmioty ({model.Items.Count}) został przekazane!", "info");
+            return RedirectToAction("Index");
+        }
+
         /// <summary>
         /// GET method responsible for returning an Item's Details view
         /// </summary>

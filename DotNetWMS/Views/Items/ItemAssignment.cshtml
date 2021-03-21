@@ -1,0 +1,112 @@
+﻿@using DotNetWMS.Resources
+@model List<ItemsAssignmentViewModel>
+
+@{
+    ViewData["Title"] = "Przypisywanie przedmiotów";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control search-control" value="@ViewData["Search"]" placeholder="Wyszukaj..." aria-label="Wyszukaj" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-success" type="submit" id="button-addon2"><i class="fab fa-sistrix mr-1"></i>Szukaj</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @{
+            var index = 1;
+        }
+    <form asp-action="ItemAssignmentConfirmation">
+        <div>
+            <div class="d-flex justify-content-between flex-sm-row flex-column">
+                <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Przypisywanie przedmiotów</h2>
+                @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
+                {
+                    <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToUser" class="btn btn-success my-auto">Do użytkownika...</button>
+                    <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToWarehouse" class="btn btn-success my-auto">Do magazynu...</button>
+                }
+                @if (User.IsInAnyRoles("StandardPlus,Moderator,Admin"))
+                {
+                    <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToExternal" class="btn btn-success my-auto">Do kontrahenta...</button>
+                }
+            </div>
+        </div>
+        <hr />
+        <div class="table-responsive">
+            <table class="table table-hover table-sm">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th>@Html.LabelFor(x => x[0].IsChecked)</th>
+                        <th>@Html.LabelFor(x => x[0].ItemCode)</th>
+                        <th>
+                            <a asp-action="ItemAssignment" asp-route-order="@ViewData["SortByType"]">@Html.LabelFor(x => x[0].Type)</a>
+                        </th>
+                        <th>
+                            <a asp-action="ItemAssignment" asp-route-order="@ViewData["SortByName"]">@Html.LabelFor(x => x[0].Name)</a>
+                        </th>
+                        <th>@Html.LabelFor(x => x[0].Producer)</th>
+                        <th>@Html.LabelFor(x => x[0].Model)</th>
+                        <th>@Html.LabelFor(x => x[0].Quantity)</th>
+                        <th>@Html.LabelFor(x => x[0].Units)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tableSearch">
+                    @for (int i = 0; i < Model.Count(); i++)
+                    {
+                        <tr>
+                            <th scope="col">@index</th>
+                            <td>
+                                <div class="form-check">
+                                    <input asp-for="@Model[i].IsChecked" class="form-check-input" type="checkbox">
+                                    <span asp-validation-for="@Model[i].IsChecked" class="text-danger small font-weight-bold"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model[i].ItemCode" />
+                                @Model[i].ItemCode
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model[i].Type" />
+                                @Model[i].Type
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model[i].Name" />
+                                @Model[i].Name
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model[i].Producer" />
+                                @Model[i].Producer
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model[i].Model" />
+                                @Model[i].Model
+                            </td>
+                            <td>
+                                <input asp-for="@Model[i].Quantity" class="form-control" />
+                                <span asp-validation-for="@Model[i].Quantity" class="text-danger small"></span>
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model[i].Units" />
+                                @Model[i].Units
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="@Model[i].Id" />
+                            </td>
+                        </tr>
+                        index++;
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+
+    </div>
+</div>

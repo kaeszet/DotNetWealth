@@ -1,0 +1,115 @@
+﻿@using DotNetWMS.Resources
+@model ItemAssignmentConfirmationViewModel;
+
+@{
+    ViewData["Title"] = "Potwierdzenie";
+}
+
+<div>
+    <div class="d-flex justify-content-between flex-sm-row flex-column">
+        <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Potwierdzenie</h2>
+    </div>
+</div>
+<hr />
+
+<form asp-action="ItemAssignmentSaveInDb" >
+    <div class="row">
+        <div class="col-12">
+
+            @{
+                var index = 1;
+            }
+            <div class="form-check">
+                <input class="custom-control-input" asp-for="IsDocumentNeeded">
+                <label class="custom-control-label" asp-for="IsDocumentNeeded">Czy wygenerować dokument?</label>
+            </div>
+            @if (ViewData["Option"].ToString() == "ToUser")
+            {
+                <div class="form-group col-md-4">
+                    <label asp-for="UserId"></label>
+                    <select asp-for="UserId" class="form-control" asp-items="ViewBag.Users"
+                            title="Brak">
+                        <option value="" selected>Brak</option>
+                    </select>
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                </div>
+            }
+            @if (ViewData["Option"].ToString() == "ToWarehouse")
+            {
+                <div class="form-group col-md-4">
+                    <label asp-for="WarehouseId"></label>
+                    <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.Warehouses"
+                            title="Brak">
+                        <option value="" selected>Brak</option>
+                    </select>
+                    <span asp-validation-for="WarehouseId" class="text-danger"></span>
+                </div>
+            }
+            @if (ViewData["Option"].ToString() == "ToExternal")
+            {
+                <div class="form-group col-md-4">
+                    <label asp-for="ExternalId"></label>
+                    <select asp-for="ExternalId" class="form-control" asp-items="ViewBag.Externals"
+                            title="Brak">
+                        <option value="" selected>Brak</option>
+                    </select>
+                    <span asp-validation-for="ExternalId" class="text-danger"></span>
+                </div>
+            }
+
+            <button type="submit" asp-action="ItemAssignmentSaveInDb" asp-route-option="@ViewData["Option"].ToString()" class="btn btn-primary btn-sm">Kontynuuj</button>
+            <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th>@Html.LabelFor(x => x.Items[0].ItemCode)</th>
+                            <th>
+                                <a asp-action="ItemAssignment" asp-route-order="@ViewData["SortByType"]">@Html.LabelFor(x => x.Items[0].Type)</a>
+                            </th>
+                            <th>
+                                <a asp-action="ItemAssignment" asp-route-order="@ViewData["SortByName"]">@Html.LabelFor(x => x.Items[0].Name)</a>
+                            </th>
+                            <th>@Html.LabelFor(x => x.Items[0].Producer)</th>
+                            <th>@Html.LabelFor(x => x.Items[0].Model)</th>
+                            <th>@Html.LabelFor(x => x.Items[0].Quantity)</th>
+                            <th>@Html.LabelFor(x => x.Items[0].Units)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableSearch">
+                        @for (int i = 0; i < Model.Items.Count; i++)
+                        {
+                            <tr>
+                                <th scope="col">@index</th>
+                                <td>@Model.Items[i].ItemCode</td>
+                                <td>@Model.Items[i].Type</td>
+                                <td>@Model.Items[i].Name</td>
+                                <td>@Model.Items[i].Producer</td>
+                                <td>@Model.Items[i].Quantity</td>
+                                <td>@Model.Items[i].Units</td>
+                                <td>
+                                    <input type="hidden" asp-for="@Model.Items[i].Id" />
+                                    <input type="hidden" asp-for="@Model.Items[i].ItemCode" />
+                                    <input type="hidden" asp-for="@Model.Items[i].Type" />
+                                    <input type="hidden" asp-for="@Model.Items[i].Name" />
+                                    <input type="hidden" asp-for="@Model.Items[i].Producer" />
+                                    <input type="hidden" asp-for="@Model.Items[i].Quantity" />
+                                    <input type="hidden" asp-for="@Model.Items[i].Units" />
+                                    <input type="hidden" asp-for="@Model.Items[i].Model" />
+                                    @*<input type="hidden" asp-for="@Model.Items[i].WarrantyDate" />
+                                    <input type="hidden" asp-for="@Model.Items[i].State" />
+                                    <input type="hidden" asp-for="@Model.Items[i].UserId" />
+                                    <input type="hidden" asp-for="@Model.Items[i].WarehouseId" />
+                                    <input type="hidden" asp-for="@Model.Items[i].ExternalId" />*@
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</form>
