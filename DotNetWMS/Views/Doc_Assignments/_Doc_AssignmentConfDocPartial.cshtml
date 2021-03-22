@@ -7,7 +7,8 @@
 {
     <h4>Zaznacz przekazane elementy:</h4>
     <form method="post">
-        <table class="table table-hover table-responsive-sm">
+        <div class="table-responsive">
+        <table class="table table-hover table-sm">
             <thead class="thead-light">
                 <tr>
                     <th>
@@ -91,6 +92,7 @@
                 }
             </tbody>
         </table>
+        </div>
 
         <div class="form-group mt-3">
             <button type="submit" asp-action="GenerateDocument" class="btn btn-primary btn-sm">Przejdź dalej</button>

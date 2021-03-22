@@ -16,12 +16,9 @@
             <h4 class="mt-3">Użytkownicy</h4>
             <div class="row m-0 border-top border-left">
 
-                @*<li class="list-group-item font-weight-bold">Uzytkownicy</li>*@
                 @for (int i = 0; i < Model.Count; i++)
                 {
-                    <div class="col-md-4 border-bottom border-right">
-                        @*<ul class="list-group list-group-flush">
-                            <li class="list-group-item py-2">*@
+                    <div class="col-md-6 border-bottom border-right">
                                 <div class="custom-control custom-checkbox py-2">
                                     <input type="hidden" asp-for="@Model[i].UserId" />
                                     <input type="hidden" asp-for="@Model[i].UserName" />
@@ -31,8 +28,6 @@
                                     <label class="custom-control-label" asp-for="@Model[i].IsSelected">@Model[i].UserName (@Model[i].FullName, @Model[i].EmployeeNumber)</label>
                                     <span asp-validation-for="@Model[i].IsSelected" class="text-danger small font-weight-bold"></span>
                                 </div>
-                            @*</li>
-                        </ul>*@
                     </div>
                 }
 

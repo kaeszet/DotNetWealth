@@ -78,7 +78,7 @@ namespace DotNetWMS.Controllers
                 //Number of successful log-ins per user, result as percentage
                 case "2":
                     var loginCount = _context.Users.Select(u => u.LoginCount).Sum();
-                    var result_2 = _context.Users.Where(u => u.LoginCount > 0).Select(u => new Diagram { Label = u.FullName, Data = $"{Convert.ToDouble(u.LoginCount * 100) / loginCount}%" });
+                    var result_2 = _context.Users.Where(u => u.LoginCount > 0).Select(u => new Diagram { Label = u.FullName, Data = $"{Convert.ToDouble(u.LoginCount * 100) / loginCount}" });
                     return Json(result_2);
                 //Number of different external's type, result as number
                 case "3":
