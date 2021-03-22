@@ -105,6 +105,7 @@ namespace DotNetWMS.Models
         /// </summary>
         [Display(Name = "Kl. zewn.")]
         public External External { get; set; }
+        public string FullName => $"{Name} {Producer} {Model} (ID:{Id})";
         /// <summary>
         /// A property to assign Item to Employee, Warehouse or External DB.
         /// </summary>
