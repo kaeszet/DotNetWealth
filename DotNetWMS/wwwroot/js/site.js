@@ -188,7 +188,7 @@ $(function ()
                     datasets: [{
 
                         label: false,
-                        backgroundColor: 'rgb(0, 89, 220)',
+                        backgroundColor: 'rgb(0, 89, 220, 0.6)',
                         borderColor: 'rgb(0, 89, 220)',
                         data: data.data,
                     }],
@@ -197,7 +197,7 @@ $(function ()
             })
         }
         function createWarrantyDate(data, item) {
-            console.log(data)
+
             let chart = new Chart(item, {
                 type: item.data('type'),
                 data: {
@@ -206,8 +206,22 @@ $(function ()
                     datasets: [{
 
                         label: false,
-                        backgroundColor: 'rgb(0, 89, 220)',
-                        borderColor: 'rgb(0, 89, 220)',
+                        backgroundColor:
+                            function (context) {
+
+                                var index = context.dataIndex;
+                                var value = context.dataset.data[index];
+
+                                return value > 0 ? 'rgb(40, 167, 69, 0.6)' : 'rgb(220, 53, 69, 0.6)';
+                            },
+                        borderColor:
+                            function (context) {
+
+                                var index = context.dataIndex;
+                                var value = context.dataset.data[index];
+
+                                return value > 0 ? 'rgb(40, 167, 69, 0.6)' : 'rgb(220, 53, 69, 0.6)';
+                            },
                         data: data.data,
                     }],
                 },
@@ -236,16 +250,6 @@ $(function ()
                             gridLines: {
                                 display: false
                             },
-                            ticks: {
-                                callback: function (label, index, labels) {
-                                    if (/\s/.test(label)) {
-
-                                        return label.split(" ");
-                                    } else {
-                                        return label;
-                                    }
-                                }
-                            }
                         }]
                     }
                 }
