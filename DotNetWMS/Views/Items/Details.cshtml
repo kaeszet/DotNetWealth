@@ -8,7 +8,7 @@
 <div>
     <div class="d-flex justify-content-between flex-sm-row flex-column">
         <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Szczegóły o produkcie</h2>
-        @if (User.IsInAnyRoles("StandardPlus,Moderator"))
+        @if (User.IsInAnyRoles("StandardPlus,Moderator,Admin"))
         {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success"><i class="fas fa-edit mr-1"></i> Edytuj</a>
         }

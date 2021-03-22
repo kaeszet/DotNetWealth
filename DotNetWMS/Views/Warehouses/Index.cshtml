@@ -78,19 +78,19 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-lg-right">
                                     <h6 class="dropdown-header font-weight-bold">Co chcesz zrobić?</h6>
-                                    @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                                    @if (User.IsInAnyRoles("StandardPlus,Moderator,Admin"))
                                     {
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-edit mr-1"></i>Edytuj</a>
                                     }
                                     <a asp-action="Details" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-info-circle mr-1"></i>Szczegóły</a>
-                                    @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                                    @if (User.IsInAnyRoles("StandardPlus,Moderator,Admin"))
                                     {
                                         <div class="dropdown-divider"></div>
                                         <button type="button" class="dropdown-item danger text-danger" data-toggle="modal" data-target="#remove_@item.Id"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
                                     }
                                 </div>
                             </div>
-                            @if (User.IsInAnyRoles("StandardPlus, Moderator"))
+                            @if (User.IsInAnyRoles("StandardPlus,Moderator,Admin"))
 							{
                                 <div class="modal fade" id="remove_@item.Id" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="label_remove_@item.Id" aria-hidden="true">
                                     <div class="modal-dialog">

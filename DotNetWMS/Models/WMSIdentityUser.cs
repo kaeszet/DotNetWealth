@@ -85,6 +85,7 @@ namespace DotNetWMS.Models
         /// Property to create one-to-many relationship with Infobox
         /// </summary>
         public IList<Infobox> Messages { get; set; }
+        public int LoginCount { get; set; }
         /// <summary>
         /// Method to display values in view
         /// </summary>
