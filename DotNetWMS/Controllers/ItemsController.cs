@@ -377,7 +377,7 @@ namespace DotNetWMS.Controllers
                                 break;
                         }
 
-                        ItemStatusCheck(item, externalId);
+                        ItemStatusCheck(item, externalId, notifyUser: false);
                         await _context.SaveChangesAsync();
                         await UpdateItemCode(item);
                     }
@@ -427,7 +427,7 @@ namespace DotNetWMS.Controllers
                                     break;
                             }
 
-                            ItemStatusCheck(newItemWithId, externalId);
+                            ItemStatusCheck(newItemWithId, externalId, notifyUser: false);
                             await _context.SaveChangesAsync();
                             await UpdateItemCode(newItemWithId);
                         }
@@ -438,7 +438,15 @@ namespace DotNetWMS.Controllers
                    
                 }
             }
-            GlobalAlert.SendGlobalAlert($"Przedmioty ({model.Items.Count}) został przekazane!", "info");
+
+            SendInfo(model);
+
+            if (model.IsDocumentNeeded)
+            {
+
+            }
+
+            GlobalAlert.SendGlobalAlert($"Przedmioty ({model.Items.Count}) zostały przekazane!", "info");
             return RedirectToAction("Index");
         }
 
@@ -762,7 +770,8 @@ namespace DotNetWMS.Controllers
         /// </summary>
         /// <param name="item">The Item class object to be checked by the method</param>
         /// <param name="extId">External ID to check</param>
-        private void ItemStatusCheck(Item item, int? extId)
+        /// <param name="notifyUser">True if the user should be notified, otherwise - false. Default true</param>
+        private void ItemStatusCheck(Item item, int? extId, bool notifyUser = true)
         {
 
             if (item.ExternalId != null)
@@ -797,8 +806,8 @@ namespace DotNetWMS.Controllers
                     }
                 }
 
-                SendInfo(item);
-
+                if (notifyUser) SendInfo(item);
+     
             }
             else if (item.ExternalId == null && extId != null && (item.State == ItemState.Ordered || item.State == ItemState.InRepair || item.State == ItemState.InLoan) )
             {
@@ -822,7 +831,7 @@ namespace DotNetWMS.Controllers
                         break;
                 }
 
-                SendInfo(item, ext.Name);
+                if (notifyUser) SendInfo(item, ext.Name);
 
                 if (item.WarehouseId != null)
                 {
@@ -850,8 +859,8 @@ namespace DotNetWMS.Controllers
                         item.State = ItemState.Other;
                     }
                 }
-                
-                SendInfo(item);
+
+                if (notifyUser) SendInfo(item);
             }
             else
             {
@@ -1338,6 +1347,45 @@ namespace DotNetWMS.Controllers
             if (!string.IsNullOrEmpty(info.Title))
             {
                 _context.Infoboxes.Add(info);
+            }
+
+        }
+
+        private void SendInfo(ItemAssignmentConfirmationViewModel model)
+        {
+            string UserIdentityName = !string.IsNullOrEmpty(User?.Identity?.Name) ? User.Identity.Name : "";
+            Infobox info = new Infobox();
+            DateTime receivedDate = DateTime.Now;
+            string loggedUserId = _context.Users.FirstOrDefault(u => u.NormalizedUserName == UserIdentityName)?.Id;
+
+            if (!string.IsNullOrEmpty(model.UserId))
+            {
+                info.Title = "Otrzymałeś przedmioty";
+                info.Message = $"Otrzymałeś na stan nowe przedmioty w liczbie: {model.Items.Count()}. Sprawdź szczegóły w zakładce \"Majątek\".";
+                info.ReceivedDate = receivedDate;
+                info.UserId = model.UserId;
+            }
+
+            if (model.WarehouseId != null)
+            {
+                var warehouseName = _context.Warehouses.FirstOrDefault(w => w.Id == model.WarehouseId)?.AssignFullName;
+                warehouseName ??= "o nieznanej nazwie";
+
+                info.Title = "Przekazałeś przedmioty do magazynu";
+                info.Message = $"Przekazałeś do magazynu {warehouseName} przedmioty w liczbie: {model.Items.Count()}. Sprawdź szczegóły w zakładce \"Majątek\".";
+                info.ReceivedDate = receivedDate;
+                info.UserId = loggedUserId;
+            }
+
+            if (model.ExternalId != null)
+            {
+                var externalName = _context.Externals.FirstOrDefault(e => e.Id == model.ExternalId)?.FullName;
+                externalName ??= "o nieznanej nazwie";
+
+                info.Title = "Przekazałeś przedmioty kontrahentowi";
+                info.Message = $"Przekazałeś kontrahentowi {externalName} przedmioty w liczbie: {model.Items.Count()}. Sprawdź szczegóły w zakładce \"Majątek\".";
+                info.ReceivedDate = receivedDate;
+                info.UserId = loggedUserId;
             }
 
         }
