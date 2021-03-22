@@ -83,7 +83,7 @@ namespace DotNetWMS.Controllers
                         NumberDecimalSeparator = "."
                     };
                     var loginCount = _context.Users.Select(u => u.LoginCount).Sum();
-                    var result_2 = _context.Users.Where(u => u.LoginCount > 0).Select(u => new Diagram { Label = u.FullName, Data = $"{(Convert.ToDouble(u.LoginCount * 100) / loginCount).ToString(nfi)}%" });
+                    var result_2 = _context.Users.Where(u => u.LoginCount > 0).Select(u => new Diagram { Label = u.FullName, Data = $"{(Convert.ToDouble(u.LoginCount * 100) / loginCount).ToString(nfi)}" });
                     return Json(result_2);
                 //Number of different external's type, result as number
                 case "3":
