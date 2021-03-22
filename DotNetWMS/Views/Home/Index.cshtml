@@ -85,11 +85,13 @@
     </div>
     <div class="row mt-5">
         <div class="col-12 text-center">
-            <h6 class="font-weight-bold">Ilości typów zewnętrznych usług</h6>
+            <h6 class="font-weight-bold">
+                Pozycje z wybraną datą gwarancji
+            </h6>
             <hr />
-            <p>Pozycje z wybraną datą gwarancji oznaczają dni do końca gwarancji.<br />Wynik poniżej zera oznacza, że ​​pozycja jest nadal objęta gwarancją przez okres X dni i odwrotnie, gdy jej wartość jest powyżej 0</p>
+            <p>Pozycje z wybraną datą gwarancji oznaczają dni do końca gwarancji.<br />Wynik <u class="text-success">poniżej zera</u> oznacza, że ​​pozycja jest nadal objęta gwarancją przez okres X dni i odwrotnie, gdy jej wartość jest <u class="text-danger">większa od 0</u></p>
             <hr />
-            <canvas class="chart-diagram" style="min-height:250px" data-type="bar" data-id="4"></canvas>
+            <canvas class="chart-diagram" style="min-height:250px" data-type="horizontalBar" data-id="4"></canvas>
         </div>
     </div>
     @section Scripts {

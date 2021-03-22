@@ -204,7 +204,6 @@ $(function ()
 
                     labels: data.labels,
                     datasets: [{
-
                         label: false,
                         backgroundColor:
                             function (context) {
@@ -212,7 +211,7 @@ $(function ()
                                 var index = context.dataIndex;
                                 var value = context.dataset.data[index];
 
-                                return value > 0 ? 'rgb(40, 167, 69, 0.6)' : 'rgb(220, 53, 69, 0.6)';
+                                return value < 0 ? 'rgb(40, 167, 69, 0.6)' : 'rgb(220, 53, 69, 0.6)';
                             },
                         borderColor:
                             function (context) {
@@ -220,7 +219,7 @@ $(function ()
                                 var index = context.dataIndex;
                                 var value = context.dataset.data[index];
 
-                                return value > 0 ? 'rgb(40, 167, 69, 0.6)' : 'rgb(220, 53, 69, 0.6)';
+                                return value < 0 ? 'rgb(40, 167, 69, 0.6)' : 'rgb(220, 53, 69, 0.6)';
                             },
                         data: data.data,
                     }],
@@ -230,25 +229,23 @@ $(function ()
                     legend: {
                         display: false,
                     },
-               
+                    indexAxis: 'y',
                     scales: {
 
                         yAxes: [
                             {
-                                stacked: true,
-                                gridLines: {
-                                    display: true,
-                                    color: "rgba(255,99,132,0.2)"
-                                },
                                 ticks: {
                                     suggestedMax: 50,
                                     suggestedMin: -50
-                                }
+                                },
+                                barPercentage: 0.5,
                             }
                         ],
                         xAxes: [{
+                            stacked: true,
                             gridLines: {
-                                display: false
+                                display: true,
+                                color: "rgba(255,99,132,0.2)"
                             },
                         }]
                     }
