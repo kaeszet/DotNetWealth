@@ -16,34 +16,40 @@ $(function ()
     // Hamburger button
     $('.hamburger').menuCollapse();
 
-    if ($('#chartDiagram').length > 0) {
+    if ($('.chart-diagram').length) {
 
         //Chart diagram
-        $('#chartDiagram').createChart();
+        $('.chart-diagram').createChart();
     }
 
     $('[data-toggle="tooltip"]').tooltip();
 
     //Active nav list
 
-    $('.sidebar .list-group-item').each(function () {
-        //var current = location.pathname.split('/')[1];
-        //console.log(current)
+    $('.sidebar .list-group-item, #navbarTop .nav-link').each(function () {
+        sessionStorage.setItem('pathname', location.pathname)
+
         if ($(this).attr('href') == location.pathname) {
 
-            localStorage.setItem('active', $(this).data('id'))
+            sessionStorage.setItem('active', $(this).data('id'))
             $(this).addClass('active');
         }
 
-        if ($(this).data('id') == localStorage.getItem('active')) {
+        if (location.pathname == '/') {
 
+            sessionStorage.removeItem('active');
+        }
+        else if ($(this).data('id') == sessionStorage.getItem('active')) {
+            console.log(this)
             $('.sidebar .list-group-item.active').removeClass('active');
             $(this).addClass('active');
         }
+
+
     })
 
     // Global alert info
-    if ($('.alert.global-info').length > 0) {
+    if ($('.alert.global-info').length) {
 
         setTimeout(function () {
             $('.alert.global-info').alert('close');
@@ -60,7 +66,7 @@ $(function ()
         });
     });
 
-    if ($('.sidebar').length > 0) {
+    if ($('.sidebar').length && $(".sidebar").find('.active').length) {
 
         $centerNav = $(".sidebar").find('.active').offset().top - (($(window).height() / 2) - ($(".sidebar").find('.active').height() / 2));
         $('.sidebar').scrollTop($centerNav)
@@ -108,29 +114,143 @@ $(function ()
 
 (function ($)
 {
-    $.fn.createChart = function () {
+    $.fn.createChart = function (options) {
+        
+        let _this = $(this);
 
-        let chart = new Chart($(this), {
-            type: 'bar',
+        let settings = $.extend({
+            url: null,
+            type: null,
+        }, options);
 
-            data: {
-                labels: ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'],
-                datasets: [{
-                    label: 'Dane',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: [0, 10, 5, 15, 20, 5, 20]
-                },
-                {
-                    label: 'Dane 2',
-                    backgroundColor: 'rgb(0, 89, 220)',
-                    borderColor: 'rgb(0, 89, 220)',
-                    data: [8, 10, 11, 5, 13, 14, 10]
+        let defaultOptions = {
+            legend: {
+                display: false,
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        callback: function (label, index, labels) {
+                            if (/\s/.test(label)) {
+
+                                return label.split(" ");
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
                 }]
             },
+        };
 
-            options: {}
-        });
+        if (_this.length > 1) {
+
+            _this.each(function (key, item) {
+                if (settings.url || $(item).data('id')) {
+
+                    $.ajax({
+                        method: "GET",
+                        url: 'Home/Diagrams?number=' + (settings.url ? settings.url : $(item).data('id')),
+                    })
+                        .done(function (respose) {
+
+                            let data = {
+                                labels: [],
+                                data: [],
+                            }
+
+                            $(respose).each(function (key) {
+
+                                data.labels.push(this.label)
+                                data.data.push(this.data)
+                            })
+
+                            if ($(item).data('id') == 1 ||
+                                $(item).data('id') == 3) createDefaultChart(data, $(item))
+                            else if ($(item).data('id') == 4) createWarrantyDate(data, $(item))
+                        })
+                }
+            })
+        }
+
+        function createDefaultChart(data, item) {
+            let chart = new Chart(item, {
+                type: item.data('type'),
+                data: {
+
+                    labels: data.labels,
+                    datasets: [{
+
+                        label: false,
+                        backgroundColor: 'rgb(0, 89, 220)',
+                        borderColor: 'rgb(0, 89, 220)',
+                        data: data.data,
+                    }],
+                },
+                options: defaultOptions
+            })
+        }
+        function createWarrantyDate(data, item) {
+            console.log(data)
+            let chart = new Chart(item, {
+                type: item.data('type'),
+                data: {
+
+                    labels: data.labels,
+                    datasets: [{
+
+                        label: false,
+                        backgroundColor: 'rgb(0, 89, 220)',
+                        borderColor: 'rgb(0, 89, 220)',
+                        data: data.data,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false,
+                    },
+               
+                    scales: {
+
+                        yAxes: [
+                            {
+                                stacked: true,
+                                gridLines: {
+                                    display: true,
+                                    color: "rgba(255,99,132,0.2)"
+                                },
+                                ticks: {
+                                    suggestedMax: 50,
+                                    suggestedMin: -50
+                                }
+                            }
+                        ],
+                        xAxes: [{
+                            gridLines: {
+                                display: false
+                            },
+                            ticks: {
+                                callback: function (label, index, labels) {
+                                    if (/\s/.test(label)) {
+
+                                        return label.split(" ");
+                                    } else {
+                                        return label;
+                                    }
+                                }
+                            }
+                        }]
+                    }
+                }
+            })
+        }
     },
 
     //geocoder plugin
