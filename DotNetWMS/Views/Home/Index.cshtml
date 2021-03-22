@@ -69,8 +69,27 @@
         </div>
     </div>
     <div class="row mt-5">
-        <div class="col-md-6">
-            <canvas id="chartDiagram"></canvas>
+        <div class="col-md-6 mb-4 mb-md-0 text-center">
+            <h6 class="font-weight-bold">Pracownicy posiadający największą ilość przedmiotów na stanie</h6>
+            <hr />
+            <div >
+                <canvas class="chart-diagram" data-type="bar" data-id="1"></canvas>
+            </div>
+            
+        </div>
+        <div class="col-md-6 mb-4 mb-md-0 text-center">
+            <h6 class="font-weight-bold">Ilości typów zewnętrznych usług</h6>
+            <hr />
+            <canvas class="chart-diagram" data-type="bar" data-id="3"></canvas>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <h6 class="font-weight-bold">Ilości typów zewnętrznych usług</h6>
+            <hr />
+            <p>Pozycje z wybraną datą gwarancji oznaczają dni do końca gwarancji.<br />Wynik poniżej zera oznacza, że ​​pozycja jest nadal objęta gwarancją przez okres X dni i odwrotnie, gdy jej wartość jest powyżej 0</p>
+            <hr />
+            <canvas class="chart-diagram" style="min-height:250px" data-type="bar" data-id="4"></canvas>
         </div>
     </div>
     @section Scripts {
@@ -81,7 +100,9 @@ else
 {
     ViewData["Title"] = "Home";
     <div class="jumbotron shadow text-center m-auto w-100">
-        <img src="~/images/logo3.png" class="mw-100 mh-100" alt="">
+        <div class="mx-auto mb-3" style="max-width: 500px;">
+            <img src="~/images/logo3.png" class="mw-100 mh-100" alt="">
+        </div>
         <h1>Witaj w DotNetWealt!</h1>
         <p>Kliknij <b>start</b> i rozpocznij pracę</p>
         <hr class="my-4">
