@@ -96,7 +96,7 @@ namespace DotNetWMS.Controllers
             };
 
             ViewBag.QrCode = QRCodeCreator.ShowQRCode(url);
-            ViewBag.DepartmentName = user.Department.Name;
+            ViewBag.DepartmentName = user.Department?.Name;
             _logger.LogInformation($"INFO: Użytkownik wyświetlił dane pracownika o id = {id}");
 
             return View(viewModel);

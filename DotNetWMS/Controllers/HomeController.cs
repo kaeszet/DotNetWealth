@@ -65,11 +65,35 @@ namespace DotNetWMS.Controllers
         {
             return View();
         }
-        public IActionResult Diagrams()
+        
+        [HttpGet]
+        public IActionResult Diagrams([FromQuery] string number)
         {
-            var items = _context.Items.Where(i => i.UserId != null).Select(i => i.User.FullName).ToList().GroupBy(i => i).Select(x => new { Name = x.Key, Counter = x.Count() });
+            switch (number)
+            {
+                //users having items in stock, result as number
+                case "1":
+                    var result_1 = _context.Items.Where(i => i.UserId != null).Select(i => i.User.FullName).ToList().GroupBy(i => i).Select(x => new Diagram { Label = x.Key, Data = x.Count().ToString() });
+                    return Json(result_1);
+                //Number of successful log-ins per user, result as percentage
+                case "2":
+                    var loginCount = _context.Users.Select(u => u.LoginCount).Sum();
+                    var result_2 = _context.Users.Where(u => u.LoginCount > 0).Select(u => new Diagram { Label = u.FullName, Data = $"{Convert.ToDouble(u.LoginCount * 100) / loginCount}%" });
+                    return Json(result_2);
+                //Number of different external's type, result as number
+                case "3":
+                    var result_3 = _context.Externals.Select(e => e.Type).ToList().GroupBy(e => e).Select(x => new Diagram { Label = x.Key.ToString(), Data = x.Count().ToString() });
+                    return Json(result_3);
+                //items with selected warranty date, result as days to end of warranty. A result below zero means the item is still under warranty for x days and vice versa when above
+                case "4":
+                    DateTime current = DateTime.Now;
+                    var result_4 = _context.Items.Where(i => i.WarrantyDate != null).Select(i => new Diagram { Label = i.Assign, Data = (TimeSpan.Parse((current - i.WarrantyDate).ToString()).TotalDays).ToString()});
+                    return Json(result_4);
+                default:
+                    break;
+            }
             
-            return Json(items);
+            return Json("Nie odnaleziono raportu");
         }
         /// <summary>
         /// GET method responsible for returning an Error view

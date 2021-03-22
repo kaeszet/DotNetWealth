@@ -48,7 +48,7 @@ namespace DotNetWMS.Models
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Kod przedmiotu")]
-        [StringLength(30, ErrorMessage = CustomErrorMessages.MaxLength)]
+        [StringLength(100, ErrorMessage = CustomErrorMessages.MaxLength)]
         public string ItemCode { get; set; }
         /// <summary>
         /// Number of items

@@ -55,7 +55,7 @@ namespace DotNetWMS.Controllers
             IQueryable<Doc_Assignment> docs;
             var user = await _context.Users.FirstOrDefaultAsync(u => u.NormalizedUserName == User.Identity.Name);
 
-            if (User.IsInRole("Moderator"))
+            if (User.IsInRole("Moderator,Admin"))
             {
                 docs = _context.Doc_Assignments.Select(d => d);
             }

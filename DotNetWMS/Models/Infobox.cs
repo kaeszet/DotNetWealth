@@ -22,7 +22,7 @@ namespace DotNetWMS.Models
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Tytuł")]
-        [StringLength(30)]
+        [StringLength(100)]
         [RegularExpression(@"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-\.\'\s]*", ErrorMessage = "{0} nie może zawierać cyfr i znaków specjalnych")]
         public string Title { get; set; }
         /// <summary>

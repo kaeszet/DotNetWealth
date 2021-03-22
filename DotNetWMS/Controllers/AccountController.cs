@@ -222,6 +222,9 @@ namespace DotNetWMS.Controllers
                 //If there are no other accounts in the DB, the user is assigned the administrator role
                 if (result.Succeeded)
                 {
+                    user.LoginCount++;
+                    await _userManager.UpdateAsync(user);
+
                     if (_userManager.Users.Count() == 1)
                     {
                         await IsDefaultRolesExists();
