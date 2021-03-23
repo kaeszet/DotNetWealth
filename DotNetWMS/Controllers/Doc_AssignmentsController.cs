@@ -347,7 +347,7 @@ namespace DotNetWMS.Controllers
             {
                 return View("NotFound");
             }
-            
+
             return RedirectToAction(nameof(Index));
         }
         /// <summary>
@@ -416,7 +416,7 @@ namespace DotNetWMS.Controllers
                 { Doc_Titles.PZ, Doc_Titles.PZ, Doc_Titles.PZ, Doc_Titles.WZ },
             };
 
-            return docTitlesArray[(int)from+1,(int)to+1];
+            return docTitlesArray[(int)from + 1, (int)to + 1];
         }
         /// <summary>
         /// Method for calculating millisecond after today 0:00:00
