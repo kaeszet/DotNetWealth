@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace DotNetWMS.Models
 {
@@ -13,6 +14,10 @@ namespace DotNetWMS.Models
     /// </summary>
     public class Doc_Assignment
     {
+        //private JsonSerializerOptions options = new JsonSerializerOptions
+        //{
+        //    ReferenceHandler = ReferenceHandler.Preserve
+        //};
         /// <summary>
         /// Doc_Assignment database PK
         /// </summary>
@@ -125,6 +130,7 @@ namespace DotNetWMS.Models
         [Required]
         public string ItemsToString
         {
+            //get { return JsonSerializer.Serialize(_items, options); }
             get { return JsonSerializer.Serialize(_items); }
             set { _items = JsonSerializer.Deserialize<List<Item>>(value); }
         }

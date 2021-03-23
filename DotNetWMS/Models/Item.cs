@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DotNetWMS.Models
@@ -84,6 +85,7 @@ namespace DotNetWMS.Models
         /// Employee DB data
         /// </summary>
         [Display(Name = "Pracownik")]
+        [JsonIgnore]
         public WMSIdentityUser User { get; set; }
         /// <summary>
         /// Warehouse's FK. Can be null.
@@ -94,6 +96,7 @@ namespace DotNetWMS.Models
         /// Warehouse DB data
         /// </summary>
         [Display(Name = "Magazyn")]
+        [JsonIgnore]
         public Warehouse Warehouse { get; set; }
         /// <summary>
         /// External's FK. Can be null.
@@ -104,6 +107,7 @@ namespace DotNetWMS.Models
         /// External DB data
         /// </summary>
         [Display(Name = "Kl. zewn.")]
+        [JsonIgnore]
         public External External { get; set; }
         public string FullName => $"{Name} {Producer} {Model} (ID:{Id})";
         /// <summary>
