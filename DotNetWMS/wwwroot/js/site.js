@@ -40,7 +40,6 @@ $(function ()
             sessionStorage.removeItem('active');
         }
         else if ($(this).data('id') == sessionStorage.getItem('active')) {
-            console.log(this)
             $('.sidebar .list-group-item.active').removeClass('active');
             $(this).addClass('active');
         }
@@ -303,6 +302,7 @@ $(function ()
         let newContent = $('#contentToPrint');
         newContent.append(ToPrint.html())
         newContent.find('[data-hidden=true]').remove();
+        newContent.find('.d-none').removeClass('d-none');
 
         newWin.document.open();
         newWin.document.write(
