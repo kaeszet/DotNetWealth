@@ -304,6 +304,20 @@ $(function ()
         newContent.find('[data-hidden=true]').remove();
         newContent.find('.d-none').removeClass('d-none');
 
+        let signature = `<div class="form-row text-center">
+            <div class="form-group col-md-3 mr-auto">
+                <h2>......................</h2>
+                <h6>Podpis wydającego</h6>
+            </div>
+            <div class="form-group col-md-3">
+                <h2>......................</h2>
+                <h6>Podpis odbiorcy</h6>
+            </div>
+        </div>`
+
+        if ($(this).data('signature') == true ||
+            $(this).data('signature') == 'true') newContent.append(signature)
+
         newWin.document.open();
         newWin.document.write(
             `<html><head>
