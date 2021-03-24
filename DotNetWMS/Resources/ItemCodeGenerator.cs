@@ -38,7 +38,7 @@ namespace DotNetWMS.Resources
             sb.Append(string.IsNullOrEmpty(item.Producer) ? "" : item.Producer.Length >= 3 ? item.Producer.ToLower().Substring(0, 3) : item.Producer.ToLower());
             sb.Append(string.IsNullOrEmpty(item.Model) ? "" : item.Model.Length >= 3 ? item.Model.ToLower().Substring(0, 3) : item.Model.ToLower());
             sb.Append(item.Name.Length >= 3 ? item.Name.ToUpper().Substring(0, 3) : item.Name.ToUpper());
-            sb.Append(item.UserId != null ? $"{user}-" : "0-");
+            sb.Append(!string.IsNullOrEmpty(item.UserId) ? $"{user}-" : "0-");
             sb.Append(item.WarehouseId != null ? $"{item.WarehouseId}-" : "0-");
             sb.Append(item.ExternalId != null ? item.ExternalId.ToString() : "0");
 

@@ -233,6 +233,7 @@ namespace DotNetWMS.Controllers
             }
             return View(await items.AsNoTracking().ToListAsync());
         }
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpGet]
         public IActionResult ItemAssignment(string order, string search)
         {
@@ -285,7 +286,7 @@ namespace DotNetWMS.Controllers
 
             return View(viewModelList);
         }
-
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         public IActionResult ItemAssignmentConfirmation(string option, List<ItemsAssignmentViewModel> model)
         {
             var itemsChecked = model.Where(m => m.IsChecked == true).ToList();
@@ -305,11 +306,17 @@ namespace DotNetWMS.Controllers
                     ModelState.AddModelError(string.Empty, $"Nie można przekazać 0 sztuk. Wprowadzono: {itemsChecked[i].Quantity}, {itemToValidate.Assign}");
                     return View("ItemAssignment", model);
                 }
+
+                if (option == "ToUser" && itemToValidate.ExternalId != null)
+                {
+                    ModelState.AddModelError(string.Empty, $"Przedmiot \"{itemToValidate.FullName}\" jest w posiadaniu zewnętrznej firmy. Przedmiot można przypisać do pracownika, gdy zostanie dostarczony/zwrócony");
+                    return View("ItemAssignment", model);
+                }
             }
             
             if (ModelState.IsValid)
             {
-                if (!model.Any())
+                if (!itemsChecked.Any())
                 {
                     ModelState.AddModelError(string.Empty, "Nie wybrano żadnego przedmiotu do przekazania");
                     return View("ItemAssignment", model);
@@ -340,20 +347,36 @@ namespace DotNetWMS.Controllers
 
                 if (externals != null)
                 {
-                    ViewData["Externals"] = new SelectList(_context.Externals, "Id", "FullName");
-                    return View("ItemAssignmentConfirmation", viewModel);
+                    if (User.IsInAnyRoles("StandardPlus,Moderator,Admin"))
+                    {
+                        ViewData["Externals"] = new SelectList(_context.Externals, "Id", "FullName");
+                        return View("ItemAssignmentConfirmation", viewModel);
+                    }
+                    else
+                    {
+                        RedirectToAction("AccessDenied", "Administration");
+                    }
+                    
                 }
             }
 
             return View("ItemAssignment", model);
         }
+        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpPost]
         public async Task<IActionResult> ItemAssignmentSaveInDb(string option, ItemAssignmentConfirmationViewModel model)
         {
+           
             for (int i = 0; i < model.Items.Count; i++)
             {
+                string userName = "";
+
                 var item = _context.Items.Find(model.Items[i].Id);
+
+                //string userId = item.UserId;
+                //int? warehouseId = item.WarehouseId;
                 int? externalId = item.ExternalId;
+                
 
                 if (item != null)
                 {
@@ -362,14 +385,36 @@ namespace DotNetWMS.Controllers
                         switch (option)
                         {
                             case "ToUser":
+                                if (item.UserId == model.UserId)
+                                {
+                                    ModelState.AddModelError(string.Empty, $"Przedmiot {item.FullName} jest już na stanie o wybranego pracownika");
+                                    ViewData["Users"] = new SelectList(_context.Users, "Id", "FullName");
+                                    ViewData["Option"] = option;
+                                    return View("ItemAssignmentConfirmation", model);
+                                }
                                 item.UserId = model.UserId;
+                                userName = _context.Users.Find(model.UserId)?.NormalizedUserName;
                                 MergeSameItems(item, typeof(WMSIdentityUser));
                                 break;
                             case "ToWarehouse":
+                                if (item.WarehouseId == model.WarehouseId)
+                                {
+                                    ModelState.AddModelError(string.Empty, $"Przedmiot {item.FullName} jest już w wybranym magazynie");
+                                    ViewData["Warehouses"] = new SelectList(_context.Warehouses, "Id", "AssignFullName");
+                                    ViewData["Option"] = option;
+                                    return View("ItemAssignmentConfirmation", model);
+                                }
                                 item.WarehouseId = model.WarehouseId;
                                 MergeSameItems(item, typeof(Warehouse));
                                 break;
                             case "ToExternal":
+                                if (item.ExternalId == model.ExternalId)
+                                {
+                                    ModelState.AddModelError(string.Empty, $"Przedmiot {item.FullName} jest już u wybranego kontahenta");
+                                    ViewData["Externals"] = new SelectList(_context.Externals, "Id", "FullName");
+                                    ViewData["Option"] = option;
+                                    return View("ItemAssignmentConfirmation", model);
+                                }
                                 item.ExternalId = model.ExternalId;
                                 MergeSameItems(item, typeof(External));
                                 break;
@@ -378,15 +423,16 @@ namespace DotNetWMS.Controllers
                         }
 
                         ItemStatusCheck(item, externalId, notifyUser: false);
+                        item.ItemCode = ItemCodeGenerator.Generate(item, userName);
                         await _context.SaveChangesAsync();
-                        await UpdateItemCode(item);
+                        
                     }
                     
                     if (item.Quantity > model.Items[i].Quantity)
                     {
                         item.Quantity -= model.Items[i].Quantity;
 
-                        string dt = DateTime.Now.ToString("yyyyMMddHHmmss");
+                        string guid = Guid.NewGuid().ToString();
 
                         Item newItem = new Item()
                         {
@@ -394,14 +440,14 @@ namespace DotNetWMS.Controllers
                             Name = item.Name,
                             Producer = item.Producer,
                             Model = item.Model,
-                            ItemCode = dt,
+                            ItemCode = guid,
                             Quantity = model.Items[i].Quantity,
                             Units = model.Items[i].Units,
                             WarrantyDate = item.WarrantyDate,
                             State = ItemState.Unknown,
                             UserId = !string.IsNullOrEmpty(model.UserId) ? model.UserId : item.UserId,
-                            WarehouseId = model.WarehouseId != 0 ? model.WarehouseId : item.WarehouseId,
-                            ExternalId = model.ExternalId != 0 ? model.ExternalId : item.ExternalId
+                            WarehouseId = model.WarehouseId != null ? model.WarehouseId : item.WarehouseId,
+                            ExternalId = model.ExternalId != null ? model.ExternalId : item.ExternalId
 
                         };
 
@@ -410,11 +456,13 @@ namespace DotNetWMS.Controllers
 
                         if (result > 0)
                         {
-                            var newItemWithId = _context.Items.FirstOrDefault(i => i.ItemCode == dt);
+                            var newItemWithId = _context.Items.FirstOrDefault(i => i.ItemCode == guid);
+                            model.Items[i].Id = newItemWithId.Id;
 
                             switch (option)
                             {
                                 case "ToUser":
+                                    userName = _context.Users.FirstOrDefault(u => u.Id == newItemWithId.UserId)?.NormalizedUserName;
                                     MergeSameItems(newItemWithId, typeof(WMSIdentityUser));
                                     break;
                                 case "ToWarehouse":
@@ -428,8 +476,8 @@ namespace DotNetWMS.Controllers
                             }
 
                             ItemStatusCheck(newItemWithId, externalId, notifyUser: false);
+                            newItemWithId.ItemCode = ItemCodeGenerator.Generate(newItemWithId, userName);
                             await _context.SaveChangesAsync();
-                            await UpdateItemCode(newItemWithId);
                         }
                         
 
@@ -439,10 +487,21 @@ namespace DotNetWMS.Controllers
                 }
             }
 
-            SendInfo(model);
+            await SendInfo(model);
 
             if (model.IsDocumentNeeded)
             {
+                Doc_Titles docTitle = option switch
+                {
+                    "ToUser" => !string.IsNullOrEmpty(model.UserId) ? Doc_Titles.PW : Doc_Titles.ZW,
+                    "ToWarehouse" => model.WarehouseId != null ? Doc_Titles.MM : Doc_Titles.RW,
+                    "ToExternal" => model.ExternalId != null ? Doc_Titles.WZ : Doc_Titles.PZ,
+                    _ => Doc_Titles.P,
+                };
+
+                Doc_Creator creator = new Doc_Creator();
+                string username = User?.Identity?.Name;
+                await creator.GenerateAndSaveDocument(model, _context, username, docTitle);
 
             }
 
@@ -1351,7 +1410,7 @@ namespace DotNetWMS.Controllers
 
         }
 
-        private void SendInfo(ItemAssignmentConfirmationViewModel model)
+        private async Task SendInfo(ItemAssignmentConfirmationViewModel model)
         {
             string UserIdentityName = !string.IsNullOrEmpty(User?.Identity?.Name) ? User.Identity.Name : "";
             Infobox info = new Infobox();
@@ -1388,6 +1447,12 @@ namespace DotNetWMS.Controllers
                 info.UserId = loggedUserId;
             }
 
+            if (!string.IsNullOrEmpty(info.Title))
+            {
+                _context.Infoboxes.Add(info);
+                await _context.SaveChangesAsync();
+            }
+
         }
         /// <summary>
         /// Method responsible for updating ItemCode in case of changes in DB
@@ -1396,7 +1461,8 @@ namespace DotNetWMS.Controllers
         /// <returns></returns>
         private async Task UpdateItemCode(Item item)
         {
-            item.ItemCode = ItemCodeGenerator.Generate(item, User?.Identity?.Name);
+            string userName = _context.Users.FirstOrDefault(u => u.Id == item.UserId).NormalizedUserName;
+            item.ItemCode = !string.IsNullOrEmpty(userName) ? ItemCodeGenerator.Generate(item, userName) : ItemCodeGenerator.Generate(item, User?.Identity?.Name);
             _context.Update(item);
             await _context.SaveChangesAsync();
         }
