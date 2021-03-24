@@ -78,8 +78,8 @@
             <input type="hidden" asp-for="@Model.CreationDate" />
         </div>
 
-
-        <table class="table table-hover table-responsive-sm">
+        <div class="table-responsive">
+        <table class="table table-hover table-sm">
             <thead class="thead-light">
                 <tr>
                     <th>
@@ -150,6 +150,7 @@
                 }
             </tbody>
         </table>
+            </div>
 
         <div class="form-group mt-3" data-hidden='true'>
             <button type="button" class="btn btn-outline-primary btn-sm" id="print" data-title="@ViewData["DocumentTitle"]" data-content="docToPrint"><i class="fas fa-print mr-1"></i>Drukuj</button>
