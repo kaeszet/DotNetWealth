@@ -38,6 +38,7 @@ namespace DotNetWMS.Models
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Ilość")]
+        [Range(0.01, 100000, ErrorMessage = "Wprowadzona wartość musi być większa od zera!")]
         public decimal Quantity { get; set; }
         /// <summary>
         /// Enum used to select units of measure

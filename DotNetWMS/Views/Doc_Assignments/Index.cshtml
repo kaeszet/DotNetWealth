@@ -73,6 +73,10 @@
                         {
                             <td>@Html.DisplayFor(modelItem => item.ExternalFromName)</td>
                         }
+                        @if (String.IsNullOrEmpty(item.UserFrom) && item.WarehouseFrom == null && item.ExternalFrom == null)
+                        {
+                            <td>Nie podano</td>
+                        }
                         @if (!String.IsNullOrEmpty(item.UserTo))
                         {
                             <td>@Html.DisplayFor(modelItem => item.UserToName)</td>
@@ -84,6 +88,10 @@
                         @if (item.ExternalTo != null)
                         {
                             <td>@Html.DisplayFor(modelItem => item.ExternalToName)</td>
+                        }
+                        @if (String.IsNullOrEmpty(item.UserTo) && item.WarehouseTo == null && item.ExternalTo == null)
+                        {
+                            <td>Nie podano</td>
                         }
                         <td>@Html.DisplayFor(modelItem => item.IsConfirmed)</td>
                         <td>@Html.DisplayFor(modelItem => item.ConfirmationDate)</td>
@@ -123,7 +131,7 @@
                                     </div>
                                 </div>
                             </div>
-</td>
+                        </td>
                     </tr>
 						index++;
 					}
