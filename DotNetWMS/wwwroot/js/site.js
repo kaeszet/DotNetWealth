@@ -98,6 +98,8 @@ $(function ()
             tableOffsetHeight = $table.offset().top + $table.height(),
             menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
 
+        console.log($menu)
+
         if (menuOffsetHeight > tableOffsetHeight)
             $table.css("padding-bottom", (menuOffsetHeight - tableOffsetHeight) + 20);
     });
