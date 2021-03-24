@@ -93,7 +93,16 @@
                         {
                             <td>Nie podano</td>
                         }
-                        <td>@Html.DisplayFor(modelItem => item.IsConfirmed)</td>
+                        <td class="text-center">
+                            @if (item.IsConfirmed)
+                            {
+                                <i class="fas fa-check-circle fa-lg text-success"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-times-circle fa-lg text-danger"></i>
+                            }
+                        </td>
                         <td>@Html.DisplayFor(modelItem => item.ConfirmationDate)</td>
                         <td>
                             <div class="btn-group dropleft">

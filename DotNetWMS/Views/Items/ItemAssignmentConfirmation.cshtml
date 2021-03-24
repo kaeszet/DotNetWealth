@@ -16,52 +16,60 @@
 <form asp-action="ItemAssignmentSaveInDb" >
     <div class="row">
         <div class="col-12">
-
+            <a asp-action="ItemAssignment" class="btn btn-outline-dark btn-sm mr-2"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy</a>
             @{
                 var index = 1;
             }
-            <div class="form-check">
-                <input class="form-check-input" asp-for="IsDocumentNeeded">
-                <label class="form-check-label" asp-for="IsDocumentNeeded"></label>
+            <div class="col-md-6 pl-md-0">
+                <div class="custom-control custom-checkbox my-4">
+                    <input class="custom-control-input" asp-for="IsDocumentNeeded">
+                    <label class="custom-control-label btn p-0 font-weight-bold" asp-for="IsDocumentNeeded"></label>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 pl-md-0">
+                @if (ViewData["Option"].ToString() == "ToUser")
+                {
+                    <label asp-for="UserId"></label>
+                }
+                else if (ViewData["Option"].ToString() == "ToWarehouse")
+                {
+                    <label asp-for="WarehouseId"></label>
+                }
+                else if (ViewData["Option"].ToString() == "ToExternal")
+                {
+                    <label asp-for="ExternalId"></label>
+                }
+                <div class="input-group">
+                    @if (ViewData["Option"].ToString() == "ToUser")
+                    {
+                        <select asp-for="UserId" class="form-control" asp-items="ViewBag.Users"
+                                title="Brak">
+                            <option value="" selected>Brak</option>
+                        </select>
+                    }
+                    else if (ViewData["Option"].ToString() == "ToWarehouse")
+                    {
+                        <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.Warehouses"
+                                title="Brak">
+                            <option value="" selected>Brak</option>
+                        </select>
+                    }
+                    else if (ViewData["Option"].ToString() == "ToExternal")
+                    {
+                        <select asp-for="ExternalId" class="form-control" asp-items="ViewBag.Externals"
+                                title="Brak">
+                            <option value="" selected>Brak</option>
+                        </select>
+                    }
+                    <div class="input-group-append">
+                        <button asp-action="ItemAssignmentSaveInDb" asp-route-option="@ViewData["Option"].ToString()" class="btn btn-success" type="submit">Zatwierdź</button>
+                    </div>
+                </div>
+                <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
             <hr />
-            @if (ViewData["Option"].ToString() == "ToUser")
-            {
-                <div class="form-group col-md-4">
-                    <label asp-for="UserId"></label>
-                    <select asp-for="UserId" class="form-control" asp-items="ViewBag.Users"
-                            title="Brak">
-                        <option value="" selected>Brak</option>
-                    </select>
-                    <span asp-validation-for="UserId" class="text-danger"></span>
-                </div>
-            }
-            @if (ViewData["Option"].ToString() == "ToWarehouse")
-            {
-                <div class="form-group col-md-4">
-                    <label asp-for="WarehouseId"></label>
-                    <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.Warehouses"
-                            title="Brak">
-                        <option value="" selected>Brak</option>
-                    </select>
-                    <span asp-validation-for="WarehouseId" class="text-danger"></span>
-                </div>
-            }
-            @if (ViewData["Option"].ToString() == "ToExternal")
-            {
-                <div class="form-group col-md-4">
-                    <label asp-for="ExternalId"></label>
-                    <select asp-for="ExternalId" class="form-control" asp-items="ViewBag.Externals"
-                            title="Brak">
-                        <option value="" selected>Brak</option>
-                    </select>
-                    <span asp-validation-for="ExternalId" class="text-danger"></span>
-                </div>
-            }
 
-            <a asp-action="ItemAssignment" class="btn btn-dark btn-sm mr-2"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy</a>
-            <button type="submit" asp-action="ItemAssignmentSaveInDb" asp-route-option="@ViewData["Option"].ToString()" class="btn btn-success btn-sm"><i class="fas fa-check mr-1"></i>Zatwierdź</button>
-            <hr />
             <div class="table-responsive">
                 <table class="table table-hover table-sm">
                     <thead class="thead-light">
@@ -103,10 +111,10 @@
                                     <input type="hidden" asp-for="@Model.Items[i].Quantity" />
                                     <input type="hidden" asp-for="@Model.Items[i].Units" />
                                     @*<input type="hidden" asp-for="@Model.Items[i].WarrantyDate" />
-                                    <input type="hidden" asp-for="@Model.Items[i].State" />
-                                    <input type="hidden" asp-for="@Model.Items[i].UserId" />
-                                    <input type="hidden" asp-for="@Model.Items[i].WarehouseId" />
-                                    <input type="hidden" asp-for="@Model.Items[i].ExternalId" />*@
+                                <input type="hidden" asp-for="@Model.Items[i].State" />
+                                <input type="hidden" asp-for="@Model.Items[i].UserId" />
+                                <input type="hidden" asp-for="@Model.Items[i].WarehouseId" />
+                                <input type="hidden" asp-for="@Model.Items[i].ExternalId" />*@
                                 </td>
                             </tr>
                             index++;
