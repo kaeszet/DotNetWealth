@@ -18,6 +18,8 @@ namespace DotNetWMS.Resources
             if (document != null)
             {
                 _context.Add(document);
+                AddToInfobox(document, _context, userName);
+
                 await _context.SaveChangesAsync();
             }
         }
@@ -37,33 +39,58 @@ namespace DotNetWMS.Resources
             }
 
             var items = _context.Items.Where(i => itemIds.Contains(i.Id)).ToList();
-            //var items = _context.Items.Where(i => itemIds.Contains(i.Id.ToString())).ToList();
 
-            Doc_Assignment doc = new Doc_Assignment
+            Doc_Assignment doc;
+
+            if (docTitle == Doc_Titles.ZW || docTitle == Doc_Titles.RW || docTitle == Doc_Titles.PZ)
             {
-                DocumentId = DocumentIdGenerator(currentDate, docTitle, docCount),
-                Title = docTitle.ToString(),
-                CreationDate = currentDate,
-                UserFrom = !string.IsNullOrEmpty(loggedUser.Id) ? loggedUser.Id : null,
-                UserFromName = !string.IsNullOrEmpty(loggedUser.FullNameForDocumentation) ? loggedUser.FullNameForDocumentation : null,
-                UserTo = !string.IsNullOrEmpty(model.UserId) ? model.UserId : null,
-                UserToName = !string.IsNullOrEmpty(model.UserId) ? _context.Users.Find(model.UserId).FullNameForDocumentation : null,
-                WarehouseTo = model.WarehouseId != null ? model.WarehouseId : null,
-                WarehouseToName = model.WarehouseId != null ? _context.Warehouses.Find(model.WarehouseId).FullNameForDocumentation : null,
-                ExternalTo = model.ExternalId != null ? model.ExternalId : null,
-                ExternalToName = model.ExternalId != null ? _context.Externals.Find(model.ExternalId).FullNameForDocumentation : null,
-                Items = items
+                doc = new Doc_Assignment
+                {
+                    DocumentId = DocumentIdGenerator(currentDate, docTitle, docCount),
+                    Title = docTitle.ToString(),
+                    CreationDate = currentDate,
+                    UserFrom = !string.IsNullOrEmpty(model.UserId) ? model.UserId : null,
+                    UserFromName = !string.IsNullOrEmpty(model.UserId) ? _context.Users.Find(model.UserId).FullNameForDocumentation : null,
+                    UserTo = !string.IsNullOrEmpty(loggedUser.Id) ? loggedUser.Id : null,
+                    UserToName = !string.IsNullOrEmpty(loggedUser.FullNameForDocumentation) ? loggedUser.FullNameForDocumentation : null,
+                    WarehouseFrom = model.WarehouseId != null ? model.WarehouseId : null,
+                    WarehouseFromName = model.WarehouseId != null ? _context.Warehouses.Find(model.WarehouseId).FullNameForDocumentation : null,
+                    ExternalFrom = model.ExternalId != null ? model.ExternalId : null,
+                    ExternalFromName = model.ExternalId != null ? _context.Externals.Find(model.ExternalId).FullNameForDocumentation : null,
+                    Items = items
 
-            };
+                };
+            }
+            else
+            {
+                doc = new Doc_Assignment
+                {
+                    DocumentId = DocumentIdGenerator(currentDate, docTitle, docCount),
+                    Title = docTitle.ToString(),
+                    CreationDate = currentDate,
+                    UserFrom = !string.IsNullOrEmpty(loggedUser.Id) ? loggedUser.Id : null,
+                    UserFromName = !string.IsNullOrEmpty(loggedUser.FullNameForDocumentation) ? loggedUser.FullNameForDocumentation : null,
+                    UserTo = !string.IsNullOrEmpty(model.UserId) ? model.UserId : null,
+                    UserToName = !string.IsNullOrEmpty(model.UserId) ? _context.Users.Find(model.UserId).FullNameForDocumentation : null,
+                    WarehouseTo = model.WarehouseId != null ? model.WarehouseId : null,
+                    WarehouseToName = model.WarehouseId != null ? _context.Warehouses.Find(model.WarehouseId).FullNameForDocumentation : null,
+                    ExternalTo = model.ExternalId != null ? model.ExternalId : null,
+                    ExternalToName = model.ExternalId != null ? _context.Externals.Find(model.ExternalId).FullNameForDocumentation : null,
+                    Items = items
+
+                };
+            }
+
+            
 
             return doc;
         }
 
-        private async Task SaveDocument(DotNetWMSContext _context, Doc_Assignment doc)
-        {
-            _context.Add(doc);
-            await _context.SaveChangesAsync();
-        }
+        //private async Task SaveDocument(DotNetWMSContext _context, Doc_Assignment doc)
+        //{
+        //    _context.Add(doc);
+        //    await _context.SaveChangesAsync();
+        //}
 
         private string DocumentIdGenerator(DateTime time, Doc_Titles title, int docsInContext)
         {
@@ -145,6 +172,39 @@ namespace DotNetWMS.Resources
         {
             DateTime today = new DateTime(date.Year, date.Month, date.Day);
             return (long)(DateTime.Now - today).TotalMilliseconds;
+        }
+
+        private void AddToInfobox(Doc_Assignment doc, DotNetWMSContext _context, string userName)
+        {
+            Infobox info = new Infobox();
+            //string UserIdentityName = !string.IsNullOrEmpty(User?.Identity?.Name) ? User.Identity.Name : "";
+            string loggedUserId = _context.Users.FirstOrDefault(u => u.NormalizedUserName == userName)?.Id;
+
+            if (doc.UserTo != null)
+            {
+                var user = _context.Users.FirstOrDefault(u => u.Id == doc.UserTo);
+
+                if (user != null)
+                {
+                    info.Title = $"Otrzymałeś dokument do potwierdzenia od użytkownika {userName}";
+                    info.Message = $"Wygenerowano dokument nr {doc.DocumentId}, który wymaga potwierdzenia. Aby to zrobić, kliknij \"Potwierdź\"";
+                    info.ReceivedDate = doc.CreationDate;
+                    info.UserId = string.IsNullOrEmpty(user.Id) ? loggedUserId : user.Id;
+                    info.DocumentId = doc.DocumentId;
+
+                    _context.Infoboxes.Add(info);
+                }
+            }
+            else
+            {
+                info.Title = "Potwierdź wygenerowany przez siebie dokument";
+                info.Message = $"Wygenerowano dokument nr {doc.DocumentId}, który wymaga potwierdzenia. Aby to zrobić, kliknij \"Potwierdź\"";
+                info.ReceivedDate = doc.CreationDate;
+                info.UserId = loggedUserId;
+                info.DocumentId = doc.DocumentId;
+
+                _context.Infoboxes.Add(info);
+            }
         }
     }
 }

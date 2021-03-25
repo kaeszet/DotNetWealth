@@ -66,6 +66,15 @@ namespace DotNetWMS.Controllers
             return RedirectToAction(nameof(Index));
 
         }
+        public async Task<IActionResult> DeleteAllChecked()
+        {
+            var infosToDelete = _context.Infoboxes.Where(i => i.User.NormalizedUserName == User.Identity.Name && i.IsChecked == true);
+            _context.Infoboxes.RemoveRange(infosToDelete);
+            await _context.SaveChangesAsync();
+            GlobalAlert.SendGlobalAlert($"Usunięto wszystkie przeczytane wiadomości!", "info");
+            return RedirectToAction(nameof(Index));
+
+        }
         /// <summary>
         /// Method to mark messages as checked or documents as accepted
         /// </summary>

@@ -42,6 +42,7 @@ namespace DotNetWMS.Resources
                         var isInStandardPlusRole = await userStore.IsInRoleAsync(empsArray[i], "StandardPlus");
                         var isInHRRole = await userStore.IsInRoleAsync(empsArray[i], "Kadry");
                         var isInModeratorRole = await userStore.IsInRoleAsync(empsArray[i], "Moderator");
+                        var isInAdminRole = await userStore.IsInRoleAsync(empsArray[i], "Admin");
 
                         if (isInStandardRole)
                         {
@@ -58,6 +59,10 @@ namespace DotNetWMS.Resources
                         if (isInModeratorRole)
                         {
                             await userStore.RemoveFromRoleAsync(empsArray[i], "Moderator");
+                        }
+                        if (isInAdminRole && empsArray[i].Surname == "Właściciel")
+                        {
+                            await userStore.RemoveFromRoleAsync(empsArray[i], "Admin");
                         }
 
                         empsArray[i].DepartmentId = null;
@@ -400,7 +405,12 @@ namespace DotNetWMS.Resources
                 var userStore = new UserStore<WMSIdentityUser>(context);
                 var isInStandardRole = await userStore.IsInRoleAsync(users[i], "STANDARD");
 
-                if (!isInStandardRole)
+                if (users[i].Surname == "Właściciel")
+                {
+                    await userStore.AddToRoleAsync(users[i], "Admin");
+                }
+
+                if (!isInStandardRole && users[i].Surname != "Właściciel")
                 {
                     await userStore.AddToRoleAsync(users[i], "Standard");
                 }

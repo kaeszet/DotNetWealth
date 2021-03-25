@@ -8,6 +8,10 @@
     <h2 class="text-sm-left text-center">Skrzynka wiadomości</h2>
 </div>
 <hr />
+<div>
+    <a asp-action="DeleteAllChecked" class="btn btn-outline-dark">Usuń wszystkie przeczytane</a>
+</div>
+<hr />
 <div class="row">
     <div class="col-12">
         <div class="list-group info-box">
@@ -29,7 +33,7 @@
                         <p class="mb-1">@Html.DisplayFor(modelItem => item.Message)</p>
                         <hr />
                         <div class="w-100">
-                            @if (item.Title == "Nowy dokument")
+                            @if (!string.IsNullOrEmpty(item.DocumentId))
                             {
                                 <a asp-action="Check" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Potwierdź</a>
                                 <a asp-controller="Doc_Assignments" asp-action="ShowDocument" asp-route-id="@item.DocumentId" class="btn btn-sm btn-primary">Sprawdź</a>
@@ -55,7 +59,7 @@
                         <p class="mb-1">@Html.DisplayFor(modelItem => item.Message)</p>
                         <hr />
                         <div class="w-100">
-                            @if (item.Title == "Nowy dokument")
+                            @if (!string.IsNullOrEmpty(item.DocumentId))
                             {
                                 <b class="text-success">Potwierdzono!</b>
                             }
@@ -95,4 +99,4 @@
             }
         </div>
     </div>
-    </div>
+</div>
