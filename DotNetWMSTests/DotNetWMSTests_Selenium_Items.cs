@@ -56,8 +56,18 @@ namespace DotNetWMSTests
             Login();
             page.GoToPage();
             CreateItemForTest();
-            page.WaitUntilPopUpDisappears(waiter);
-            assertVal = page.WelcomeText.Displayed;
+
+            try
+            {
+                page.WaitUntilPopUpDisappears(waiter);
+                assertVal = page.WelcomeText.Displayed;
+            }
+            catch (Exception e)
+            {
+                DeleteItemAfterTest();
+                throw e;
+            }
+           
             DeleteItemAfterTest();
 
             Assert.IsTrue(assertVal);
@@ -110,17 +120,27 @@ namespace DotNetWMSTests
             page.GoToPage();
             CreateItemForTest();
 
-            page.Items_Button_Overview.Click();
-            page.Items_Button_Assign.Click();
-            page.Items_Checkbox_IsChecked.Click();
-            page.Items_Button_Assign_ToUser.Click();
-            page.SelectByText("UserId", "Nowy Józef");
-            page.Items_Button_Assign_Submit.Click();
-
-            //page.WaitUntilPageElement(waiter, "//a[@href='/Items/Create']");
-            //page.WaitUntilElementIsClickable(waiter, page.Items_Button_Create_Submit);
-            page.WaitUntilPopUpDisappears(waiter);
-            assertVal = page.WelcomeText.Displayed;
+            try
+            {
+                page.Items_Button_Overview.Click();
+                page.Items_Button_Assign.Click();
+                page.Items_Checkbox_IsChecked.Click();
+                page.Items_Button_Assign_To.Click();
+                page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToUser);
+                page.Items_Button_Assign_ToUser.Click();
+                page.SelectByText("UserId", "Nowy Józef");
+                page.Items_Button_Assign_Submit.Click();
+                page.WaitUntilPopUpDisappears(waiter);
+                page.GoToPage();
+                page.Items_Button_Overview.Click();
+                assertVal = page.WelcomeText.Displayed;
+            }
+            catch (Exception e)
+            {
+                DeleteItemAfterTest();
+                throw e;
+            }
+            
             DeleteItemAfterTest();
 
             Assert.IsTrue(assertVal);
@@ -135,6 +155,8 @@ namespace DotNetWMSTests
 
             page.Items_Button_Overview.Click();
             page.Items_Button_Assign.Click();
+            page.Items_Button_Assign_To.Click();
+            page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToUser);
             page.Items_Button_Assign_ToUser.Click();
 
             Assert.IsTrue(page.Items_ErrorList_NoItemChecked.Displayed);
@@ -149,11 +171,22 @@ namespace DotNetWMSTests
             page.GoToPage();
             CreateItemForTest("ExternalId");
 
-            page.Items_Button_Overview.Click();
-            page.Items_Button_Assign.Click();
-            page.Items_Checkbox_IsChecked.Click();
-            page.Items_Button_Assign_ToUser.Click();
-            assertVal = page.Items_ErrorList_Model.Displayed;
+            try
+            {
+                page.Items_Button_Overview.Click();
+                page.Items_Button_Assign.Click();
+                page.Items_Checkbox_IsChecked.Click();
+                page.Items_Button_Assign_To.Click();
+                page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToUser);
+                page.Items_Button_Assign_ToUser.Click();
+                assertVal = page.Items_ErrorList_Model.Displayed;
+            }
+            catch (Exception e)
+            {
+                DeleteItemAfterTest();
+                throw e;
+            }
+            
             DeleteItemAfterTest();
 
             Assert.IsTrue(assertVal);
@@ -168,14 +201,25 @@ namespace DotNetWMSTests
             page.GoToPage();
             CreateItemForTest("UserId");
 
-            page.Items_Button_Overview.Click();
-            page.Items_Button_Assign.Click();
-            page.Items_Checkbox_IsChecked.Click();
-            page.Items_Button_Assign_ToUser.Click();
-            page.SelectByText("UserId", "Nowy Józef");
-            page.Items_Button_Assign_Submit.Click();
-            assertVal = page.Items_ErrorList_Model.Displayed;
-            page.GoToPage();
+            try
+            {
+                page.Items_Button_Overview.Click();
+                page.Items_Button_Assign.Click();
+                page.Items_Checkbox_IsChecked.Click();
+                page.Items_Button_Assign_To.Click();
+                page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToUser);
+                page.Items_Button_Assign_ToUser.Click();
+                page.SelectByText("UserId", "Nowy Józef");
+                page.Items_Button_Assign_Submit.Click();
+                assertVal = page.Items_ErrorList_Model.Displayed;
+                //page.GoToPage();
+            }
+            catch (Exception e)
+            {
+                DeleteItemAfterTest();
+                throw e;
+            }
+            
             DeleteItemAfterTest();
 
             Assert.IsTrue(assertVal);
@@ -190,14 +234,25 @@ namespace DotNetWMSTests
             page.GoToPage();
             CreateItemForTest("WarehouseId");
 
-            page.Items_Button_Overview.Click();
-            page.Items_Button_Assign.Click();
-            page.Items_Checkbox_IsChecked.Click();
-            page.Items_Button_Assign_ToWarehouse.Click();
-            page.SelectByText("WarehouseId", "Magazyn główny, Myśliwska 61");
-            page.Items_Button_Assign_Submit.Click();
-            assertVal = page.Items_ErrorList_Model.Displayed;
-            page.GoToPage();
+            try
+            {
+                page.Items_Button_Overview.Click();
+                page.Items_Button_Assign.Click();
+                page.Items_Checkbox_IsChecked.Click();
+                page.Items_Button_Assign_To.Click();
+                page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToWarehouse);
+                page.Items_Button_Assign_ToWarehouse.Click();
+                page.SelectByText("WarehouseId", "Magazyn główny, Myśliwska 61");
+                page.Items_Button_Assign_Submit.Click();
+                assertVal = page.Items_ErrorList_Model.Displayed;
+                //page.GoToPage();
+            }
+            catch (Exception e)
+            {
+                DeleteItemAfterTest();
+                throw e;
+            }
+            
             DeleteItemAfterTest();
 
             Assert.IsTrue(assertVal);
@@ -212,14 +267,25 @@ namespace DotNetWMSTests
             page.GoToPage();
             CreateItemForTest("ExternalId");
 
-            page.Items_Button_Overview.Click();
-            page.Items_Button_Assign.Click();
-            page.Items_Checkbox_IsChecked.Click();
-            page.Items_Button_Assign_ToExternal.Click();
-            page.SelectByText("ExternalId", "FIAT AUTO KRAK, 6771173032");
-            page.Items_Button_Assign_Submit.Click();
-            assertVal = page.Items_ErrorList_Model.Displayed;
-            page.GoToPage();
+            try
+            {
+                page.Items_Button_Overview.Click();
+                page.Items_Button_Assign.Click();
+                page.Items_Checkbox_IsChecked.Click();
+                page.Items_Button_Assign_To.Click();
+                page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToExternal);
+                page.Items_Button_Assign_ToExternal.Click();
+                page.SelectByText("ExternalId", "FIAT AUTO KRAK, 6771173032");
+                page.Items_Button_Assign_Submit.Click();
+                assertVal = page.Items_ErrorList_Model.Displayed;
+                //page.GoToPage();
+            }
+            catch (Exception e)
+            {
+                DeleteItemAfterTest();
+                throw e;
+            }
+           
             DeleteItemAfterTest();
 
             Assert.IsTrue(assertVal);
@@ -243,7 +309,7 @@ namespace DotNetWMSTests
                 page.Items_Button_Index_Details_1.Click();
                 page.WaitUntilElementIsClickable(waiter, page.Items_Button_Details_PrintQrCode);
                 assertVal = page.Items_Details_QRCode.Displayed;
-                page.GoToPage();
+                //page.GoToPage();
             }
             catch (Exception e)
             {
@@ -312,7 +378,7 @@ namespace DotNetWMSTests
         {
             //Thread.Sleep(1000);
             //waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(By.XPath("(//span[contains(.,'×')])[1]")));
-
+            page.GoToPage();
             page.WaitUntilElementIsClickable(waiter, page.Items_Button_Overview);
             page.Items_Button_Overview.Click();
             page.WaitUntilElementIsClickable(waiter, page.Items_Button_Index_More_1);
