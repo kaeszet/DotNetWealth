@@ -58,7 +58,17 @@ header {
 		}
 	}
 }
-
+.assignment.validation-summary-errors {
+	& ul {
+		margin-bottom: 0 !important;
+	}
+}
+.table-responsive {
+	.custom-control-label::before, .custom-control-label::after {
+		width: 1.35rem;
+		height: 1.35rem;
+	}
+}
 .sidebar {
 	@include pos-fixed(0,0,0);
 	z-index: 100;

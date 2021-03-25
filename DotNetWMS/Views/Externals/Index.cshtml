@@ -47,14 +47,15 @@
                         @Html.DisplayNameFor(model => model.TaxId)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Street)
+                        @*@Html.DisplayNameFor(model => model.Street)*@
+                        Adres
                     </th>
-                    <th>
+                    @*<th>
                         @Html.DisplayNameFor(model => model.ZipCode)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.City)
-                    </th>
+                    </th>*@
                     <th></th>
                 </tr>
             </thead>
@@ -73,14 +74,14 @@
                             @Html.DisplayFor(modelItem => item.TaxId)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Street)
+                            @Html.DisplayFor(modelItem => item.Street), @Html.DisplayFor(modelItem => item.ZipCode) @Html.DisplayFor(modelItem => item.City)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.ZipCode)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.City)
-                        </td>
+                        </td>*@
                         <td class="button-col">
 
                             <div class="btn-group dropleft">
