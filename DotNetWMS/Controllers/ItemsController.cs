@@ -491,6 +491,7 @@ namespace DotNetWMS.Controllers
 
             if (model.IsDocumentNeeded)
             {
+
                 Doc_Titles docTitle = option switch
                 {
                     "ToUser" => !string.IsNullOrEmpty(model.UserId) ? Doc_Titles.PW : Doc_Titles.ZW,
@@ -541,6 +542,11 @@ namespace DotNetWMS.Controllers
             ViewData["url"] = url;
 
             return View(item);
+        }
+        public IActionResult ShowQrCode(string url)
+        {
+            TempData["QRCode"] = QRCodeCreator.ShowQRCode(url);
+            return PartialView("_QrCodePartial");
         }
         /// <summary>
         /// GET method responsible for returning an Item's Create view
@@ -1461,7 +1467,7 @@ namespace DotNetWMS.Controllers
         /// <returns></returns>
         private async Task UpdateItemCode(Item item)
         {
-            string userName = _context.Users.FirstOrDefault(u => u.Id == item.UserId).NormalizedUserName;
+            string userName = _context.Users.FirstOrDefault(u => u.Id == item.UserId)?.NormalizedUserName;
             item.ItemCode = !string.IsNullOrEmpty(userName) ? ItemCodeGenerator.Generate(item, userName) : ItemCodeGenerator.Generate(item, User?.Identity?.Name);
             _context.Update(item);
             await _context.SaveChangesAsync();

@@ -12,7 +12,7 @@ namespace DotNetWMS.Models
         public int Id { get; set; }
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Kod przedmiotu")]
-        [StringLength(30)]
+        [StringLength(100)]
         public string ItemCode { get; set; }
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(30)]

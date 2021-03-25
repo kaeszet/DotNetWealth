@@ -25,6 +25,9 @@ namespace DotNetWMSTests.Selenium_test
         public IWebElement LoginFailInfo { get; set; }
         [FindsBy(How = How.XPath, Using = "//button[@type='submit']")]
         public IWebElement LoginSuccessButton { get; set; }
+        [FindsBy(How = How.ClassName, Using = "close")]
+        public IWebElement Cookie { get; set; }
+
 
         public void GoToPage()
         {
