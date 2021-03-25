@@ -7,37 +7,49 @@
 
 <div class="row">
     <div class="col-12">
+        <div>
+            <div class="d-flex justify-content-between flex-sm-row flex-column">
+                @*<a asp-action="Index" class="btn btn-dark my-auto"><i class="fas fa-arrow-left mr-1"></i>Powrót</a>*@
+                <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Przypisywanie przedmiotów</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        @{
+            var index = 1;
+        }
+        <hr />
         <div class="form-row">
             <div class="form-group col-md-6">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control search-control" value="@ViewData["Search"]" placeholder="Wyszukaj..." aria-label="Wyszukaj" aria-describedby="button-addon2">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-success" type="submit" id="button-addon2"><i class="fab fa-sistrix mr-1"></i>Szukaj</button>
+                        <button class="btn btn-outline-success" type="button" id="button-addon2"><i class="fab fa-sistrix mr-1"></i>Szukaj</button>
                     </div>
                 </div>
             </div>
         </div>
-        @{
-            var index = 1;
-        }
+
         <div asp-validation-summary="ModelOnly" id="modelErrors" class="text-danger font-weight-bold small mt-3"></div>
         <form asp-action="ItemAssignmentConfirmation">
-            <div>
-                <div class="d-flex justify-content-between flex-sm-row flex-column">
-                    <a asp-action="Index" class="btn btn-dark my-auto"><i class="fas fa-arrow-left mr-1"></i>Powrót</a>
-                    <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Przypisywanie przedmiotów</h2>
+            <div class="btn-group dropright mb-3">
+                <button type="button" class="btn border btn-light dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                    Przypisz do
+                </button>
+                <div class="dropdown-menu dropdown-menu-lg-right">
+                    <h6 class="dropdown-header font-weight-bold">Co chcesz zrobić?</h6>
                     @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
                     {
-                        <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToUser" class="btn btn-light my-auto"><i class="fas fa-user mr-1"></i><i class="fas fa-share mr-1"></i>Do użytkownika...</button>
-                        <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToWarehouse" class="btn btn-light my-auto"><i class="fas fa-warehouse mr-1"></i><i class="fas fa-share mr-1"></i>Do magazynu...</button>
+                        <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToUser" class="dropdown-item"><i class="fas fa-user mr-1"></i><i class="fas fa-share mr-1"></i>Użytkownika</button>
+                        <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToWarehouse" class="dropdown-item"><i class="fas fa-warehouse mr-1"></i><i class="fas fa-share mr-1"></i>Magazynu</button>
                     }
                     @if (User.IsInAnyRoles("StandardPlus,Moderator,Admin"))
                     {
-                        <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToExternal" class="btn btn-light my-auto"><i class="fas fa-handshake mr-1"></i><i class="fas fa-share mr-1"></i>Do kontrahenta...</button>
+                        <button type="submit" asp-action="ItemAssignmentConfirmation" asp-route-option="ToExternal" class="dropdown-item"><i class="fas fa-handshake mr-1"></i><i class="fas fa-share mr-1"></i>Kontrahenta</button>
                     }
                 </div>
             </div>
-            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger font-weight-bold assignment mb-3"></div>
             <div class="table-responsive">
                 <table class="table table-hover table-sm">
                     <thead class="thead-light">
@@ -64,8 +76,9 @@
                             <tr>
                                 <th scope="col">@index</th>
                                 <td>
-                                    <div class="form-check">
-                                        <input asp-for="@Model[i].IsChecked" class="form-check-input" type="checkbox">
+                                    <div class="custom-control custom-checkbox">
+                                        <input asp-for="@Model[i].IsChecked" class="custom-control-input" type="checkbox">
+                                        <label class="custom-control-label btn p-0 border-0" asp-for="@Model[i].IsChecked">&nbsp;</label>
                                         <span asp-validation-for="@Model[i].IsChecked" class="text-danger small font-weight-bold"></span>
                                     </div>
                                 </td>
@@ -110,5 +123,5 @@
         </form>
 
 
+        </div>
     </div>
-</div>
