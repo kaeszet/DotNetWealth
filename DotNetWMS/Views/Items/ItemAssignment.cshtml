@@ -30,7 +30,6 @@
             </div>
         </div>
 
-        <div asp-validation-summary="ModelOnly" id="modelErrors" class="text-danger font-weight-bold small mt-3"></div>
         <form asp-action="ItemAssignmentConfirmation">
             <div class="btn-group dropright mb-3">
                 <button type="button" class="btn border btn-light dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
@@ -49,7 +48,7 @@
                     }
                 </div>
             </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger font-weight-bold assignment mb-3"></div>
+            <div asp-validation-summary="ModelOnly" id="modelErrors" class="text-danger font-weight-bold assignment mb-3"></div>
             <div class="table-responsive">
                 <table class="table table-hover table-sm">
                     <thead class="thead-light">

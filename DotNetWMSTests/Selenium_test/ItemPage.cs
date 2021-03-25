@@ -29,17 +29,19 @@ namespace DotNetWMSTests.Selenium_test
         public IWebElement Items_Button_Overview { get; set; }
         [FindsBy(How = How.XPath, Using = "//a[@href='/Items/ItemAssignment']")]
         public IWebElement Items_Button_Assign { get; set; }
-        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Do użytkownika...')]")]
+        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Przypisz do')]")]
+        public IWebElement Items_Button_Assign_To { get; set; }
+        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Użytkownika')]")]
         public IWebElement Items_Button_Assign_ToUser { get; set; }
-        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Do magazynu...')]")]
+        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Magazynu')]")]
         public IWebElement Items_Button_Assign_ToWarehouse { get; set; }
-        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Do kontrahenta...')]")]
+        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Kontrahenta')]")]
         public IWebElement Items_Button_Assign_ToExternal { get; set; }
         [FindsBy(How = How.XPath, Using = "//a[@href='/Items/Create']")]
         public IWebElement Items_Button_AddNewItem{ get; set; }
         [FindsBy(How = How.Id, Using = "Dodaj")]
         public IWebElement Items_Button_Create_Submit{ get; set; }
-        [FindsBy(How = How.Id, Using = "Zatwierdz")]
+        [FindsBy(How = How.XPath, Using = "//button[contains(.,'Zatwierdź')]")]
         public IWebElement Items_Button_Assign_Submit { get; set; }
         [FindsBy(How = How.XPath, Using = "(//button[@type='button'][contains(.,'Więcej')])[1]")]
         public IWebElement Items_Button_Index_More_1 { get; set; }
@@ -54,7 +56,7 @@ namespace DotNetWMSTests.Selenium_test
 
 
         //checkboxes
-        [FindsBy(How = How.Id, Using = "z0__IsChecked")]
+        [FindsBy(How = How.XPath, Using = "(//label[@for='z0__IsChecked'])[2]")]
         public IWebElement Items_Checkbox_IsChecked { get; set; }
 
         //inputs
