@@ -42,7 +42,7 @@ namespace DotNetWMS.Controllers
         /// GET method responsible for returning a Home's Index view
         /// </summary>
         /// <returns>Returns an Home's Index view</returns>
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             if (User?.Identity?.Name != null)
             {
@@ -62,11 +62,11 @@ namespace DotNetWMS.Controllers
         /// GET method responsible for returning a Home's AboutUs view
         /// </summary>
         /// <returns>Returns an Home's AboutUs view</returns>
-        public async Task<IActionResult> AboutUs()
+        public IActionResult AboutUs()
         {
             return View();
         }
-        
+
         [HttpGet]
         public IActionResult Diagrams([FromQuery] string number)
         {

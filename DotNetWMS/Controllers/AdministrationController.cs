@@ -1,4 +1,5 @@
 ﻿using DotNetWMS.Models;
+using DotNetWMS.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -68,46 +69,7 @@ namespace DotNetWMS.Controllers
 
             return View(users);
         }
-        ///// <summary>
-        ///// GET method to handle the role creation view
-        ///// </summary>
-        ///// <returns>Returns the role creation form view</returns>
-        //[HttpGet]
-        //public IActionResult CreateRole()
-        //{
-        //    return View();
-        //}
-        ///// <summary>
-        ///// POST method to handle the completed role creation form
-        ///// </summary>
-        ///// <param name="model">Admin_CreateRoleViewModel class object which will be processed by an instance of the Identity framework classes</param>
-        ///// <returns>Returns the view resulting from the processing of user-entered data</returns>
-        //[HttpPost]
-        //public async Task<IActionResult> CreateRole(Admin_CreateRoleViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        IdentityRole identityRole = new IdentityRole
-        //        {
-        //            Name = model.RoleName
-        //        };
-
-        //        IdentityResult result = await _roleManager.CreateAsync(identityRole);
-
-        //        if (result.Succeeded)
-        //        {
-        //            return RedirectToAction("ListOfRoles", "Administration");
-        //        }
-
-        //        foreach (IdentityError error in result.Errors)
-        //        {
-        //            _logger.LogDebug(error.Description);
-        //            ModelState.AddModelError("", error.Description);
-        //        }
-        //    }
-
-        //    return View(model);
-        //}
+        
         /// <summary>
         /// GET method to handle the role edition view
         /// </summary>
@@ -469,6 +431,64 @@ namespace DotNetWMS.Controllers
 
                 return View(model);
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"Użytkownik o numerze ID: {id} nie został odnaleziony!";
+                _logger.LogError($"Użytkownik o numerze ID: {id} nie został odnaleziony!");
+                return View("NotFound");
+            }
+
+            var model = new Admin_ChangePasswordViewModel
+            {
+                FullName = user.FullName,
+                Login = user.UserName
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(Admin_ChangePasswordViewModel model)
+        {
+            var user = await _userManager.FindByNameAsync(model.Login);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"Użytkownik: {model.Login} nie został odnaleziony!";
+                _logger.LogError($"Użytkownik o numerze ID: {model.Login} nie został odnaleziony!");
+                return View("NotFound");
+            }
+
+            if (model.NewPassword != model.NewPasswordConfirm)
+            {
+                ModelState.AddModelError(string.Empty, "Hasła nie pasują do siebie");
+                return View(model);
+            }
+            else
+            {
+
+                var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+                if (result.Succeeded)
+                {
+                    GlobalAlert.SendGlobalAlert($"Hasło zmienione!", "info");
+                    return RedirectToAction("EditUser", new { id = user.Id });
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    _logger.LogDebug(error.Description);
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                return View(model);
+            }
+
         }
         /// <summary>
         /// POST method to handle the user removal process 
