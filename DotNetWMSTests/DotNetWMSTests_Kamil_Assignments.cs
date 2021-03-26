@@ -41,9 +41,9 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
-            await controller.Assign_to_employee(string.Empty, string.Empty);
-            var itemsCollection = (ICollection<Item>)controller.ViewData.Model;
-            Assert.That(itemsCollection, Is.InstanceOf(typeof(ICollection<Item>)));
+            controller.ItemAssignment(string.Empty, string.Empty, null, null, null);
+            var itemsCollection = (ICollection<ItemsAssignmentViewModel>)controller.ViewData.Model;
+            Assert.That(itemsCollection, Is.InstanceOf(typeof(ICollection<ItemsAssignmentViewModel>)));
 
 
         }
@@ -60,8 +60,8 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
-            var result = await controller.Assign_to_employee(string.Empty, string.Empty) as ViewResult;
-            Assert.IsAssignableFrom<List<Item>>(result.Model);
+            var result = controller.ItemAssignment(string.Empty, string.Empty, null, null, null) as ViewResult;
+            Assert.IsAssignableFrom<List<ItemsAssignmentViewModel>>(result.Model);
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
 
 

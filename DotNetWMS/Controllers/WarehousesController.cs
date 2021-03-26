@@ -78,13 +78,14 @@ namespace DotNetWMS.Controllers
             }
 
             var warehouse = await _context.Warehouses.FirstOrDefaultAsync(m => m.Id == id);
-            var location = await _context.Locations.FindAsync(warehouse.LocationId);
 
             if (warehouse == null)
             {
-                _logger.LogDebug($"DEBUG: Magazyn {warehouse.Name} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Magazyn nie istnieje!");
                 return NotFound();
             }
+
+            var location = await _context.Locations.FirstOrDefaultAsync(l => l.Id == warehouse.LocationId);
 
             WarehouseAndLocationViewModel viewModel = new WarehouseAndLocationViewModel()
             {
@@ -187,13 +188,14 @@ namespace DotNetWMS.Controllers
             }
 
             var warehouse = await _context.Warehouses.FindAsync(id);
-            var location = await _context.Locations.FindAsync(warehouse.LocationId);
-
+            
             if (warehouse == null)
             {
-                _logger.LogDebug($"DEBUG: Taki magazyn = {warehouse.Name} nie istnieje!");
+                _logger.LogDebug($"Magazyn nie istnieje!");
                 return NotFound();
             }
+
+            var location = await _context.Locations.FindAsync(warehouse.LocationId);
 
             WarehouseAndLocationViewModel viewModel = new WarehouseAndLocationViewModel()
             {
@@ -324,7 +326,7 @@ namespace DotNetWMS.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (warehouse == null)
             {
-                _logger.LogDebug($"DEBUG: Magazyn {warehouse.Name} nie istnieje!");
+                _logger.LogDebug($"DEBUG: Magazyn {warehouse?.Name} nie istnieje!");
                 return NotFound();
             }
 

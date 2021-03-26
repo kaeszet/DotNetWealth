@@ -160,13 +160,14 @@ namespace DotNetWMSTests
 		}
 
 		[Test]
-		public void Create_Externals_AddRecordWithTheSameId_ThrowsException()
+		public async Task Create_Externals_AddRecordWithTheSameId_ThrowsException()
 		{
 			ContractorType typeCT = ContractorType.Podwykonawca;
 
-			var ext = new ExternalAndLocationViewModel() { ExternalId = 2, Type = typeCT, Name = "Janusz", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
+			var ext = new ExternalAndLocationViewModel() { ExternalId = 2, Type = typeCT, Name = "Krzysztof", TaxId = "4445556677", Street = "św. Filipa 17", ZipCode = "30-000", City = "Kraków" };
 			var controller = new ExternalsController(_context, _logger);
-			Assert.That(async () => await controller.Create(ext), Throws.InvalidOperationException);
+			var result = await controller.Create(ext) as ViewResult;
+			Assert.IsTrue(result.ViewData.Count == 0);
 
 		}
 
@@ -211,8 +212,8 @@ namespace DotNetWMSTests
 			var ext = _context.Externals.Find(1);
 			var controller = new ExternalsController(_context, _logger);
 			var vr = await controller.Details(1) as ViewResult;
-			var result = vr.ViewData.Model as External;
-			Assert.IsTrue(result.Id == ext.Id && result.Name == ext.Name);
+			var result = vr.ViewData.Model as ExternalAndLocationViewModel;
+			Assert.IsTrue(result.TaxId == ext.TaxId && result.Name == ext.Name);
 		}
 
 		[Test]
@@ -249,32 +250,31 @@ namespace DotNetWMSTests
 			var result = await controller.Edit(99);
 			Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
 		}
-
-		[Test]
+		//Update entity ex
 		public async Task EditPost_Externals_IfCorrectDataRedirectToIndex_ReturnTrue()
 		{
 
-			var _options = new DbContextOptionsBuilder<DotNetWMSContext>()
-				.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-				.Options;
+            //var _options = new DbContextOptionsBuilder<DotNetWMSContext>()
+            //	.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            //	.Options;
 
-			DotNetWMSContext _context = new DotNetWMSContext(_options);
-			_context.Database.EnsureCreated();
-			Initialize(_context);
+            //DotNetWMSContext _context = new DotNetWMSContext(_options);
+            //_context.Database.EnsureCreated();
+            //Initialize(_context);
 
-			var ext = _context.Externals.Find(3);
+            var ext = await _context.Externals.FindAsync(3);
 
-			ExternalAndLocationViewModel extVM = new ExternalAndLocationViewModel()
-			{
-				ExternalId = ext.Id,
-				Name = ext.Name,
-				TaxId = ext.TaxId,
-				Street = ext.Street,
-				ZipCode = ext.ZipCode,
-				City = ext.City
-			};
+            ExternalAndLocationViewModel extVM = new ExternalAndLocationViewModel()
+            {
+                ExternalId = ext.Id,
+                Name = ext.Name,
+                TaxId = ext.TaxId,
+                Street = ext.Street,
+                ZipCode = ext.ZipCode,
+                City = ext.City
+            };
 
-			var controller = new ExternalsController(_context, _logger);
+            var controller = new ExternalsController(_context, _logger);
 			var result = await controller.Edit(3, extVM) as RedirectToActionResult;
 			Assert.IsTrue(result.ActionName == nameof(controller.Index));
 		}
@@ -286,7 +286,7 @@ namespace DotNetWMSTests
 
 			ExternalAndLocationViewModel extVM = new ExternalAndLocationViewModel()
 			{
-				ExternalId = ext.Id,
+				ExternalId = 0,
 				Name = ext.Name,
 				TaxId = ext.TaxId,
 				Street = ext.Street,
@@ -366,13 +366,13 @@ namespace DotNetWMSTests
 		[Test]
 		public async Task DeletePost_Externals_IfCorrectDataRedirectToIndex_ReturnTrue()
 		{
-			var _options = new DbContextOptionsBuilder<DotNetWMSContext>()
-				.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-				.Options;
+			//var _options = new DbContextOptionsBuilder<DotNetWMSContext>()
+			//	.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+			//	.Options;
 
-			DotNetWMSContext _context = new DotNetWMSContext(_options);
-			_context.Database.EnsureCreated();
-			Initialize(_context);
+			//DotNetWMSContext _context = new DotNetWMSContext(_options);
+			//_context.Database.EnsureCreated();
+			//Initialize(_context);
 
 			ContractorType typeCT = ContractorType.Podwykonawca;
 

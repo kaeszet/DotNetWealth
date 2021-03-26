@@ -59,9 +59,15 @@ namespace DotNetWMSTests
 
             };
 
+            var infos = new[]
+            {
+                new Infobox { Id = 1, Title = "Test", Message = "Test" }
+            };
+
             context.Departments.AddRange(departments);
             context.Items.AddRange(items);
             context.Externals.AddRange(externals);
+            context.Infoboxes.AddRange(infos);
             context.SaveChanges();
         }
         public bool TryValidate(object model, out ICollection<ValidationResult> results)
