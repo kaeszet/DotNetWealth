@@ -48,5 +48,7 @@ namespace DotNetWMS.Models
         public ItemUnits Units { get; set; }
         [Display(Name = "Wybierz przedm.")]
         public bool IsChecked { get; set; }
+        [Display(Name = "Aktualnie przypisany do:")]
+        public List<string> Records { get; set; }
     }
 }

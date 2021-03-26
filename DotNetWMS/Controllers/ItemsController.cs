@@ -226,6 +226,8 @@ namespace DotNetWMS.Controllers
 
             foreach (var item in items)
             {
+                List<string> listOfOccurences = UsingEntitiesList(item);
+
                 ItemsAssignmentViewModel viewModel = new ItemsAssignmentViewModel()
                 {
                     Id = item.Id,
@@ -236,7 +238,8 @@ namespace DotNetWMS.Controllers
                     Producer = item.Producer,
                     Quantity = item.Quantity,
                     Type = item.Type,
-                    Units = item.Units
+                    Units = item.Units,
+                    Records = listOfOccurences
 
                 };
 
@@ -488,6 +491,47 @@ namespace DotNetWMS.Controllers
 
             GlobalAlert.SendGlobalAlert($"Przedmioty ({model.Items.Count}) zostały przekazane!", "info");
             return RedirectToAction("Index");
+        }
+        private List<string> UsingEntitiesList(Item item)
+        {
+            List<string> listOfOccurrences = new List<string>();
+
+            var findInWarehouses = _context.Warehouses.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.AssignFullName).ToList();
+
+            if (findInWarehouses.Any())
+            {
+                listOfOccurrences.AddRange(findInWarehouses);
+            }
+
+            var findInExternals = _context.Externals.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.FullName).ToList();
+
+            if (findInExternals.Any())
+            {
+                listOfOccurrences.AddRange(findInExternals);
+            }
+
+            var findInUsers = _context.Users.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.FullName).ToList();
+
+            if (findInUsers.Any())
+            {
+                listOfOccurrences.AddRange(findInUsers);
+            }
+
+            //var findInExternals = _context.Items.Where(x => x.ExternalId == externalId)?.Select(x => x.External.FullName);
+
+            //if (findInWarehouses.Any())
+            //{
+            //    listOfOccurrences.AddRange(findInExternals.ToList());
+            //}
+
+            //var findInEmployees = _context.Items.Where(x => x.UserId == userId)?.Select(x => x.User.FullName);
+
+            //if (findInWarehouses.Any())
+            //{
+            //    listOfOccurrences.AddRange(findInEmployees.ToList());
+            //}
+
+            return listOfOccurrences;
         }
 
         /// <summary>

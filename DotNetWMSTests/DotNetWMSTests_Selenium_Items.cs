@@ -131,8 +131,6 @@ namespace DotNetWMSTests
                 page.SelectByText("UserId", "Nowy Józef");
                 page.Items_Button_Assign_Submit.Click();
                 page.WaitUntilPopUpDisappears(waiter);
-                page.GoToPage();
-                page.Items_Button_Overview.Click();
                 assertVal = page.WelcomeText.Displayed;
             }
             catch (Exception e)
@@ -210,9 +208,10 @@ namespace DotNetWMSTests
                 page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToUser);
                 page.Items_Button_Assign_ToUser.Click();
                 page.SelectByText("UserId", "Nowy Józef");
+                page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_Submit);
                 page.Items_Button_Assign_Submit.Click();
                 assertVal = page.Items_ErrorList_Model.Displayed;
-                //page.GoToPage();
+
             }
             catch (Exception e)
             {
@@ -243,9 +242,9 @@ namespace DotNetWMSTests
                 page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToWarehouse);
                 page.Items_Button_Assign_ToWarehouse.Click();
                 page.SelectByText("WarehouseId", "Magazyn główny, Myśliwska 61");
+                page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_Submit);
                 page.Items_Button_Assign_Submit.Click();
                 assertVal = page.Items_ErrorList_Model.Displayed;
-                //page.GoToPage();
             }
             catch (Exception e)
             {
@@ -276,9 +275,9 @@ namespace DotNetWMSTests
                 page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_ToExternal);
                 page.Items_Button_Assign_ToExternal.Click();
                 page.SelectByText("ExternalId", "FIAT AUTO KRAK, 6771173032");
+                page.WaitUntilElementIsClickable(waiter, page.Items_Button_Assign_Submit);
                 page.Items_Button_Assign_Submit.Click();
                 assertVal = page.Items_ErrorList_Model.Displayed;
-                //page.GoToPage();
             }
             catch (Exception e)
             {
@@ -309,7 +308,6 @@ namespace DotNetWMSTests
                 page.Items_Button_Index_Details_1.Click();
                 page.WaitUntilElementIsClickable(waiter, page.Items_Button_Details_PrintQrCode);
                 assertVal = page.Items_Details_QRCode.Displayed;
-                //page.GoToPage();
             }
             catch (Exception e)
             {
@@ -340,10 +338,8 @@ namespace DotNetWMSTests
         private void CreateItemForTest(string req = "")
         {
             page.Items_Button_Overview.Click();
-            //page.WaitUntilElementIsVisible(waiter, "//a[@href='/Items/Create']");
             page.WaitUntilElementIsClickable(waiter, page.Items_Button_AddNewItem);
             page.Items_Button_AddNewItem.Click();
-            //page.WaitUntilElementIsVisible(waiter, "//h2[contains(.,'Dodawanie produktu')]");
             page.WaitUntilElementIsClickable(waiter, page.Items_Button_Create_Submit);
             page.Items_Input_Producer.SendKeys("AAAProducer");
             page.Items_Input_Name.SendKeys(DateTime.Now.ToString());
@@ -368,16 +364,11 @@ namespace DotNetWMSTests
             }
 
             page.Items_Button_Create_Submit.Click();
-            //page.WaitUntilPageElement(waiter, "//h2[contains(.,'Przegląd majątku')]");
-            //page.WaitUntilElementIsClickable(waiter, page.Items_Button_Create_Submit);
-            //waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(By.XPath("(//span[contains(.,'×')])[1]")));
             page.WaitUntilPopUpDisappears(waiter);
         }
 
         private void DeleteItemAfterTest()
         {
-            //Thread.Sleep(1000);
-            //waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(By.XPath("(//span[contains(.,'×')])[1]")));
             page.GoToPage();
             page.WaitUntilElementIsClickable(waiter, page.Items_Button_Overview);
             page.Items_Button_Overview.Click();
