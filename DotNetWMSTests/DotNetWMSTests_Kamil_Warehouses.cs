@@ -116,7 +116,6 @@ namespace DotNetWMSTests
         [Test]
         public async Task WarehouseDetails_CheckRecordWithNotExistingKey_ReturnNull()
         {
-
             var controller = new WarehousesController(_context, _logger.Object);
             var result = await controller.Details(99) as ViewResult;
             Assert.IsNull(result);

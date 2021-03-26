@@ -119,13 +119,14 @@ namespace DotNetWMS.Controllers
             }
 
             var external = await _context.Externals.FirstOrDefaultAsync(m => m.Id == id);
-            var location = await _context.Locations.FindAsync(external.LocationId);
 
             if (external == null)
             {
-                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie kontrahenta o podanym id = {id}");
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie kontrahenta o podanym id");
                 return NotFound();
             }
+
+            var location = await _context.Locations.FindAsync(external.LocationId);
 
             ExternalAndLocationViewModel viewModel = new ExternalAndLocationViewModel()
             {
@@ -163,7 +164,7 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ExternalAndLocationViewModel viewModel)
         {
-            bool isExternalExists = _context.Warehouses.Any(w => w.Name == viewModel.Name);
+            bool isExternalExists = _context.Externals.Any(e => e.Name == viewModel.Name);
 
             if (ModelState.IsValid)
             {
@@ -232,13 +233,14 @@ namespace DotNetWMS.Controllers
             }
 
             var external = await _context.Externals.FindAsync(id);
-            var location = await _context.Locations.FindAsync(external.LocationId);
-
+            
             if (external == null)
             {
-                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie kontrahenta o podanym id = {id}");
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie kontrahenta o podanym id");
                 return NotFound();
             }
+
+            var location = await _context.Locations.FindAsync(external.LocationId);
 
             ExternalAndLocationViewModel viewModel = new ExternalAndLocationViewModel()
             {
@@ -278,7 +280,7 @@ namespace DotNetWMS.Controllers
 
             var oldExternalName = _context.Externals.AsNoTracking().FirstOrDefault(w => w.Id == viewModel.ExternalId)?.Name;
 
-            bool isExternalExists = _context.Externals.Any(w => w.Name == viewModel.Name
+            bool isExternalExists = _context.Externals.AsNoTracking().Any(w => w.Name == viewModel.Name
             && w.Name != oldExternalName
             && !string.IsNullOrEmpty(oldExternalName));
 
@@ -298,6 +300,7 @@ namespace DotNetWMS.Controllers
                             ZipCode = viewModel.ZipCode,
                             City = viewModel.City
                         };
+
 
                         if (!string.IsNullOrEmpty(viewModel.Address) && !string.IsNullOrEmpty(viewModel.Latitude) && !string.IsNullOrEmpty(viewModel.Longitude))
                         {
@@ -325,7 +328,7 @@ namespace DotNetWMS.Controllers
                             }
                         }
 
-                        _context.Update(external);
+                        _context.Externals.Update(external);
                         await _context.SaveChangesAsync();
                         GlobalAlert.SendGlobalAlert($"Kontrahent {external.FullName} został zmieniony!", "success");
                     }
