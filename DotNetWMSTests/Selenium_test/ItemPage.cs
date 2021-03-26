@@ -104,11 +104,8 @@ namespace DotNetWMSTests.Selenium_test
             Thread.Sleep(500);
         }
 
+        public void Wait(int milis) => Thread.Sleep(milis);
         public void SelectByText(string id, string text) => new SelectElement(driver.FindElement(By.Id(id))).SelectByText(text);
-
-        public void WaitUntilPageElement(WebDriverWait waiter, string xpath) => waiter.Until(w => w.FindElement(By.XPath(xpath)));
-        public void WaitUntilPageElementByClass(WebDriverWait waiter, string classname) => waiter.Until(w => w.FindElement(By.ClassName(classname)));
-        public void WaitUntilElementIsVisible(WebDriverWait waiter, string xpath) => waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.XPath(xpath)));
         public void WaitUntilElementIsClickable(WebDriverWait waiter, IWebElement ele) => waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(ele));
         public void WaitUntilPopUpDisappears(WebDriverWait waiter) => waiter.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(By.XPath("(//span[contains(.,'×')])[1]")));
 

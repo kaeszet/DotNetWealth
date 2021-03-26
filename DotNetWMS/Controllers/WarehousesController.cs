@@ -89,6 +89,7 @@ namespace DotNetWMS.Controllers
 
             WarehouseAndLocationViewModel viewModel = new WarehouseAndLocationViewModel()
             {
+                WarehouseId = warehouse.Id,
                 Name = warehouse.Name,
                 Street = warehouse.Street,
                 ZipCode = warehouse.ZipCode,

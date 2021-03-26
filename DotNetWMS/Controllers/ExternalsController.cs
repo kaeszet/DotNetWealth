@@ -130,6 +130,7 @@ namespace DotNetWMS.Controllers
 
             ExternalAndLocationViewModel viewModel = new ExternalAndLocationViewModel()
             {
+                ExternalId = external.Id,
                 Type = external.Type,
                 Name = external.Name,
                 TaxId = external.TaxId,
