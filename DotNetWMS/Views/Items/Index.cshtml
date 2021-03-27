@@ -89,15 +89,15 @@
                                         {
                                             <a asp-action="Edit" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-edit mr-1"></i>Edytuj</a>
                                         }
-                                        @*@if (User.IsInAnyRoles("Standard,StandardPlus,Moderator, Admin"))
+                                        @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator, Admin"))
                                         {
                                             <div class="dropdown-divider"></div>
-                                            <a asp-action="Assign_to_employee_confirm" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
-                                            <a asp-action="Assign_to_warehouse_confirm" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
-                                        }*@
+                                            <a asp-action="Assign_to_employee" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-hand-holding-usd mr-1"></i>Przekaż na stan</a>
+                                            <a asp-action="Assign_to_warehouse" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-pallet mr-1"></i>Przekaż do magazynu</a>
+                                        }
                                         @if (User.IsInAnyRoles("StandardPlus, Moderator, Admin"))
                                         {
-                                            @*<a asp-action="Assign_to_external_confirm" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-truck-loading mr-1"></i>Przekaż na zewnątrz</a>*@
+                                            <a asp-action="Assign_to_external" asp-route-id="@item.Id" class="dropdown-item"><i class="fas fa-truck-loading mr-1"></i>Przekaż na zewnątrz</a>
                                             <div class="dropdown-divider"></div>
                                             <button type="button" class="dropdown-item danger text-danger" data-toggle="modal" data-target="#remove_@item.Id"><i class="fas fa-trash-alt mr-1"></i>Usuń</button>
                                         }

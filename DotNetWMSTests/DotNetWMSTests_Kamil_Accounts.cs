@@ -178,7 +178,9 @@ namespace DotNetWMSTests
         [Test]
         public async Task LoginPost_UrlIsNotNullOrEmpty_ReturnRedirectResult()
         {
-            var fakeUserManager = new FakeUserManagerBuilder().Build();
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(new WMSIdentityUser() { Name = "Janusz", Surname = "Testowy", UserName = "TestoJan9012", EmployeeNumber = "23456789012", City = "Kraków", Email = "a@a.pl", LoginCount = 0 }))
+                .Build();
             var fakeSignInManager = new FakeSignInManagerBuilder()
                 .With(x => x.Setup(sm => sm.PasswordSignInAsync(It.IsAny<string>(),
                         It.IsAny<string>(),
@@ -205,7 +207,9 @@ namespace DotNetWMSTests
         [Test]
         public async Task LoginPost_UrlIsEmpty_RedirectToActionResult()
         {
-            var fakeUserManager = new FakeUserManagerBuilder().Build();
+            var fakeUserManager = new FakeUserManagerBuilder()
+                .With(x => x.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync( new WMSIdentityUser() { Name = "Janusz", Surname = "Testowy", UserName = "TestoJan9012", EmployeeNumber = "23456789012", City = "Kraków", Email = "a@a.pl", LoginCount = 0 }))
+                .Build();
             var fakeSignInManager = new FakeSignInManagerBuilder()
                 .With(x => x.Setup(sm => sm.PasswordSignInAsync(It.IsAny<string>(),
                         It.IsAny<string>(),
@@ -224,7 +228,7 @@ namespace DotNetWMSTests
             var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
 
             controller.Url = mockUrlHelper.Object;
-            var result = await controller.Login(new LoginViewModel(), "");
+            var result = await controller.Login(new LoginViewModel() { Login = "TestoJan9012" }, "");
             Assert.That(result, Is.InstanceOf(typeof(RedirectToActionResult)));
 
 

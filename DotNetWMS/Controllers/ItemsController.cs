@@ -48,81 +48,45 @@ namespace DotNetWMS.Controllers
             _logger = logger;
         }
         /// <summary>
-        /// GET method responsible for returning an Item's Assign_to_employee view and supports a search engine
-        /// </summary>
-        /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
-        /// <param name="search">Search phrase in the search field</param>
-        /// <returns>Returns Item's Assign_to_employee view with list of items in the order set by the user</returns>
-        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
-        public async Task<IActionResult> Assign_to_employee(string search, string order)
-        {
-            var items = CreateAssignItemView(search, order);
-            return View(await items.AsNoTracking().ToListAsync());
-        }
-        /// <summary>
-        /// GET method responsible for returning an Item's Assign_to_warehouse view and supports a search engine
-        /// </summary>
-        /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
-        /// <param name="search">Search phrase in the search field</param>
-        /// <returns>Returns Item's Assign_to_warehouse view with list of items in the order set by the user</returns>
-        [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
-        public async Task<IActionResult> Assign_to_warehouse(string search, string order)
-        {
-            var items = CreateAssignItemView(search, order);
-            return View(await items.AsNoTracking().ToListAsync());
-        }
-        /// <summary>
-        /// GET method responsible for returning an Item's Assign_to_external view and supports a search engine
-        /// </summary>
-        /// <param name="order">Sort by name or warranty date in ascending or descending order</param>
-        /// <param name="search">Search phrase in the search field</param>
-        /// <returns>Returns Item's Assign_to_external view with list of items in the order set by the user</returns>
-        [Authorize(Roles = "StandardPlus,Moderator,Admin")]
-        public async Task<IActionResult> Assign_to_external(string search, string order)
-        {
-            var items = CreateAssignItemView(search, order);
-            return View(await items.AsNoTracking().ToListAsync());
-        }
-        /// <summary>
-        /// GET method responsible for returning an Item's Assign_to_employee_confirm view for the selected id
+        /// GET method responsible for returning an Item's Assign_to_employee view for the selected id
         /// </summary>
         /// <param name="id">Item ID which should be returned</param>
-        /// <returns>Returns Item's Assign_to_employee_confirm view</returns>
+        /// <returns>Returns Item's Assign_to_employee view</returns>
         [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpGet]
-        public async Task<IActionResult> Assign_to_employee_confirm(int? id)
+        public async Task<IActionResult> Assign_to_employee(int? id)
         {
-            var item = await CreateAssignItemConfirmationView(id, "Assign_to_employee_confirm");
+            var item = await CreateAssignItemConfirmationView(id, "Assign_to_employee");
             if (item == null) return NotFound();
 
             return View(item);
         }
         /// <summary>
-        /// GET method responsible for returning an Item's Assign_to_warehouse_confirm view for the selected id
+        /// GET method responsible for returning an Item's Assign_to_warehouse view for the selected id
         /// </summary>
         /// <param name="id">Item ID which should be returned</param>
-        /// <returns>Returns Item's Assign_to_warehouse_confirm view</returns>
+        /// <returns>Returns Item's Assign_to_warehouse view</returns>
         [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpGet]
-        public async Task<IActionResult> Assign_to_warehouse_confirm(int? id)
+        public async Task<IActionResult> Assign_to_warehouse(int? id)
         {
-            var item = await CreateAssignItemConfirmationView(id, "Assign_to_warehouse_confirm");
+            var item = await CreateAssignItemConfirmationView(id, "Assign_to_warehouse");
             return View(item);
         }
         /// <summary>
-        /// GET method responsible for returning an Item's Assign_to_external_confirm view for the selected id
+        /// GET method responsible for returning an Item's Assign_to_external view for the selected id
         /// </summary>
         /// <param name="id">Item ID which should be returned</param>
-        /// <returns>Returns Item's Assign_to_external_confirm view</returns>
+        /// <returns>Returns Item's Assign_to_external view</returns>
         [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpGet]
-        public async Task<IActionResult> Assign_to_external_confirm(int? id)
+        public async Task<IActionResult> Assign_to_external(int? id)
         {
-            var item = await CreateAssignItemConfirmationView(id, "Assign_to_external_confirm");
+            var item = await CreateAssignItemConfirmationView(id, "Assign_to_external");
             return View(item);
         }
         /// <summary>
-        /// POST method responsible for processing the completed form on Assign_to_employee_confirm view
+        /// POST method responsible for processing the completed form on Assign_to_employee view
         /// </summary>
         /// <param name="id">Item ID which assignment was edited</param>
         /// <param name="item">Item model class with binding DB attributes</param>
@@ -130,7 +94,7 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Assign_to_employee_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Assign_to_employee(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
 
             if (id != item.Id)
@@ -142,7 +106,7 @@ namespace DotNetWMS.Controllers
             if (ModelState.IsValid)
             {
 
-                return await CreateAssignItemConfirmationView(item, "Assign_to_employee_confirm");
+                return await CreateAssignItemConfirmationView(item, "Assign_to_employee");
 
             }
 
@@ -151,7 +115,7 @@ namespace DotNetWMS.Controllers
         }
 
         /// <summary>
-        /// POST method responsible for processing the completed form on Assign_to_warehouse_confirm view
+        /// POST method responsible for processing the completed form on Assign_to_warehouse view
         /// </summary>
         /// <param name="id">Item ID which assignment was edited</param>
         /// <param name="item">Item model class with binding DB attributes</param>
@@ -159,7 +123,7 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Assign_to_warehouse_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Assign_to_warehouse(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
 
             if (id != item.Id)
@@ -170,13 +134,13 @@ namespace DotNetWMS.Controllers
 
             if (ModelState.IsValid)
             {
-                return await CreateAssignItemConfirmationView(item, "Assign_to_warehouse_confirm");
+                return await CreateAssignItemConfirmationView(item, "Assign_to_warehouse");
             }
             ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
             return View(item);
         }
         /// <summary>
-        /// POST method responsible for processing the completed form on Assign_to_external_confirm view
+        /// POST method responsible for processing the completed form on Assign_to_external view
         /// </summary>
         /// <param name="id">Item ID which assignment was edited</param>
         /// <param name="item">Item model class with binding DB attributes</param>
@@ -184,7 +148,7 @@ namespace DotNetWMS.Controllers
         [Authorize(Roles = "StandardPlus,Moderator,Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Assign_to_external_confirm(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
+        public async Task<IActionResult> Assign_to_external(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
 
             if (id != item.Id)
@@ -195,7 +159,7 @@ namespace DotNetWMS.Controllers
 
             if (ModelState.IsValid)
             {
-                return await CreateAssignItemConfirmationView(item, "Assign_to_external_confirm");
+                return await CreateAssignItemConfirmationView(item, "Assign_to_external");
             }
             ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
             return View(item);
@@ -235,17 +199,35 @@ namespace DotNetWMS.Controllers
         }
         [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         [HttpGet]
-        public IActionResult ItemAssignment(string order, string search)
+        public IActionResult ItemAssignment(string order, string search, string userId, int? warehouseId, int? externalId)
         {
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
             ViewData["SortByType"] = order == "type" ? "type_desc" : "type";
             ViewData["Search"] = search;
 
+            //
+            //var users = _context.Users.ToList();
+            //var warehouses = _context.Warehouses.ToList();
+            //var externals = _context.Externals.ToList();
+            //ViewData["UserList"] = new SelectList(users, "Id", "FullName");
+            //ViewData["WarehouseList"] = new SelectList(warehouses, "Id", "AssignFullName");
+            //ViewData["ExternalList"] = new SelectList(externals, "Id", "FullName");
+            //
+
             var items = _context.Items.ToList();
+
+            //
+            //if (!string.IsNullOrEmpty(userId))
+            //{
+            //    items = items.Where(i => i.UserId == userId).ToList();
+            //}
+            //
             List<ItemsAssignmentViewModel> viewModelList = new List<ItemsAssignmentViewModel>();
 
             foreach (var item in items)
             {
+                List<string> listOfOccurences = UsingEntitiesList(item);
+
                 ItemsAssignmentViewModel viewModel = new ItemsAssignmentViewModel()
                 {
                     Id = item.Id,
@@ -256,7 +238,8 @@ namespace DotNetWMS.Controllers
                     Producer = item.Producer,
                     Quantity = item.Quantity,
                     Type = item.Type,
-                    Units = item.Units
+                    Units = item.Units,
+                    Records = listOfOccurences
 
                 };
 
@@ -491,6 +474,7 @@ namespace DotNetWMS.Controllers
 
             if (model.IsDocumentNeeded)
             {
+
                 Doc_Titles docTitle = option switch
                 {
                     "ToUser" => !string.IsNullOrEmpty(model.UserId) ? Doc_Titles.PW : Doc_Titles.ZW,
@@ -507,6 +491,47 @@ namespace DotNetWMS.Controllers
 
             GlobalAlert.SendGlobalAlert($"Przedmioty ({model.Items.Count}) zostały przekazane!", "info");
             return RedirectToAction("Index");
+        }
+        private List<string> UsingEntitiesList(Item item)
+        {
+            List<string> listOfOccurrences = new List<string>();
+
+            var findInWarehouses = _context.Warehouses.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.AssignFullName).ToList();
+
+            if (findInWarehouses.Any())
+            {
+                listOfOccurrences.AddRange(findInWarehouses);
+            }
+
+            var findInExternals = _context.Externals.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.FullName).ToList();
+
+            if (findInExternals.Any())
+            {
+                listOfOccurrences.AddRange(findInExternals);
+            }
+
+            var findInUsers = _context.Users.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.FullName).ToList();
+
+            if (findInUsers.Any())
+            {
+                listOfOccurrences.AddRange(findInUsers);
+            }
+
+            //var findInExternals = _context.Items.Where(x => x.ExternalId == externalId)?.Select(x => x.External.FullName);
+
+            //if (findInWarehouses.Any())
+            //{
+            //    listOfOccurrences.AddRange(findInExternals.ToList());
+            //}
+
+            //var findInEmployees = _context.Items.Where(x => x.UserId == userId)?.Select(x => x.User.FullName);
+
+            //if (findInWarehouses.Any())
+            //{
+            //    listOfOccurrences.AddRange(findInEmployees.ToList());
+            //}
+
+            return listOfOccurrences;
         }
 
         /// <summary>
@@ -541,6 +566,11 @@ namespace DotNetWMS.Controllers
             ViewData["url"] = url;
 
             return View(item);
+        }
+        public IActionResult ShowQrCode(string url)
+        {
+            TempData["QRCode"] = QRCodeCreator.ShowQRCode(url);
+            return PartialView("_QrCodePartial");
         }
         /// <summary>
         /// GET method responsible for returning an Item's Create view
@@ -800,29 +830,48 @@ namespace DotNetWMS.Controllers
         /// <param name="obj">Argument to check the class name of the object being passed</param>
         private void MergeSameItems(Item item, Type obj)
         {
-            Item sameItem = null;
+            //Item sameItem = null;
 
 
-            switch (obj.Name)
-            {
-                case "WMSIdentityUser":
-                    sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.UserId == item.UserId);
-                    break;
-                case "Warehouse":
-                    sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.WarehouseId == item.WarehouseId);
-                    break;
-                case "External":
-                    sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.ExternalId == item.ExternalId);
-                    break;
+            //switch (obj.Name)
+            //{
+            //    case "WMSIdentityUser":
+            //        sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.UserId == item.UserId);
+            //        break;
+            //    case "Warehouse":
+            //        sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.WarehouseId == item.WarehouseId);
+            //        break;
+            //    case "External":
+            //        sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer && i.Model == item.Model && i.Name == item.Name && i.Type == item.Type && i.WarrantyDate == item.WarrantyDate && i.ExternalId == item.ExternalId);
+            //        break;
 
-            }
-            
-            if (sameItem != null && sameItem.Id != item.Id && sameItem.ExternalId == null && sameItem.WarehouseId == item.WarehouseId)
+            //}
+
+            Item sameItem = _context.Items.FirstOrDefault(i => i.Producer == item.Producer
+            && i.Model == item.Model
+            && i.Name == item.Name
+            && i.Type == item.Type
+            && i.WarrantyDate == item.WarrantyDate
+            && i.UserId == item.UserId
+            & i.WarehouseId == item.WarehouseId
+            & i.ExternalId == item.ExternalId);
+
+
+            //if (sameItem != null && sameItem.Id != item.Id && sameItem.ExternalId == null && sameItem.WarehouseId == item.WarehouseId)
+            //{
+            //    _context.Remove(sameItem);
+            //    item.Quantity += sameItem.Quantity;
+            //    _context.Update(item);
+            //}
+
+            if (sameItem != null && sameItem.Id != item.Id)
             {
                 _context.Remove(sameItem);
                 item.Quantity += sameItem.Quantity;
                 _context.Update(item);
             }
+
+
         }
         /// <summary>
         /// A private method to check who has been assigned the item specified in the argument of the function. Depending on who it currently belongs to, the condition of the item will be different.
@@ -983,7 +1032,7 @@ namespace DotNetWMS.Controllers
                     return null;
                 }
 
-                if (method == "Assign_to_employee_confirm")
+                if (method == "Assign_to_employee")
                 {
                     if (item.ExternalId != null)
                     {
@@ -1018,7 +1067,7 @@ namespace DotNetWMS.Controllers
                 ModelState.AddModelError(string.Empty, $"Nie można przekazać {item.Quantity} sztuk");
             }
 
-            else if (method == "Assign_to_employee_confirm" && item.ExternalId != null)
+            else if (method == "Assign_to_employee" && item.ExternalId != null)
             {
                 var ext = await _context.Externals.FindAsync(item.ExternalId);
                 _logger.LogDebug($"DEBUG: Przedmiot w posiadaniu zewnętrznej firmy: \"{ext.Name}\". Przedmiot można przypisać do pracownika, gdy zostanie zwrócony");
@@ -1043,13 +1092,13 @@ namespace DotNetWMS.Controllers
 
             switch (method)
             {
-                case "Assign_to_employee_confirm":
+                case "Assign_to_employee":
                     ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
                     break;
-                case "Assign_to_warehouse_confirm":
+                case "Assign_to_warehouse":
                     ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
                     break;
-                case "Assign_to_external_confirm":
+                case "Assign_to_external":
                     ViewData["ExternalId"] = new SelectList(_context.Externals, "Id", "Name", item.ExternalId);
                     break;
                 default:
@@ -1071,7 +1120,7 @@ namespace DotNetWMS.Controllers
 
             switch (method)
             {
-                case "Assign_to_employee_confirm":
+                case "Assign_to_employee":
                     if (itemOld.UserId != item.UserId)
                     {
                         Item newItem = new Item()
@@ -1097,7 +1146,7 @@ namespace DotNetWMS.Controllers
                         await _context.SaveChangesAsync();
                         await UpdateItemCode(item);
                         GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
-                        return RedirectToAction("Assign_to_employee");
+                        return RedirectToAction("Index");
 
                     }
                     else
@@ -1107,7 +1156,7 @@ namespace DotNetWMS.Controllers
                         ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
                         return View(item);
                     }
-                case "Assign_to_warehouse_confirm":
+                case "Assign_to_warehouse":
                     if (itemOld.WarehouseId != item.WarehouseId)
                     {
                         Item newItem = new Item()
@@ -1133,7 +1182,7 @@ namespace DotNetWMS.Controllers
                         await _context.SaveChangesAsync();
                         await UpdateItemCode(item);
                         GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
-                        return RedirectToAction("Assign_to_warehouse");
+                        return RedirectToAction("Index");
 
                     }
                     else
@@ -1143,7 +1192,7 @@ namespace DotNetWMS.Controllers
                         ViewData["WarehouseId"] = new SelectList(_context.Warehouses, "Id", "AssignFullName", item.WarehouseId);
                         return View(item);
                     }
-                case "Assign_to_external_confirm":
+                case "Assign_to_external":
                     if (itemOld.ExternalId != item.ExternalId)
                     {
                         Item newItem = new Item()
@@ -1169,7 +1218,7 @@ namespace DotNetWMS.Controllers
                         await _context.SaveChangesAsync();
                         await UpdateItemCode(item);
                         GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
-                        return RedirectToAction("Assign_to_external");
+                        return RedirectToAction("Index");
 
                     }
                     else
@@ -1202,7 +1251,7 @@ namespace DotNetWMS.Controllers
 
             switch (method)
             {
-                case "Assign_to_employee_confirm":
+                case "Assign_to_employee":
 
                     try
                     {
@@ -1229,9 +1278,9 @@ namespace DotNetWMS.Controllers
                         }
                     }
                     GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
-                    return RedirectToAction("Assign_to_employee");
+                    return RedirectToAction("Index");
 
-                case "Assign_to_warehouse_confirm":
+                case "Assign_to_warehouse":
 
                     try
                     {
@@ -1258,9 +1307,9 @@ namespace DotNetWMS.Controllers
                         }
                     }
                     GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
-                    return RedirectToAction("Assign_to_warehouse");
+                    return RedirectToAction("Index");
 
-                case "Assign_to_external_confirm":
+                case "Assign_to_external":
 
                     try
                     {
@@ -1287,7 +1336,7 @@ namespace DotNetWMS.Controllers
                         }
                     }
                     GlobalAlert.SendGlobalAlert($"Przedmiot {item.Assign} został przekazany!", "info");
-                    return RedirectToAction("Assign_to_external");
+                    return RedirectToAction("Index");
 
                 default:
                     break;
@@ -1461,7 +1510,7 @@ namespace DotNetWMS.Controllers
         /// <returns></returns>
         private async Task UpdateItemCode(Item item)
         {
-            string userName = _context.Users.FirstOrDefault(u => u.Id == item.UserId).NormalizedUserName;
+            string userName = _context.Users.FirstOrDefault(u => u.Id == item.UserId)?.NormalizedUserName;
             item.ItemCode = !string.IsNullOrEmpty(userName) ? ItemCodeGenerator.Generate(item, userName) : ItemCodeGenerator.Generate(item, User?.Identity?.Name);
             _context.Update(item);
             await _context.SaveChangesAsync();

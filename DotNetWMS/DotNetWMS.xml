@@ -679,46 +679,46 @@
             <param name="search">Search phrase in the search field</param>
             <returns>Returns Item's Assign_to_external view with list of items in the order set by the user</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_employee_confirm(System.Nullable{System.Int32})">
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_employee(System.Nullable{System.Int32})">
             <summary>
-            GET method responsible for returning an Item's Assign_to_employee_confirm view for the selected id
+            GET method responsible for returning an Item's Assign_to_employee view for the selected id
             </summary>
             <param name="id">Item ID which should be returned</param>
-            <returns>Returns Item's Assign_to_employee_confirm view</returns>
+            <returns>Returns Item's Assign_to_employee view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_warehouse_confirm(System.Nullable{System.Int32})">
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_warehouse(System.Nullable{System.Int32})">
             <summary>
-            GET method responsible for returning an Item's Assign_to_warehouse_confirm view for the selected id
+            GET method responsible for returning an Item's Assign_to_warehouse view for the selected id
             </summary>
             <param name="id">Item ID which should be returned</param>
-            <returns>Returns Item's Assign_to_warehouse_confirm view</returns>
+            <returns>Returns Item's Assign_to_warehouse view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_external_confirm(System.Nullable{System.Int32})">
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_external(System.Nullable{System.Int32})">
             <summary>
-            GET method responsible for returning an Item's Assign_to_external_confirm view for the selected id
+            GET method responsible for returning an Item's Assign_to_external view for the selected id
             </summary>
             <param name="id">Item ID which should be returned</param>
-            <returns>Returns Item's Assign_to_external_confirm view</returns>
+            <returns>Returns Item's Assign_to_external view</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_employee_confirm(System.Int32,DotNetWMS.Models.Item)">
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_employee(System.Int32,DotNetWMS.Models.Item)">
             <summary>
-            POST method responsible for processing the completed form on Assign_to_employee_confirm view
+            POST method responsible for processing the completed form on Assign_to_employee view
             </summary>
             <param name="id">Item ID which assignment was edited</param>
             <param name="item">Item model class with binding DB attributes</param>
             <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_warehouse_confirm(System.Int32,DotNetWMS.Models.Item)">
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_warehouse(System.Int32,DotNetWMS.Models.Item)">
             <summary>
-            POST method responsible for processing the completed form on Assign_to_warehouse_confirm view
+            POST method responsible for processing the completed form on Assign_to_warehouse view
             </summary>
             <param name="id">Item ID which assignment was edited</param>
             <param name="item">Item model class with binding DB attributes</param>
             <returns>If succeed, used is returned to the previous view where entered changes are visible. Also the database is updated. Otherwise - an error message is generated</returns>
         </member>
-        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_external_confirm(System.Int32,DotNetWMS.Models.Item)">
+        <member name="M:DotNetWMS.Controllers.ItemsController.Assign_to_external(System.Int32,DotNetWMS.Models.Item)">
             <summary>
-            POST method responsible for processing the completed form on Assign_to_external_confirm view
+            POST method responsible for processing the completed form on Assign_to_external view
             </summary>
             <param name="id">Item ID which assignment was edited</param>
             <param name="item">Item model class with binding DB attributes</param>

@@ -38,6 +38,7 @@ namespace DotNetWMS.Models
         /// <summary>
         /// List of objects names which using location
         /// </summary>
+        [Display(Name = "Wykorzystywany przez:")]
         public List<string> Records { get; set; }
     }
 }
