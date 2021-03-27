@@ -41,9 +41,9 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
-            await controller.Assign_to_employee(string.Empty, string.Empty);
-            var itemsCollection = (ICollection<Item>)controller.ViewData.Model;
-            Assert.That(itemsCollection, Is.InstanceOf(typeof(ICollection<Item>)));
+            controller.ItemAssignment(string.Empty, string.Empty, null, null, null);
+            var itemsCollection = (ICollection<ItemsAssignmentViewModel>)controller.ViewData.Model;
+            Assert.That(itemsCollection, Is.InstanceOf(typeof(ICollection<ItemsAssignmentViewModel>)));
 
 
         }
@@ -60,8 +60,8 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
-            var result = await controller.Assign_to_employee(string.Empty, string.Empty) as ViewResult;
-            Assert.IsAssignableFrom<List<Item>>(result.Model);
+            var result = controller.ItemAssignment(string.Empty, string.Empty, null, null, null) as ViewResult;
+            Assert.IsAssignableFrom<List<ItemsAssignmentViewModel>>(result.Model);
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
 
 
@@ -79,7 +79,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
-            var result = await controller.Assign_to_employee_confirm(1) as ViewResult;
+            var result = await controller.Assign_to_employee(1) as ViewResult;
             Assert.IsNotNull(result.Model);
 
 
@@ -97,7 +97,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
-            var result = await controller.Assign_to_employee_confirm(99);
+            var result = await controller.Assign_to_employee(99);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
             result = result as ViewResult;
             Assert.IsNull(result);
@@ -116,7 +116,7 @@ namespace DotNetWMSTests
             var fakeContextAccessor = new Mock<IHttpContextAccessor>();
 
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
-            var result = await controller.Assign_to_employee_confirm(null);
+            var result = await controller.Assign_to_employee(null);
             Assert.That(result, Is.InstanceOf(typeof(NotFoundResult)));
     
         }
@@ -135,7 +135,7 @@ namespace DotNetWMSTests
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
 
             var item = _context.Items.Find(1);
-            var result = await controller.Assign_to_employee_confirm(1, item);
+            var result = await controller.Assign_to_employee(1, item);
             Assert.That(result, Is.InstanceOf(typeof(IActionResult)));
 
         }
@@ -154,7 +154,7 @@ namespace DotNetWMSTests
             var controller = new ItemsController(_context, fakeUserManager.Object, fakeContextAccessor.Object, _logger);
             var item = _context.Items.Find(1);
             item.Quantity = -1.0M;
-            var result = await controller.Assign_to_employee_confirm(1, item) as ViewResult;
+            var result = await controller.Assign_to_employee(1, item) as ViewResult;
             
             foreach (ModelStateEntry modelState in result.ViewData.ModelState.Values)
             {
@@ -181,7 +181,7 @@ namespace DotNetWMSTests
             
             var item = _context.Items.Find(1);
             item.Quantity = 2.0M;
-            var result = await controller.Assign_to_employee_confirm(1, item) as ViewResult;
+            var result = await controller.Assign_to_employee(1, item) as ViewResult;
 
             foreach (ModelStateEntry modelState in result.ViewData.ModelState.Values)
             {
@@ -208,7 +208,7 @@ namespace DotNetWMSTests
             
             var item = _context.Items.Find(1);
             item.Quantity = 4.0M;
-            var result = await controller.Assign_to_employee_confirm(1, item) as ViewResult;
+            var result = await controller.Assign_to_employee(1, item) as ViewResult;
 
             foreach (ModelStateEntry modelState in result.ViewData.ModelState.Values)
             {
@@ -235,7 +235,7 @@ namespace DotNetWMSTests
 
             var item = _context.Items.Find(1);
             item.Quantity = 2.0M;
-            var result = await controller.Assign_to_employee_confirm(1, item);
+            var result = await controller.Assign_to_employee(1, item);
             Assert.That(result, Is.InstanceOf(typeof(ActionResult)));
 
 

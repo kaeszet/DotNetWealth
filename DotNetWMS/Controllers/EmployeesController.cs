@@ -70,13 +70,14 @@ namespace DotNetWMS.Controllers
             }
 
             var user = await _context.Users.Include(u => u.Department).FirstOrDefaultAsync(u => u.Id == id);
-            var location = await _context.Locations.FindAsync(user.LocationId);
 
             if (user == null)
             {
-                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}");
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id");
                 return NotFound();
             }
+
+            var location = await _context.Locations.FindAsync(user.LocationId);
 
             UserAndLocationViewModel viewModel = new UserAndLocationViewModel()
             {
@@ -182,13 +183,14 @@ namespace DotNetWMS.Controllers
             }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-            var location = await _context.Locations.FindAsync(user.LocationId);
 
             if (user == null)
             {
-                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id = {id}");
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie pracownika o podanym id");
                 return NotFound();
             }
+
+            var location = await _context.Locations.FindAsync(user.LocationId);
 
             UserAndLocationViewModel viewModel = new UserAndLocationViewModel()
             {

@@ -42,7 +42,7 @@ namespace DotNetWMS.Controllers
         /// GET method responsible for returning a Home's Index view
         /// </summary>
         /// <returns>Returns an Home's Index view</returns>
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             if (User?.Identity?.Name != null)
             {
@@ -53,7 +53,14 @@ namespace DotNetWMS.Controllers
             ViewData["WarehousesCount"] = _context.Warehouses.Count();
             ViewData["RegisteredUsers"] = _context.Users.Count();
             ViewData["OutOfWarranty"] = _context.Items.Where(i => i.WarrantyDate < DateTime.Now).Count();
-            int newMessages = _context.Infoboxes.Where(i => i.User.NormalizedUserName == User.Identity.Name && i.IsChecked == false).Count();
+
+            int? newMessages = 0;
+
+            if (User != null)
+            {
+                newMessages = _context.Infoboxes.Where(i => i.User.NormalizedUserName == User.Identity.Name && i.IsChecked == false)?.Count();
+            }
+            
             GlobalAlert.SendQuantity(newMessages);
 
             return View();
@@ -62,11 +69,11 @@ namespace DotNetWMS.Controllers
         /// GET method responsible for returning a Home's AboutUs view
         /// </summary>
         /// <returns>Returns an Home's AboutUs view</returns>
-        public async Task<IActionResult> AboutUs()
+        public IActionResult AboutUs()
         {
             return View();
         }
-        
+
         [HttpGet]
         public IActionResult Diagrams([FromQuery] string number)
         {

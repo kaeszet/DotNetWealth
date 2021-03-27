@@ -42,7 +42,7 @@ namespace DotNetWMS.Resources
         /// Method to receive quantity from controller
         /// </summary>
         /// <param name="count">Quantity to display on dashboard</param>
-        public static void SendQuantity(int count)
+        public static void SendQuantity(int? count)
         {
             _count = count;
         }

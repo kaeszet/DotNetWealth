@@ -42,6 +42,7 @@ namespace DotNetWMS.Resources
                         var isInStandardPlusRole = await userStore.IsInRoleAsync(empsArray[i], "StandardPlus");
                         var isInHRRole = await userStore.IsInRoleAsync(empsArray[i], "Kadry");
                         var isInModeratorRole = await userStore.IsInRoleAsync(empsArray[i], "Moderator");
+                        var isInAdminRole = await userStore.IsInRoleAsync(empsArray[i], "Admin");
 
                         if (isInStandardRole)
                         {
@@ -58,6 +59,10 @@ namespace DotNetWMS.Resources
                         if (isInModeratorRole)
                         {
                             await userStore.RemoveFromRoleAsync(empsArray[i], "Moderator");
+                        }
+                        if (isInAdminRole && empsArray[i].Surname == "Właściciel")
+                        {
+                            await userStore.RemoveFromRoleAsync(empsArray[i], "Admin");
                         }
 
                         empsArray[i].DepartmentId = null;
@@ -398,11 +403,31 @@ namespace DotNetWMS.Resources
             for (int i = 0; i < users.Length; i++)
             {
                 var userStore = new UserStore<WMSIdentityUser>(context);
-                var isInStandardRole = await userStore.IsInRoleAsync(users[i], "STANDARD");
+                //var isInStandardRole = await userStore.IsInRoleAsync(users[i], "STANDARD");
 
-                if (!isInStandardRole)
+                if (users[i].Surname == "Właściciel")
                 {
-                    await userStore.AddToRoleAsync(users[i], "Standard");
+                    await userStore.AddToRoleAsync(users[i], "ADMIN");
+                }
+
+                if (users[i].Surname == "Kadrowy" || users[i].Surname == "Kadrosprzedawca")
+                {
+                    await userStore.AddToRoleAsync(users[i], "KADRY");
+                }
+
+                if (users[i].Surname == "Sprzedawca" || users[i].Surname == "Kadrosprzedawca")
+                {
+                    await userStore.AddToRoleAsync(users[i], "STANDARDPLUS");
+                }
+
+                if (users[i].Surname == "Magazynier")
+                {
+                    await userStore.AddToRoleAsync(users[i], "STANDARD");
+                }
+
+                if (users[i].Surname == "Moderator")
+                {
+                    await userStore.AddToRoleAsync(users[i], "MODERATOR");
                 }
             }
 

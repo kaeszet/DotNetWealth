@@ -45,7 +45,7 @@ namespace DotNetWMSTests
         {
             var users = new[]
             {
-                new WMSIdentityUser { Name = "Janusz", Surname = "Testowy", EmployeeNumber = "123456789012", City="Kraków", Email="a@a.pl"}
+                new WMSIdentityUser { Name = "Janusz", Surname = "Testowy", UserName = "TestoJan9012", EmployeeNumber = "23456789012", City="Kraków", Email="a@a.pl", LoginCount = 0 }
 
             };
 
