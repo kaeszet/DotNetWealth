@@ -579,7 +579,7 @@ function newMarker(place) {
 }
 
 function getGoogleData(place) {
-
+    console.log(place)
     if (place.geometry) {
 
         clearMarker(null);
