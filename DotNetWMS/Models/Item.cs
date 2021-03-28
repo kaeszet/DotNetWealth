@@ -101,12 +101,12 @@ namespace DotNetWMS.Models
         /// <summary>
         /// External's FK. Can be null.
         /// </summary>
-        [Display(Name = "Przypisz do kl. zewn.:")]
+        [Display(Name = "Przypisz do kontrahenta:")]
         public int? ExternalId { get; set; }
         /// <summary>
         /// External DB data
         /// </summary>
-        [Display(Name = "Kl. zewn.")]
+        [Display(Name = "Kontrahent")]
         [JsonIgnore]
         public External External { get; set; }
         public string FullName => $"{Name} {Producer} {Model} (ID:{Id})";

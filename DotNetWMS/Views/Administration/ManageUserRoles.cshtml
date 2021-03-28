@@ -2,11 +2,12 @@
 
 @{
     var userId = ViewBag.userId;
+    ViewBag.Title = "Wybierz rolę dla użytkownika";
 }
 
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="my-0 text-sm-left text-center w-100">Wybierz rolę dla użytkownika</h2>
+        <h2 class="my-0 text-sm-left text-center w-100">@ViewBag.Title</h2>
     </div>
 </div>
 <hr />

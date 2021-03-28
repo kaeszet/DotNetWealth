@@ -2,11 +2,11 @@
 @inject SignInManager<WMSIdentityUser> signInManager;
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Podgląd pracowników";
 }
 
 <div class="d-flex justify-content-between flex-sm-row flex-column">
-    <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Podgląd pracowników</h2>
+    <h2 class="mb-sm-0 mb-2 text-sm-left text-center">@ViewData["Title"]</h2>
     @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
     {
         <a asp-action="Register" asp-controller="Account" class="btn btn-success my-auto"><i class="fas fa-plus mr-1"></i>Dodaj pracownika</a>

@@ -2,12 +2,12 @@
 @model IEnumerable<IdentityRole>
 
 @{
-    ViewBag.Title = "All Roles";
+    ViewBag.Title = "Lista ról";
     Model.OrderBy(m => m.Name);
 }
     
         <div class="d-flex justify-content-between flex-sm-row flex-column">
-        <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Lista ról</h2>
+            <h2 class="mb-sm-0 mb-2 text-sm-left text-center">@ViewBag.Title</h2>
         </div>
         <hr />
         <div class="row">

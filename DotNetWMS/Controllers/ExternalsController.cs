@@ -102,8 +102,32 @@ namespace DotNetWMS.Controllers
                 items = items.Where(i => i.Type.Contains(search) || i.Producer.Contains(search) || i.Name.Contains(search) || i.Model.Contains(search) || i.ItemCode.Contains(search));
             }
 
+            List<ItemsAssignmentViewModel> viewModelList = new List<ItemsAssignmentViewModel>();
 
-            return PartialView("_StatusViewTable", items.ToList());
+            foreach (var item in items)
+            {
+                List<string> listOfOccurences = UsingEntitiesList(item);
+
+                ItemsAssignmentViewModel viewModel = new ItemsAssignmentViewModel()
+                {
+                    Id = item.Id,
+                    IsChecked = false,
+                    ItemCode = item.ItemCode,
+                    Model = item.Model,
+                    Name = item.Name,
+                    Producer = item.Producer,
+                    Quantity = item.Quantity,
+                    Type = item.Type,
+                    Units = item.Units,
+                    Records = listOfOccurences
+
+                };
+
+                viewModelList.Add(viewModel);
+            }
+
+
+            return PartialView("_StatusViewTable", viewModelList);
         }
         /// <summary>
         /// GET method responsible for returning an External's Details view
@@ -419,6 +443,34 @@ namespace DotNetWMS.Controllers
         private bool ExternalExists(int id)
         {
             return _context.Externals.Any(e => e.Id == id);
+        }
+
+        private List<string> UsingEntitiesList(Item item)
+        {
+            List<string> listOfOccurrences = new List<string>();
+
+            var findInWarehouses = _context.Warehouses.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.AssignFullName).ToList();
+
+            if (findInWarehouses.Any())
+            {
+                listOfOccurrences.AddRange(findInWarehouses);
+            }
+
+            var findInExternals = _context.Externals.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.FullName).ToList();
+
+            if (findInExternals.Any())
+            {
+                listOfOccurrences.AddRange(findInExternals);
+            }
+
+            var findInUsers = _context.Users.AsNoTracking().Where(x => x.Items.Any(i => i.Id == item.Id)).Select(x => x.FullName).ToList();
+
+            if (findInUsers.Any())
+            {
+                listOfOccurrences.AddRange(findInUsers);
+            }
+
+            return listOfOccurrences;
         }
     }
 }

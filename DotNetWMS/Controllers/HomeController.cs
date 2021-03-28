@@ -54,15 +54,14 @@ namespace DotNetWMS.Controllers
             ViewData["RegisteredUsers"] = _context.Users.Count();
             ViewData["OutOfWarranty"] = _context.Items.Where(i => i.WarrantyDate < DateTime.Now).Count();
 
-            int? newMessages = 0;
+            //int? newMessages = 0;
 
             if (User != null)
             {
-                newMessages = _context.Infoboxes.Where(i => i.User.NormalizedUserName == User.Identity.Name && i.IsChecked == false)?.Count();
+                int? newMessages = _context.Infoboxes.Where(i => i.User.NormalizedUserName == User.Identity.Name && i.IsChecked == false)?.Count();
+                GlobalAlert.SendQuantity(newMessages);
             }
-            
-            GlobalAlert.SendQuantity(newMessages);
-
+           
             return View();
         }
         /// <summary>

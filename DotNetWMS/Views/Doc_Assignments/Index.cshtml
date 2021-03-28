@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<DotNetWMS.Models.Doc_Assignment>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Podgląd dokumentów";
 }
 
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="my-0">Podgląd dokumentów</h2>
+        <h2 class="my-0">@ViewData["Title"]</h2>
         <a asp-action="ConfigureDocument" class="btn btn-success my-auto"><i class="fas fa-plus mr-1"></i>Dodaj nowy dokument</a>
     </div>
 </div>

@@ -8,7 +8,7 @@ namespace DotNetWMS.Resources
     /// <summary>
     /// A class to generate login for <c>WMSIdentityUser</c> class
     /// </summary>
-    public class UserLoginGenerator
+    class UserLoginGenerator
     {
         /// <summary>
         /// A method that normalizes sent string and invoke normalize

@@ -397,6 +397,7 @@ namespace DotNetWMS.Controllers
         /// <param name="model">Admin_EditUserViewModel class object which will be processed by an instance of UserManager class</param>
         /// <returns>If succeed, returns a list of users with the current data. Otherwise - the page with the error message.</returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUser(Admin_EditUserViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
@@ -407,30 +408,43 @@ namespace DotNetWMS.Controllers
                 _logger.LogError($"Użytkownik o numerze ID: {model.Id} nie został odnaleziony!");
                 return View("NotFound");
             }
-            else
+
+            if (ModelState.IsValid)
             {
-                user.Id = model.Id;
-                user.Name = model.Name;
-                user.Surname = model.Surname;
-                user.EmployeeNumber = model.EmployeeNumber;
-                user.City = model.City;
-                user.Email = model.Email;
-                
-                var result = await _userManager.UpdateAsync(user);
-
-                if (result.Succeeded)
+                if (!RegexUtilities.IsValidEmail(model.Email))
                 {
-                    return RedirectToAction("ListOfUsers");
+                    ModelState.AddModelError("Email", "Adres mailowy powinien być zapisany w formacie użytkownik@domena np. jankowalski@twojafirma.pl");
+                    return View(model);
                 }
-
-                foreach (var error in result.Errors)
+                else
                 {
-                    _logger.LogDebug(error.Description);
-                    ModelState.AddModelError("", error.Description);
-                }
+                    user.Id = model.Id;
+                    user.Name = model.Name;
+                    user.Surname = model.Surname;
+                    user.EmployeeNumber = model.EmployeeNumber;
+                    user.City = model.City;
+                    user.Email = model.Email;
 
-                return View(model);
+                    var result = await _userManager.UpdateAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Employees");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        _logger.LogDebug(error.Description);
+                        ModelState.AddModelError("", error.Description);
+                    }
+
+                    
+                }
             }
+
+            return View(model);
+
+
         }
         [HttpGet]
         public async Task<IActionResult> ChangePassword(string id)
@@ -514,7 +528,7 @@ namespace DotNetWMS.Controllers
 
                     if (result.Succeeded)
                     {
-                        return RedirectToAction("ListOfUsers");
+                        return RedirectToAction("Index", "Employees");
                     }
 
                     foreach (var error in result.Errors)
@@ -523,7 +537,7 @@ namespace DotNetWMS.Controllers
                         ModelState.AddModelError("", error.Description);
                     }
 
-                    return View("ListOfUsers");
+                    return View("Index", "Employees");
                 }
                 catch (DbUpdateException)
                 {
@@ -606,6 +620,25 @@ namespace DotNetWMS.Controllers
             }
 
             return RedirectToAction("EditUser", new { Id = userId });
+        }
+        [AcceptVerbs("Get", "Post")]
+        public async Task<IActionResult> IsEmailInUse(string email, string InitialEmail)
+        {
+            if (!RegexUtilities.IsValidEmail(email))
+            {
+                return Json($"Adres mailowy powinien być zapisany w formacie użytkownik@domena np. jankowalski@twojafirma.pl");
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"Konto z powyższym adresem ({email}) już istnieje!");
+            }
         }
 
 

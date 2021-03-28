@@ -1,6 +1,6 @@
-﻿@model List<Item>
+﻿@model List<ItemsAssignmentViewModel>
 @{
-    ViewData["Title"] = "_StatusViewTable";
+    ViewData["Title"] = "Raport";
 }
 
 @if (Model.Any())
@@ -30,6 +30,9 @@
                 <th>
                     Jedn.
                 </th>
+                <th>
+                    Przypisany do:
+                </th>
             </tr>
         </thead>
         <tbody id="tableSearch">
@@ -56,6 +59,14 @@
                 </td>
                 <td>
                     @item.Units
+                </td>
+                <td>
+                    <ul class="pl-0" style="list-style:inside; list-style-type: decimal;">
+                        @foreach (var occurrence in item.Records)
+                        {
+                            <li>@occurrence</li>
+                        }
+                    </ul>
                 </td>
             </tr>
             }

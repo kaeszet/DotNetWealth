@@ -260,14 +260,14 @@ namespace DotNetWMS.Controllers
 
             var findInExternals = _context.Externals.Where(x => x.LocationId == id)?.Select(x => x.FullName);
 
-            if (findInWarehouses.Any())
+            if (findInExternals.Any())
             {
                 listOfOccurrences.AddRange(findInExternals.ToList());
             }
 
             var findInEmployees = _context.Users.Where(x => x.LocationId == id)?.Select(x => x.FullName);
 
-            if (findInWarehouses.Any())
+            if (findInEmployees.Any())
             {
                 listOfOccurrences.AddRange(findInEmployees.ToList());
             }

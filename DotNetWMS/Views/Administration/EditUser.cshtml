@@ -1,19 +1,20 @@
-﻿@model Admin_EditUserViewModel
+﻿@model DotNetWMS.Models.Admin_EditUserViewModel
+@inject SignInManager<WMSIdentityUser> signInManager;
 
 @{
-    ViewBag.Title = "Edit User";
+    ViewBag.Title = "Edytuj użytkownika";
 }
 
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="my-0 text-sm-left text-center w-100">Edytuj użytkownika</h2>
+        <h2 class="my-0 text-sm-left text-center w-100">@ViewBag.Title</h2>
     </div>
 </div>
 <hr />
 <div class="mb-3">
     @*<a asp-action="ListOfUsers" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy użytkowników</a>*@
     <a asp-action="Index" asp-controller="Employees" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do podglądu</a>
-    <div asp-validation-summary="All" class="text-danger font-weight-bold small mt-3"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger font-weight-bold small mt-3"></div>
     <form method="post">
         <div class="form-row">
             <div class="form-group col-md-6">

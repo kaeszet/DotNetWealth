@@ -2,12 +2,12 @@
 @inject SignInManager<WMSIdentityUser> signInManager;
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edycja pracowników";
 }
 
 <div>
     <div class="d-flex justify-content-between">
-        <h2 class="my-0 w-100 text-sm-left text-center">Edycja pracowników</h2>
+        <h2 class="my-0 w-100 text-sm-left text-center">@ViewData["Title"]</h2>
     </div>
 </div>
 <hr />
@@ -42,7 +42,9 @@
             </div>*@
             <div class="form-group">
                 <label asp-for="DepartmentId"></label>
-                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId"></select>
+                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId">
+                    <option value="" selected>Brak</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="address">Adres</label>

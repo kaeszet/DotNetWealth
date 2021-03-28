@@ -195,6 +195,13 @@ namespace DotNetWMS.Controllers
                 default: items = items.OrderBy(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
                     break;
             }
+
+            if (User != null)
+            {
+                int? newMessages = _context.Infoboxes.Where(i => i.User.NormalizedUserName == User.Identity.Name && i.IsChecked == false)?.Count();
+                GlobalAlert.SendQuantity(newMessages);
+            }
+
             return View(await items.AsNoTracking().ToListAsync());
         }
         [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
@@ -516,20 +523,6 @@ namespace DotNetWMS.Controllers
             {
                 listOfOccurrences.AddRange(findInUsers);
             }
-
-            //var findInExternals = _context.Items.Where(x => x.ExternalId == externalId)?.Select(x => x.External.FullName);
-
-            //if (findInWarehouses.Any())
-            //{
-            //    listOfOccurrences.AddRange(findInExternals.ToList());
-            //}
-
-            //var findInEmployees = _context.Items.Where(x => x.UserId == userId)?.Select(x => x.User.FullName);
-
-            //if (findInWarehouses.Any())
-            //{
-            //    listOfOccurrences.AddRange(findInEmployees.ToList());
-            //}
 
             return listOfOccurrences;
         }
@@ -1257,12 +1250,14 @@ namespace DotNetWMS.Controllers
                     {
                         if (itemOld.UserId != item.UserId)
                         {
+                            Doc_Creator creator = new Doc_Creator();
                             item.ItemCode = ItemCodeGenerator.Generate(item, user);
                             _context.Update(item);
                             MergeSameItems(item, typeof(WMSIdentityUser));
                             ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
                             await UpdateItemCode(item);
+                            await creator.GenerateAndSaveDocument(item, _context, User?.Identity?.Name, method, itemOld.UserId, item.UserId);
                         }
 
                     }
@@ -1286,12 +1281,14 @@ namespace DotNetWMS.Controllers
                     {
                         if (itemOld.WarehouseId != item.WarehouseId)
                         {
+                            Doc_Creator creator = new Doc_Creator();
                             item.ItemCode = ItemCodeGenerator.Generate(item, user);
                             _context.Update(item);
                             MergeSameItems(item, typeof(Warehouse));
                             ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
                             await UpdateItemCode(item);
+                            await creator.GenerateAndSaveDocument(item, _context, User?.Identity?.Name, method, itemOld.WarehouseId.ToString(), item.WarehouseId.ToString());
                         }
 
                     }
@@ -1315,12 +1312,14 @@ namespace DotNetWMS.Controllers
                     {
                         if (itemOld.ExternalId != item.ExternalId)
                         {
+                            Doc_Creator creator = new Doc_Creator();
                             item.ItemCode = ItemCodeGenerator.Generate(item, user);
                             _context.Update(item);
                             MergeSameItems(item, typeof(External));
                             ItemStatusCheck(item, itemOld.ExternalId);
                             await _context.SaveChangesAsync();
                             await UpdateItemCode(item);
+                            await creator.GenerateAndSaveDocument(item, _context, User?.Identity?.Name, method, itemOld.ExternalId.ToString(), item.ExternalId.ToString());
                         }
 
                     }

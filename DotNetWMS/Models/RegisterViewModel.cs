@@ -20,6 +20,7 @@ namespace DotNetWMS.Models
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(30)]
         [Display(Name = "Imię")]
+        [RegularExpression(@"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-\.\'\s]*", ErrorMessage = "{0} nie może zawierać cyfr")]
         public string Name { get; set; }
         /// <summary>
         /// A field to capture new user's surname
@@ -27,6 +28,7 @@ namespace DotNetWMS.Models
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(40)]
         [Display(Name = "Nazwisko")]
+        [RegularExpression(@"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-\.\'\s]*", ErrorMessage = "{0} nie może zawierać cyfr")]
         public string Surname { get; set; }
         /// <summary>
         /// A field to capture new user's employee number
@@ -81,7 +83,23 @@ namespace DotNetWMS.Models
         [StringLength(30)]
         [Compare("Password", ErrorMessage = "Hasła nie pasują do siebie")]
         public string ConfirmPassword { get; set; }
-        
+        /// <summary>
+        /// <c>Location</c>'s ID
+        /// </summary>
+        public int? LocationId { get; set; }
+        /// <summary>
+        /// <c>Location</c>'s address
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
+        /// <c>Location</c>'s longitude
+        /// </summary>
+        public string Longitude { get; set; }
+        /// <summary>
+        /// <c>Location</c>'s latitude
+        /// </summary>
+        public string Latitude { get; set; }
+
 
     }
 }
