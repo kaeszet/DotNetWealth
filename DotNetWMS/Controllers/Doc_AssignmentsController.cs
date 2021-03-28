@@ -48,7 +48,7 @@ namespace DotNetWMS.Controllers
         /// <returns>Returns Doc_Assignment's Index view with list of documents in the order set by the user</returns>
         public async Task<IActionResult> Index(string search, string order)
         {
-            ViewData["SortById"] = string.IsNullOrEmpty(order) ? "id_desc" : "";
+            ViewData["SortById"] = string.IsNullOrEmpty(order) ? "id_asc" : "";
             ViewData["Search"] = search;
 
             //var docs = _context.Doc_Assignments.Select(d => d);
@@ -71,11 +71,11 @@ namespace DotNetWMS.Controllers
 
             switch (order)
             {
-                case "id_desc":
-                    docs = docs.OrderByDescending(d => d.DocumentId);
+                case "id_asc":
+                    docs = docs.OrderBy(d => d.CreationDate);
                     break;
                 default:
-                    docs = docs.OrderBy(d => d.DocumentId);
+                    docs = docs.OrderByDescending(d => d.CreationDate);
                     break;
             }
 

@@ -1,13 +1,13 @@
 ﻿@model DotNetWMS.Models.Location
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Potwierdź usunięcie";
 }
 
 
 <h3 class="text-danger">Czy na pewno chcesz wykonać to polecenie?</h3>
 <div>
-    <h2>Usuwanie magazynu</h2>
+    <h2>@ViewData["Title"]</h2>
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Usuń</button>

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DotNetWMS.Data;
 using DotNetWMS.Models;
+using DotNetWMS.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -17,6 +21,7 @@ namespace DotNetWMS.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
+        private readonly DotNetWMSContext _context;
         /// <summary>
         /// Implementation of the WMSIdentityUser class in the UserManager class to maintain the user account
         /// </summary>
@@ -37,12 +42,13 @@ namespace DotNetWMS.Controllers
         public AccountController(UserManager<WMSIdentityUser> userManager,
             SignInManager<WMSIdentityUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<AccountController> logger)
+            ILogger<AccountController> logger, DotNetWMSContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
+            _context = context;
         }
         /// <summary>
         /// GET method to handle the registration view
@@ -63,9 +69,12 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             WMSIdentityUser user;
+            Location location;
 
             if (ModelState.IsValid)
             {
+
+
                 user = new WMSIdentityUser
                 {
                     Name = model.Name,
@@ -74,25 +83,33 @@ namespace DotNetWMS.Controllers
                     Street = model.Street,
                     ZipCode = model.ZipCode,
                     City = model.City,
-                    Email = model.Email
+                    Email = model.Email,
+                    UserName = UserLoginGenerator.GenerateUserLogin(model.Name, model.Surname, model.EmployeeNumber)
                 };
-                if (model.Surname.Length < 5 && model.Name.Length < 3)
+
+                location = new Location()
                 {
-                    user.UserName = $"{model.Surname}{model.Name}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (5 - model.Surname.Length) - (3 - model.Name.Length) - 4)}";
-                }
-                else if (model.Surname.Length < 5)
+                    Address = model.Address,
+                    Latitude = model.Latitude,
+                    Longitude = model.Longitude
+                };
+
+                var loc = _context.Locations.FirstOrDefault(l => l.Address == model.Address);
+
+                if (loc == null)
                 {
-                    user.UserName = $"{model.Surname}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (5 - model.Surname.Length) - 4)}";
-                }
-                else if (model.Name.Length < 3)
-                {
-                    user.UserName = $"{model.Surname.Substring(0, 5)}{model.Name}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - (3 - model.Name.Length) - 4)}";
+                    _context.Add(location);
+                    await _context.SaveChangesAsync();
+
+                    var locId = _context.Locations.FirstOrDefault(l => l.Address == model.Address).Id;
+                    user.LocationId = locId;
+
                 }
                 else
                 {
-                    user.UserName = $"{model.Surname.Substring(0, 5)}{model.Name.Substring(0, 3)}{model.EmployeeNumber.Substring(model.EmployeeNumber.Length - 4)}";   
+                    user.LocationId = loc.Id;
                 }
-                
+
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -109,11 +126,11 @@ namespace DotNetWMS.Controllers
                         await IsDefaultRolesExists();
                         await _userManager.AddToRoleAsync(user, "Admin");
                     }
-                    
-                    
+
+
                     if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
-                        return RedirectToAction("ListOfUsers", "Administration");
+                        return RedirectToAction("Index", "Employees");
                     }
 
                     ViewBag.ExceptionTitle = "Rejestracja udana!";
@@ -127,6 +144,13 @@ namespace DotNetWMS.Controllers
                     _logger.LogDebug(error.Description);
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+
+                //else
+                //{
+                //    ModelState.AddModelError("Email", "Adres mailowy powinien być zapisany w formacie użytkownik@domena np. jankowalski@twojafirma.pl");
+                //    return View(model);
+                //}
+
             }
 
             return View(model);
@@ -139,6 +163,11 @@ namespace DotNetWMS.Controllers
         [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> IsEmailInUse(string email)
         {
+            if (!RegexUtilities.IsValidEmail(email))
+            {
+                return Json($"Adres mailowy powinien być zapisany w formacie użytkownik@domena np. jankowalski@twojafirma.pl");
+            }
+
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
@@ -232,7 +261,7 @@ namespace DotNetWMS.Controllers
                         {
                             await _userManager.AddToRoleAsync(user, "Admin");
                         }
-                        
+
                     }
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
@@ -242,7 +271,7 @@ namespace DotNetWMS.Controllers
                     {
                         return RedirectToAction("index", "home");
                     }
-                    
+
                 }
                 _logger.LogError($"Nieprawidłowy login lub hasło");
                 ModelState.AddModelError(string.Empty, "Nieprawidłowy login lub hasło");
@@ -283,10 +312,10 @@ namespace DotNetWMS.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                
+
                 if (user != null && await _userManager.IsEmailConfirmedAsync(user))
                 {
-                   
+
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var passwordResetLink = Url.Action("ResetPassword", "Account",
                             new { email = model.Email, token }, Request.Scheme);
@@ -312,7 +341,7 @@ namespace DotNetWMS.Controllers
         [AllowAnonymous]
         public IActionResult ResetPassword(string token, string email)
         {
-            
+
             if (token == null || email == null)
             {
                 _logger.LogError($"Nieprawidłowy token: {token}");

@@ -1,11 +1,15 @@
 ﻿@using DotNetWMS.Resources
 @inject SignInManager<WMSIdentityUser> signInManager;
 
+@{ 
+    ViewData["Title"] = "Dashboard";
+}
+
 
 @if (signInManager.IsSignedIn(User))
 {
-    ViewData["Title"] = "Dashboard";
-    <h2>Dashboard</h2>
+    
+<h2>@ViewData["Title"]</h2>
     <hr />
     @if ((bool)ViewData["isAnyNewMessages"])
     {

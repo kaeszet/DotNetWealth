@@ -3,7 +3,7 @@
 @model DotNetWMS.Models.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Register User";
+    ViewData["Title"] = "Rejestracja";
 }
 
 @if (!signInManager.IsSignedIn(User))
@@ -13,7 +13,7 @@
             <div class="mx-auto mb-3" style="max-width: 500px;">
                 <img src="~/images/logo3.png" class="mw-100 mh-100" alt="">
             </div>
-            <h3 class="text-center font-weight-bold my-4">Rejestracja</h3>
+            <h3 class="text-center font-weight-bold my-4">@ViewData["Title"]</h3>
 
             <div asp-validation-summary="All" class="text-danger font-weight-bold small mb-3"></div>
 
@@ -96,7 +96,8 @@ else
     </div>
     <hr />
     <div class="mb-3">
-        <a asp-controller="Administration" asp-action="ListOfUsers" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy użytkowników</a>
+        <a asp-controller="Employees" asp-action="Index" class="btn btn-outline-dark btn-sm"><i class="fas fa-arrow-left mr-1"></i>Wróć do listy użytkowników</a>
+        <hr />
         <div asp-validation-summary="All" class="text-danger font-weight-bold small mb-3"></div>
         <form method="post">
             <div class="form-row">
@@ -141,11 +142,11 @@ else
             <hr />
             <div class="form-group">
                 <label>Adres</label>
-                <input id="address" type="search" autocomplete="nope" placeholder="Podaj adres pracownika" class="form-control" />
+                <input asp-for="Address" id="address" type="search" autocomplete="nope" placeholder="Podaj adres pracownika" class="form-control" />
                 <small class="form-text text-muted">Aby poprawnie zlokalizować położenie proszę podać <b>ulicę</b>, <b>numer budynku</b>, <b>miasto</b> oraz <b>kod pocztowy</b> pracownika</small>
 
-                <input type="hidden" id="lat" />
-                <input type="hidden" id="lng" />
+                <input asp-for="Latitude" type="hidden" id="lat" />
+                <input asp-for="Longitude" type="hidden" id="lng" />
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">

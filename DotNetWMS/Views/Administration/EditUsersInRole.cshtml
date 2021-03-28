@@ -1,10 +1,11 @@
 ﻿@model List<Admin_UsersInRoleViewModel>
 
 @{
+    ViewBag.Title = "Przypisz użytkowników do roli";
     var roleId = ViewBag.roleId;
 }
 <div>
-    <h2 class="text-sm-left text-center">Przypisz użytkowników do roli</h2>
+    <h2 class="text-sm-left text-center">@ViewBag.Title</h2>
 </div>
 <hr />
 <div class="mb-3">

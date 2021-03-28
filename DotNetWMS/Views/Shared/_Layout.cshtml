@@ -10,8 +10,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DotNetFortune</title>
-
+    @if ((int)ViewData["NewMessages"] > 0)
+    {
+        <title>(@ViewData["NewMessages"]) @ViewData["Title"] - DotNetWealth</title>
+    }
+    else
+    {
+        <title>@ViewData["Title"] - DotNetWealth</title>
+    }
     <environment include="Development">
         <link rel="stylesheet" href="~/css/style.css" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />

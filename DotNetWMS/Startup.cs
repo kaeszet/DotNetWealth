@@ -103,6 +103,11 @@ namespace DotNetWMS
                 // requires using Microsoft.AspNetCore.Http;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+
+            });
 
         }
         /// <summary>

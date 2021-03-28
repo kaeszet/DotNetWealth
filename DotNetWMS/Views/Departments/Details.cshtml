@@ -1,12 +1,12 @@
 ﻿@model DotNetWMS.Models.Department
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Szczegóły stanowiska";
 }
 
 
 
-<h4>Szczegóły stanowiska</h4>
+<h4>@ViewData["Title"]</h4>
 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success"><i class="fas fa-edit"></i> Edytuj</a>
 <hr />
 <dl class="row details-view">

@@ -2,12 +2,12 @@
 @model IEnumerable<DotNetWMS.Models.Item>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Przegląd majątku";
 }
 
 <div>
     <div class="d-flex justify-content-between flex-sm-row flex-column">
-        <h2 class="mb-sm-0 mb-2 text-sm-left text-center">Przegląd majątku</h2>
+        <h2 class="mb-sm-0 mb-2 text-sm-left text-center">@ViewData["Title"]</h2>
         <div>
             @if (User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
             {
