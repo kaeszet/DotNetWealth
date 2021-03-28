@@ -120,7 +120,7 @@ namespace DotNetWMSTests
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
             var result = controller.Register() as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNull(result.Model);
@@ -148,7 +148,7 @@ namespace DotNetWMSTests
             var controllerContext = new ControllerContext() { HttpContext = httpContext, ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor() };
 
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object) { ControllerContext = controllerContext };
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context) { ControllerContext = controllerContext };
             controller.Url = new Mock<IUrlHelper>().Object;
 
             RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
@@ -166,7 +166,7 @@ namespace DotNetWMSTests
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
 
             RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
             var result = controller.Login();
@@ -196,7 +196,7 @@ namespace DotNetWMSTests
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
                 .Returns(true)
                 .Verifiable();
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
 
             controller.Url = mockUrlHelper.Object;
             var result = await controller.Login(new LoginViewModel(), "testPath");
@@ -225,7 +225,7 @@ namespace DotNetWMSTests
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
                 .Returns(true)
                 .Verifiable();
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
 
             controller.Url = mockUrlHelper.Object;
             var result = await controller.Login(new LoginViewModel() { Login = "TestoJan9012" }, "");
@@ -252,7 +252,7 @@ namespace DotNetWMSTests
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
                 .Returns(true)
                 .Verifiable();
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
 
             controller.Url = mockUrlHelper.Object;
             controller.ModelState.AddModelError("", "Nieprawidłowy login lub hasło");
@@ -269,7 +269,7 @@ namespace DotNetWMSTests
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
 
             var result = await controller.IsEmailInUse("a@a.pl");
             Assert.That(result, Is.InstanceOf(typeof(IActionResult)));
@@ -284,7 +284,7 @@ namespace DotNetWMSTests
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
 
             var result = await controller.Logout();
             Assert.That(result, Is.InstanceOf(typeof(RedirectToActionResult)));
