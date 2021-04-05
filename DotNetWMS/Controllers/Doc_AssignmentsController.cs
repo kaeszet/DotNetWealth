@@ -132,7 +132,7 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public IActionResult ConfigureDocument(string from, string to, int fromIndex, int toIndex)
         {
-            IQueryable<Item> items;
+            IQueryable<Item> items = null;
             string infoMessage = "";
 
             switch (toIndex)
@@ -147,7 +147,10 @@ namespace DotNetWMS.Controllers
 
                     break;
                 case 1:
-                    items = _context.Items.Where(i => i.WarehouseId == Convert.ToInt32(to));
+
+                    int toWarehouseId = int.TryParse(to, out toWarehouseId) ? toWarehouseId : -1;
+
+                    items = _context.Items.Where(i => i.WarehouseId == Convert.ToInt32(toWarehouseId));
 
                     if (!items.Any())
                     {
@@ -155,7 +158,10 @@ namespace DotNetWMS.Controllers
                     }
                     break;
                 case 2:
-                    items = _context.Items.Where(i => i.ExternalId == Convert.ToInt32(to));
+
+                    int toExternalId = int.TryParse(to, out toExternalId) ? toExternalId : -1;
+
+                    items = _context.Items.Where(i => i.ExternalId == Convert.ToInt32(toExternalId));
 
                     if (!items.Any())
                     {
@@ -174,26 +180,29 @@ namespace DotNetWMS.Controllers
 
             List<Doc_ConfigureDocumentViewModel> viewModel = new List<Doc_ConfigureDocumentViewModel>();
 
-            foreach (var item in items)
+            if (items != null)
             {
-                Doc_ConfigureDocumentViewModel position = new Doc_ConfigureDocumentViewModel()
+                foreach (var item in items)
                 {
-                    From = from,
-                    To = to,
-                    FromIndex = fromIndex,
-                    ToIndex = toIndex,
-                    Id = item.Id,
-                    Type = item.Type,
-                    Name = item.Name,
-                    Model = item.Model,
-                    Producer = item.Producer,
-                    Code = item.ItemCode,
-                    Quantity = item.Quantity.ToString(),
-                    Unit = item.Units
+                    Doc_ConfigureDocumentViewModel position = new Doc_ConfigureDocumentViewModel()
+                    {
+                        From = from,
+                        To = to,
+                        FromIndex = fromIndex,
+                        ToIndex = toIndex,
+                        Id = item.Id,
+                        Type = item.Type,
+                        Name = item.Name,
+                        Model = item.Model,
+                        Producer = item.Producer,
+                        Code = item.ItemCode,
+                        Quantity = item.Quantity.ToString(),
+                        Unit = item.Units
 
-                };
+                    };
 
-                viewModel.Add(position);
+                    viewModel.Add(position);
+                }
             }
 
             ViewData["InfoMessage"] = infoMessage;
@@ -327,21 +336,27 @@ namespace DotNetWMS.Controllers
                 string decodedId = WebUtility.UrlDecode(id);
                 var doc = await _context.Doc_Assignments.FindAsync(decodedId);
 
-                if (doc != null)
+                if (doc == null)
+                {
+                    _logger.LogDebug($"Nieprawidłowy identyfikator dokumentu");
+                    GlobalAlert.SendGlobalAlert("Nieprawidłowy identyfikator dokumentu", "danger");
+                }
+                else
                 {
                     _context.Doc_Assignments.Remove(doc);
                     await _context.SaveChangesAsync();
+
+                    var info = await _context.Infoboxes.FirstOrDefaultAsync(i => i.DocumentId == decodedId);
+
+                    if (info != null)
+                    {
+                        _context.Infoboxes.Remove(info);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    GlobalAlert.SendGlobalAlert($"Dokument {doc.DocumentId} został usunięty!", "danger");
                 }
 
-                var info = await _context.Infoboxes.FirstOrDefaultAsync(i => i.DocumentId == decodedId);
-
-                if (info != null)
-                {
-                    _context.Infoboxes.Remove(info);
-                    await _context.SaveChangesAsync();
-                }
-
-                GlobalAlert.SendGlobalAlert($"Dokument {doc.DocumentId} został usunięty!", "danger");
             }
             else
             {
@@ -407,6 +422,10 @@ namespace DotNetWMS.Controllers
         /// <returns>Returns correct title from enum two dimensional array</returns>
         private Doc_Titles DocumentTitleGenerator(int? from, int? to)
         {
+            if (from < -1 || from > 2 || to < -1 || to > 2)
+            {
+                return Doc_Titles.P;
+            }
 
             Doc_Titles[,] docTitlesArray = new Doc_Titles[,]
             {

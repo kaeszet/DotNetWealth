@@ -80,8 +80,7 @@ namespace DotNetWMSTests
         public void RegisterViewModel_CheckIsModelValidIfFilledWithRegexException_ReturnCorrectErrorMessage()
         {
             var model = new RegisterViewModel() { Name = "Jessica", Surname = "Testowa", City = "Wie300", EmployeeNumber = "1111111111a", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
-            ICollection<ValidationResult> results;
-            var isModelValid = TryValidate(model, out results);
+            var isModelValid = TryValidate(model, out ICollection<ValidationResult> results);
             ValidationResult[] arr = new ValidationResult[5];
             results.CopyTo(arr, 0);
             Assert.AreEqual(arr[0].ErrorMessage, "Nieprawidłowy identyfikator!");
@@ -168,7 +167,6 @@ namespace DotNetWMSTests
 
             var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
 
-            RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
             var result = controller.Login();
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
 
@@ -196,9 +194,10 @@ namespace DotNetWMSTests
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
                 .Returns(true)
                 .Verifiable();
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
-
-            controller.Url = mockUrlHelper.Object;
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context)
+            {
+                Url = mockUrlHelper.Object
+            };
             var result = await controller.Login(new LoginViewModel(), "testPath");
             Assert.That(result, Is.InstanceOf(typeof(RedirectResult)));
 
@@ -225,9 +224,10 @@ namespace DotNetWMSTests
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
                 .Returns(true)
                 .Verifiable();
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
-
-            controller.Url = mockUrlHelper.Object;
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context)
+            {
+                Url = mockUrlHelper.Object
+            };
             var result = await controller.Login(new LoginViewModel() { Login = "TestoJan9012" }, "");
             Assert.That(result, Is.InstanceOf(typeof(RedirectToActionResult)));
 

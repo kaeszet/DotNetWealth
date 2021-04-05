@@ -28,7 +28,7 @@ namespace DotNetWMSTests
             _logger = new Mock<ILogger<ItemsController>>().Object;
         }
         [Test]
-        public async Task Assign_WhenCalled_GetCollectionOfItems()
+        public void Assign_WhenCalled_GetCollectionOfItems()
         {
 
             var fakeUserManager = new FakeUserManagerBuilder()
@@ -48,7 +48,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Assign_WhenCalled_CreateViewResultObject()
+        public void Assign_WhenCalled_CreateViewResultObject()
         {
             var fakeUserManager = new FakeUserManagerBuilder()
                 .With(x => x.Setup(um => um.CreateAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))

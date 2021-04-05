@@ -80,7 +80,7 @@ namespace DotNetWMSTests
 
             var items = await _context.Warehouses.ToListAsync();
 
-            Assert.AreEqual(0, items.Count);
+            Assert.AreEqual(1, items.Count);
 
         }
         

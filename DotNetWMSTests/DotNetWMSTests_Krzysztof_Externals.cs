@@ -263,8 +263,10 @@ namespace DotNetWMSTests
             //Initialize(_context);
 
             var ext = await _context.Externals.FindAsync(3);
+			ext.TaxId = "3334445567";
 
-            ExternalAndLocationViewModel extVM = new ExternalAndLocationViewModel()
+
+			ExternalAndLocationViewModel extVM = new ExternalAndLocationViewModel()
             {
                 ExternalId = ext.Id,
                 Name = ext.Name,

@@ -27,13 +27,13 @@ namespace DotNetWMSTests
             _context = new DotNetWMSContext(_options);
             _store = new UserStore<WMSIdentityUser>(_context);
             _context.Database.EnsureCreated();
-            //Initialize(_context);
+            Initialize(_context);
 
 
         }
         public static void Initialize(DotNetWMSContext context)
         {
-            if (context.Users.Any())
+            if (context.Users.Any() || context.Roles.Any())
             {
                 return;
             }
@@ -45,12 +45,19 @@ namespace DotNetWMSTests
         {
             var users = new[]
             {
-                new WMSIdentityUser { Name = "Janusz", Surname = "Testowy", UserName = "TestoJan9012", EmployeeNumber = "23456789012", City="Kraków", Email="a@a.pl", LoginCount = 0 }
+                new WMSIdentityUser { Id = "1", Name = "Janusz", Surname = "Testowy", UserName = "TestoJan9012", EmployeeNumber = "23456789012", City="Kraków", Email="a@a.pl", LoginCount = 0 }
 
+            };
+
+            var roles = new[]
+            {
+                new IdentityRole { Id = "1", Name = "Standard", NormalizedName = "STANDARD", ConcurrencyStamp = "test" },
+                new IdentityRole { Id = "Admin", Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = "test2" },
             };
 
 
             context.Users.AddRange(users);
+            context.Roles.AddRange(roles);
             context.SaveChanges();
         }
         public bool TryValidate(object model, out ICollection<ValidationResult> results)
