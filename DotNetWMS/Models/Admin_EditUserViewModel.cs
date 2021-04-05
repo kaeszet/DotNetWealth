@@ -30,6 +30,7 @@ namespace DotNetWMS.Models
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(30)]
         [Display(Name = "Imię")]
+        [RegularExpression(@"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-\.\'\s]*", ErrorMessage = "{0} nie może zawierać cyfr")]
         public string Name { get; set; }
         /// <summary>
         /// A field to capture the user's surname
@@ -37,6 +38,7 @@ namespace DotNetWMS.Models
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [StringLength(40)]
         [Display(Name = "Nazwisko")]
+        [RegularExpression(@"[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ\-\.\'\s]*", ErrorMessage = "{0} nie może zawierać cyfr")]
         public string Surname { get; set; }
         /// <summary>
         /// A field to capture the user's employee number. 12 digits from 0 to 9 are required.

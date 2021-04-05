@@ -14,10 +14,6 @@ namespace DotNetWMS.Models
     /// </summary>
     public class Doc_Assignment
     {
-        //private JsonSerializerOptions options = new JsonSerializerOptions
-        //{
-        //    ReferenceHandler = ReferenceHandler.Preserve
-        //};
         /// <summary>
         /// Doc_Assignment database PK
         /// </summary>
@@ -130,7 +126,6 @@ namespace DotNetWMS.Models
         [Required]
         public string ItemsToString
         {
-            //get { return JsonSerializer.Serialize(_items, options); }
             get { return JsonSerializer.Serialize(_items); }
             set { _items = JsonSerializer.Deserialize<List<Item>>(value); }
         }

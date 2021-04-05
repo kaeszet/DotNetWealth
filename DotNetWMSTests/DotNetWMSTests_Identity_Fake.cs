@@ -76,10 +76,7 @@ namespace DotNetWMSTests
             mock(_mock);
             return this;
         }
-        public Mock<FakeUserManager> Build()
-        {
-            return _mock;
-        }
+        public Mock<FakeUserManager> Build() => _mock;
     }
     public class FakeSignInManagerBuilder
     {
@@ -90,10 +87,7 @@ namespace DotNetWMSTests
             mock(_mock);
             return this;
         }
-        public Mock<FakeSignInManager> Build()
-        {
-            return _mock;
-        }
+        public Mock<FakeSignInManager> Build() => _mock;
     }
     public class FakeRoleManagerBuilder
     {
@@ -104,10 +98,7 @@ namespace DotNetWMSTests
             mock(_mock);
             return this;
         }
-        public Mock<FakeRoleManager> Build()
-        {
-            return _mock;
-        }
+        public Mock<FakeRoleManager> Build() => _mock;
     }
     public class FakeLoggerBuilder
     {

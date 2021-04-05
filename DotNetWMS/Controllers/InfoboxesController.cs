@@ -56,10 +56,16 @@ namespace DotNetWMS.Controllers
             if (id == null)
             {
                 _logger.LogDebug($"DEBUG: Wprowadzony idetyfikator ma wartość null lub jest pustym stringiem");
-                NotFound();
+                return View("NotFound");
             }
 
             var info = await _context.Infoboxes.FindAsync(id);
+
+            if (info == null)
+            {
+                _logger.LogDebug($"DEBUG: Nie znaleziono wiadomości o ID = {id}");
+                return View("NotFound");
+            }
 
             _context.Infoboxes.Remove(info);
             await _context.SaveChangesAsync();
@@ -69,10 +75,21 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> DeleteAllChecked()
         {
             var infosToDelete = _context.Infoboxes.Where(i => i.User.NormalizedUserName == User.Identity.Name && i.IsChecked == true);
-            _context.Infoboxes.RemoveRange(infosToDelete);
-            await _context.SaveChangesAsync();
-            GlobalAlert.SendGlobalAlert($"Usunięto wszystkie przeczytane wiadomości!", "info");
-            return RedirectToAction(nameof(Index));
+
+            if (infosToDelete.Count() == 0)
+            {
+                GlobalAlert.SendGlobalAlert($"Brak wiadomości do usunięcia...", "info");
+                _logger.LogInformation($"INFO: Brak wiadomości do usunięcia");
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                _context.Infoboxes.RemoveRange(infosToDelete);
+                await _context.SaveChangesAsync();
+                GlobalAlert.SendGlobalAlert($"Usunięto wszystkie przeczytane wiadomości!", "info");
+                return RedirectToAction(nameof(Index));
+            }
+           
 
         }
         /// <summary>
@@ -90,6 +107,15 @@ namespace DotNetWMS.Controllers
             }
 
             var info = await _context.Infoboxes.FindAsync(id);
+
+            if (info == null)
+            {
+                _logger.LogDebug($"DEBUG: Nie odnaleziono wiadomości o podanym ID = {id}");
+
+                ViewBag.ErrorMessage = $"Nie odnaleziono wiadomości o podanym ID = {id}";
+
+                return View("NotFound");
+            }
 
             if (!string.IsNullOrEmpty(info.DocumentId))
             {

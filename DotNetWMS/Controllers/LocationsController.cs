@@ -215,22 +215,33 @@ namespace DotNetWMS.Controllers
         {
             var location = await _context.Locations.FindAsync(id);
 
-            try
+            if (location != null)
             {
-                _context.Locations.Remove(location);
-                await _context.SaveChangesAsync();
-                GlobalAlert.SendGlobalAlert($"Lokalizacja \"{location.Address}\" została usunięta!", "danger");
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Locations.Remove(location);
+                    await _context.SaveChangesAsync();
+                    GlobalAlert.SendGlobalAlert($"Lokalizacja \"{location.Address}\" została usunięta!", "danger");
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    ViewBag.ErrorTitle = "Podczas usuwania wystąpił błąd!";
+                    ViewBag.ErrorMessage = $"Ta lokalizacja została przypisana do jednego z obiektów.<br>" +
+                        $"Przed usunięciem upewnij się, że nie jest ona wykorzystywana<br>" +
+                        $"Sprawdź działy \"Magazyny\", \"Kontrahenci\", \"Pracownicy\" itp. i ponów próbę.";
+                    _logger.LogError($"Podczas usuwania wystąpił błąd! Ta lokalizacja została przypisana do jednego z obiektów.");
+                    return View("DbExceptionHandler");
+                }
             }
-            catch (DbUpdateException)
+            else
             {
-                ViewBag.ErrorTitle = "Podczas usuwania wystąpił błąd!";
-                ViewBag.ErrorMessage = $"Ta lokalizacja została przypisana do jednego z obiektów.<br>" +
-                    $"Przed usunięciem upewnij się, że nie jest ona wykorzystywana<br>" +
-                    $"Sprawdź działy \"Magazyny\", \"Kontrahenci\", \"Pracownicy\" itp. i ponów próbę.";
-                _logger.LogError($"Podczas usuwania wystąpił błąd! Ta lokalizacja została przypisana do jednego z obiektów.");
-                return View("DbExceptionHandler");
+                _logger.LogDebug($"DEBUG: Nie znaleziono w bazie lokalizacji o podanym id = {id}");
+                return NotFound();
             }
+
+
+            
 
         }
         /// <summary>
