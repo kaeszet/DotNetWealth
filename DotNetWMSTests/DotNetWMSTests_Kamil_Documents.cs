@@ -36,7 +36,7 @@ namespace DotNetWMSTests
             _wrapper = new Mock<IStaticWrapper>();
         }
         [Test]
-        public void Model_1()
+        public void Doc_Assignment_Model_IfModelIsValid_ReturnTrue()
         {
             var items = new List<Item>()
             {
@@ -60,7 +60,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void Model_2()
+        public void Doc_Assignment_Model_IfModelIsNotValid_ReturnFalse()
         {
             var items = new List<Item>()
             {
@@ -86,7 +86,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void UserExtMethods_1()
+        public void IsInRole_IfUserIsInRoleReturnTrue_OtherwiseFalse()
         {
             var wm = new StaticWrapper.StaticWrapper();
 
@@ -100,7 +100,7 @@ namespace DotNetWMSTests
             Assert.IsFalse(result_2);
         }
         [Test]
-        public void UserExtMethods_2()
+        public void IsInAllRoles_IfUserIsInRolesReturnTrue_OtherwiseFalse()
         {
 
             var wm = new StaticWrapper.StaticWrapper();
@@ -121,7 +121,7 @@ namespace DotNetWMSTests
         }
 
         [Test]
-        public async Task Index_1()
+        public async Task Index_Get_IfUserIsValidAndLoggedIn_ReturnViewWithListOfDocs()
         {
 
             var user = new WMSIdentityUser
@@ -155,7 +155,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void ConfigureDocument_1_1()
+        public void ConfigureDocument_Get_IfMethodCalled_ReturnViewWithSelectLists()
         {
 
             var controller = new Doc_AssignmentsController(_context, _logger.Object);
@@ -169,7 +169,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void ConfigureDocument_2_1()
+        public void ConfigureDocument_Post_IfCorrectUserIdAndIndex_ReturnPartialViewWithList()
         {
             string userId = "1";
 
@@ -186,7 +186,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void ConfigureDocument_2_2()
+        public void ConfigureDocument_IfInvalidUserIdAndCorrectIndex_ReturnPartialViewWithoutList()
         {
             string userId = "wrongID";
 
@@ -202,13 +202,13 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void ConfigureDocument_2_3()
+        public void ConfigureDocument_IfInvalidWarehouseIdAndCorrectIndex_ReturnPartialViewWithoutList()
         {
-            string userId = "wrongID";
+            string warehouseId = "wrongID";
 
             var controller = new Doc_AssignmentsController(_context, _logger.Object);
 
-            var result = controller.ConfigureDocument("", userId, 0, 1) as PartialViewResult;
+            var result = controller.ConfigureDocument("", warehouseId, 0, 1) as PartialViewResult;
 
             Assert.That(result, Is.InstanceOf(typeof(PartialViewResult)));
             Assert.IsTrue(result.ViewName == "_Doc_AssignmentConfDocPartial");
@@ -218,7 +218,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void ConfigureDocument_2_4()
+        public void ConfigureDocument_IfValidExternalIdAndCorrectIndex_ReturnPartialViewWithList()
         {
             string externalId = "2";
 
@@ -236,7 +236,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void GenerateDocument_1_1()
+        public void GenerateDocument_IfCorrectData_ReturnViewResultWithNewDoc()
         {
             List<Doc_ConfigureDocumentViewModel> viewModel = new List<Doc_ConfigureDocumentViewModel>()
             {
@@ -257,7 +257,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task SaveDocument_1_1()
+        public async Task SaveDocument_IfModelIsValid_SaveDocInDB()
         {
             Doc_Assignment doc = new Doc_Assignment
             {
@@ -281,7 +281,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task SaveDocument_1_2()
+        public async Task SaveDocument_IfModelIsValid_ReturnError()
         {
             Doc_Assignment doc = new Doc_Assignment
             {
@@ -301,7 +301,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ShowDocument_1_1()
+        public async Task ShowDocument_IdDocNumberIsValid_ReturnViewResult()
         {
             string encodedId = "P%2F2021%2F1%2F01%2F00001%2F11111111";
 
@@ -317,7 +317,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ShowDocument_1_2()
+        public async Task ShowDocument_IfDocNumberIsNull_ReturnNotFound()
         {
             string encodedId = "";
 
@@ -329,7 +329,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ShowDocument_1_3()
+        public async Task ShowDocument_IfDocNumberIsInvalid_ReturnNotFound()
         {
             string encodedId = "P%2F2021%2F1%2F01%2F00001%2FInvalid";
 
@@ -341,7 +341,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteDocument_1_1()
+        public async Task DeleteDocument_Get_IfDocNumberIsValid_ReturnViewWithDocToDelete()
         {
             string encodedId = "P%2F2021%2F1%2F01%2F00001%2FToDelete";
 
@@ -356,7 +356,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteDocument_1_2()
+        public async Task DeleteDocument_Get_IfDocNumberIsNull_ReturnNotFound()
         {
             string encodedId = "";
 
@@ -368,7 +368,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteDocument_1_3()
+        public async Task DeleteDocument_Get_IfDocNumberIsInvalid_ReturnNotFound()
         {
             string encodedId = "P%2F2021%2F1%2F01%2F00001%2F11111112";
 
@@ -380,7 +380,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteDocument_2_1()
+        public async Task DeleteDocument_Post_IfDocNumberIsValid_DeleteDoc()
         {
             string encodedId = "P%2F2021%2F1%2F01%2F00001%2FToDelete";
 
@@ -394,7 +394,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteDocument_2_2()
+        public async Task DeleteDocument_IfDocNumberIsNull_ReturnNotFound()
         {
             string encodedId = "";
 
@@ -406,7 +406,7 @@ namespace DotNetWMSTests
             Assert.IsTrue(result.ViewName == "NotFound");
         }
         [Test]
-        public async Task DeleteDocument_2_3()
+        public async Task DeleteDocument_IfDocNumberIsValid_RedirectToIndex()
         {
             string encodedId = "P%2F2021%2F1%2F01%2F00001%2F11111112";
 

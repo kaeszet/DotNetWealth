@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -76,6 +77,8 @@ namespace DotNetWMS.Controllers
         /// <param name="id">Role ID which will be edited</param>
         /// <returns>Returns the view with details of the role with the entered ID or an error if the role was not found</returns>
         [HttpGet]
+        [Obsolete]
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> EditRole(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
@@ -109,6 +112,8 @@ namespace DotNetWMS.Controllers
         /// <param name="model">Admin_EditRoleViewModel class object which will be processed by an instance of RoleManager class</param>
         /// <returns>Returns the view resulting from the processing of user-entered data</returns>
         [HttpPost]
+        [Obsolete]
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> EditRole(Admin_EditRoleViewModel model)
         {
             var role = await _roleManager.FindByIdAsync(model.Id);
@@ -152,6 +157,8 @@ namespace DotNetWMS.Controllers
         /// <param name="id">Role ID to remove</param>
         /// <returns>If succeed, returns an updated role list. Otherwise - the page with the error message</returns>
         [HttpPost]
+        [Obsolete]
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> DeleteRole(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
@@ -356,7 +363,6 @@ namespace DotNetWMS.Controllers
                         return RedirectToAction("EditRole", new { Id = roleId });
                 }
             }
-
             return RedirectToAction("EditRole", new { Id = roleId });
         }
         /// <summary>
@@ -530,13 +536,13 @@ namespace DotNetWMS.Controllers
                     {
                         return RedirectToAction("Index", "Employees");
                     }
-
+                    
                     foreach (var error in result.Errors)
                     {
                         _logger.LogDebug(error.Description);
                         ModelState.AddModelError("", error.Description);
                     }
-
+                    
                     return View("Index", "Employees");
                 }
                 catch (DbUpdateException)
@@ -596,6 +602,7 @@ namespace DotNetWMS.Controllers
 
             if (user == null)
             {
+                //
                 ViewBag.ErrorMessage = $"Użytkownik o numerze ID: {userId} nie został odnaleziony!";
                 _logger.LogError($"Użytkownik o numerze ID: {userId} nie został odnaleziony!");
                 return View("NotFound");

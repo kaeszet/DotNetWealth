@@ -45,7 +45,8 @@ namespace DotNetWMSTests
         {
             var users = new[]
             {
-                new WMSIdentityUser { Id = "1", Name = "Janusz", Surname = "Testowy", UserName = "TestoJan9012", EmployeeNumber = "23456789012", City="Kraków", Email="a@a.pl", LoginCount = 0 }
+                new WMSIdentityUser { Id = "1", Name = "Janusz", Surname = "Testowy", UserName = "TestoJan9012", EmployeeNumber = "23456789012", City="Kraków", Email="a@a.pl", LoginCount = 0 },
+                new WMSIdentityUser { Id = "2", Name = "Janusz", Surname = "Testowy2", UserName = "TestoJan9013", EmployeeNumber = "23456789013", City="Kraków", Email="a@a.pl", LoginCount = 0 }
 
             };
 
@@ -53,6 +54,7 @@ namespace DotNetWMSTests
             {
                 new IdentityRole { Id = "1", Name = "Standard", NormalizedName = "STANDARD", ConcurrencyStamp = "test" },
                 new IdentityRole { Id = "Admin", Name = "Admin", NormalizedName = "ADMIN", ConcurrencyStamp = "test2" },
+                new IdentityRole { Id = "Kadry", Name = "Kadry", NormalizedName = "KADRY", ConcurrencyStamp = "test3" }
             };
 
 

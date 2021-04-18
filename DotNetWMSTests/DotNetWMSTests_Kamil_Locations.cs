@@ -25,7 +25,7 @@ namespace DotNetWMSTests
         }
 
         [Test]
-        public void Index_1()
+        public void Index_IfActionCalled_ReturnViewResult()
         {
 
             var controller = new LocationsController(_context, _logger.Object);
@@ -40,7 +40,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void Index_2()
+        public void Index_IfActionCalled_ReturnViewResultWithList()
         {
 
             var controller = new LocationsController(_context, _logger.Object);
@@ -56,7 +56,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void Index_3()
+        public void Index_IfActionCalledWithSearchArgument_CheckRecordAddress()
         {
 
             var controller = new LocationsController(_context, _logger.Object);
@@ -71,7 +71,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void Index_4()
+        public void Index_IfActionCalledWithOrderArgument_CheckRecordAddress()
         {
 
             var controller = new LocationsController(_context, _logger.Object);
@@ -86,7 +86,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ShowMap_1()
+        public async Task ShowMap_IfIdIsValid_ReturnViewResult()
         {
             int? id = 1;
 
@@ -101,7 +101,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ShowMap_2()
+        public async Task ShowMap_IfIdIsNotValid_ReturnNotFound()
         {
             int? invalidID = 99;
 
@@ -114,7 +114,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ShowMap_3()
+        public async Task ShowMap_IfIdIsNull_ReturnNotFound()
         {
             int? invalidID = null;
 
@@ -127,7 +127,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Edit_1_1()
+        public async Task Edit_Get_IfIdIsValid_ReturnViewResult()
         {
             int? id = 1;
 
@@ -142,7 +142,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Edit_1_2()
+        public async Task Edit_Get_IfIdIsNotValid_ReturnNotFound()
         {
             int? invalidID = 99;
 
@@ -155,7 +155,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Edit_1_3()
+        public async Task Edit_Get_IfIdIsNull_ReturnNotFound()
         {
             int? invalidID = null;
 
@@ -168,7 +168,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Edit_2_1()
+        public async Task Edit_Post_IfIdExistsAndAddressIsValid_RedirectToActionResult()
         {
             int id = 1;
             var locationBefore = _context.Locations.Find(id);
@@ -189,7 +189,7 @@ namespace DotNetWMSTests
             
         }
         [Test]
-        public async Task Edit_2_2()
+        public async Task Edit_Post_IfIdExistsAndAddressIsValidButIsInUse_ReturnSameViewWithError()
         {
             int id = 2;
             var locationBefore = _context.Locations.Find(id);
@@ -215,7 +215,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Edit_2_3()
+        public async Task Edit_Post_IfIdAndLocationIdAreDifferent_ReturnNotFound()
         {
             int id = 1;
             var location = _context.Locations.Find(2);
@@ -229,7 +229,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Delete_1_1()
+        public async Task Delete_Get_IfIdIsValid_ReturnViewResult()
         {
             int? id = 2;
 
@@ -243,7 +243,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Delete_1_2()
+        public async Task Delete_Get_IfIdIsNotValid_ReturnNotFound()
         {
             int? invalidID = 99;
 
@@ -255,7 +255,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Delete_1_3()
+        public async Task Delete_Get_IfIdIsNull_ReturnNotFound()
         {
             int? invalidID = null;
 
@@ -267,7 +267,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Delete_2_1()
+        public async Task Delete_Post_IfIdIsValid_DeleteLocation()
         {
             int id = 1;
 
@@ -289,7 +289,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Delete_2_2()
+        public async Task Delete_Post_IfIdIsNotValid_ReturnNotFound()
         {
             int invalidID = 99;
 

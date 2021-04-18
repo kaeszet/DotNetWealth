@@ -56,6 +56,7 @@ namespace DotNetWMS.Models
         /// </summary>
         [Required(ErrorMessage = CustomErrorMessages.FieldIsRequired)]
         [Display(Name = "Ilość")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Quantity { get; set; }
         /// <summary>
         /// Enum used to select units of measure

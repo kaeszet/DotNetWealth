@@ -27,7 +27,7 @@ namespace DotNetWMSTests
             logger = new Mock<ILogger<AdministrationController>>();
         }
         [Test]
-        public void AccessDenied()
+        public void AccessDenied_IfMethodCalled_ReturnViewResult()
         { 
             var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
             var result = controller.AccessDenied();
@@ -35,7 +35,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void ListOfRoles()
+        public void ListOfRoles_IfMethodCalled_ReturnViewResult()
         {
             fakeRoleManager.Setup(x => x.Roles).Returns(_context.Roles);
             var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
@@ -44,7 +44,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void ListOfUsers()
+        public void ListOfUsers_IfMethodCalled_ReturnViewResult()
         {
             fakeUserManager.Setup(x => x.Users).Returns(_context.Users);
             var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
@@ -53,7 +53,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsersInRole_1()
+        public async Task EditUsersInRole_Get_IfCorrectIdIsPassed_ReturnViewWithCorrectUser()
         {
             fakeRoleManager.Setup(frm => frm.FindByIdAsync("1")).ReturnsAsync(await _context.Roles.FindAsync("1"));
             fakeUserManager = new FakeUserManagerBuilder()
@@ -72,7 +72,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsersInRole_2()
+        public async Task EditUsersInRole_Get_IfRoleIsIncorrect_ReturnNotFound()
         {
             string roleId = "fakeRoleID";
 
@@ -85,7 +85,34 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsersInRole_2_1()
+        public async Task EditUsersInRole_Post_IfRoleIsIncorrectModelIsCorrect_ReturnSameViewWithErrorMessage()
+        {
+            string roleId = "fakeRoleID";
+
+            List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
+
+            Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
+            {
+                UserId = "1",
+                FullName = "Testowy Janusz",
+                EmployeeNumber = "23456789012",
+                IsSelected = true,
+                UserName = "TestoJan9012"
+            };
+
+            model.Add(vm);
+
+            fakeRoleManager.Setup(frm => frm.FindByIdAsync(roleId)).ReturnsAsync(await _context.Roles.FindAsync(roleId));
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+            var result = await controller.EditUsersInRole(model, roleId) as ViewResult;
+
+            Assert.AreEqual("NotFound", result.ViewName);
+            Assert.IsTrue(result.ViewData["ErrorMessage"].ToString() == $"Rola o numerze ID: {roleId} nie została odnaleziona!");
+
+        }
+        [Test]
+        public async Task EditUsersInRole_Post_IfModelIsValidUserIsNotNullAndRoleIsNotNull_IdentityResultSuccess()
         {
             List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
             string userId = "1";
@@ -125,11 +152,11 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsersInRole_2_2()
+        public async Task EditUsersInRole_Post_IfSelectDifferrentRoleAndOnlyOneUserIsInAdminRole_ReturnDbException()
         {
             List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
             string userId = "1";
-            string roleId = "Admin";
+            string roleId = "1";
 
             Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
             {
@@ -149,7 +176,7 @@ namespace DotNetWMSTests
                 .With(b => b.Setup(fum => fum.Users)
                 .Returns(_context.Users))
                 .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
-                .ReturnsAsync(false).ReturnsAsync(true).ReturnsAsync(false))
+                .ReturnsAsync(false).ReturnsAsync(true).ReturnsAsync(false).ReturnsAsync(false))
                 .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
                 .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
                 .Build();
@@ -162,7 +189,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsersInRole_2_3()
+        public async Task EditUsersInRole_Post_IfUncheckUserAndOnlyOneUserIsInAdminRole_ReturnDbException()
         {
             List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
             string userId = "1";
@@ -200,7 +227,333 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsers_1_1()
+        public async Task EditUsersInRole_Post_IfUserIsCheckedAndOtherUserWithAdminRoleExists_IdentityResultSuccess()
+        {
+            List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
+            string userId = "1";
+            string roleId = "1";
+
+            Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
+            {
+                UserId = "1",
+                FullName = "Testowy Janusz",
+                EmployeeNumber = "23456789012",
+                IsSelected = true,
+                UserName = "TestoJan9012"
+            };
+
+            var user = _context.Users.Find(userId);
+
+            model.Add(vm);
+
+            fakeRoleManager.Setup(frm => frm.FindByIdAsync(roleId)).ReturnsAsync(await _context.Roles.FindAsync(roleId));
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), roleId))
+                .ReturnsAsync(false))
+                .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Admin"))
+                .ReturnsAsync(true)
+                .ReturnsAsync(true)
+                .ReturnsAsync(true))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.RemoveFromRolesAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<IEnumerable<string>>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(b => b.Setup(fum => fum.AddToRoleAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUsersInRole(model, roleId) as RedirectToActionResult;
+
+            Assert.IsTrue(result.ActionName == "EditRole" && result.RouteValues.Values.Contains(roleId));
+
+        }
+        [Test]
+        public async Task EditUsersInRole_Post_AddStaffRole_IdentityResultSuccess()
+        {
+            List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
+            string userId = "1";
+            string roleId = "1";
+
+            Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
+            {
+                UserId = "1",
+                FullName = "Testowy Janusz",
+                EmployeeNumber = "23456789012",
+                IsSelected = true,
+                UserName = "TestoJan9012"
+            };
+
+            var user = _context.Users.Find(userId);
+
+            model.Add(vm);
+
+            fakeRoleManager.Setup(frm => frm.FindByIdAsync(roleId)).ReturnsAsync(await _context.Roles.FindAsync(roleId));
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), roleId))
+                .ReturnsAsync(false))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Admin"))
+                .ReturnsAsync(false))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Kadry"))
+                .ReturnsAsync(true))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Standard"))
+                .ReturnsAsync(false))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "StandardPlus"))
+                .ReturnsAsync(false))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.RemoveFromRolesAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<IEnumerable<string>>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(b => b.Setup(fum => fum.AddToRoleAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUsersInRole(model, roleId) as RedirectToActionResult;
+
+            Assert.IsTrue(result.ActionName == "EditRole" && result.RouteValues.Values.Contains(roleId));
+
+        }
+        [Test]
+        public async Task EditUsersInRole_Post_WhenTryToAddStandardAndStuffRole_IdentityResultSuccessAndUserInStandardAndStaffRole()
+        {
+            List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
+            string userId = "1";
+            string roleId = "1";
+
+            Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
+            {
+                UserId = "1",
+                FullName = "Testowy Janusz",
+                EmployeeNumber = "23456789012",
+                IsSelected = true,
+                UserName = "TestoJan9012"
+            };
+
+            var user = _context.Users.Find(userId);
+
+            model.Add(vm);
+
+            fakeRoleManager.Setup(frm => frm.FindByIdAsync(roleId)).ReturnsAsync(await _context.Roles.FindAsync(roleId));
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Admin"))
+                .ReturnsAsync(false))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Kadry"))
+                .ReturnsAsync(true))
+                .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Standard"))
+                .ReturnsAsync(false)
+                .ReturnsAsync(true)
+                .ReturnsAsync(true))
+                .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "StandardPlus"))
+                .ReturnsAsync(false)
+                .ReturnsAsync(false))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.RemoveFromRolesAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<IEnumerable<string>>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(b => b.Setup(fum => fum.AddToRoleAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUsersInRole(model, roleId) as RedirectToActionResult;
+
+            Assert.IsTrue(result.ActionName == "EditRole" && result.RouteValues.Values.Contains(roleId));
+
+        }
+        [Test]
+        public async Task EditUsersInRole_Post_EditUsersInRole_Post_WhenTryToAddStandardPlusAndStuffRole_IdentityResultSuccessAndUserInBothRoles()
+        {
+            List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
+            string userId = "1";
+            string roleId = "1";
+
+            Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
+            {
+                UserId = "1",
+                FullName = "Testowy Janusz",
+                EmployeeNumber = "23456789012",
+                IsSelected = true,
+                UserName = "TestoJan9012"
+            };
+
+            var user = _context.Users.Find(userId);
+
+            model.Add(vm);
+
+            fakeRoleManager.Setup(frm => frm.FindByIdAsync(roleId)).ReturnsAsync(await _context.Roles.FindAsync(roleId));
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Admin"))
+                .ReturnsAsync(false))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Kadry"))
+                .ReturnsAsync(true))
+                .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Standard"))
+                .ReturnsAsync(false)
+                .ReturnsAsync(false)
+                .ReturnsAsync(false)
+                .ReturnsAsync(false))
+                .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "StandardPlus"))
+                .ReturnsAsync(true)
+                .ReturnsAsync(true)
+                .ReturnsAsync(true))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.RemoveFromRolesAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<IEnumerable<string>>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .With(b => b.Setup(fum => fum.AddToRoleAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUsersInRole(model, roleId) as RedirectToActionResult;
+
+            Assert.IsTrue(result.ActionName == "EditRole" && result.RouteValues.Values.Contains(roleId));
+
+        }
+        [Test]
+        public async Task EditUsersInRole_Post_WhenTryToAddKadryRoleToUserInStandardRole_IdentityResultSuccessAndUserIsInBothRoles()
+        {
+            List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
+            string userId = "1";
+            string roleId = "Kadry";
+
+            Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
+            {
+                UserId = "1",
+                FullName = "Testowy Janusz",
+                EmployeeNumber = "23456789012",
+                IsSelected = true,
+                UserName = "TestoJan9012"
+            };
+
+            var user = _context.Users.Find(userId);
+
+            model.Add(vm);
+
+            fakeRoleManager.Setup(frm => frm.FindByIdAsync(roleId)).ReturnsAsync(await _context.Roles.FindAsync(roleId));
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Admin"))
+                .ReturnsAsync(false))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Kadry"))
+                .ReturnsAsync(false))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Standard"))
+                .ReturnsAsync(true))
+                .With(b => b.Setup(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "StandardPlus"))
+                .ReturnsAsync(false))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.AddToRoleAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUsersInRole(model, roleId) as RedirectToActionResult;
+
+            Assert.IsTrue(result.ActionName == "EditRole" && result.RouteValues.Values.Contains(roleId));
+
+        }
+        [Test]
+        public async Task EditUsersInRole_Post_WhenUserIsUnchecked_IdentityResultSuccessAndRemoveFromRole()
+        {
+            List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
+            string userId = "1";
+            string roleId = "Kadry";
+
+            Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
+            {
+                UserId = "1",
+                FullName = "Testowy Janusz",
+                EmployeeNumber = "23456789012",
+                IsSelected = false,
+                UserName = "TestoJan9012"
+            };
+
+            var user = _context.Users.Find(userId);
+
+            model.Add(vm);
+
+            fakeRoleManager.Setup(frm => frm.FindByIdAsync(roleId)).ReturnsAsync(await _context.Roles.FindAsync(roleId));
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Kadry"))
+                .ReturnsAsync(true)
+                .ReturnsAsync(true))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.RemoveFromRoleAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUsersInRole(model, roleId) as RedirectToActionResult;
+
+            Assert.IsTrue(result.ActionName == "EditRole" && result.RouteValues.Values.Contains(roleId));
+
+        }
+        [Test]
+        public async Task EditUsersInRole_Post_IfNothingChanged_ReturnView()
+        {
+            List<Admin_UsersInRoleViewModel> model = new List<Admin_UsersInRoleViewModel>();
+            string userId = "1";
+            string roleId = "Kadry";
+
+            Admin_UsersInRoleViewModel vm = new Admin_UsersInRoleViewModel()
+            {
+                UserId = "1",
+                FullName = "Testowy Janusz",
+                EmployeeNumber = "23456789012",
+                IsSelected = true,
+                UserName = "TestoJan9012"
+            };
+
+            var user = _context.Users.Find(userId);
+
+            model.Add(vm);
+
+            fakeRoleManager.Setup(frm => frm.FindByIdAsync(roleId)).ReturnsAsync(await _context.Roles.FindAsync(roleId));
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(b => b.SetupSequence(fum => fum.IsInRoleAsync(It.IsAny<WMSIdentityUser>(), "Kadry"))
+                .ReturnsAsync(true)
+                .ReturnsAsync(false))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUsersInRole(model, roleId) as RedirectToActionResult;
+
+            Assert.IsTrue(result.ActionName == "EditRole" && result.RouteValues.Values.Contains(roleId));
+
+        }
+        [Test]
+        public async Task EditUsers_Get_IfInvalidUserId_ReturnNotFound()
         {
             string userId = "fakeUserID";
 
@@ -219,7 +572,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsers_1_2()
+        public async Task EditUsers_Get_IfValidUserId_ReturnViewResult()
         {
             List<string> userRoles = new List<string>()
             {
@@ -247,7 +600,39 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsers_2_1()
+        public async Task EditUsers_Post_IfInvalidUserId_ReturnNotFound()
+        {
+            string userId = "fakeUserID";
+            string emailInvalidFormat = "invalidFormat";
+
+            var model = new Admin_EditUserViewModel()
+            {
+                Id = "1",
+                Name = "Janusz",
+                Surname = "Testowy",
+                City = "Kraków",
+                EmployeeNumber = "23456789012",
+                Roles = new List<string>() { "Admin" },
+                Email = emailInvalidFormat
+            };
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUser(model) as ViewResult;
+
+            Assert.IsTrue(result.ViewName == "NotFound");
+            Assert.IsTrue(result.ViewData["ErrorMessage"].ToString() == $"Użytkownik o numerze ID: {model.Id} nie został odnaleziony!");
+
+        }
+        [Test]
+        public async Task EditUsers_Post_IfInvalidEmailFormat_ReturnSameViewWithErrorMessage()
         {
             string userId = "1";
             string emailInvalidFormat = "invalidFormat";
@@ -274,11 +659,12 @@ namespace DotNetWMSTests
 
             var result = await controller.EditUser(model) as ViewResult;
 
-            Assert.IsTrue(!result.ViewData.ModelState.IsValid && result.ViewData.ModelState["Email"].Errors[0].ErrorMessage == "Adres mailowy powinien być zapisany w formacie użytkownik@domena np. jankowalski@twojafirma.pl");
+            Assert.IsFalse(result.ViewData.ModelState.IsValid);
+            Assert.IsTrue(result.ViewData.ModelState["Email"].Errors[0].ErrorMessage == "Adres mailowy powinien być zapisany w formacie użytkownik@domena np. jankowalski@twojafirma.pl");
 
         }
         [Test]
-        public void EditUsers_2_2()
+        public void EditUsers_Post_IfInvalidContainsDigits_ReturnsSameViewWithErrorList()
         {
             string nameInvalidFormat = "nameContainsNum9";
             string surnameInvalidFormat = "surnameContainsNum9";
@@ -304,7 +690,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task EditUsers_2_3()
+        public async Task EditUsers_Post_IfDataIsNotChanged_IdentityresultSuccessAndRedirect()
         {
             string userId = "1";
 
@@ -338,7 +724,48 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ChangePassword_1_1()
+        public async Task EditUsers_Post_IfEmailIsNotValid_IdentityResultFailedWithError()
+        {
+            string userId = "1";
+            string email = "b@b.pl";
+
+            var model = new Admin_EditUserViewModel()
+            {
+                Id = "1",
+                Name = "Janusz",
+                Surname = "Testowy",
+                City = "Kraków",
+                EmployeeNumber = "23456789012",
+                Roles = new List<string>() { "Admin" },
+                Email = email
+            };
+
+            var error = new IdentityErrorDescriber().InvalidEmail(email);
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.UpdateAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync(IdentityResult.Failed(error)))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.EditUser(model) as ViewResult;
+
+            Assert.IsTrue(result.ViewData.ModelState[""].Errors[0].ErrorMessage == error.Description);
+            Assert.AreEqual(result.ViewData.Model, model);
+
+            //reset data
+
+            var user = _context.Users.Find("1");
+            user.Email = "a@a.pl";
+
+        }
+        [Test]
+        public async Task ChangePassword_Get_IfInvalidUserId_ReturnNotFound()
         {
             string userId = "fakeUserID";
 
@@ -357,7 +784,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ChangePassword_1_2()
+        public async Task ChangePassword_Get_IfValidUserId_ReturnViewResult()
         {
             string userId = "1";
             var userName = _context.Users.FindAsync("1").Result.UserName;
@@ -379,7 +806,35 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ChangePassword_2_1()
+        public async Task ChangePassword_Post_IfInvalidUserName_ReturnNotFound()
+        {
+
+            var model = new Admin_ChangePasswordViewModel()
+            {
+                FullName = "Testowy Janusz",
+                Login = "TestoJan9015",
+                OldPassword = "OldPassword",
+                NewPassword = "NewPassword",
+                NewPasswordConfirm = "NewPassword2"
+            };
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(async b => b.Setup(fum => fum.FindByNameAsync(model.Login))
+                .ReturnsAsync(await _context.Users.FindAsync(model.Login)).Verifiable())
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.ChangePassword(model) as ViewResult;
+
+            Assert.IsTrue(result.ViewName == "NotFound");
+            Assert.IsTrue(result.ViewData["ErrorMessage"].ToString() == $"Użytkownik: {model.Login} nie został odnaleziony!");
+
+        }
+        [Test]
+        public async Task ChangePassword_IfPasswordMismatch_ReturnSameViewWithErrorMessage()
         {
             string userId = "1";
 
@@ -407,7 +862,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ChangePassword_2_2()
+        public async Task ChangePassword_Post_IfValidData_IdentityResultSuccess()
         {
             string userId = "1";
 
@@ -438,7 +893,41 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteUser_1_1()
+        public async Task ChangePassword_Post_IfLoginIsInUse_ReturnSameViewWithErrorMessage()
+        {
+            var userId = "1";
+
+            var model = new Admin_ChangePasswordViewModel()
+            {
+                FullName = "Testowy Janusz",
+                Login = "TestoJan9012",
+                OldPassword = "OldPassword",
+                NewPassword = "NewPassword",
+                NewPasswordConfirm = "NewPassword"
+            };
+
+            var error = new IdentityErrorDescriber().LoginAlreadyAssociated();
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(async b => b.Setup(fum => fum.FindByNameAsync(model.Login))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.ChangePasswordAsync(It.IsAny<WMSIdentityUser>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Failed(error)))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.ChangePassword(model) as ViewResult;
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsTrue(result.ViewData.ModelState[""].Errors[0].ErrorMessage == error.Description);
+            Assert.AreEqual(model, result.ViewData.Model);
+
+        }
+        [Test]
+        public async Task DeleteUser_Get_IfInvalidUserId_ReturnNotFound()
         {
             string userId = "fakeUserID";
 
@@ -457,7 +946,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteUser_1_2()
+        public async Task DeleteUser_Post_IfValidUserId_IdentityResultSuccess()
         {
             string userId = "1";
 
@@ -478,7 +967,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteUser_1_3()
+        public async Task DeleteUser_Post_IfUserIsAssignedToRole_ReturnDBError()
         {
             string userId = "1";
 
@@ -500,7 +989,31 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ManageUserRoles_1_1()
+        public async Task DeleteUser_Post_IfUserIsInAdminRole_ReturnSameViewWithError()
+        {
+            string userId = "1";
+
+            var error = new IdentityErrorDescriber().UserAlreadyInRole("Admin");
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .With(b => b.Setup(fum => fum.DeleteAsync(It.IsAny<WMSIdentityUser>()))
+                .ReturnsAsync(IdentityResult.Failed(error)))
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.DeleteUser(userId) as ViewResult;
+
+            Assert.IsTrue(result.ViewName == "Index");
+            Assert.IsTrue(result.ViewData.ModelState[""].Errors[0].ErrorMessage == error.Description);
+
+        }
+        [Test]
+        public async Task ManageUserRoles_Get_IfInvalidUserId_ReturnNotFound()
         {
             string userId = "fakeUserID";
 
@@ -519,7 +1032,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ManageUserRoles_1_2()
+        public async Task ManageUserRoles_Get_IfValidUserId_ReturnViewWithListOfRoles()
         {
             string userId = "1";
 
@@ -545,7 +1058,40 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ManageUserRoles_2_1()
+        public async Task ManageUserRoles_Post_IfUserIsNull_ReturnNotFound()
+        {
+            string userId = "fakeUserID";
+
+            var model = new List<UserRolesViewModel>()
+            {
+                new UserRolesViewModel()
+                {
+                    RoleId = "1",
+                    RoleName = "Standard",
+                    IsSelected = false
+                }
+            };
+
+            fakeRoleManager.Setup(frm => frm.Roles).Returns(_context.Roles);
+
+            fakeUserManager = new FakeUserManagerBuilder()
+                .With(b => b.Setup(fum => fum.Users)
+                .Returns(_context.Users))
+                .With(async b => b.Setup(fum => fum.FindByIdAsync(userId))
+                .ReturnsAsync(await _context.Users.FindAsync(userId)).Verifiable())
+                .Build();
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+
+            var result = await controller.ManageUserRoles(model, userId) as ViewResult;
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsTrue(result.ViewName == "NotFound");
+            Assert.IsTrue(result.ViewData["ErrorMessage"].ToString() == $"Użytkownik o numerze ID: {userId} nie został odnaleziony!");
+
+        }
+        [Test]
+        public async Task ManageUserRoles_Post_IfAllDataAreValid_IdentityResultSuccess()
         {
             string userId = "1";
 
@@ -593,7 +1139,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ManageUserRoles_2_2()
+        public async Task ManageUserRoles_Post_IfCannotDeleteRoles_ReturnSameViewWithErrorMessage()
         {
             string userId = "1";
 
@@ -614,7 +1160,7 @@ namespace DotNetWMSTests
                 },
             };
 
-            List<string> rolesList = new List<string>() { "Standard", "Admin " };
+            List<string> rolesList = new List<string>() { "Standard", "Admin" };
 
 
             fakeRoleManager.Setup(frm => frm.Roles).Returns(_context.Roles);
@@ -639,7 +1185,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task ManageUserRoles_2_3()
+        public async Task ManageUserRoles_Post_IfCannotAddRoles_ReturnSameViewWithErrorMessage()
         {
             string userId = "1";
 
@@ -687,7 +1233,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task IsEmailInUse_1()
+        public async Task IsEmailInUse_IfInvalidEmail_ReturnSameViewWithErrorMessage()
         {
             string email = "invalidFormat";
 
@@ -700,7 +1246,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task IsEmailInUse_2()
+        public async Task IsEmailInUse_IfEmailIsInUse_ReturnSameViewWithErrorMessage()
         {
             string email = "a@a.pl";
             var user = _context.Users.Find("1");
@@ -719,7 +1265,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task IsEmailInUse_3()
+        public async Task IsEmailInUse_IfEmailIsNotInUse_ReturnJsonResultTrue()
         {
             string email = "b@a.pl";
             var user = _context.Users.Find("1");

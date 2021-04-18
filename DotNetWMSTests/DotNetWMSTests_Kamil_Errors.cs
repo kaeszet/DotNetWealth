@@ -32,7 +32,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void E_test_1()
+        public void Error_IfHandle404_ReturnNotFoundView()
         {
 
             var controller = new ErrorController(_logger.Object);
