@@ -25,7 +25,7 @@ namespace DotNetWMSTests
             _logger = new Mock<ILogger<InfoboxesController>>();
         }
         [Test]
-        public void Model_1()
+        public void Infobox_Model_IfModelIsValid_ReturnTrue()
         {
             var info = new Infobox
             {
@@ -40,7 +40,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public void Model_2()
+        public void Infobox_Model_IfModelIsInValid_ReturnFalse()
         {
             var info = new Infobox
             {
@@ -59,7 +59,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Index_1()
+        public async Task Index_Get_IfActionCalled_ReturnViewResult()
         {
             string normalizedUserName = "TESTOJAN9012";
             var httpContext = new Mock<HttpContext>();
@@ -81,7 +81,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Delete_1()
+        public async Task Delete_Post_IfValidInfoboxId_DeleteInfobox()
         {
 
             var controller = new InfoboxesController(_context, _logger.Object);
@@ -92,7 +92,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Delete_2()
+        public async Task Delete_Post_IfNullInfoboxId_ReturnNotFound()
         {
 
             var controller = new InfoboxesController(_context, _logger.Object);
@@ -103,7 +103,7 @@ namespace DotNetWMSTests
             Assert.IsTrue(result.ViewName == "NotFound");
         }
         [Test]
-        public async Task Delete_3()
+        public async Task Delete_Post_IfInvalidInfoboxId_ReturnNotFound()
         {
 
             var controller = new InfoboxesController(_context, _logger.Object);
@@ -115,7 +115,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteAllChecked_1()
+        public async Task DeleteAllChecked_Post_IfAllInfosAreNotChecked_ReturnEqualValues()
         {
             int infosCountBefore = _context.Infoboxes.Local.Count;
             string normalizedUserName = "TESTOJAN";
@@ -138,7 +138,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task DeleteAllChecked_2()
+        public async Task DeleteAllChecked_Post_IfAllInfosAreChecked_ReturnNotEqualValues()
         {
             int infosCountBefore = _context.Infoboxes.Local.Count;
             string normalizedUserName = "TESTOJAN9012";
@@ -161,7 +161,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Check_1()
+        public async Task Check_IfIdIsNull_ReturnNotFound()
         {
             var controller = new InfoboxesController(_context, _logger.Object);
 
@@ -173,7 +173,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Check_2()
+        public async Task Check_IfIdIsNotValid_ReturnNotFound()
         {
             int? notExistedId = 99;
 
@@ -188,7 +188,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Check_3()
+        public async Task Check_IfIdIsValidAndInfoIsChecked_MarkAsUnChecked()
         {
             int? Id = 5;
 
@@ -203,7 +203,7 @@ namespace DotNetWMSTests
 
         }
         [Test]
-        public async Task Check_4()
+        public async Task Check_IfIdIsValidAndInfoIsUnChecked_MarkAsChecked()
         {
             int? Id = 6;
 

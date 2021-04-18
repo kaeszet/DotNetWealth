@@ -18,7 +18,7 @@ namespace DotNetWMSTests
 		}
 
 		[Test]
-		public void ShowIndexViews()
+		public void Index_IfActionCalled_ReturnViewResult()
 		{
 			var index = new HomeController(_logger, _context);
 			var resultIndex = index.Index();
@@ -26,7 +26,7 @@ namespace DotNetWMSTests
 			Assert.IsInstanceOf(typeof(ViewResult), resultIndex);
 		}
 		[Test]
-		public void ShowPrivacyViews()
+		public void AboutUs_IfActionCalled_ReturnViewResult()
 		{
 			var privacy = new HomeController(_logger, _context);
 			var resultPrivacy = privacy.AboutUs();
@@ -35,15 +35,16 @@ namespace DotNetWMSTests
 		}
 
 		[Test]
-		public void ShowErrorViews()
+		public void Error_IfActionCalled_ReturnViewResult()
 		{
-			var error = new HomeController(_logger, _context);
+            var error = new HomeController(_logger, _context)
+            {
+                ControllerContext = new ControllerContext()
+            };
 
+            error.ControllerContext.HttpContext = new DefaultHttpContext();
 
-			error.ControllerContext = new ControllerContext();
-			error.ControllerContext.HttpContext = new DefaultHttpContext();
-
-			var resultError =  error.Error();
+			var resultError = error.Error();
 
 			Assert.IsInstanceOf(typeof(ViewResult), resultError);
 		}
