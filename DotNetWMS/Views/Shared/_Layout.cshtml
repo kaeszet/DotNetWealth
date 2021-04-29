@@ -121,7 +121,7 @@
 
     @if (!signInManager.IsSignedIn(User))
     {
-        <div class="container-fluid vh-100 d-flex bg-light">
+        <div class="container-fluid vh-100 d-flex justify-content-center align-items-center bg-light">
             <partial name="_CookieConsentPartial" />
 
             @RenderBody()
