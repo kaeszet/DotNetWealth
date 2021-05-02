@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using System.Linq;
 using System.Security.Principal;
 using System.Security.Claims;
+using NETCore.MailKit.Core;
 
 namespace DotNetWMSTests
 {
@@ -121,8 +122,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
             var result = controller.Register() as ViewResult;
             Assert.IsNotNull(result);
             Assert.IsNull(result.Model);
@@ -142,6 +144,7 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
             var request = new Mock<HttpRequest>();
             request.Setup(x => x.Scheme).Returns("https");
             request.Setup(x => x.Host).Returns(HostString.FromUriComponent("https://localhost:44387"));
@@ -150,13 +153,14 @@ namespace DotNetWMSTests
             var controllerContext = new ControllerContext() { HttpContext = httpContext, ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor() };
 
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context) { ControllerContext = controllerContext };
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object) { ControllerContext = controllerContext };
             controller.Url = new Mock<IUrlHelper>().Object;
 
             RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
             var result = await controller.Register(rvm) as ViewResult;
-            string registrationSuccessfulInfo = result.ViewData.Values.ToArray()[0].ToString();
-            Assert.IsTrue(registrationSuccessfulInfo == "Rejestracja udana!");
+
+            Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
+            Assert.IsTrue(result.ViewName == "RegisterConfirmation");
 
 
         }
@@ -180,6 +184,7 @@ namespace DotNetWMSTests
                 .Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
             var request = new Mock<HttpRequest>();
             request.Setup(x => x.Scheme).Returns("https");
             request.Setup(x => x.Host).Returns(HostString.FromUriComponent("https://localhost:44387"));
@@ -191,7 +196,7 @@ namespace DotNetWMSTests
             var controllerContext = new ControllerContext() { HttpContext = httpContext.Object, ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor() };
 
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context) { ControllerContext = controllerContext };
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object) { ControllerContext = controllerContext };
             controller.Url = new Mock<IUrlHelper>().Object;
 
             RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
@@ -217,6 +222,7 @@ namespace DotNetWMSTests
                 .Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
             var request = new Mock<HttpRequest>();
             request.Setup(x => x.Scheme).Returns("https");
             request.Setup(x => x.Host).Returns(HostString.FromUriComponent("https://localhost:44387"));
@@ -226,7 +232,7 @@ namespace DotNetWMSTests
             var controllerContext = new ControllerContext() { HttpContext = httpContext, ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor() };
 
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context) { ControllerContext = controllerContext };
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object) { ControllerContext = controllerContext };
             controller.Url = new Mock<IUrlHelper>().Object;
 
             RegisterViewModel rvm = new RegisterViewModel() { Name = "Grażyna", Surname = "Testowa", EmployeeNumber = "123456789012", Address = "Św. Filipa 17, 31-150 Kraków, Polska", City = "Kraków", Email = "b@b.pl", Password = "Test123!", ConfirmPassword = "Test123!" };
@@ -247,8 +253,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.ConfirmEmail(null, null) as RedirectToActionResult;
             Assert.That(result, Is.InstanceOf(typeof(RedirectToActionResult)));
@@ -265,8 +272,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.ConfirmEmail(invalidID, invalidToken) as ViewResult;
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -290,8 +298,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.ConfirmEmail(validID, invalidToken) as ViewResult;
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -315,8 +324,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.ConfirmEmail(validID, validToken) as ViewResult;
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -331,8 +341,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = controller.ForgotPassword() as ViewResult;
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -359,6 +370,7 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
             var request = new Mock<HttpRequest>();
             request.Setup(x => x.Scheme).Returns("https");
@@ -368,7 +380,7 @@ namespace DotNetWMSTests
             var httpContext = Mock.Of<HttpContext>(_ => _.Request == request.Object);
             var controllerContext = new ControllerContext() { HttpContext = httpContext, ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor() };
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context) { ControllerContext = controllerContext };
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object) { ControllerContext = controllerContext };
             controller.Url = new Mock<IUrlHelper>().Object;
 
             var result = await controller.ForgotPassword(model) as ViewResult;
@@ -395,8 +407,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.ForgotPassword(model) as ViewResult;
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -431,8 +444,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
             controller.ModelState.AddModelError("", "testerror");
 
             var result = await controller.ForgotPassword(vm) as ViewResult;
@@ -452,8 +466,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = controller.ResetPassword(token, email) as ViewResult;
 
@@ -471,8 +486,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = controller.ResetPassword(token, email) as ViewResult;
 
@@ -501,8 +517,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.ResetPassword(model) as ViewResult;
 
@@ -534,8 +551,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.ResetPassword(vm) as ViewResult;
 
@@ -563,8 +581,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.ResetPassword(vm) as ViewResult;
 
@@ -588,8 +607,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
             controller.ModelState.AddModelError("", "testerror");
 
             var result = await controller.ResetPassword(vm) as ViewResult;
@@ -607,8 +627,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = controller.Login();
             Assert.That(result, Is.InstanceOf(typeof(ViewResult)));
@@ -631,13 +652,14 @@ namespace DotNetWMSTests
                 .Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
             var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
             mockUrlHelper
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
                 .Returns(true)
                 .Verifiable();
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context)
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object)
             {
                 Url = mockUrlHelper.Object
             };
@@ -661,13 +683,14 @@ namespace DotNetWMSTests
                 .Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
             var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
             mockUrlHelper
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
                 .Returns(true)
                 .Verifiable();
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context)
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object)
             {
                 Url = mockUrlHelper.Object
             };
@@ -689,13 +712,14 @@ namespace DotNetWMSTests
                 .Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
             var mockUrlHelper = new Mock<IUrlHelper>(MockBehavior.Strict);
             mockUrlHelper
                 .Setup(x => x.IsLocalUrl(It.IsAny<string>()))
                 .Returns(true)
                 .Verifiable();
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             controller.Url = mockUrlHelper.Object;
             controller.ModelState.AddModelError("", "Nieprawidłowy login lub hasło");
@@ -711,8 +735,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.IsEmailInUse("a@a.pl");
             Assert.That(result, Is.InstanceOf(typeof(IActionResult)));
@@ -726,8 +751,9 @@ namespace DotNetWMSTests
             var fakeSignInManager = new FakeSignInManagerBuilder().Build();
             var fakeRoleManager = new FakeRoleManagerBuilder().Build();
             var fakeLogger = new Mock<ILogger<AccountController>>();
+            var fakeEmailService = new Mock<IEmailService>();
 
-            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context);
+            var controller = new AccountController(fakeUserManager.Object, fakeSignInManager.Object, fakeRoleManager.Object, fakeLogger.Object, _context, fakeEmailService.Object);
 
             var result = await controller.Logout();
             Assert.That(result, Is.InstanceOf(typeof(RedirectToActionResult)));

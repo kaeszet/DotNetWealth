@@ -71,6 +71,8 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> Assign_to_warehouse(int? id)
         {
             var item = await CreateAssignItemConfirmationView(id, "Assign_to_warehouse");
+            if (item == null) return NotFound();
+
             return View(item);
         }
         /// <summary>
@@ -83,6 +85,7 @@ namespace DotNetWMS.Controllers
         public async Task<IActionResult> Assign_to_external(int? id)
         {
             var item = await CreateAssignItemConfirmationView(id, "Assign_to_external");
+            if (item == null) return NotFound();
             return View(item);
         }
         /// <summary>
@@ -109,7 +112,6 @@ namespace DotNetWMS.Controllers
                 return await CreateAssignItemConfirmationView(item, "Assign_to_employee");
 
             }
-
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FullName", item.UserId);
             return View(item);
         }
@@ -125,7 +127,6 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_warehouse(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
-
             if (id != item.Id)
             {
                 _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
@@ -150,7 +151,6 @@ namespace DotNetWMS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Assign_to_external(int id, [Bind("Id,Name,Type,Producer,Model,ItemCode,Quantity,Units,WarrantyDate,State,UserId,WarehouseId,ExternalId")] Item item)
         {
-
             if (id != item.Id)
             {
                 _logger.LogDebug($"DEBUG: Nie znaleziono w bazie przedmiotu o podanym id = {id}");
@@ -172,6 +172,7 @@ namespace DotNetWMS.Controllers
         /// <returns>Returns Item's Index view with list of items in the order set by the user</returns>
         public async Task<IActionResult> Index(string order, string search)
         {
+            
             ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
             ViewData["SortByWarrantyDate"] = order == "WarrantyDate" ? "date_desc" : "WarrantyDate";
             ViewData["Search"] = search;
@@ -184,17 +185,13 @@ namespace DotNetWMS.Controllers
                 items = items.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search));
             }
 
-            switch (order)
+            items = order switch
             {
-                case "name_desc": items = items.OrderByDescending(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-                    break;
-                case "date_desc": items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-                    break;
-                case "WarrantyDate": items = items.OrderBy(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-                    break;
-                default: items = items.OrderBy(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-                    break;
-            }
+                "name_desc" => items.OrderByDescending(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse),
+                "date_desc" => items.OrderByDescending(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse),
+                "WarrantyDate" => items.OrderBy(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse),
+                _ => items.OrderBy(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse),
+            };
 
             if (User != null)
             {
@@ -212,23 +209,8 @@ namespace DotNetWMS.Controllers
             ViewData["SortByType"] = order == "type" ? "type_desc" : "type";
             ViewData["Search"] = search;
 
-            //
-            //var users = _context.Users.ToList();
-            //var warehouses = _context.Warehouses.ToList();
-            //var externals = _context.Externals.ToList();
-            //ViewData["UserList"] = new SelectList(users, "Id", "FullName");
-            //ViewData["WarehouseList"] = new SelectList(warehouses, "Id", "AssignFullName");
-            //ViewData["ExternalList"] = new SelectList(externals, "Id", "FullName");
-            //
-
             var items = _context.Items.ToList();
 
-            //
-            //if (!string.IsNullOrEmpty(userId))
-            //{
-            //    items = items.Where(i => i.UserId == userId).ToList();
-            //}
-            //
             List<ItemsAssignmentViewModel> viewModelList = new List<ItemsAssignmentViewModel>();
 
             foreach (var item in items)
@@ -255,30 +237,25 @@ namespace DotNetWMS.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
+                //
                 viewModelList = viewModelList.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search)).ToList();
             }
 
-            switch (order)
+            viewModelList = order switch
             {
-                case "name_desc":
-                    viewModelList = viewModelList.OrderByDescending(i => i.Name).ToList();
-                    break;
-                case "type_desc":
-                    viewModelList = viewModelList.OrderByDescending(i => i.Type).ToList();
-                    break;
-                case "type":
-                    viewModelList = viewModelList.OrderBy(i => i.Type).ToList();
-                    break;
-                default:
-                    viewModelList = viewModelList.OrderBy(i => i.Name).ToList();
-                    break;
-            }
+                //
+                "name_desc" => viewModelList.OrderByDescending(i => i.Name).ThenByDescending(j => j.Producer).ThenByDescending(j => j.Model).ToList(),
+                "type_desc" => viewModelList.OrderByDescending(i => i.Type).ToList(),
+                "type" => viewModelList.OrderBy(i => i.Type).ToList(),
+                _ => viewModelList.OrderBy(i => i.Name).ThenBy(j => j.Producer).ThenBy(j => j.Model).ToList(),
+            };
 
             return View(viewModelList);
         }
         [Authorize(Roles = "Standard,StandardPlus,Moderator,Admin")]
         public IActionResult ItemAssignmentConfirmation(string option, List<ItemsAssignmentViewModel> model)
         {
+
             var itemsChecked = model.Where(m => m.IsChecked == true).ToList();
 
             for (int i = 0; i < itemsChecked.Count; i++)
@@ -344,7 +321,7 @@ namespace DotNetWMS.Controllers
                     }
                     else
                     {
-                        RedirectToAction("AccessDenied", "Administration");
+                        return RedirectToAction("AccessDenied", "Administration");
                     }
                     
                 }
@@ -356,7 +333,6 @@ namespace DotNetWMS.Controllers
         [HttpPost]
         public async Task<IActionResult> ItemAssignmentSaveInDb(string option, ItemAssignmentConfirmationViewModel model)
         {
-           
             for (int i = 0; i < model.Items.Count; i++)
             {
                 string userName = "";
@@ -507,6 +483,7 @@ namespace DotNetWMS.Controllers
 
             if (findInWarehouses.Any())
             {
+                //
                 listOfOccurrences.AddRange(findInWarehouses);
             }
 
@@ -968,43 +945,6 @@ namespace DotNetWMS.Controllers
                 item.State = ItemState.Unknown;
             }
             
-        }
-        /// <summary>
-        /// A private method responsible for creating different AssignTo type views
-        /// </summary>
-        /// <param name="search">Search phrase in the search field</param>
-        /// <param name="order">Sort names or warranty date in ascending or descending order</param>
-        /// <returns>List of items as IQueryable of item type</returns>
-        private IQueryable<Item> CreateAssignItemView(string search, string order)
-        {
-            ViewData["SortByName"] = string.IsNullOrEmpty(order) ? "name_desc" : "";
-            ViewData["SortByWarrantyDate"] = order == "WarrantyDate" ? "date_desc" : "WarrantyDate";
-            ViewData["Search"] = search;
-
-            var items = _context.Items.Select(e => e);
-
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                items = items.Where(i => i.Name.Contains(search) || i.ItemCode.Contains(search));
-            }
-
-            switch (order)
-            {
-                case "name_desc":
-                    items = items.OrderByDescending(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-                    break;
-                case "date_desc":
-                    items = items.OrderByDescending(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-                    break;
-                case "WarrantyDate":
-                    items = items.OrderBy(i => i.WarrantyDate).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-                    break;
-                default:
-                    items = items.OrderBy(i => i.Name).Include(i => i.User).Include(i => i.External).Include(i => i.Warehouse);
-                    break;
-            }
-            return items;
         }
         /// <summary>
         /// A private method responsible for creating confirmation view for AssignTo type procedures

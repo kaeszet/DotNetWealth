@@ -31,7 +31,7 @@ namespace DotNetWMS.Controllers
         /// Log4net library field
         /// </summary>
         private readonly ILogger<AdministrationController> _logger;
-
+        
         public AdministrationController(RoleManager<IdentityRole> roleManager, UserManager<WMSIdentityUser> userManager, ILogger<AdministrationController> logger)
         {
             _roleManager = roleManager;
