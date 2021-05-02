@@ -22,6 +22,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 
 namespace DotNetWMS
 {
@@ -103,11 +105,14 @@ namespace DotNetWMS
                 // requires using Microsoft.AspNetCore.Http;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            //Add required unique email
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.RequireUniqueEmail = true;
 
             });
+            var mailKitOptions = Configuration.GetSection("Email").Get<MailKitOptions>();
+            services.AddMailKit(config => config.UseMailKit(mailKitOptions));
 
         }
         /// <summary>

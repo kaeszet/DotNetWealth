@@ -55,9 +55,10 @@ namespace DotNetWMSTests
 
             var items = new[]
             {
-                new Item { Id = 1, Type = "Elektronika", Name = "Komputer", Producer = "CBM", Model = "Commodore 64", ItemCode="C-64", Quantity = 3.0M, Units = ItemUnits.szt, State = ItemState.InEmployee, UserId = "1" },
+                new Item { Id = 1, Type = "Elektronika", Name = "Komputer", Producer = "CBM", Model = "Commodore 64", ItemCode="C-64", WarrantyDate = new DateTime(2021, 3, 1) ,Quantity = 3.0M, Units = ItemUnits.szt, State = ItemState.InEmployee, UserId = "1" },
                 new Item { Id = 2, Type = "Elektronika", Name = "Laptop", Producer = "Hykker", Model = "Hello", ItemCode="H-H", Quantity = 10.0M, Units = ItemUnits.szt, State = ItemState.InEmployee, UserId = "2" },
-                new Item { Id = 3, Type = "Elektronika", Name = "Laptop", Producer = "Acer", Model = "Swift", ItemCode="A-S", Quantity = 1.0M, Units = ItemUnits.szt, State = ItemState.InRepair, ExternalId = 2 }
+                new Item { Id = 3, Type = "Elektronika", Name = "Laptop", Producer = "Acer", Model = "Swift", ItemCode="A-S", Quantity = 1.0M, Units = ItemUnits.szt, State = ItemState.InRepair, UserId = "1", ExternalId = 2 },
+                new Item { Id = 4, Type = "Elektronika", Name = "Laptop", Producer = "Lenovo", Model = "Legion 7", ItemCode="L-L", Quantity = 2.0M, Units = ItemUnits.szt, State = ItemState.InWarehouse, WarehouseId = 1 }
             };
 
             var warehouses = new[]
@@ -105,6 +106,7 @@ namespace DotNetWMSTests
             context.Users.AddRange(users);
             context.SaveChanges();
         }
+
         public bool TryValidate(object model, out ICollection<ValidationResult> results)
         {
             var context = new ValidationContext(model, serviceProvider: null, items: null);

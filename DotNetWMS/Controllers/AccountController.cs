@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NETCore.MailKit.Core;
 
 namespace DotNetWMS.Controllers
 {
@@ -38,17 +39,23 @@ namespace DotNetWMS.Controllers
         /// AccountController's logger implementation
         /// </summary>
         private readonly ILogger<AccountController> _logger;
+        /// <summary>
+        /// NETCore.MailKit.Core Email Service
+        /// </summary>
+        private readonly IEmailService _emailService;
 
         public AccountController(UserManager<WMSIdentityUser> userManager,
             SignInManager<WMSIdentityUser> signInManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<AccountController> logger, DotNetWMSContext context)
+            ILogger<AccountController> logger, DotNetWMSContext context, 
+            IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
             _context = context;
+            _emailService = emailService;
         }
         /// <summary>
         /// GET method to handle the registration view
@@ -119,6 +126,14 @@ namespace DotNetWMS.Controllers
                     var confirmationLink = Url.Action("ConfirmEmail", "Account",
                         new { userId = user.Id, token = token }, Request.Scheme);
 
+                    if (user.Email != null)
+                    {
+                        string subject = "Potwierdzenie rejestracji";
+                        string message = $"Aby dokończyć rejestrację kliknij w link aktywacyjny -> <a href=\"{confirmationLink}\">Potwierdzam!<a>";
+
+                        await _emailService.SendAsync(user.Email, subject, message, true);
+                    }
+                    
                     _logger.LogInformation(confirmationLink);
 
                     if (_userManager.Users.Count() == 1)
@@ -133,9 +148,7 @@ namespace DotNetWMS.Controllers
                         return RedirectToAction("Index", "Employees");
                     }
 
-                    ViewBag.ExceptionTitle = "Rejestracja udana!";
-                    ViewBag.ExceptionMessage = "Przed zalogowaniem musisz aktywować konto klikając na link wysłany mailem";
-                    return View("GlobalExceptionHandler");
+                    return View("RegisterConfirmation");
 
                 }
 
@@ -319,6 +332,11 @@ namespace DotNetWMS.Controllers
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var passwordResetLink = Url.Action("ResetPassword", "Account",
                             new { email = model.Email, token }, Request.Scheme);
+
+                    string subject = "Żądanie resetu hasła!";
+                    string message = $"Aby zresetować hasło kliknij link -> <a href=\"{passwordResetLink}\">Potwierdzam!<a>";
+
+                    await _emailService.SendAsync(user.Email, subject, message, true);
 
                     _logger.LogInformation(passwordResetLink);
 
