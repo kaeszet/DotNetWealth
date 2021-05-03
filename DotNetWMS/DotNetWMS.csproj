@@ -39,6 +39,8 @@
 
 
   <ItemGroup>
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.0" />
+    <PackageReference Include="Azure.Identity" Version="1.2.2" />
     <PackageReference Include="BuildWebCompiler" Version="1.12.405" />
     <PackageReference Include="jQuery.Validation.Globalize" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
