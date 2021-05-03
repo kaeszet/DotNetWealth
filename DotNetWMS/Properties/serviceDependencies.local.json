@@ -8,6 +8,12 @@
       "type": "mssql.azure",
       "connectionId": "DotNetWMSContext",
       "secretStore": "LocalSecretsFile"
+    },
+    "secrets2": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/DotNetWMSvault",
+      "type": "secrets.keyVault",
+      "connectionId": "VaultUri",
+      "secretStore": null
     }
   }
 }
