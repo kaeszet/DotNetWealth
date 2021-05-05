@@ -53,6 +53,11 @@
         <div class="form-group">
             <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-plus mr-1"></i>Zapisz</button>
             <a asp-action="ChangePassword" asp-route-id="@Model.Id" class="btn btn-success btn-sm"><i class="fas fa-key mr-1"></i>Zmień hasło</a>
+            @if (!ViewBag.IsUserConfirmed)
+            {
+                <a asp-action="ConfirmUserEmail" asp-route-id="@Model.Id" class="btn btn-success btn-sm">Aktywuj konto</a>
+            }
+
         </div>
     </form>
 

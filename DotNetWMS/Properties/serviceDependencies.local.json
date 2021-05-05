@@ -3,17 +3,17 @@
     "secrets1": {
       "type": "secrets.user"
     },
-    "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/dotnetwms-server/databases/DotNetWMSContext-1",
-      "type": "mssql.azure",
-      "connectionId": "DotNetWMSContext",
-      "secretStore": "LocalSecretsFile"
-    },
     "secrets2": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/DotNetWMSvault",
       "type": "secrets.keyVault",
       "connectionId": "VaultUri",
       "secretStore": null
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/dotnetwms-server/databases/DotNetWMSContext-1",
+      "type": "mssql.azure",
+      "connectionId": "DotNetWMSContext",
+      "secretStore": "AzureKeyVault"
     }
   }
 }

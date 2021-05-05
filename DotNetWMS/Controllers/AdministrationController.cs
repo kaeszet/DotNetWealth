@@ -395,6 +395,8 @@ namespace DotNetWMS.Controllers
                 Roles = userRoles
             };
 
+            ViewBag.IsUserConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+
             return View(model);
         }
         /// <summary>
@@ -543,7 +545,7 @@ namespace DotNetWMS.Controllers
                         ModelState.AddModelError("", error.Description);
                     }
                     
-                    return View("Index", "Employees");
+                    return View();
                 }
                 catch (DbUpdateException)
                 {
@@ -569,6 +571,13 @@ namespace DotNetWMS.Controllers
                 ViewBag.ErrorMessage = $"Użytkownik o numerze ID: {userId} nie został odnaleziony!";
                 _logger.LogError($"Użytkownik o numerze ID: {userId} nie został odnaleziony!");
                 return View("NotFound");
+            }
+
+            if (user.UserName == User.Identity.Name)
+            {
+                ViewBag.ExceptionTitle = "Informacja";
+                ViewBag.ExceptionMessage = "Modyfikacji Twoich ról może dokonać wyłącznie inny użytkownik posiadający rolę administratora";
+                return View("GlobalExceptionHandler");
             }
 
             var model = new List<UserRolesViewModel>();
@@ -647,6 +656,32 @@ namespace DotNetWMS.Controllers
                 return Json($"Konto z powyższym adresem ({email}) już istnieje!");
             }
         }
+        public async Task<IActionResult> ConfirmUserEmail(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"Użytkownik o numerze ID: {id} nie został odnaleziony!";
+                _logger.LogError($"Użytkownik o numerze ID: {id} nie został odnaleziony!");
+                return View("NotFound");
+            }
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (result.Succeeded)
+            {
+                GlobalAlert.SendGlobalAlert($"Aktywowano konto użytkownika {user.UserName} ({user.Surname} {user.Name})!", "info");
+                return RedirectToAction("Index", "Employees");
+            }
+
+            ViewBag.ExceptionTitle = "Nie można potwierdzić adresu email!";
+            _logger.LogError($"Nie można potwierdzić adresu email!");
+            return View("GlobalExceptionHandler");
+        }
+        
 
 
 

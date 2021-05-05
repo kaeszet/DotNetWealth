@@ -61,7 +61,7 @@ namespace DotNetWMS.Controllers
             }
             else
             {
-                docs = _context.Doc_Assignments.Where(d => d.UserTo == user.Id);
+                docs = _context.Doc_Assignments.Where(d => d.UserTo == user.Id || d.UserFrom == user.Id);
             }
 
             if (!string.IsNullOrEmpty(search))
