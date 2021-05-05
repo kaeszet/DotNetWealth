@@ -1,5 +1,6 @@
 ﻿using DotNetWMS.Controllers;
 using DotNetWMS.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -1008,7 +1009,6 @@ namespace DotNetWMSTests
 
             var result = await controller.DeleteUser(userId) as ViewResult;
 
-            Assert.IsTrue(result.ViewName == "Index");
             Assert.IsTrue(result.ViewData.ModelState[""].Errors[0].ErrorMessage == error.Description);
 
         }
@@ -1047,7 +1047,15 @@ namespace DotNetWMSTests
                 .ReturnsAsync(true))
                 .Build();
 
-            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object);
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(h => h.User.Identity.Name).Returns("TESTOJAN9012");
+
+            var controllerContext = new ControllerContext()
+            {
+                HttpContext = httpContext.Object
+            };
+
+            var controller = new AdministrationController(fakeRoleManager.Object, fakeUserManager.Object, logger.Object) { ControllerContext = controllerContext };
 
             var result = await controller.ManageUserRoles(userId) as ViewResult;
             var roles = (List<UserRolesViewModel>)result.ViewData.Model;

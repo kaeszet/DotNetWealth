@@ -72,6 +72,7 @@ namespace DotNetWMS.Models
         /// Method to display values in view
         /// </summary>
         public string FullName => $"{Name}, {TaxId}";
+        public string TypeAndName => $"{Type}, {Name}";
         /// <summary>
         /// Method to display values in documentation view
         /// </summary>
