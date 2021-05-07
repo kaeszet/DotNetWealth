@@ -51,6 +51,7 @@ namespace DotNetWMS.Controllers
             foreach (var item in locations)
             {
                 List<string> listOfOccurences = IsLocationInUse(item.Id);
+                bool isLocInUse = listOfOccurences.Any();
 
                 LocationListViewModel location = new LocationListViewModel()
                 {
@@ -58,7 +59,7 @@ namespace DotNetWMS.Controllers
                     Address = item.Address,
                     Latitude = item.Latitude,
                     Longitude = item.Longitude,
-                    IsInUse = listOfOccurences.Any(),
+                    IsInUse = isLocInUse,
                     Records = listOfOccurences
                 };
 
