@@ -55,30 +55,30 @@
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Kadry,Moderator,Admin"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Employees" asp-action="Index">Pracownicy</a>
+                                        <a class="nav-link" data-id="Employees" asp-controller="Employees" asp-action="Index">Pracownicy</a>
                                     </li>
                                 }
 
                                 @if (signInManager.IsSignedIn(User))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Items" asp-action="Index">Majątek</a>
+                                        <a class="nav-link" data-id="Items" asp-controller="Items" asp-action="Index">Majątek</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Warehouses" asp-action="Index">Magazyn</a>
+                                        <a class="nav-link" data-id="Warehouses" asp-controller="Warehouses" asp-action="Index">Magazyn</a>
                                     </li>
                                 }
 
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Standard,StandardPlus,Moderator,Admin"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
+                                        <a class="nav-link" data-id="Externals" asp-controller="Externals" asp-action="Index">Klienci zewnętrzni</a>
                                     </li>
                                 }
                                 @if (signInManager.IsSignedIn(User) && User.IsInAnyRoles("Moderator,Admin"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Locations" asp-action="Index">Lokalizacje</a>
+                                        <a class="nav-link" data-id="Locations" asp-controller="Locations" asp-action="Index">Lokalizacje</a>
                                     </li>
                                 }
 
