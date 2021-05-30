@@ -40,9 +40,13 @@ $(function ()
             sessionStorage.removeItem('active');
         }
         else if ($(this).data('id') == sessionStorage.getItem('active')) {
+            console.log(this)
             $('.sidebar .list-group-item.active').removeClass('active');
             $(this).addClass('active');
         }
+        else if ($(this).attr('href') == location.pathname) {
+            $(this).addClass('active');
+		}
 
 
     })
