@@ -4,5 +4,8 @@
   "private": true,
   "devDependencies": {
     "grunt-dev-update": "^2.3.0"
+  },
+  "dependencies": {
+    "glob-parent": "^5.1.2"
   }
 }
